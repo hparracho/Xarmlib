@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    13 March 2018
+// @date    15 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,9 +36,11 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 #define __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 
+#include <cstddef>
 #include <array>
 
 #include "xarmlib_config.h"
+#include "xarmlib_chrono.hpp"
 #include "system/cmsis.h"
 
 namespace xarmlib
@@ -241,6 +243,14 @@ class Clock
             OSC_4_20,               // 4.2  MHz watchdog rate
             OSC_4_40,               // 4.4  MHz watchdog rate
             OSC_4_60                // 4.6  MHz watchdog rate
+        };
+
+        // Helper structure for automatic Watchdog clock configuration
+        struct WatchdogConfig
+        {
+            WatchdogFrequency   frequency;
+            uint8_t             divider;
+            uint32_t            counter;
         };
 
         // --------------------------------------------------------------------
@@ -706,7 +716,7 @@ class Clock
             }
         }
 
-        // ------------ WATCHDOG CLOCK ----------------------------------------
+        // ------------ WATCHDOG OSCILLATOR -----------------------------------
         // Set watchdog oscillator analog output frequency and divider
         // @frequency: Selected watchdog analog output frequency.
         // @div:       Watchdog divider value, even value between 2 and 64.
@@ -729,6 +739,34 @@ class Clock
             return m_watchdog_osc_frequency[static_cast<int32_t>(frequency)] / ((div + 1) << 1);
         }
 
+        // Calculate watchdog oscillator configuration based on
+        // the // specified duration value of timeout interval.
+        template<typename Duration = std::chrono::microseconds, int64_t duration_value>
+        static constexpr WatchdogConfig get_watchdog_osc_config()
+        {
+            static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
+
+            constexpr int64_t duration_us = std::chrono::duration_cast<std::chrono::microseconds>(Duration(duration_value)).count();;
+
+            static_assert(duration_us >= wdt_min_timeout_us(), "Watchdog timeout less than minimum allowed.");
+            static_assert(duration_us <= wdt_max_timeout_us(), "Watchdog timeout greater than maximum allowed.");
+
+            for(std::size_t idx = 1; idx < m_watchdog_osc_frequency.size(); ++idx)
+            {
+                for(uint8_t freq_div = 64; freq_div >= 2; --freq_div)
+                {
+                    const uint64_t freq = m_watchdog_osc_frequency[idx] / freq_div / 4;
+
+                    const uint32_t timer_count = static_cast<uint32_t>(freq * duration_us / 1000000);
+
+                    if(timer_count >= 0xFF && timer_count <= 0xFFFFFF)
+                    {
+                        return {static_cast<WatchdogFrequency>(idx), freq_div, timer_count};
+                    }
+                }
+            }
+        }
+
     private:
 
         // --------------------------------------------------------------------
@@ -739,7 +777,7 @@ class Clock
         enum FROOSCCTRL : uint32_t
         {
             FROOSCCTRL_FRO_DIRECT = (1 << 17)
-        } ;
+        };
 
         // Imprecise clock rates for the watchdog oscillator
         static constexpr std::array<int32_t, 16> m_watchdog_osc_frequency =
@@ -761,6 +799,30 @@ class Clock
             4400000,                // OSC_4_40
             4600000                 // OSC_4_60
         };
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Get the minimum allowed watchdog timeout interval in microseconds
+        static constexpr int64_t wdt_min_timeout_us()
+        {
+            const int64_t min_timer_count = 0xFF;
+            const int32_t min_freq_div = 2;
+            const int32_t max_freq = m_watchdog_osc_frequency.back() / min_freq_div / 4;
+
+            return min_timer_count * 1000000 / max_freq;
+        }
+
+        // Get the maximum allowed watchdog timeout interval in microseconds
+        static constexpr int64_t wdt_max_timeout_us()
+        {
+            const int64_t max_timer_count = 0xFFFFFF;
+            const int32_t max_freq_div = 64;
+            const int32_t min_freq = m_watchdog_osc_frequency.at(1) / max_freq_div / 4;
+
+            return max_timer_count * 1000000 / min_freq;
+        }
 };
 
 
