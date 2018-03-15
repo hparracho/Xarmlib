@@ -31,14 +31,16 @@
 #define __XARMLIB_HAL_WATCHDOG_HPP
 
 #include "xarmlib_chrono.hpp"
-#include "hal/hal_api.hpp"
 
 namespace xarmlib
+{
+namespace hal
 {
 
 
 
 
+template <class Target>
 class Watchdog
 {
     public:
@@ -48,14 +50,14 @@ class Watchdog
         {
             static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 #ifndef DEBUG
-            hal::Watchdog::start<Duration, duration_value>();
+            Target::template start<Duration, duration_value>();
 #endif
         }
 
         static void reset()
         {
 #ifndef DEBUG
-            hal::Watchdog::reset();
+            Target::reset();
 #endif
         }
 };
@@ -63,6 +65,7 @@ class Watchdog
 
 
 
+} // namespace hal
 } // namespace xarmlib
 
 #endif // __XARMLIB_HAL_WATCHDOG_HPP

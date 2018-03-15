@@ -33,6 +33,8 @@
 #ifndef __XARMLIB_HAL_API_HPP
 #define __XARMLIB_HAL_API_HPP
 
+#include "hal/hal_watchdog.hpp"
+
 
 
 
@@ -42,7 +44,7 @@
 namespace xarmlib
 {
 
-namespace hal = lpc84x;
+using Watchdog = hal::Watchdog<lpc84x::Watchdog>;
 
 } // namespace xarmlib
 
@@ -52,7 +54,7 @@ namespace hal = lpc84x;
 namespace xarmlib
 {
 
-namespace hal = other_target;
+using Watchdog = hal::Watchdog<other_target::Watchdog>;
 
 } // namespace xarmlib
 
