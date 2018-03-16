@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_watchdog.cpp
-// @brief   NXP LPC84x Watchdog class.
+// @file    lpc84x_syscon_clock.cpp
+// @brief   NXP LPC84x SYSCON clock control class.
 // @date    16 March 2018
 // ----------------------------------------------------------------------------
 //
@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "targets/LPC84x/lpc84x_watchdog.hpp"
+#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 
 namespace xarmlib
 {
@@ -39,8 +39,10 @@ namespace lpc84x
 
 
 
-// Static initialization
-bool Watchdog::m_initialized {false};
+
+// Static definition
+// Imprecise clock rates for the watchdog oscillator
+constexpr std::array<int32_t, 16> Clock::m_watchdog_osc_frequency;
 
 
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    mcu_startup.cpp
 // @brief   MCU bare-metal startup code.
-// @date    7 March 2018
+// @date    16 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -93,14 +93,20 @@ static void mcu_initialize_bss(unsigned int* region_addr, const unsigned int reg
 
 
 
+#ifdef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
+
+extern "C"
+{
+extern void __libc_init_array(void);
+}
+
+#else // Custom Linker Scripts
+
 // These magic symbols are provided by the Linker Script.
 extern void (*__preinit_array_start[])(void) __attribute__((weak));
 extern void (*__preinit_array_end[])  (void) __attribute__((weak));
 extern void (*__init_array_start[])   (void) __attribute__((weak));
 extern void (*__init_array_end[])     (void) __attribute__((weak));
-
-
-
 
 // ----------------------------------------------------------------------------
 // Iterate over all the preinit/init routines (mainly static constructors).
@@ -125,6 +131,8 @@ static void mcu_cpp_init_array(void)
         __init_array_start[i]();
     }
 }
+
+#endif // MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 
 
 
@@ -203,7 +211,11 @@ void mcu_startup(void)
 
     // Call the standard library initialization (mandatory for C++ to
     // execute the constructors for the static objects).
+#ifdef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
+    __libc_init_array();
+#else // Custom Linker Scripts
     mcu_cpp_init_array();
+#endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"

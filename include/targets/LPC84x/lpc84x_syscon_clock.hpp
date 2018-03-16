@@ -731,12 +731,12 @@ class Clock
         static int32_t get_watchdog_osc_frequency()
         {
             // Get WDT oscillator settings
-            const WatchdogFrequency frequency = static_cast<const WatchdogFrequency>((LPC_SYSCON->WDTOSCCTRL >> 5) & 0x0F);
+            const auto frequency = static_cast<std::size_t>((LPC_SYSCON->WDTOSCCTRL >> 5) & 0x0F);
 
-            const uint32_t div = LPC_SYSCON->WDTOSCCTRL & 0x1F;
+            const auto div = static_cast<int32_t>(LPC_SYSCON->WDTOSCCTRL & 0x1F);
 
             // Compute clock rate and divided by divide value
-            return m_watchdog_osc_frequency[static_cast<int32_t>(frequency)] / ((div + 1) << 1);
+            return m_watchdog_osc_frequency[frequency] / ((div + 1) << 1);
         }
 
         // Calculate watchdog oscillator configuration based on
@@ -746,7 +746,7 @@ class Clock
         {
             static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 
-            constexpr int64_t duration_us = std::chrono::duration_cast<std::chrono::microseconds>(Duration(duration_value)).count();;
+            constexpr int64_t duration_us = std::chrono::duration_cast<std::chrono::microseconds>(Duration(duration_value)).count();
 
             static_assert(duration_us >= wdt_min_timeout_us(), "Watchdog timeout less than minimum allowed.");
             static_assert(duration_us <= wdt_max_timeout_us(), "Watchdog timeout greater than maximum allowed.");
@@ -780,7 +780,7 @@ class Clock
         };
 
         // Imprecise clock rates for the watchdog oscillator
-        static constexpr std::array<int32_t, 16> m_watchdog_osc_frequency =
+        static constexpr std::array<int32_t, 16> m_watchdog_osc_frequency
         {
             0,                      // OSC_ILLEGAL
             600000,                 // OSC_0_60
@@ -819,7 +819,7 @@ class Clock
         {
             const int64_t max_timer_count = 0xFFFFFF;
             const int32_t max_freq_div = 64;
-            const int32_t min_freq = m_watchdog_osc_frequency.at(1) / max_freq_div / 4;
+            const int32_t min_freq = m_watchdog_osc_frequency[1] / max_freq_div / 4;
 
             return max_timer_count * 1000000 / min_freq;
         }

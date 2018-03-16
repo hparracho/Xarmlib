@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    9 March 2018
+// @date    16 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,10 +48,10 @@ void ResetISR(void) __attribute__ ((alias("Reset_Handler")));
 // External declaration for the pointer to the stack top from the Linker Script
 extern unsigned int _vStackTop;
 #define __STACK_TOP _vStackTop
-#else
+#else // Custom Linker Scripts
 extern unsigned int __stack_top;
 #define __STACK_TOP __stack_top
-#endif
+#endif // MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 
 
 
