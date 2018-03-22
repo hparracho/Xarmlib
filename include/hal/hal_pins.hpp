@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pins.hpp
 // @brief   Pins and Ports HAL interface classes.
-// @date    21 March 2018
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,11 +56,6 @@ class Pin
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
-
-        static void mode(const Name pin, const Mode mode)
-        {
-            TargetPin::mode(pin, mode);
-        }
 
     private:
 
