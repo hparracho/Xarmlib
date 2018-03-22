@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    21 March 2018
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,11 +32,10 @@
 #ifdef __LPC84X__
 
 #include "xarmlib_config.h"
-
-#include <targets/LPC84x/lpc84x_pins.hpp>
+#include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_romdivide.h"
-#include <targets/LPC84x/lpc84x_syscon_power.hpp>
-#include <targets/LPC84x/lpc84x_syscon_clock.hpp>
+#include "targets/LPC84x/lpc84x_syscon_power.hpp"
+#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 
 namespace xarmlib
 {
@@ -79,11 +78,9 @@ static inline void mcu_startup_set_xtal_clock()
     Pin::mode(Pin::Name::P0_8, Pin::Mode::PULL_NONE);
     Pin::mode(Pin::Name::P0_9, Pin::Mode::PULL_NONE);
 
-    // Use Switch Matrix Tool to enable XTALIN/XTALOUT function
-#if 0
-    Swm::enable_fixed_pin(Swm::FixedPin::XTALIN);
-    Swm::enable_fixed_pin(Swm::FixedPin::XTALOUT);
-#endif
+    // Use Switch Matrix to enable XTALIN/XTALOUT functions
+    Swm::enable(Swm::PinFixed::XTALIN);
+    Swm::enable(Swm::PinFixed::XTALOUT);
 
     // Use crystal oscillator with 1-20 MHz frequency range
     const bool bypass_osc = false;
