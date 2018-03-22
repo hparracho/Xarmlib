@@ -34,7 +34,7 @@
 
 #ifdef __LPC84X__
 
-#include <targets/LPC84x/lpc84x_cmsis.hpp>
+#include "targets/LPC84x/lpc84x_cmsis.h"
 
 namespace xarmlib
 {
@@ -52,7 +52,7 @@ class Fmc
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        // Flash access time definitions
+        // Flash access time
         enum class AccessTime
         {
             TIME_1_SYSCLK = 0,      // Flash accesses use 1 system clock
