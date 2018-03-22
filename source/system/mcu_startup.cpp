@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    mcu_startup.cpp
 // @brief   MCU bare-metal startup code.
-// @date    16 March 2018
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -27,17 +29,13 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 // ----------------------------------------------------------------------------
-// The code below is *HEAVILY* based on the µOS++ project from Liviu Ionescu.
-// (https://github.com/micro-os-plus)
-// Copyright (c) 2014 Liviu Ionescu.
+// The code below is *HEAVILY* based on the Cortex-M Startup project,
+// part of the µOS++ IIIe project. (https://github.com/micro-os-plus)
+// Copyright (c) 2016 Liviu Ionescu.
 // ----------------------------------------------------------------------------
 
-
-
+#include <cstdint>
 
 extern "C"
 {
@@ -47,7 +45,7 @@ extern "C"
 
 // ----------------------------------------------------------------------------
 // Forward declaration of hardware initialization functions.
-// Should be implemented by each target with its specified initializations.
+// Should be implemented by each target with its specific initializations.
 // ----------------------------------------------------------------------------
 void mcu_startup_initialize_hardware_early(void);
 void mcu_startup_initialize_hardware(void);
@@ -59,11 +57,11 @@ void mcu_startup_initialize_hardware(void);
 // Copy the specified DATA section from flash to SRAM.
 // ----------------------------------------------------------------------------
 inline __attribute__((always_inline))
-static void mcu_initialize_data(unsigned int* from, unsigned int* region_addr, const unsigned int region_size)
+static void mcu_initialize_data(uint32_t* from, uint32_t* region_addr, const uint32_t region_size)
 {
     // Iterate and copy word by word.
     // It is assumed that the pointers are word aligned.
-    const unsigned int* region_end = region_addr + region_size;
+    const uint32_t* region_end = region_addr + (region_size / sizeof(uint32_t));
 
     while(region_addr < region_end)
     {
@@ -78,11 +76,11 @@ static void mcu_initialize_data(unsigned int* from, unsigned int* region_addr, c
 // Zero fill the specified BSS section.
 // ----------------------------------------------------------------------------
 inline __attribute__((always_inline))
-static void mcu_initialize_bss(unsigned int* region_addr, const unsigned int region_size)
+static void mcu_initialize_bss(uint32_t* region_addr, const uint32_t region_size)
 {
     // Iterate and clear word by word.
     // It is assumed that the pointers are word aligned.
-    const unsigned int* region_end = region_addr + region_size;
+    const uint32_t* region_end = region_addr + (region_size / sizeof(uint32_t));
 
     while(region_addr < region_end)
     {
@@ -92,15 +90,6 @@ static void mcu_initialize_bss(unsigned int* region_addr, const unsigned int reg
 
 
 
-
-#ifdef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
-
-extern "C"
-{
-extern void __libc_init_array(void);
-}
-
-#else // Custom Linker Scripts
 
 // These magic symbols are provided by the Linker Script.
 extern void (*__preinit_array_start[])(void) __attribute__((weak));
@@ -114,8 +103,8 @@ extern void (*__init_array_end[])     (void) __attribute__((weak));
 inline __attribute__((always_inline))
 static void mcu_cpp_init_array(void)
 {
-    int count = __preinit_array_end - __preinit_array_start;
-    for(int i = 0; i < count; i++)
+    int32_t count = __preinit_array_end - __preinit_array_start;
+    for(int32_t i = 0; i < count; i++)
     {
         __preinit_array_start[i]();
     }
@@ -126,13 +115,11 @@ static void mcu_cpp_init_array(void)
     //_init(); // DO NOT ENABE THIS!
 
     count = __init_array_end - __init_array_start;
-    for(int i = 0; i < count; i++)
+    for(int32_t i = 0; i < count; i++)
     {
         __init_array_start[i]();
     }
 }
-
-#endif // MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 
 
 
@@ -144,10 +131,10 @@ static void mcu_cpp_init_array(void)
 // contains the load address, execution address and length of each RW data
 // section and the execution and length of each BSS (zero initialized) section.
 // ----------------------------------------------------------------------------
-extern unsigned int __data_section_table;
-extern unsigned int __data_section_table_end;
-extern unsigned int __bss_section_table;
-extern unsigned int __bss_section_table_end;
+extern uint32_t __data_section_table;
+extern uint32_t __data_section_table_end;
+extern uint32_t __bss_section_table;
+extern uint32_t __bss_section_table_end;
 
 
 
@@ -186,21 +173,21 @@ void mcu_startup(void)
 
     mcu_startup_initialize_hardware_early();
 
-    // Copy the data sections from flash to SRAM.
-    for(unsigned int* p = &__data_section_table; p < &__data_section_table_end; )
+    // Copy the data sections from flash to SRAM
+    for(uint32_t* p = &__data_section_table; p < &__data_section_table_end; )
     {
-        unsigned int* from        = (unsigned int*)(*p++);
-        unsigned int* region_addr = (unsigned int*)(*p++);
-        unsigned int  region_size = (unsigned int )(*p++);
+        uint32_t* from        = reinterpret_cast<uint32_t*>(*p++);
+        uint32_t* region_addr = reinterpret_cast<uint32_t*>(*p++);
+        uint32_t  region_size = *p++;
 
         mcu_initialize_data(from, region_addr, region_size);
     }
 
     // Zero fill all BSS sections
-    for(unsigned int *p = &__bss_section_table; p < &__bss_section_table_end; )
+    for(uint32_t *p = &__bss_section_table; p < &__bss_section_table_end; )
     {
-        unsigned int* region_addr = (unsigned int*)(*p++);
-        unsigned int  region_size = (unsigned int )(*p++);
+        uint32_t* region_addr = reinterpret_cast<uint32_t*>(*p++);
+        uint32_t  region_size = *p++;
 
         mcu_initialize_bss(region_addr, region_size);
     }
@@ -211,21 +198,18 @@ void mcu_startup(void)
 
     // Call the standard library initialization (mandatory for C++ to
     // execute the constructors for the static objects).
-#ifdef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
-    __libc_init_array();
-#else // Custom Linker Scripts
     mcu_cpp_init_array();
-#endif
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wpedantic"
     // ISO C++ forbids taking address of function '::main' [-Wpedantic]
 
-    // Call the main entry point, and save the exit code.
+    // Call the main entry point
     main();
 #pragma GCC diagnostic pop
 
-    // main() shouldn't return, but if it does, we'll just enter an infinite loop
+    // 'main()' shouldn't return, but if it does,
+    // we'll just enter an infinite loop.
     while(true)
     {}
 }
