@@ -13,7 +13,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ## External Dependencies:
 - [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using v5.1.1
-- [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 15 March 2018.
+- [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 15 March 2018
 
 ---
 ## Credit where it is due:
