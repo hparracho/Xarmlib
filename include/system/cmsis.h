@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    cmsis.h
 // @brief   CMSIS Core generic header include file.
-// @date    9 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -27,14 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifndef __XARMLIB_SYSTEM_CMSIS_H
 #define __XARMLIB_SYSTEM_CMSIS_H
-
-#include "cmsis_version.h"
-#include "cmsis_compiler.h"
 
 #ifdef __LPC84X__
 #include "targets/LPC84x/lpc84x_cmsis.h"

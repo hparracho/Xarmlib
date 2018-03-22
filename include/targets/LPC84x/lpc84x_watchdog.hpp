@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    15 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -33,8 +32,10 @@
 
 
 
-#ifndef __XARMLIB_TARGET_LPC84X_WATCHDOG_HPP
-#define __XARMLIB_TARGET_LPC84X_WATCHDOG_HPP
+#ifndef __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
+#define __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
+
+#ifdef __LPC84X__
 
 #include <assert.h>
 
@@ -54,7 +55,7 @@ class Watchdog
 {
     public:
 
-        template<typename Duration = std::chrono::microseconds, int64_t duration_value>
+        template<int64_t duration_value, typename Duration = std::chrono::microseconds>
         static void start()
         {
             static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
@@ -115,7 +116,9 @@ class Watchdog
 
 
 
-}	// namespace lpc84x
-}   // namespace xarmlib
+} // namespace lpc84x
+} // namespace xarmlib
 
-#endif  // __XARMLIB_TARGET_LPC84X_WATCHDOG_HPP
+#endif // __LPC84X__
+
+#endif  // __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP

@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    hal_api.hpp
 // @brief   HAL API main header file.
-// @date    15 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -33,32 +32,9 @@
 #ifndef __XARMLIB_HAL_API_HPP
 #define __XARMLIB_HAL_API_HPP
 
+#include "hal/hal_pins.hpp"
+#include "hal/hal_gpio.hpp"
 #include "hal/hal_watchdog.hpp"
-
-
-
-
-#if defined __LPC84X__
-#include "targets/LPC84x/lpc84x_watchdog.hpp"
-
-namespace xarmlib
-{
-
-using Watchdog = hal::Watchdog<lpc84x::Watchdog>;
-
-} // namespace xarmlib
-
-#elif defined __OHER_TARGET__
-// Other target include files
-
-namespace xarmlib
-{
-
-using Watchdog = hal::Watchdog<other_target::Watchdog>;
-
-} // namespace xarmlib
-
-#endif
 
 
 

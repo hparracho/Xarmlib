@@ -4,13 +4,13 @@
 //          replace the standard ones pulled in from the C library, which
 //          vector integer divides onto the rom division functions contained
 //          in specific NXP MCUs such as LPC8xx, LPC11Uxx and LPC12xx.
-//          Note that this patching will only occur if "__USE_ROMDIVIDE" is
-//          defined for the project build for both the compiler and assembler.
-// @date    7 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // ----------------------------------------------------------------------------
 // Copyright(C) NXP Semiconductors, 2013-17
@@ -38,12 +38,7 @@
 // this code.
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifdef __LPC84X__
-
-#ifdef __USE_ROMDIVIDE
 
 
 
@@ -109,7 +104,5 @@ __aeabi_uidiv:
 
 
 
-
-#endif // __USE_ROMDIVIDE
 
 #endif // __LPC84X__

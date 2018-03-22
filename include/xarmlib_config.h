@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.h
 // @brief   Xarmlib template configuration header file.
-// @date    11 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -48,7 +50,27 @@ namespace xarmlib
 #define OSC_CLK     (      XTAL)        // System oscillator frequency
 #define EXT_CLK     (       0UL)        // CLKIN pin frequency
 
-#define USE_XTAL
+//#define USE_XTAL
+
+
+//#define __LPC845__
+//#define __LPC84X__
+//#define __LPC84X_PINS__ (64)
+
+
+// CRP (Code Read Protect) word definition
+#define CONFIG_CRP_SETTING_NO_CRP       (1)
+
+// Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
+#ifdef NDEBUG
+#define __MTB_DISABLE
+#else
+#define __MTB_BUFFER_SIZE               (256)
+#endif
+
+// Uncomment the next line to disable Heap memory allocation feature
+//#define CPP_NO_HEAP
+
 
 
 

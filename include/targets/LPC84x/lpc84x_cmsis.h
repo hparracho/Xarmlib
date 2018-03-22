@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    9 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -27,20 +29,19 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 // ----------------------------------------------------------------------------
 // This file is based on the code from LPC845 Example Code Bundle for
 // MCUXpresso REV 1.2 provided by NXP.
 // https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip
 // ----------------------------------------------------------------------------
 
+#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#define __XARMLIB_TARGETS_LPC84X_CMSIS_H
 
+#ifdef __LPC84X__
 
-
-#ifndef __XARMLIB_TARGETS_LPC84X_LPC84X_CMSIS_H
-#define __XARMLIB_TARGETS_LPC84X_LPC84X_CMSIS_H
+#include "cmsis_version.h"
+#include "cmsis_compiler.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -1216,4 +1217,6 @@ typedef struct
 }
 #endif
 
-#endif // __XARMLIB_TARGETS_LPC84X_LPC84X_CMSIS_H
+#endif // __LPC84X__
+
+#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H

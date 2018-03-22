@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    13 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -30,26 +29,21 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifdef __LPC84X__
 
 #include "xarmlib_config.h"
 
-#ifdef __USE_ROMDIVIDE
+#include <targets/LPC84x/lpc84x_pins.hpp>
 #include "targets/LPC84x/lpc84x_romdivide.h"
-#endif
-
 #include <targets/LPC84x/lpc84x_syscon_power.hpp>
 #include <targets/LPC84x/lpc84x_syscon_clock.hpp>
-
-
-
 
 namespace xarmlib
 {
 namespace lpc84x
+{
+
+extern "C"
 {
 
 
@@ -63,6 +57,8 @@ static inline void mcu_startup_set_fro_clock()
 {
     // Configure the FRO subsystem according to the project configurations
     //Clock_SetFro(g_lpc84x_config_fro_frequency, g_lpc84x_config_fro_direct);
+    const bool fro_direct = true;
+    Clock::set_fro_frequency(Clock::FroFrequency::FREQ_30MHZ, fro_direct);
 
     // Set FRO source for main_clk_pre_pll
     Clock::set_main_clock_source(Clock::MainClockSource::FRO);
@@ -79,13 +75,15 @@ static inline void mcu_startup_set_fro_clock()
 
 static inline void mcu_startup_set_xtal_clock()
 {
-    // Disable pull-up and pull-down for XTALIN and XTALOUT pins
-    //Pin_Mode(PinName::P0_8, PinMode::PULL_NONE);
-    //Pin_Mode(PinName::P0_9, PinMode::PULL_NONE);
+    // Disable pull-up and pull-down for XTALIN and XTALOUT pin
+    Pin::mode(Pin::Name::P0_8, Pin::Mode::PULL_NONE);
+    Pin::mode(Pin::Name::P0_9, Pin::Mode::PULL_NONE);
 
     // Use Switch Matrix Tool to enable XTALIN/XTALOUT function
-    //Swm_EnableFixedPin(SwmPinFixed::XTALIN);
-    //Swm_EnableFixedPin(SwmPinFixed::XTALOUT);
+#if 0
+    Swm::enable_fixed_pin(Swm::FixedPin::XTALIN);
+    Swm::enable_fixed_pin(Swm::FixedPin::XTALOUT);
+#endif
 
     // Use crystal oscillator with 1-20 MHz frequency range
     const bool bypass_osc = false;
@@ -95,9 +93,9 @@ static inline void mcu_startup_set_xtal_clock()
     // Power-up crystal oscillator
     Power::power_up(Power::Peripheral::SYSOSC);
 
-    // Wait 500 uSec for sysosc to stabilize (typical time from datasheet)
-    // The for loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33 nSec) based on FRO settings
-    // So worst case i = (500 uSec) / (7 * 33 nSec) = 2142
+    // Wait 500 uSec for sysosc to stabilize (typical time from datasheet). The for loop
+    // takes 7 clocks per iteration and executes at a maximum of 30 MHz (33 nSec) based
+    // on FRO settings, so worst case i = (500 uSec) / (7 * 33 nSec) = 2142.
     for(uint32_t i = 0; i < 2142; i++) __NOP();
 
     // Choose sys_osc_clk source for external_clk
@@ -120,18 +118,16 @@ static inline void mcu_startup_set_xtal_clock()
 // PUBLIC FUNCTIONS
 // ----------------------------------------------------------------------------
 
-extern "C" void mcu_startup_initialize_hardware_early(void)
+void mcu_startup_initialize_hardware_early(void)
 {}
 
 
 
 
-extern "C" void mcu_startup_initialize_hardware(void)
+void mcu_startup_initialize_hardware(void)
 {
-#ifdef __USE_ROMDIVIDE
     // Patch the AEABI integer divide functions to use MCU's romdivide library.
     ROMDIVIDE_PatchAeabiIntegerDivide();
-#endif
 
     // Disable clock input sources that aren't needed
     Clock::set_clockout_source(Clock::ClockoutSource::NONE);
@@ -151,20 +147,30 @@ extern "C" void mcu_startup_initialize_hardware(void)
         mcu_startup_set_fro_clock();
     #endif
 
+#if 0
     // Call the CSMSIS system initialization routine.
-    //SystemInit();
+    SystemInit();
 
     // Call the CSMSIS system clock routine to store the clock
     // frequency in the SystemCoreClock global RAM location.
-    //SystemCoreClockUpdate();
+    SystemCoreClockUpdate();
+#endif
 
+    // ------------------------------------------------------------------------
+    // Helder Parracho @ 20 March 2018
+    // @REVIEW: Brown-Out Detector with bug? Disabled while pending for a solution...
+#if 0
     // Enable brown-out detection with reset level 3 (2.63V ~ 2.76V)
     Power::power_up(Power::Peripheral::BOD);
     BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
+#endif
+    // ------------------------------------------------------------------------
 }
 
 
 
+
+} // extern "C"
 
 } // namespace lpc84x
 } // namespace xarmlib

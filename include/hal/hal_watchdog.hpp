@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    15 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -40,26 +42,44 @@ namespace hal
 
 
 
-template <class Target>
+template <class TargetWatchdog>
 class Watchdog
 {
     public:
 
-        template<typename Duration = std::chrono::microseconds, int64_t duration_value>
+        // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        template<int64_t duration_value, typename Duration = std::chrono::microseconds>
         static void start()
         {
             static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 #ifndef DEBUG
-            Target::template start<Duration, duration_value>();
+            TargetWatchdog::template start<duration_value, Duration>();
 #endif
         }
 
         static void reset()
         {
 #ifndef DEBUG
-            Target::reset();
+            TargetWatchdog::reset();
 #endif
         }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
 };
 
 
@@ -67,5 +87,31 @@ class Watchdog
 
 } // namespace hal
 } // namespace xarmlib
+
+
+
+
+#if defined __LPC84X__
+
+#include "targets/LPC84x/lpc84x_watchdog.hpp"
+
+namespace xarmlib
+{
+using Watchdog = hal::Watchdog<lpc84x::Watchdog>;
+}
+
+#elif defined __OHER_TARGET__
+
+// Other target include files
+
+namespace xarmlib
+{
+using Watchdog = hal::Watchdog<other_target::Watchdog>;
+}
+
+#endif
+
+
+
 
 #endif // __XARMLIB_HAL_WATCHDOG_HPP

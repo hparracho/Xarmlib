@@ -1,11 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    16 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -27,17 +29,17 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifdef __LPC84X__
 
+#include "xarmlib_config.h"
 
-
+namespace xarmlib
+{
+namespace lpc84x
+{
 
 extern "C"
 {
-
 
 
 
@@ -279,5 +281,8 @@ void SysTick_Handler(void)
 
 
 } // extern "C"
+
+} // namespace lpc84x
+} // namespace xarmlib
 
 #endif // __LPC84X__

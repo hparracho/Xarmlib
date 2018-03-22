@@ -2,11 +2,13 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    9 March 2018
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -28,9 +30,6 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #include <sys/types.h>
 #include <errno.h>
 
@@ -41,9 +40,9 @@
 
 #ifndef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 // ----------------------------------------------------------------------------
-// The function below is taken from the µOS++ project from Liviu Ionescu.
+// The function below is taken from the µOS++ IIIe project.
 // (https://github.com/micro-os-plus)
-// Copyright (c) 2014 Liviu Ionescu.
+// Copyright (c) 2016 Liviu Ionescu.
 
 // A custom _sbrk() function to match the settings defined by the linker script.
 extern "C" caddr_t _sbrk(int incr)
@@ -95,7 +94,7 @@ extern "C" caddr_t _sbrk(int incr)
 extern "C" __attribute__ ((weak, noreturn))
 void _exit(int code __attribute__ ((unused)))
 {
-#if !defined DEBUG
+#ifndef DEBUG
     NVIC_SystemReset();
 #else
     while(true)

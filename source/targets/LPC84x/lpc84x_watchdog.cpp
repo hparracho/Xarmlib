@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.cpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    16 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -30,6 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
+#ifdef __LPC84X__
+
 #include "targets/LPC84x/lpc84x_watchdog.hpp"
 
 namespace xarmlib
@@ -47,3 +48,5 @@ bool Watchdog::m_initialized {false};
 
 } // namespace lpc84x
 } // namespace xarmlib
+
+#endif // __LPC84X__

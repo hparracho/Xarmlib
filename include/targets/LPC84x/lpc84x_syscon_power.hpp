@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    12 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -30,13 +29,12 @@
 //
 // ----------------------------------------------------------------------------
 
+#ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP
+#define __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP
 
+#ifdef __LPC84X__
 
-
-#ifndef __XARMLIB_TARGET_LPC84X_SYSCON_POWER_HPP
-#define __XARMLIB_TARGET_LPC84X_SYSCON_POWER_HPP
-
-#include "system/cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.h"
 
 namespace xarmlib
 {
@@ -115,14 +113,14 @@ class Power
         static void power_up(const Peripheral peripheral)
         {
             // Apply power to the block by setting low
-            LPC_SYSCON->PDRUNCFG &= ~(1 << static_cast<const uint32_t>(peripheral));
+            LPC_SYSCON->PDRUNCFG &= ~(1 << static_cast<uint32_t>(peripheral));
         }
 
         // Powers down a block
         static void power_down(const Peripheral peripheral)
         {
             // Disable the block by setting high
-            LPC_SYSCON->PDRUNCFG |= (1 << static_cast<const uint32_t>(peripheral));
+            LPC_SYSCON->PDRUNCFG |= (1 << static_cast<uint32_t>(peripheral));
         }
 
         // Resets a peripheral
@@ -131,16 +129,16 @@ class Power
             if(static_cast<const uint32_t>(peripheral) < 32)
             {
                 // Assert reset for a peripheral (the peripheral will stay in reset until reset is de-asserted)
-                LPC_SYSCON->PRESETCTRL0 &= ~(1 << static_cast<const uint32_t>(peripheral));
+                LPC_SYSCON->PRESETCTRL0 &= ~(1 << static_cast<uint32_t>(peripheral));
                 // De-assert reset for a peripheral
-                LPC_SYSCON->PRESETCTRL0 |=  (1 << static_cast<const uint32_t>(peripheral));
+                LPC_SYSCON->PRESETCTRL0 |=  (1 << static_cast<uint32_t>(peripheral));
             }
             else
             {
                 // Assert reset for a peripheral (the peripheral will stay in reset until reset is de-asserted)
-                LPC_SYSCON->PRESETCTRL1 &= ~(1 << (static_cast<const uint32_t>(peripheral) - 32));
+                LPC_SYSCON->PRESETCTRL1 &= ~(1 << (static_cast<uint32_t>(peripheral) - 32));
                 // De-assert reset for a peripheral
-                LPC_SYSCON->PRESETCTRL1 |=  (1 << (static_cast<const uint32_t>(peripheral) - 32));
+                LPC_SYSCON->PRESETCTRL1 |=  (1 << (static_cast<uint32_t>(peripheral) - 32));
             }
         }
 };
@@ -173,7 +171,7 @@ class BrownOut
         static void enable_reset(const Level level)
         {
             // BOD reset enable (BODRSTENA) = (1 << 4)
-            LPC_SYSCON->BODCTRL = static_cast<const uint32_t>(level) | (1 << 4);
+            LPC_SYSCON->BODCTRL = static_cast<uint32_t>(level) | (1 << 4);
         }
 
         // Disables brown-out detection reset
@@ -190,4 +188,6 @@ class BrownOut
 } // namespace lpc84x
 } // namespace xarmlib
 
-#endif // __XARMLIB_TARGET_LPC84X_SYSCON_POWER_HPP
+#endif // __LPC84X__
+
+#endif // __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP

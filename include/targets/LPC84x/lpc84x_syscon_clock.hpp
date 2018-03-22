@@ -1,14 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    15 March 2018
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// Emanuel Pinto(emanuelangelopinto@gmail.com) is an official contributor of
-// this library and some of the following code is based on his original work.
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -30,18 +29,17 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 #define __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
+
+#ifdef __LPC84X__
 
 #include <cstddef>
 #include <array>
 
 #include "xarmlib_config.h"
 #include "xarmlib_chrono.hpp"
-#include "system/cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.h"
 
 namespace xarmlib
 {
@@ -263,11 +261,11 @@ class Clock
         {
             if(static_cast<const uint32_t>(peripheral) < 32)
             {
-                LPC_SYSCON->SYSAHBCLKCTRL0 |= (1 << static_cast<const uint32_t>(peripheral));
+                LPC_SYSCON->SYSAHBCLKCTRL0 |= (1 << static_cast<uint32_t>(peripheral));
             }
             else
             {
-                LPC_SYSCON->SYSAHBCLKCTRL1 |= (1 << (static_cast<const uint32_t>(peripheral) - 32));
+                LPC_SYSCON->SYSAHBCLKCTRL1 |= (1 << (static_cast<uint32_t>(peripheral) - 32));
             }
         }
 
@@ -276,11 +274,11 @@ class Clock
         {
             if(static_cast<const uint32_t>(peripheral) < 32)
             {
-                LPC_SYSCON->SYSAHBCLKCTRL0 &= ~(1 << static_cast<const uint32_t>(peripheral));
+                LPC_SYSCON->SYSAHBCLKCTRL0 &= ~(1 << static_cast<uint32_t>(peripheral));
             }
             else
             {
-                LPC_SYSCON->SYSAHBCLKCTRL1 &= ~(1 << (static_cast<const uint32_t>(peripheral) - 32));
+                LPC_SYSCON->SYSAHBCLKCTRL1 &= ~(1 << (static_cast<uint32_t>(peripheral) - 32));
             }
         }
 
@@ -407,7 +405,7 @@ class Clock
         // Set clock source
         static void set_external_clock_source(const ExternalClockSource source)
         {
-            LPC_SYSCON->EXTCLKSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->EXTCLKSEL = static_cast<uint32_t>(source);
         }
 
         // Get clock source
@@ -482,7 +480,7 @@ class Clock
         // Set clock source
         static void set_main_clock_source(const MainClockSource source)
         {
-            LPC_SYSCON->MAINCLKSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->MAINCLKSEL = static_cast<uint32_t>(source);
 
             // Enable main clock source update (change from 0 to 1)
             LPC_SYSCON->MAINCLKUEN = 0;
@@ -515,7 +513,7 @@ class Clock
         // Set clock source
         static void set_main_clock_pll_source(const MainClockPllSource source)
         {
-            LPC_SYSCON->MAINCLKPLLSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->MAINCLKPLLSEL = static_cast<uint32_t>(source);
 
             // Enable main clock PLL source update (change from 0 to 1)
             LPC_SYSCON->MAINCLKPLLUEN = 0;
@@ -546,7 +544,7 @@ class Clock
         // Set clock source
         static void set_clockout_source(const ClockoutSource source)
         {
-            LPC_SYSCON->CLKOUTSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->CLKOUTSEL = static_cast<uint32_t>(source);
         }
 
         // Set clock divider
@@ -554,14 +552,14 @@ class Clock
         //        The CLKOUT clock rate is the clock source divided by the divider.
         static void set_clockout_divider(const uint8_t div)
         {
-            LPC_SYSCON->CLKOUTDIV = static_cast<const uint32_t>(div);
+            LPC_SYSCON->CLKOUTDIV = static_cast<uint32_t>(div);
         }
 
         // ------------ SCT CLOCK --------------------------------------------
         // Set clock source
         static void set_sct_clock_source(const SctClockSource source)
         {
-            LPC_SYSCON->SCTCLKSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->SCTCLKSEL = static_cast<uint32_t>(source);
         }
 
         // Set clock divider
@@ -569,21 +567,21 @@ class Clock
         //        The SCT clock rate is the clock source divided by the divider.
         static void set_sct_clock_divider(const uint8_t div)
         {
-            LPC_SYSCON->SCTCLKDIV = static_cast<const uint32_t>(div);
+            LPC_SYSCON->SCTCLKDIV = static_cast<uint32_t>(div);
         }
 
         // ------------ CAPTOUCH CLOCK ---------------------------------------
         // Set clock source
         static void set_capt_clock_source(const CaptClockSource source)
         {
-            LPC_SYSCON->CAPTCLKSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->CAPTCLKSEL = static_cast<uint32_t>(source);
         }
 
         // ------------ ADC CLOCK --------------------------------------------
         // Set clock source
         static void set_adc_clock_source(const AdcClockSource source)
         {
-            LPC_SYSCON->ADCCLKSEL = static_cast<const uint32_t>(source);
+            LPC_SYSCON->ADCCLKSEL = static_cast<uint32_t>(source);
         }
 
         // Set clock divider
@@ -591,7 +589,7 @@ class Clock
         //        The ADC clock rate is the clock source divided by the divider.
         static void set_adc_clock_divider(const uint8_t div)
         {
-            LPC_SYSCON->ADCCLKDIV = static_cast<const uint32_t>(div);
+            LPC_SYSCON->ADCCLKDIV = static_cast<uint32_t>(div);
         }
 
         // ------------ FRACTIONAL RATE GENERATOR (FRG) CLOCK -----------------
@@ -600,11 +598,11 @@ class Clock
         {
             if(frg == FrgClockSelect::FRG0)
             {
-                LPC_SYSCON->FRG0CLKSEL = static_cast<const uint32_t>(source);
+                LPC_SYSCON->FRG0CLKSEL = static_cast<uint32_t>(source);
             }
             else
             {
-                LPC_SYSCON->FRG1CLKSEL = static_cast<const uint32_t>(source);
+                LPC_SYSCON->FRG1CLKSEL = static_cast<uint32_t>(source);
             }
         }
 
@@ -631,13 +629,13 @@ class Clock
         {
             if(frg == FrgClockSelect::FRG0)
             {
-                LPC_SYSCON->FRG0MULT = static_cast<const uint32_t>(mult);
-                LPC_SYSCON->FRG0DIV  = static_cast<const uint32_t>(div);
+                LPC_SYSCON->FRG0MULT = static_cast<uint32_t>(mult);
+                LPC_SYSCON->FRG0DIV  = static_cast<uint32_t>(div);
             }
             else
             {
-                LPC_SYSCON->FRG1MULT = static_cast<const uint32_t>(mult);
-                LPC_SYSCON->FRG1DIV  = static_cast<const uint32_t>(div);
+                LPC_SYSCON->FRG1MULT = static_cast<uint32_t>(mult);
+                LPC_SYSCON->FRG1DIV  = static_cast<uint32_t>(div);
             }
         }
 
@@ -689,15 +687,15 @@ class Clock
         // Set clock source
         static void set_peripheral_clock_source(const PeripheralClockSelect peripheral, const PeripheralClockSource source)
         {
-            const int32_t index = static_cast<const int32_t>(peripheral);
+            const int32_t index = static_cast<int32_t>(peripheral);
 
-            LPC_SYSCON->FCLKSEL[index] = static_cast<const uint32_t>(source);
+            LPC_SYSCON->FCLKSEL[index] = static_cast<uint32_t>(source);
         }
 
         // Get clock source
         static PeripheralClockSource get_peripheral_clock_source(const PeripheralClockSelect peripheral)
         {
-            const int32_t index = static_cast<const int32_t>(peripheral);
+            const int32_t index = static_cast<int32_t>(peripheral);
 
             return static_cast<PeripheralClockSource>(LPC_SYSCON->FCLKSEL[index] & 0x07);
         }
@@ -830,5 +828,7 @@ class Clock
 
 } // namespace lpc84x
 } // namespace xarmlib
+
+#endif // __LPC84X__
 
 #endif  // __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP

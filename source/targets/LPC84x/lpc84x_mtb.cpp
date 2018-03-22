@@ -1,12 +1,14 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_mtb.cpp
 // @brief   Optionally defines an array to be used as a buffer for Micro
-//           Trace Buffer (MTB) instruction trace on Cortex-M0+ parts.
-// @date    9 March 2018
+//          Trace Buffer (MTB) instruction trace on Cortex-M0+ parts.
+// @date    21 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -28,10 +30,17 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifdef __LPC84X__
+
+#include "xarmlib_config.h"
+
+namespace xarmlib
+{
+namespace lpc84x
+{
+
+extern "C"
+{
 
 
 
@@ -100,5 +109,13 @@ __MTB_BUFFER(__MTB_BUFFER_SIZE);
 #endif // (__MTB_BUFFER_SIZE > 0)
 
 #endif // __MTB_DISABLE
+
+
+
+
+} // extern "C"
+
+} // namespace lpc84x
+} // namespace xarmlib
 
 #endif // __LPC84X__
