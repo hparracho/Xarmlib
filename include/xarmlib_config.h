@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.h
 // @brief   Xarmlib template configuration header file.
-// @date    21 March 2018
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,9 +63,15 @@ namespace xarmlib
 
 // Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
 #ifdef NDEBUG
+
+#ifndef __MTB_DISABLE
 #define __MTB_DISABLE
+#endif
+
 #else
+
 #define __MTB_BUFFER_SIZE               (256)
+
 #endif
 
 // Uncomment the next line to disable Heap memory allocation feature
