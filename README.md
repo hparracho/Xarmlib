@@ -17,7 +17,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 ---
 ## Credit where it is due:
 
-***Alone we don't go far...*** This library uses some code and ideias taken from other persons and projects:  
+***Alone we don't go far...*** This library uses some code and ideas taken from other persons and projects:  
 
 - The startup code is *heavily* based on the [Cortex-M Startup](https://github.com/micro-os-plus/cortexm-startup-DEPRECATED) project, part of the [µOS++ IIIe](https://github.com/micro-os-plus) project. <-- *Great project, check it out!* Copyright (c) 2016 [Liviu Ionescu](https://github.com/ilg-ul).
 - The low level peripheral drivers for the LPC84x family of MCUs are based on the [LPC845 Example Code Bundle MCUXpresso](https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip) supplied by NXP. All rights reserved. (c) 2017 NXP B.V.  
