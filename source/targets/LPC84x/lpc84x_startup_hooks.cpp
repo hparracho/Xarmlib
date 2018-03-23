@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    22 March 2018
+// @date    23 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,11 @@
 #ifdef __LPC84X__
 
 #include "xarmlib_config.h"
-#include "targets/LPC84x/lpc84x_swm.hpp"
+#include "targets/LPC84x/lpc84x_cmsis.h"
 #include "targets/LPC84x/lpc84x_romdivide.h"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
+#include "targets/LPC84x/lpc84x_swm.hpp"
 
 namespace xarmlib
 {
@@ -123,7 +124,7 @@ void mcu_startup_initialize_hardware_early(void)
 
 void mcu_startup_initialize_hardware(void)
 {
-    // Patch the AEABI integer divide functions to use MCU's romdivide library.
+    // Patch the AEABI integer divide functions to use MCU's romdivide library
     ROMDIVIDE_PatchAeabiIntegerDivide();
 
     // Disable clock input sources that aren't needed
@@ -144,14 +145,9 @@ void mcu_startup_initialize_hardware(void)
         mcu_startup_set_fro_clock();
     #endif
 
-#if 0
-    // Call the CSMSIS system initialization routine.
-    SystemInit();
-
     // Call the CSMSIS system clock routine to store the clock
     // frequency in the SystemCoreClock global RAM location.
     SystemCoreClockUpdate();
-#endif
 
     // ------------------------------------------------------------------------
     // Helder Parracho @ 20 March 2018

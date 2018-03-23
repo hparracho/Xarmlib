@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    mcu_startup.cpp
 // @brief   MCU bare-metal startup code.
-// @date    22 March 2018
+// @date    23 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -153,7 +153,6 @@ extern int main(void);
 // Debugging new startup configurations usually begins with placing
 // a breakpoint at 'mcu_startup()', and stepping through the routine.
 // ----------------------------------------------------------------------------
-
 __attribute__ ((section(".after_vectors"), noreturn, weak))
 void mcu_startup(void)
 {

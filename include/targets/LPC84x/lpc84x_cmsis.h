@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    21 March 2018
+// @date    23 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -119,6 +119,16 @@ typedef enum IRQn
 #define __MPU_PRESENT           0           // MPU present or not
 #define __NVIC_PRIO_BITS        2           // Number of Bits used for Priority Levels
 #define __Vendor_SysTickConfig  0           // Set to 1 if different SysTick Config is used
+
+
+
+
+extern uint32_t SystemCoreClock;            // CMSIS system core clock variable definition
+
+// Update system core clock frequency
+// NOTE: This function is called in startup functions but should be
+//       called every time the system has a clock frequency change.
+void SystemCoreClockUpdate();
 
 
 
@@ -1073,6 +1083,12 @@ typedef struct
 
 
 
+// ROM IAP entry function pointer declaration
+typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
+
+
+
+
 // ISO C++ prohibits anonymous structs [-Wpedantic]
 // #pragma GCC diagnostic ignored "-Wpedantic"
 #pragma GCC diagnostic pop
@@ -1093,6 +1109,7 @@ typedef struct
 
 // ROM Driver table
 #define LPC_ROM_DRIVER_BASE     (LPC_ROM_BASE + 0x1FF8)
+#define LPC_ROM_IAP_BASE        (LPC_ROM_BASE + 0x1FF1)
 
 // APB0 peripherals
 #define LPC_WWDT_BASE           (LPC_APB_BASE + 0x00000)
@@ -1144,6 +1161,9 @@ typedef struct
 #define LPC_ROM_API            (*(LPC_ROM_API_T    * *) LPC_ROM_DRIVER_BASE)
 #define LPC_ROM_PWR_API         ((LPC_ROM_PWR_API_T  *)(LPC_ROM_API->PWR_BASE_PTR))
 #define LPC_ROM_DIV_API         ((LPC_ROM_DIV_API_T  *)(LPC_ROM_API->DIV_BASE_PTR))
+
+// IAP entry function pointer
+const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 
 // APB0 peripherals
 #define LPC_WWDT                ((LPC_WWDT_T         *) LPC_WWDT_BASE)
