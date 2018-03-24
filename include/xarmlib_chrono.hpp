@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_chrono.hpp
-// @brief   std::chtrono type traits helper structures.
-// @date    21 March 2018
+// @brief   std::chtrono main header file to use in the library and additional
+//          type traits helper structures. This should be the only header file
+//          included when std::chtrono functionality is required.
+// @date    23 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib

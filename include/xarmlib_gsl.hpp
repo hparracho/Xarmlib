@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_config.h
-// @brief   Xarmlib template configuration header file.
-// @date    23 March 2018
+// @file    xarmlib_gsl.hpp
+// @brief   Guideline Support Library (GSL) configuration and main header file
+//          to use in the library. This should be the only header file included
+//          when GSL functionality is required.
+// @date    22 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,51 +31,14 @@
 //
 // ----------------------------------------------------------------------------
 
+#ifndef __XARMLIB_GSL_HPP
+#define __XARMLIB_GSL_HPP
 
+#define GSL_TERMINATE_ON_CONTRACT_VIOLATION
 
-
-#ifndef __XARMLIB_CONFIG_H
-#define __XARMLIB_CONFIG_H
-
-namespace xarmlib
-{
-
-
-
-
-// ----------------------------------------------------------------------------
-// DEFINITIONS
-// ----------------------------------------------------------------------------
-
-// Define clocks
-#define XTAL        (12000000UL)        // Crystal oscillator frequency
-#define OSC_CLK     (      XTAL)        // System oscillator frequency
-#define EXT_CLK     (       0UL)        // CLKIN pin frequency
-
-//#define USE_XTAL
-
-
-//#define __LPC845__
-//#define __LPC84X__
-//#define __LPC84X_PINS__ (64)
-
-
-// CRP (Code Read Protect) word definition
-#define CONFIG_CRP_SETTING_NO_CRP       (1)
-
-// Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
-#ifdef NDEBUG
-#define __MTB_DISABLE
-#else
-#define __MTB_BUFFER_SIZE               (256)
-#endif
-
-// Uncomment the next line to disable Heap memory allocation functionality
-//#define CPP_NO_HEAP
+#include "gsl/gsl"
 
 
 
 
-} // namespace xarmlib
-
-#endif // __XARMLIB_CONFIG_H
+#endif // __XARMLIB_GSL_HPP
