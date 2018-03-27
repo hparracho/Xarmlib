@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    21 March 2018
+// @date    26 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -71,7 +71,7 @@ class Watchdog
             LPC_WWDT->WARNINT = 0x00;
             LPC_WWDT->WINDOW  = 0xFFFFFF;
 
-            constexpr Clock::WatchdogConfig wdt_config = Clock::get_watchdog_osc_config<Duration, duration_value>();
+            constexpr Clock::WatchdogConfig wdt_config = Clock::get_watchdog_osc_config<duration_value, Duration>();
 
             Clock::set_watchdog_osc_frequency(wdt_config.frequency, wdt_config.divider);
 
