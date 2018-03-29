@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_chrono.hpp
+// @file    chrono
 // @brief   std::chtrono main header file to use in the library and additional
 //          type traits helper structures. This should be the only header file
-//          included when std::chtrono functionality is required.
-// @date    23 March 2018
+//          included when std::chrono functionality is required.
+// @date    27 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_CHRONO_HPP
-#define __XARMLIB_CHRONO_HPP
+#ifndef __XARMLIB_SYSTEM_CHRONO_HPP
+#define __XARMLIB_SYSTEM_CHRONO_HPP
 
 #include <chrono>
 
@@ -64,4 +64,4 @@ struct is_chrono_duration<std::chrono::duration<Rep, Period>>
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_CHRONO_HPP
+#endif // __XARMLIB_SYSTEM_CHRONO_HPP

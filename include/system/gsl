@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_gsl.hpp
+// @file    gsl
 // @brief   Guideline Support Library (GSL) configuration and main header file
 //          to use in the library. This should be the only header file included
 //          when GSL functionality is required.
-// @date    22 March 2018
+// @date    27 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_GSL_HPP
-#define __XARMLIB_GSL_HPP
+#ifndef __XARMLIB_SYSTEM_GSL_HPP
+#define __XARMLIB_SYSTEM_GSL_HPP
 
 #define GSL_TERMINATE_ON_CONTRACT_VIOLATION
 
@@ -41,4 +41,4 @@
 
 
 
-#endif // __XARMLIB_GSL_HPP
+#endif // __XARMLIB_SYSTEM_GSL_HPP
