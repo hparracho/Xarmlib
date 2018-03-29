@@ -1,7 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    heap_operators.cpp
-// @brief   Minimal implementations of the new/delete operators. Optional null
-//          stubs for malloc/free (only used if symbol CPP_NO_HEAP is defined).
+// @file    hal_system.hpp
+// @brief   HAL system level configuration class.
 // @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
@@ -30,76 +29,35 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <cstdlib>
+#ifndef __XARMLIB_HAL_SYSTEM_HPP
+#define __XARMLIB_HAL_SYSTEM_HPP
+
+#include "system/target.h"
 
 
 
 
-#ifndef CPP_NO_HEAP
+#if defined __LPC84X__
 
-void* operator new(std::size_t size) noexcept
+#include "targets/LPC84x/lpc84x_system.hpp"
+
+namespace xarmlib
 {
-    return malloc(size);
+using System = lpc84x::System;
 }
 
-void* operator new[](std::size_t size) noexcept
+#elif defined __OHER_TARGET__
+
+// Other target include files
+
+namespace xarmlib
 {
-    return malloc(size);
+using System = other_target::System;
 }
 
-void operator delete(void* ptr) noexcept
-{
-    free(ptr);
-}
-
-void operator delete(void* ptr, std::size_t size __attribute__((unused))) noexcept
-{
-    free(ptr);
-}
-
-void operator delete[](void* ptr) noexcept
-{
-    free(ptr);
-}
-
-void operator delete[](void* ptr, std::size_t size __attribute__((unused))) noexcept
-{
-    free(ptr);
-}
+#endif
 
 
 
 
-// Default placement versions of operator new.
-inline void* operator new(std::size_t size __attribute__((unused)),
-                          void* ptr) noexcept
-{
-    return ptr;
-}
-
-inline void* operator new[](std::size_t size __attribute__((unused)),
-                            void* ptr) noexcept
-{
-    return ptr;
-}
-
-// Default placement versions of operator delete.
-inline void operator delete(void* ptr __attribute__((unused)),
-                            void* place __attribute__((unused))) noexcept
-{}
-
-inline void operator delete[](void* ptr __attribute__((unused)),
-                              void* place __attribute__((unused))) noexcept
-{}
-
-#else // CPP_NO_HEAP
-
-extern "C" void* malloc(size_t size __attribute__((unused)))
-{
-    return nullptr;
-}
-
-extern "C" void free(void* ptr __attribute__((unused)))
-{}
-
-#endif // CPP_NO_HEAP
+#endif // __XARMLIB_HAL_SYSTEM_HPP

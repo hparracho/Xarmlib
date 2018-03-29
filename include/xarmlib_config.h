@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.h
 // @brief   Xarmlib template configuration header file.
-// @date    23 March 2018
+// @date    29 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,11 +29,10 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifndef __XARMLIB_CONFIG_H
 #define __XARMLIB_CONFIG_H
+
+#include "hal/hal_api.hpp"
 
 namespace xarmlib
 {
@@ -42,20 +41,12 @@ namespace xarmlib
 
 
 // ----------------------------------------------------------------------------
-// DEFINITIONS
+// SYSTEM DEFINITIONS
 // ----------------------------------------------------------------------------
 
-// Define clocks
-#define XTAL        (12000000UL)        // Crystal oscillator frequency
-#define OSC_CLK     (      XTAL)        // System oscillator frequency
-#define EXT_CLK     (       0UL)        // CLKIN pin frequency
-
-//#define USE_XTAL
+constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::XTAL_24MHZ };
 
 
-//#define __LPC845__
-//#define __LPC84X__
-//#define __LPC84X_PINS__ (64)
 
 
 // CRP (Code Read Protect) word definition
@@ -70,6 +61,22 @@ namespace xarmlib
 
 // Uncomment the next line to disable Heap memory allocation functionality
 //#define CPP_NO_HEAP
+
+
+
+
+// ----------------------------------------------------------------------------
+// DEFINITIONS
+// ----------------------------------------------------------------------------
+
+
+
+// Define FAIM custom configuration
+constexpr System::Swd XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
+constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
+constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
+
+constexpr std::array<Pin::Config, 0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                  // Use all IOs with pull-up by default
 
 
 

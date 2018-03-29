@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    cmsis.h
 // @brief   CMSIS Core generic header include file.
-// @date    21 March 2018
+// @date    29 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,10 @@
 #ifndef __XARMLIB_SYSTEM_CMSIS_H
 #define __XARMLIB_SYSTEM_CMSIS_H
 
+#include "system/target.h"
+
 #ifdef __LPC84X__
 #include "targets/LPC84x/lpc84x_cmsis.h"
-#else
-#error "Target not defined in cmsis.h file!"
 #endif
 
 #endif // __XARMLIB_SYSTEM_CMSIS_H

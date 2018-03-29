@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_romdivide.h
-// @brief   Patch the AEABI integer divide functions to use MCU's romdivide library.
+// @file    target.h
+// @brief   System level target configuration header file.
 // @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,24 +29,41 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
-#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
-
-namespace xarmlib
-{
-namespace lpc84x
-{
+#ifndef __XARMLIB_SYSTEM_TARGET_H
+#define __XARMLIB_SYSTEM_TARGET_H
 
 
 
 
-// Patch the AEABI integer divide functions to use MCU's romdivide library.
-extern "C" void ROMDIVIDE_PatchAeabiIntegerDivide(void);
+#if defined (LPC845M301JBD64)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#elif defined (LPC845M301JBD48 || LPC845M301JHI48)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#elif defined (LPC845M301JHI33)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#elif defined (LPC844M201JBD64)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#elif defined (LPC844M201JBD48 || LPC844M201JHI48)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#elif defined (LPC844M201JHI33)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#else
+#   error "Target MCU not defined!"
+#endif
 
 
 
 
-} // namespace lpc84x
-} // namespace xarmlib
-
-#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
+#endif // __XARMLIB_SYSTEM_TARGET_H

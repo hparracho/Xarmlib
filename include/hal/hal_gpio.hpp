@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   GPIO HAL interface class.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -78,16 +78,6 @@ class Gpio : private TargetGpio
         {
             return TargetGpio::read();
         }
-
-    private:
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
-        // --------------------------------------------------------------------
 };
 
 
@@ -95,6 +85,11 @@ class Gpio : private TargetGpio
 
 } // namespace hal
 } // namespace xarmlib
+
+
+
+
+#include "system/target.h"
 
 
 

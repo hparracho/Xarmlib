@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    26 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,17 +29,12 @@
 //
 // ----------------------------------------------------------------------------
 
-
-
-
 #ifndef __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
 #define __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
 
-#ifdef __LPC84X__
-
 #include <assert.h>
 
-#include "xarmlib_chrono.hpp"
+#include "system/chrono"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 
@@ -54,6 +49,10 @@ namespace lpc84x
 class Watchdog
 {
     public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
 
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
         static void start()
@@ -99,6 +98,10 @@ class Watchdog
 
     private:
 
+        // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
+
         static bool m_initialized;
 
         // Windowed Watchdog MOD Register bits
@@ -119,6 +122,6 @@ class Watchdog
 } // namespace lpc84x
 } // namespace xarmlib
 
-#endif // __LPC84X__
+//#endif // __LPC84X__
 
 #endif  // __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP

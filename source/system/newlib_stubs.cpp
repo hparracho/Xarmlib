@@ -2,7 +2,7 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    22 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -86,7 +86,7 @@ extern "C" caddr_t _sbrk(int incr)
     return (caddr_t)current_block_address;
 }
 // ----------------------------------------------------------------------------
-#endif // MCUXPRESSO_MANAGED_LINKER_SCRIPTS
+#endif // !MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 
 
 

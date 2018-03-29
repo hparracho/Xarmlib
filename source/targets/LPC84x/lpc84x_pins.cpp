@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pins.cpp
 // @brief   NXP LPC84x pin and port classes.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,6 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
+#include "system/target.h"
+
 #ifdef __LPC84X__
 
 #include <targets/LPC84x/lpc84x_pins.hpp>
@@ -48,8 +50,6 @@ constexpr std::array<uint8_t, 29> Pin::m_pin_number_to_iocon
 constexpr std::array<uint8_t, 42> Pin::m_pin_number_to_iocon;
 #elif (__LPC84X_PINS__ == 64)
 constexpr std::array<uint8_t, 54> Pin::m_pin_number_to_iocon;
-#else
-#error "Target package invalid or not defined!"
 #endif
 
 

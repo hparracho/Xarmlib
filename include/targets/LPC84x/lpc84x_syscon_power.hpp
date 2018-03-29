@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,6 @@
 
 #ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP
 #define __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP
-
-#ifdef __LPC84X__
 
 #include "targets/LPC84x/lpc84x_cmsis.h"
 
@@ -108,6 +106,10 @@ class Power
             FRG0,
             FRG1
         };
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
 
         // Powers up a block
         static void power_up(const Peripheral peripheral)
@@ -187,7 +189,5 @@ class BrownOut
 
 } // namespace lpc84x
 } // namespace xarmlib
-
-#endif // __LPC84X__
 
 #endif // __XARMLIB_TARGETS_LPC84X_SYSCON_POWER_HPP

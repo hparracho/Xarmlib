@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    26 March 2018
+// @date    29 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,14 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 #define __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 
-#ifdef __LPC84X__
-
-#include <cstddef>
-#include <array>
-
-#include "xarmlib_config.h"
-#include "xarmlib_chrono.hpp"
+#include "system/array"
+#include "system/chrono"
 #include "targets/LPC84x/lpc84x_cmsis.h"
+#include "targets/LPC84x/lpc84x_iap.hpp"
+#include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
 {
@@ -378,7 +375,13 @@ class Clock
 
             if((LPC_SYSCON->FROOSCCTRL & FROOSCCTRL_FRO_DIRECT) == 0)
             {
-                const uint32_t faim_word0 = *reinterpret_cast<volatile uint32_t*>(LPC_FAIM_BASE);
+                uint32_t faim_word0 {};
+
+                // Read current FAIM word 0
+                if(Iap::read_faim_word(0, faim_word0) == false)
+                {
+                    return 0;
+                }
 
                 if((faim_word0 & (1 << 1)) == 0)
                 {
@@ -417,12 +420,12 @@ class Clock
         // Get clock input frequency
         static int32_t get_external_clock_frequency()
         {
-            // The rates are user defined in 'xarmlib_config.h'
+            // The frequencies are fixed and defined in 'lpc84x_target.hpp'
             switch(get_external_clock_source())
             {
-                case ExternalClockSource::SYS_OSC_CLK: return OSC_CLK; break; // System oscillator (crystal)
-                case ExternalClockSource::CLK_IN:      return EXT_CLK; break; // CLK_IN (clock input pin)
-                default:                               return 0;       break;
+                case ExternalClockSource::SYS_OSC_CLK: return System::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
+                case ExternalClockSource::CLK_IN:      return System::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
+                default:                               return 0;                          break;
             }
         }
 
@@ -474,6 +477,13 @@ class Clock
             const uint32_t msel = (LPC_SYSCON->SYSPLLCTRL & 0x1F) + 1;
 
             return get_system_pll_in_frequency() * static_cast<int32_t>(msel);
+        }
+
+        // Wait for the system PLL to lock
+        static void wait_system_pll_lock()
+        {
+            while ((LPC_SYSCON->SYSPLLSTAT & 0x1) == 0)
+            {}
         }
 
         // ------------ MAIN CLOCK --------------------------------------------
@@ -768,6 +778,30 @@ class Clock
     private:
 
         // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Get the minimum allowed watchdog timeout interval in microseconds
+        static constexpr int64_t wdt_min_timeout_us()
+        {
+            const int64_t min_timer_count = 0xFF;
+            const int32_t min_freq_div = 2;
+            const int32_t max_freq = m_watchdog_osc_frequency.back() / min_freq_div / 4;
+
+            return min_timer_count * 1000000 / max_freq;
+        }
+
+        // Get the maximum allowed watchdog timeout interval in microseconds
+        static constexpr int64_t wdt_max_timeout_us()
+        {
+            const int64_t max_timer_count = 0xFFFFFF;
+            const int32_t max_freq_div = 64;
+            const int32_t min_freq = m_watchdog_osc_frequency[1] / max_freq_div / 4;
+
+            return max_timer_count * 1000000 / min_freq;
+        }
+
+        // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
@@ -797,30 +831,6 @@ class Clock
             4400000,                // OSC_4_40
             4600000                 // OSC_4_60
         };
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // Get the minimum allowed watchdog timeout interval in microseconds
-        static constexpr int64_t wdt_min_timeout_us()
-        {
-            const int64_t min_timer_count = 0xFF;
-            const int32_t min_freq_div = 2;
-            const int32_t max_freq = m_watchdog_osc_frequency.back() / min_freq_div / 4;
-
-            return min_timer_count * 1000000 / max_freq;
-        }
-
-        // Get the maximum allowed watchdog timeout interval in microseconds
-        static constexpr int64_t wdt_max_timeout_us()
-        {
-            const int64_t max_timer_count = 0xFFFFFF;
-            const int32_t max_freq_div = 64;
-            const int32_t min_freq = m_watchdog_osc_frequency[1] / max_freq_div / 4;
-
-            return max_timer_count * 1000000 / min_freq;
-        }
 };
 
 
@@ -828,7 +838,5 @@ class Clock
 
 } // namespace lpc84x
 } // namespace xarmlib
-
-#endif // __LPC84X__
 
 #endif  // __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP

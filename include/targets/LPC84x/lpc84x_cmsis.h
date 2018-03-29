@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    23 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,10 +38,8 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_H
 #define __XARMLIB_TARGETS_LPC84X_CMSIS_H
 
-#ifdef __LPC84X__
-
-#include "cmsis_version.h"
 #include "cmsis_compiler.h"
+#include "cmsis_version.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -1037,6 +1035,29 @@ typedef struct
 
 
 
+// ------------ Fast Initialization Memory (FAIM) -----------------------------
+typedef struct
+{
+    union
+    {
+        __IO uint32_t WORD[8];
+        struct
+        {
+            __IO uint32_t WORD0;
+            __IO uint32_t WORD1;
+            __IO uint32_t WORD2;
+            __IO uint32_t WORD3;
+            __IO uint32_t WORD4;
+            __IO uint32_t WORD5;
+            __IO uint32_t WORD6;
+            __IO uint32_t WORD7;
+        };
+    };
+} LPC_FAIM_T;
+
+
+
+
 // ------------ ROM API -------------------------------------------------------
 // Power API functions
 typedef struct
@@ -1196,11 +1217,11 @@ const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 // AHB peripherals
 #define LPC_CRC                 ((LPC_CRC_T          *) LPC_CRC_BASE)
 #define LPC_SCT                 ((LPC_SCT_T          *) LPC_SCT_BASE)
-#define LPC_SCT0                ((LPC_SCT_T          *) LPC_SCT_BASE)
 #define LPC_DMA                 ((LPC_DMA_T          *) LPC_DMA_BASE)
-#define LPC_GPIO                ((LPC_GPIO_T         *) LPC_GPIO_BASE)
+#define LPC_FAIM                ((LPC_FAIM_T         *) LPC_FAIM_BASE)
 
-// GPIO interrupts
+// GPIO peripheral and interrupts
+#define LPC_GPIO                ((LPC_GPIO_T         *) LPC_GPIO_BASE)
 #define LPC_PIN_INT             ((LPC_PIN_INT_T      *) LPC_PIN_INT_BASE)
 
 
@@ -1236,7 +1257,5 @@ const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 #ifdef __cplusplus
 }
 #endif
-
-#endif // __LPC84X__
 
 #endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_section_macros.h
 // @brief   Macros to allow code/data to be placed into different memory banks.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,8 +37,6 @@
 
 #ifndef __XARMLIB_TARGETS_LPC84X_SECTION_MACROS_H
 #define __XARMLIB_TARGETS_LPC84X_SECTION_MACROS_H
-
-#ifdef __LPC84X__
 
 namespace xarmlib
 {
@@ -119,7 +117,5 @@ namespace lpc84x
 
 } // namespace lpc84x
 } // namespace xarmlib
-
-#endif // __LPC84X__
 
 #endif // __XARMLIB_TARGETS_LPC84X_SECTION_MACROS_H

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pins.hpp
 // @brief   NXP LPC84x pin and port classes.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,8 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_PINS_HPP
 #define __XARMLIB_TARGETS_LPC84X_PINS_HPP
 
-#ifdef __LPC84X__
-
-#include <array>
-
+#include "system/array"
+#include "system/target.h"
 #include "targets/LPC84x/lpc84x_cmsis.h"
 
 namespace xarmlib
@@ -144,6 +142,9 @@ class Pin
             OPEN_DRAIN
         };
 
+        // Pin configuration type for FAIM
+        using Config = std::pair<Name, Mode>;
+
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -155,13 +156,13 @@ class Pin
                 return;
             }
 
-            #if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_PINS__ == 64)
             if(pin == Name::P0_10 || pin == Name::P0_11)
             {
                 // True open-drain pins
                 return;
             }
-            #endif
+#endif
 
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin)];
 
@@ -180,10 +181,6 @@ class Pin
     private:
 
         // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
@@ -194,8 +191,6 @@ class Pin
         static constexpr std::array<uint8_t, 42> m_pin_number_to_iocon
 #elif (__LPC84X_PINS__ == 64)
         static constexpr std::array<uint8_t, 54> m_pin_number_to_iocon
-#else
-#error "Target package invalid or not defined!"
 #endif
         {
             // PORT0
@@ -287,20 +282,6 @@ class Port
             PORT1
 #endif
         };
-
-        // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-    private:
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
-        // --------------------------------------------------------------------
 };
 
 
@@ -309,6 +290,4 @@ class Port
 } // namespace lpc84x
 } // namespace xarmlib
 
-#endif // __LPC84X__
-
-#endif // __XARMLIB_TARGETS_LPC84X_PIN_HPP
+#endif // __XARMLIB_TARGETS_LPC84X_PINS_HPP

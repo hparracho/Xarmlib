@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    21 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,9 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 #define __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 
-#ifdef __LPC84X__
-
-#include <targets/LPC84x/lpc84x_pins.hpp>
+#include "targets/LPC84x/lpc84x_pins.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 
@@ -49,10 +47,6 @@ namespace lpc84x
 class Gpio
 {
     public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -145,10 +139,6 @@ class Gpio
     private:
 
         // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
         static bool         m_gpio0_enabled;
@@ -164,7 +154,5 @@ class Gpio
 
 } // namespace lpc84x
 } // namespace xarmlib
-
-#endif // __LPC84X__
 
 #endif // __XARMLIB_TARGETS_LPC84X_GPIO_HPP

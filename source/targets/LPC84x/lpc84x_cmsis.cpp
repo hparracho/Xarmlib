@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.cpp
 // @brief   CMSIS Core Peripheral Access Layer source file for NXP LPC84x MCUs.
-// @date    23 March 2018
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -28,6 +28,8 @@
 // DEALINGS IN THE SOFTWARE.
 //
 // ----------------------------------------------------------------------------
+
+#include "system/target.h"
 
 #ifdef __LPC84X__
 
