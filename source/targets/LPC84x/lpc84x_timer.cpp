@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_api.hpp
-// @brief   HAL API main header file.
-// @date    3 April 2018
+// @file    lpc84x_timer.cpp
+// @brief   NXP LPC84x Timer (MRT) class.
+// @date    4 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,17 +29,49 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_API_HPP
-#define __XARMLIB_HAL_API_HPP
+#include "system/target.h"
 
-// HAL interface to peripherals
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pins.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_watchdog.hpp"
+#ifdef __LPC84X__
+
+#include <targets/LPC84x/lpc84x_timer.hpp>
+
+namespace xarmlib
+{
+namespace lpc84x
+{
 
 
 
 
-#endif // __XARMLIB_HAL_API_HPP
+// Static definition
+constexpr int32_t                       Timer::NUM_CHANNELS;
+
+// Static initialization
+std::array<Timer*, Timer::NUM_CHANNELS> Timer::m_timers_array { nullptr };
+uint32_t                                Timer::m_timers_used  { 0 };
+
+
+
+
+// --------------------------------------------------------------------
+// IRQ HANDLER
+// --------------------------------------------------------------------
+
+extern "C" void MRT_IRQHandler(void)
+{
+    const int32_t yield = Timer::irq_handler();
+
+#ifdef USE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+} // namespace lpc84x
+} // namespace xarmlib
+
+#endif // __LPC84X__

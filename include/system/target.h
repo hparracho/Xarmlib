@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    target.h
 // @brief   System level target configuration header file.
-// @date    28 March 2018
+// @date    3 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -61,6 +61,13 @@
 #   define __LPC84X_PINS__                  (33)
 #else
 #   error "Target MCU not defined!"
+#endif
+
+
+
+
+#if defined __LPC84X__
+#   define __TARGET_TIMER_TYPE_IS_MRT__
 #endif
 
 
