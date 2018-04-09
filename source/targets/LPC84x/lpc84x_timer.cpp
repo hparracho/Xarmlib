@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.cpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    4 April 2018
+// @date    7 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc84x
 
 
 // Static definition
-constexpr int32_t                       Timer::NUM_CHANNELS;
+constexpr std::size_t                   Timer::NUM_CHANNELS;
 
 // Static initialization
 std::array<Timer*, Timer::NUM_CHANNELS> Timer::m_timers_array { nullptr };

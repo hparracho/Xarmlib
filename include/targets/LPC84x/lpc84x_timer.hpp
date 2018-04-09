@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    4 April 2018
+// @date    7 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,6 @@
 #define __XARMLIB_TARGETS_LPC84X_TIMER_HPP
 
 #include <cassert>
-
 #include "system/chrono"
 #include "system/delegate"
 #include "targets/LPC84x/lpc84x_cmsis.h"
@@ -61,7 +60,7 @@ class Timer
         // --------------------------------------------------------------------
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
-        
+
         // Friends IRQ handler function to give it access to private members
         friend void MRT_IRQHandler(void);
 
@@ -86,7 +85,7 @@ class Timer
             {
                 Clock::enable(Clock::Peripheral::MRT);
                 Power::reset(Power::ResetPeripheral::MRT);
-                
+
                 NVIC_EnableIRQ(MRT_IRQn);
             }
 
@@ -95,7 +94,7 @@ class Timer
 
             // Set pointer to the available channel structure
             m_channel = &LPC_MRT->CHANNEL[m_channel_index];
-            
+
             set_interval(0);
             clear_irq_pending();
 
@@ -108,7 +107,7 @@ class Timer
         {
             set_interval(0);
             clear_irq_pending();
-            
+
             // Clear used timer channel static variables
             m_timers_used &= ~(1 << m_channel_index);
             m_timers_array[m_channel_index] = nullptr;
@@ -126,7 +125,7 @@ class Timer
         {
             assert(rate_us.count() >= get_min_rate_us());
             assert(rate_us.count() <= get_max_rate_us());
-            
+
             m_interval = convert_us_to_interval(rate_us.count());
 
             set_mode(mode);
@@ -146,45 +145,37 @@ class Timer
 
         bool is_running() const
         {
-            assert(m_channel != nullptr);
-
             return ((m_channel->STAT & STAT_RUN) != 0);
         }
 
         bool is_irq_pending() const
         {
-            assert(m_channel != nullptr);
-
             return ((m_channel->STAT & STAT_INTFLAG) != 0);
         }
 
         void clear_irq_pending()
         {
-            assert(m_channel != nullptr);
-
             m_channel->STAT |= STAT_INTFLAG;
         }
 
         bool is_irq_enabled() const
         {
-            assert(m_channel != nullptr);
-
             return ((m_channel->CTRL & CTRL_INTEN) != 0);
         }
-        
+
         static void set_mrt_priority(const int32_t priority)
         {
             NVIC_SetPriority(MRT_IRQn, priority);
         }
-        
-        void assign_callback(Callback& callback)
+
+        void assign_callback(const Callback& callback)
         {
             assert(callback != nullptr);
 
             m_callback = callback;
             enable_irq();
         }
-        
+
         void remove_callback()
         {
             disable_irq();
@@ -199,7 +190,7 @@ class Timer
 
         static constexpr int32_t get_available_channel(const uint32_t timers_used)
         {
-            for(int32_t channel = 0; channel < NUM_CHANNELS; ++channel)
+            for(std::size_t channel = 0; channel < NUM_CHANNELS; ++channel)
             {
                 if((timers_used & (1 << channel)) == 0)
                 {
@@ -212,30 +203,22 @@ class Timer
 
         void set_mode(const Mode mode)
         {
-            assert(m_channel != nullptr);
-
             m_channel->CTRL = (m_channel->CTRL & ~CTRL_MODE_MASK) | static_cast<uint32_t>(mode);
         }
 
         void enable_irq()
         {
-            assert(m_channel != nullptr);
-
             m_channel->CTRL |= CTRL_INTEN;
         }
 
         void disable_irq()
         {
-            assert(m_channel != nullptr);
-
             m_channel->CTRL &= ~CTRL_INTEN;
         }
 
         // Set timer interval value
         void set_interval(const uint32_t timer_interval)
         {
-            assert(m_channel != nullptr);
-
             // Sets the timer time interval value
             // NOTE: Setting INTVAL_LOAD bit in timer time interval register
             //       causes the time interval value to load immediately, otherwise
@@ -264,12 +247,12 @@ class Timer
 
             return (max_interval * 1000000UL / SystemCoreClock);
         }
-        
+
         // IRQ handler for all channels
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             for(auto& channel : m_timers_array)
             {
@@ -278,14 +261,15 @@ class Timer
                     if(channel->is_irq_enabled() && channel->is_irq_pending())
                     {
                         channel->clear_irq_pending();
-                        
-                        assert(channel->m_callback != nullptr);
 
-                        yield |= channel->m_callback();
+                        if(channel->m_callback != nullptr)
+                        {
+                            yield |= channel->m_callback();
+                        }
                     }
                 }
             }
-            
+
             return yield;
         }
 
@@ -318,12 +302,12 @@ class Timer
         int32_t             m_channel_index { -1 };
         LPC_MRT_CHANNEL_T*  m_channel       { nullptr };    // Pointer to the individual MRT channel structure
         uint32_t            m_interval      { 0 };          // Last loaded interval value
-        
+
         Callback            m_callback;                     // Callback handler that will be invoked at the IRQ for this channel
 
         // The static variables below are used to control the
         // instantiation of the available channels automatically.
-        static constexpr int32_t                NUM_CHANNELS { 4 };     // Number of available channels
+        static constexpr std::size_t            NUM_CHANNELS { 4 };     // Number of available channels
         static std::array<Timer*, NUM_CHANNELS> m_timers_array;         // { nullptr }
         static uint32_t                         m_timers_used;          // { 0 }
 };
