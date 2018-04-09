@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    28 March 2018
+// @date    9 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -88,9 +88,9 @@ void SysTick_Handler   (void);
 void SPI0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void SPI1_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void DAC0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void UART0_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void UART1_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void UART2_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART0_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART1_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART2_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void FAIM_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C1_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -108,7 +108,7 @@ void ADC_OVR_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler"
 void DMA_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C2_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C3_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void CTIMER0_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void CTIMER_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void PININT0_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void PININT1_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void PININT2_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -155,9 +155,9 @@ const IRQ_HandlerPtr __interrupts[] =
     SPI0_IRQHandler,                        // SPI0
     SPI1_IRQHandler,                        // SPI1
     DAC0_IRQHandler,                        // DAC0
-    UART0_IRQHandler,                       // UART0
-    UART1_IRQHandler,                       // UART1
-    UART2_IRQHandler,                       // UART2
+    USART0_IRQHandler,                      // USART0
+    USART1_IRQHandler,                      // USART1
+    USART2_IRQHandler,                      // USART2
     FAIM_IRQHandler,                        // FAIM
     I2C1_IRQHandler,                        // I2C1 controller
     I2C0_IRQHandler,                        // I2C0 controller
@@ -175,15 +175,15 @@ const IRQ_HandlerPtr __interrupts[] =
     DMA_IRQHandler,                         // DMA
     I2C2_IRQHandler,                        // I2C2 controller
     I2C3_IRQHandler,                        // I2C3 controller
-    CTIMER0_IRQHandler,                     // Timer0
+    CTIMER_IRQHandler,                      // Standard Counter / Timer
     PININT0_IRQHandler,                     // PIO INT0
     PININT1_IRQHandler,                     // PIO INT1
     PININT2_IRQHandler,                     // PIO INT2
     PININT3_IRQHandler,                     // PIO INT3
     PININT4_IRQHandler,                     // PIO INT4
     PININT5_IRQHandler,                     // PIO INT5 shared slot with DAC1
-    PININT6_IRQHandler,                     // PIO INT6 shared slot with UART3
-    PININT7_IRQHandler,                     // PIO INT7 shared slot with UART4
+    PININT6_IRQHandler,                     // PIO INT6 shared slot with USART3
+    PININT7_IRQHandler,                     // PIO INT7 shared slot with USART4
 };
 
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    28 March 2018
+// @date    9 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,9 +70,9 @@ typedef enum IRQn
     SPI0_IRQn                   = 0,        // SPI0
     SPI1_IRQn                   = 1,        // SPI1
     DAC0_IRQn                   = 2,        // DAC0 Interrupt
-    UART0_IRQn                  = 3,        // USART0
-    UART1_IRQn                  = 4,        // USART1
-    UART2_IRQn                  = 5,        // USART2
+    USART0_IRQn                 = 3,        // USART0
+    USART1_IRQn                 = 4,        // USART1
+    USART2_IRQn                 = 5,        // USART2
     I2C1_IRQn                   = 7,        // I2C1
     I2C0_IRQn                   = 8,        // I2C0
     SCT_IRQn                    = 9,        // SCT
@@ -89,21 +89,21 @@ typedef enum IRQn
     DMA_IRQn                    = 20,       // DMA
     I2C2_IRQn                   = 21,       // I2C2
     I2C3_IRQn                   = 22,       // I2C3
-    CTIMER0_IRQn                = 23,       // Timer 0 Interrupt
+    CTIMER_IRQn                 = 23,       // Standard Counter / Timer Interrupt
     PININT0_IRQn                = 24,       // External Interrupt 0
     PININT1_IRQn                = 25,       // External Interrupt 1
     PININT2_IRQn                = 26,       // External Interrupt 2
     PININT3_IRQn                = 27,       // External Interrupt 3
     PININT4_IRQn                = 28,       // External Interrupt 4
     PININT5_IRQn                = 29,       // External Interrupt 5 shared slot with DAC1
-    PININT6_IRQn                = 30,       // External Interrupt 6 shared slot with UART3
-    PININT7_IRQn                = 31,       // External Interrupt 7 shared slot with UART4
+    PININT6_IRQn                = 30,       // External Interrupt 6 shared slot with USART3
+    PININT7_IRQn                = 31,       // External Interrupt 7 shared slot with USART4
 } IRQn_Type;
 
 #define CAPT_IRQn   CMP_IRQn                // Analog Comparator shared slot with Cap Touch
 #define DAC1_IRQn   PININT5_IRQn            // Pin int. 5 shared slot with DAC1
-#define UART3_IRQn  PININT6_IRQn            // Pin int. 6 shared slot with UART3
-#define UART4_IRQn  PININT7_IRQn            // Pin int. 7 shared slot with UART4
+#define USART3_IRQn PININT6_IRQn            // Pin int. 6 shared slot with USART3
+#define USART4_IRQn PININT7_IRQn            // Pin int. 7 shared slot with USART4
 
 
 
@@ -603,7 +603,7 @@ typedef struct
 
 
 
-// ------------ Universal Asynchronous Receiver Transmitter (USART) -----------
+// ------ Universal Synchronous Asynchronous Receiver Transmitter (USART) -----
 typedef struct
 {
     __IO uint32_t CFG;
@@ -870,7 +870,7 @@ typedef struct
          uint32_t RESERVED[12];             // (offset: 0x40-0x6C) RESERVED
     __IO uint32_t CTCR;                     // (offset: 0x70)
     __IO uint32_t PWMC;                     // (offset: 0x74)
-} LPC_TIMER_T;
+} LPC_CTIMER_T;
 
 
 
@@ -1146,7 +1146,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_INMUX_TRIGMUX_BASE  (LPC_APB_BASE + 0x2C000)
 #define LPC_I2C2_BASE           (LPC_APB_BASE + 0x30000)
 #define LPC_I2C3_BASE           (LPC_APB_BASE + 0x34000)
-#define LPC_CTIMER0_BASE        (LPC_APB_BASE + 0x38000)
+#define LPC_CTIMER_BASE         (LPC_APB_BASE + 0x38000)
 // RESERVED                     (LPC_APB_BASE + 0x38000)
 #define LPC_FMC_BASE            (LPC_APB_BASE + 0x40000)
 #define LPC_IOCON_BASE          (LPC_APB_BASE + 0x44000)
@@ -1199,7 +1199,7 @@ const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 #define LPC_INMUX_TRIGMUX       ((LPC_INMUX_TRIGMUX_T*) LPC_INMUX_TRIGMUX_BASE)
 #define LPC_I2C2                ((LPC_I2C_T          *) LPC_I2C2_BASE)
 #define LPC_I2C3                ((LPC_I2C_T          *) LPC_I2C3_BASE)
-#define LPC_CTIMER0             ((LPC_TIMER_T        *) LPC_CTIMER0_BASE)
+#define LPC_CTIMER              ((LPC_CTIMER_T       *) LPC_CTIMER_BASE)
 #define LPC_FMC                 ((LPC_FMC_T          *) LPC_FMC_BASE)
 #define LPC_IOCON               ((LPC_IOCON_T        *) LPC_IOCON_BASE)
 #define LPC_SYSCON              ((LPC_SYSCON_T       *) LPC_SYSCON_BASE)
