@@ -1,8 +1,9 @@
 # Xarmlib External Dependencies
 
 ---
-## CMSIS v5.3.0
-- CMSIS-Core(M) v5.1.1
+Date: 9 April 2018  
+Branch: development  
+Commit: d8f5a1d38a2a87154f2fe842487bbc2f519b6a0e  
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
