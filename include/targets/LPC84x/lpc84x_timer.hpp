@@ -250,7 +250,7 @@ class Timer
 
         // IRQ handler for all channels
         // NOTE: Returns yield flag for FreeRTOS
-        static int32_t irq_handler()
+        __attribute__((always_inline)) static inline int32_t irq_handler()
         {
             int32_t yield = 0;  // Used by FreeRTOS
 
