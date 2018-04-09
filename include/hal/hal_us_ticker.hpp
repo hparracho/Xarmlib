@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_api.hpp
-// @brief   HAL API main header file.
+// @file    hal_us_ticker.hpp
+// @brief   Microsecond ticker HAL interface class.
 // @date    9 April 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,18 +29,79 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_API_HPP
-#define __XARMLIB_HAL_API_HPP
+#ifndef __XARMLIB_HAL_US_TICKER_HPP
+#define __XARMLIB_HAL_US_TICKER_HPP
 
-// HAL interface to peripherals
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pins.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+#include "system/chrono"
 
+namespace xarmlib
+{
+namespace hal
+{
 
 
 
-#endif // __XARMLIB_HAL_API_HPP
+
+template <class TargetUsTicker>
+class UsTicker
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Read the current ticker value
+        static std::chrono::microseconds now()
+        {
+            return TargetUsTicker::now();
+        }
+        
+        // Wait for the supplied duration time
+        static void wait(const std::chrono::microseconds duration)
+        {
+            const auto start = TargetUsTicker::now();
+
+            while((TargetUsTicker::now() - start) < duration)
+            {}
+        }
+};
+
+
+
+
+} // namespace hal
+} // namespace xarmlib
+
+
+
+
+#include "system/target.h"
+
+
+
+
+#if defined __LPC84X__
+
+#include "targets/LPC84x/lpc84x_us_ticker.hpp"
+
+namespace xarmlib
+{
+using UsTicker = hal::UsTicker<lpc84x::UsTicker>;
+}
+
+#elif defined __OHER_TARGET__
+
+// Other target include files
+
+namespace xarmlib
+{
+using UsTicker = hal::UsTicker<other_target::UsTicker>;
+}
+
+#endif
+
+
+
+
+#endif // __XARMLIB_HAL_US_TICKER_HPP

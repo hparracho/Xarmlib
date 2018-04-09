@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_api.hpp
-// @brief   HAL API main header file.
+// @file    lpc84x_us_ticker.cpp
+// @brief   NXP LPC84x SysTick timer class (microsecond resolution).
 // @date    9 April 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,18 +29,26 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_API_HPP
-#define __XARMLIB_HAL_API_HPP
+#include "system/target.h"
 
-// HAL interface to peripherals
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pins.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+#ifdef __LPC84X__
 
+#include "targets/LPC84x/lpc84x_us_ticker.hpp"
 
+namespace xarmlib
+{
+namespace lpc84x
+{
 
 
-#endif // __XARMLIB_HAL_API_HPP
+
+// Static initialization
+bool UsTicker::m_initialized {false};
+
+
+
+
+} // namespace lpc84x
+} // namespace xarmlib
+
+#endif // __LPC84X__
