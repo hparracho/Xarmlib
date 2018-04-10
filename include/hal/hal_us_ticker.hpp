@@ -62,7 +62,7 @@ class UsTicker
         {
             const auto start = TargetUsTicker::now();
 
-            while((TargetUsTicker::now() - start) < duration)
+            while(std::chrono::abs((TargetUsTicker::now() - start)) < duration)
             {}
         }
 };
