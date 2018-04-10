@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    29 March 2018
+// @date    10 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -752,7 +752,7 @@ class Clock
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
         static constexpr WatchdogConfig get_watchdog_osc_config()
         {
-            static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
+            static_assert(std::chrono::is_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 
             constexpr int64_t duration_us = std::chrono::duration_cast<std::chrono::microseconds>(Duration(duration_value)).count();
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    28 March 2018
+// @date    10 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,7 +55,7 @@ class Watchdog
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
         static void start()
         {
-            static_assert(is_chrono_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
+            static_assert(std::chrono::is_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 #ifndef DEBUG
             TargetWatchdog::template start<duration_value, Duration>();
 #endif
