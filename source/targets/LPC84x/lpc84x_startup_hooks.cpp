@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    29 March 2018
+// @date    11 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -125,22 +125,22 @@ static inline void mcu_startup_set_xtal_clock()
     // Configure the PLL subsystem according to the system configuration
     switch(XARMLIB_SYSTEM_CLOCK)
     {
-        case System::Clock::OSC_9MHZ:   Clock::set_system_pll_divider(2, 2); //  9MHz => M=3; P=4; DIV=4
+        case System::Clock::XTAL_9MHZ:  Clock::set_system_pll_divider(2, 2); //  9MHz => M=3; P=4; DIV=4
                                         Clock::set_system_clock_divider(4);  // Divide the main_clock by 4 (SYSAHBCLKDIV)
                                         break;
-        case System::Clock::OSC_12MHZ:  Clock::set_system_pll_divider(1, 2); // 12MHz => M=2; P=4; DIV=2
+        case System::Clock::XTAL_12MHZ: Clock::set_system_pll_divider(1, 2); // 12MHz => M=2; P=4; DIV=2
                                         Clock::set_system_clock_divider(2);  // Divide the main_clock by 2 (SYSAHBCLKDIV)
                                         break;
-        case System::Clock::OSC_15MHZ:  Clock::set_system_pll_divider(4, 1); // 15MHz => M=5; P=2; DIV=4
+        case System::Clock::XTAL_15MHZ: Clock::set_system_pll_divider(4, 1); // 15MHz => M=5; P=2; DIV=4
                                         Clock::set_system_clock_divider(4);  // Divide the main_clock by 4 (SYSAHBCLKDIV)
                                         break;
-        case System::Clock::OSC_18MHZ:  Clock::set_system_pll_divider(2, 2); // 18MHz => M=3; P=4; DIV=2
+        case System::Clock::XTAL_18MHZ: Clock::set_system_pll_divider(2, 2); // 18MHz => M=3; P=4; DIV=2
                                         Clock::set_system_clock_divider(2);  // Divide the main_clock by 2 (SYSAHBCLKDIV)
                                         break;
-        case System::Clock::OSC_30MHZ:  Clock::set_system_pll_divider(4, 1); // 30MHz => M=5; P=2; DIV=2
+        case System::Clock::XTAL_30MHZ: Clock::set_system_pll_divider(4, 1); // 30MHz => M=5; P=2; DIV=2
                                         Clock::set_system_clock_divider(2);  // Divide the main_clock by 2 (SYSAHBCLKDIV)
                                         break;
-        case System::Clock::OSC_24MHZ:
+        case System::Clock::XTAL_24MHZ:
         default:                        Clock::set_system_pll_divider(1, 2); // 24MHz => M=2; P=4; DIV=1
                                         Clock::set_system_clock_divider(1);  // Divide the main_clock by 1 (SYSAHBCLKDIV)
                                         break;
