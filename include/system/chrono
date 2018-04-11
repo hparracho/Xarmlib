@@ -4,7 +4,7 @@
 //          type traits helper structures and 'abs()' implementation. This
 //          should  be the only header file included when std::chrono
 //          functionality is required.
-// @date    10 April 2018
+// @date    11 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -61,15 +61,17 @@ struct is_duration<duration<Rep, Period>>
 
 
 
+#if __cplusplus < 201703L
+
 // Provide 'abs()' functin if not available
-#if (__cplusplus <= 201402L)
 template<class Rep, class Period,
 class = std::enable_if_t<duration<Rep, Period>::min() < duration<Rep, Period>::zero()>>
 constexpr duration<Rep, Period> abs(duration<Rep, Period> d)
 {
     return d >= d.zero() ? d : -d;
 }
-#endif // (__cplusplus <= 201402L)
+
+#endif // __cplusplus < 201703L
 
 
 
