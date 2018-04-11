@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    9 April 2018
+// @date    11 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -62,7 +62,8 @@ class UsTicker
         {
             const auto start = TargetUsTicker::now();
 
-            while(std::chrono::abs((TargetUsTicker::now() - start)) < duration)
+            while(static_cast<uint32_t>((TargetUsTicker::now() - start).count()) <
+                  static_cast<uint32_t>(duration.count()))
             {}
         }
 };
