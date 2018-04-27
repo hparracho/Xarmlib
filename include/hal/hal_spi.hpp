@@ -1,0 +1,394 @@
+// ----------------------------------------------------------------------------
+// @file    hal_spi.hpp
+// @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
+// @date    27 April 2018
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
+
+#ifndef __XARMLIB_HAL_SPI_HPP
+#define __XARMLIB_HAL_SPI_HPP
+
+#include "system/cassert"
+#include "system/gsl"
+#include "system/target.h"
+#include "hal/hal_pins.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+
+
+
+template <class TargetSpi>
+class SpiMaster : private TargetSpi
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        using Pin = xarmlib::Pin;
+
+        using SpiMode      = typename TargetSpi::SpiMode;
+        using DataBits     = typename TargetSpi::DataBits;
+        using DataOrder    = typename TargetSpi::DataOrder;
+        using LoopbackMode = typename TargetSpi::LoopbackMode;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        SpiMaster(const Pin::Name    master_mosi,
+                  const Pin::Name    master_miso,
+                  const Pin::Name    master_sck,
+                  const int32_t      max_frequency,
+                  const SpiMode      spi_mode,
+                  const DataBits     data_bits     = DataBits::BITS_8,
+                  const DataOrder    data_order    = DataOrder::MSB_FIRST,
+                  const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
+       {
+            using MasterMode   = typename TargetSpi::MasterMode;
+            using SselPolarity = typename TargetSpi::SselPolarity;
+
+            // Initialize peripheral structure and pins
+            TargetSpi::initialize(master_mosi, master_miso, master_sck, Pin::Name::NC);
+            // Configure data format and operating modes
+            TargetSpi::set_configuration(MasterMode::MASTER, spi_mode, data_bits, data_order, SselPolarity::LOW, loopback_mode);
+            // Set supplied maximum frequency
+            TargetSpi::set_frequency(max_frequency);
+
+            #ifdef XARMLIB_USE_FREERTOS
+            // Create access mutex
+            m_rtos_mutex = xSemaphoreCreateMutex();
+            #endif
+        }
+
+        ~SpiMaster()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            // Delete access mutex
+            vSemaphoreDelete(m_rtos_mutex);
+            #endif
+        }
+
+        // -------- TRANSFER --------------------------------------------------
+
+        // Transfer a frame (simultaneous write and read)
+        // NOTE: Return the read value
+        uint32_t transfer(const uint32_t value)
+        {
+            write(value);
+            return read();
+        }
+
+        // Transfer a buffer (simultaneous write and read)
+        // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
+        void transfer(gsl::span<uint8_t> buffer)
+        {
+            for(auto& elem : buffer)
+            {
+                elem = transfer(elem);
+            }
+        }
+
+        // -------- ENABLE / DISABLE ------------------------------------------
+
+        // Enable peripheral
+        using TargetSpi::enable;
+
+        // Disable peripheral
+        using TargetSpi::disable;
+
+        // Gets the enable state
+        using TargetSpi::is_enabled;
+
+        // -------- ACCESS MUTEX ----------------------------------------------
+
+        void MutexTake()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
+            #endif
+        }
+
+        void MutexGive()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            xSemaphoreGive(m_rtos_mutex);
+            #endif
+        }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // -------- READ / WRITE ----------------------------------------------
+
+        // Read a frame as soon as possible
+        uint32_t read() const
+        {
+            while(TargetSpi::is_readable() == false);
+
+            return TargetSpi::read_data();
+        }
+
+        // Write a frame as soon as possible
+        void write(const uint32_t value)
+        {
+            while(TargetSpi::is_writable() == false);
+
+            TargetSpi::write_data(value);
+        }
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        #ifdef XARMLIB_USE_FREERTOS
+        // FreeRTOS variables
+        SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
+        #endif
+};
+
+
+
+
+template <class TargetSpi>
+class SpiSlave : private TargetSpi
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        using Pin = xarmlib::Pin;
+
+        using SpiMode      = typename TargetSpi::SpiMode;
+        using DataBits     = typename TargetSpi::DataBits;
+        using DataOrder    = typename TargetSpi::DataOrder;
+        using SselPolarity = typename TargetSpi::SselPolarity;
+        using LoopbackMode = typename TargetSpi::LoopbackMode;
+
+        using IrqHandler = typename TargetSpi::IrqHandler;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        SpiSlave(const Pin::Name    slave_mosi,
+                 const Pin::Name    slave_miso,
+                 const Pin::Name    slave_sck,
+                 const Pin::Name    slave_sel,
+                 const int32_t      max_frequency,
+                 const SpiMode      spi_mode,
+                 const DataBits     data_bits     = DataBits::BITS_8,
+                 const DataOrder    data_order    = DataOrder::MSB_FIRST,
+                 const SselPolarity ssel_polarity = SselPolarity::LOW,
+                 const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
+        {
+            using MasterMode = typename TargetSpi::MasterMode;
+
+            assert(slave_sel != Pin::Name::NC);
+
+            // Initialize peripheral structure and pins
+            TargetSpi::initialize(slave_mosi, slave_miso, slave_sck, slave_sel);
+            // Configure data format and operating modes
+            TargetSpi::set_configuration(MasterMode::SLAVE, spi_mode, data_bits, data_order, ssel_polarity, loopback_mode);
+            // Set supplied maximum frequency
+            TargetSpi::set_frequency(max_frequency);
+
+            #ifdef XARMLIB_USE_FREERTOS
+            // Create access mutex
+            m_rtos_mutex = xSemaphoreCreateMutex();
+            #endif
+        }
+
+        ~SpiSlave()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            // Delete access mutex
+            vSemaphoreDelete(m_rtos_mutex);
+            #endif
+        }
+
+        // -------- READ / WRITE ----------------------------------------------
+
+        // Read a frame as soon as possible
+        uint32_t read() const
+        {
+            while(TargetSpi::is_readable() == false);
+
+            return TargetSpi::read_data();
+        }
+
+        // Write a frame as soon as possible
+        void write(const uint32_t value)
+        {
+            while(TargetSpi::is_writable() == false);
+
+            TargetSpi::write_data(value);
+        }
+
+        // -------- ENABLE / DISABLE ------------------------------------------
+
+        // Enable peripheral
+        using TargetSpi::enable;
+
+        // Disable peripheral
+        using TargetSpi::disable;
+
+        // Gets the enable state
+        using TargetSpi::is_enabled;
+
+        // -------- GET STATUS FLAGS ------------------------------------------
+
+        using TargetSpi::is_writable;
+        using TargetSpi::is_readable;
+        using TargetSpi::is_rx_overrun;
+        using TargetSpi::is_tx_underrun;
+        using TargetSpi::is_ssel_assert;
+        using TargetSpi::is_ssel_deassert;
+
+        // -------- CLEAR STATUS FLAGS ----------------------------------------
+
+        using TargetSpi::clear_rx_overrun;
+        using TargetSpi::clear_tx_underrun;
+        using TargetSpi::clear_ssel_assert;
+        using TargetSpi::clear_ssel_deassert;
+
+        // -------- ENABLE INTERRUPTS -----------------------------------------
+
+        using TargetSpi::enable_irq_rx_ready;
+        using TargetSpi::enable_irq_tx_ready;
+        using TargetSpi::enable_irq_rx_overrun;
+        using TargetSpi::enable_irq_tx_underrun;
+        using TargetSpi::enable_irq_ssel_assert;
+        using TargetSpi::enable_irq_ssel_deassert;
+
+        // -------- DISABLE INTERRUPTS ----------------------------------------
+
+        using TargetSpi::disable_irq_rx_ready;
+        using TargetSpi::disable_irq_tx_ready;
+        using TargetSpi::disable_irq_rx_overrun;
+        using TargetSpi::disable_irq_tx_underrun;
+        using TargetSpi::disable_irq_ssel_assert;
+        using TargetSpi::disable_irq_ssel_deassert;
+
+        // -------- GET ENABLED INTERRUPTS ------------------------------------
+
+        using TargetSpi::is_enabled_irq;
+        using TargetSpi::is_enabled_irq_rx_ready;
+        using TargetSpi::is_enabled_irq_tx_ready;
+        using TargetSpi::is_enabled_irq_rx_overrun;
+        using TargetSpi::is_enabled_irq_tx_underrun;
+        using TargetSpi::is_enabled_irq_ssel_assert;
+        using TargetSpi::is_enabled_irq_ssel_deassert;
+
+        // -------- IRQ HANDLER ASSIGNMENT ------------------------------------
+
+        void assign_irq_handler(const IrqHandler& irq_handler, const int32_t irq_priority)
+        {
+            TargetSpi::assign_irq_handler(irq_handler);
+            TargetSpi::set_irq_priority(irq_priority);
+            TargetSpi::enable_irq();
+        }
+
+        void remove_irq_handler()
+        {
+            TargetSpi::disable_irq();
+            TargetSpi::remove_irq_handler();
+        }
+
+        // -------- ACCESS MUTEX ----------------------------------------------
+
+        void MutexTake()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
+            #endif
+        }
+
+        void MutexGive()
+        {
+            #ifdef XARMLIB_USE_FREERTOS
+            xSemaphoreGive(m_rtos_mutex);
+            #endif
+        }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        #ifdef XARMLIB_USE_FREERTOS
+        // FreeRTOS variables
+        SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
+        #endif
+};
+
+
+
+
+} // namespace hal
+} // namespace xarmlib
+
+
+
+
+#if defined __LPC84X__
+
+#include "targets/LPC84x/lpc84x_spi.hpp"
+
+namespace xarmlib
+{
+using SpiMaster = hal::SpiMaster<lpc84x::Spi>;
+using SpiSlave  = hal::SpiSlave <lpc84x::Spi>;
+}
+
+#elif defined __OHER_TARGET__
+
+// Other target include files
+
+namespace xarmlib
+{
+using SpiMaster = other_target::SpiMaster;
+using SpiSlave  = other_target::SpiSlave;
+}
+
+#endif
+
+
+
+
+#endif // __XARMLIB_HAL_SPI_HPP

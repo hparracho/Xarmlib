@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_api.hpp
-// @brief   HAL API main header file.
+// @file    lpc84x_spi.cpp
+// @brief   NXP LPC84x SPI class.
 // @date    27 April 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,19 +29,51 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_API_HPP
-#define __XARMLIB_HAL_API_HPP
-
-// HAL interface to peripherals
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pins.hpp"
 #include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+
+#ifdef __LPC84X__
+
+namespace xarmlib
+{
+namespace lpc84x
+{
 
 
 
 
-#endif // __XARMLIB_HAL_API_HPP
+// --------------------------------------------------------------------
+// IRQ HANDLERS
+// --------------------------------------------------------------------
+
+extern "C" void SPI0_IRQHandler(void)
+{
+    const int32_t yield = Spi::irq_handler(Spi::Name::SPI0);
+
+#ifdef XARMLIB_USE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+extern "C" void SPI1_IRQHandler(void)
+{
+    const int32_t yield = Spi::irq_handler(Spi::Name::SPI1);
+
+#ifdef XARMLIB_USE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+} // namespace lpc84x
+} // namespace xarmlib
+
+#endif // __LPC84X__
