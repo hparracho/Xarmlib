@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    4 April 2018
+// @date    27 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,6 @@
 #define __XARMLIB_HAL_TIMER_HPP
 
 #include "system/chrono"
-#include "system/delegate"
 #include "system/target.h"
 
 namespace xarmlib
@@ -53,8 +52,8 @@ class Timer : private TargetTimer
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Callback = typename TargetTimer::Callback;
-        using Mode     = typename TargetTimer::Mode;
+        using Mode       = typename TargetTimer::Mode;
+        using IrqHandler = typename TargetTimer::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -63,10 +62,7 @@ class Timer : private TargetTimer
         Timer() : TargetTimer()
         {}
 
-        ~Timer()
-        {
-            TargetTimer::~Timer();
-        }
+        // -------- START / STOP ----------------------------------------------
 
         void start(const std::chrono::microseconds rate_us, const Mode mode)
         {
@@ -88,45 +84,51 @@ class Timer : private TargetTimer
             return TargetTimer::is_running();
         }
 
-        bool is_irq_pending() const
+        // -------- INTERRUPTS ------------------------------------------------
+
+        bool is_pending_irq() const
         {
-            return TargetTimer::is_irq_pending();
+            return TargetTimer::is_pending_irq();
         }
 
-        void clear_irq_pending()
+        void clear_pending_irq()
         {
-            TargetTimer::clear_irq_pending();
+            TargetTimer::clear_pending_irq();
         }
 
-        bool is_irq_enabled() const
+        bool is_enabled_irq() const
         {
-            return TargetTimer::ir_irq_enabled();
+            return TargetTimer::is_enabled_irq();
         }
 
 #ifdef __TARGET_TIMER_TYPE_IS_MRT__
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
-        static void set_mrt_priority(const int32_t priority)
+        static void set_mrt_irq_priority(const int32_t irq_priority)
         {
-            TargetTimer::set_mrt_priority(priority);
+            TargetTimer::set_mrt_irq_priority(irq_priority);
         }
 
-        void assign_callback(Callback callback)
+        void assign_irq_handler(const IrqHandler& irq_handler)
         {
-            TargetTimer::assign_callback(callback);
+            TargetTimer::assign_irq_handler(irq_handler);
+            TargetTimer::enable_irq();
         }
 #else
         // NOTE: Timer type is independent timer (multiple individual timers).
         //       Each timer have their own IRQ with different priorities.
-        void assign_callback(Callback callback, const int32_t priority)
+        void assign_irq_handler(const IrqHandler& irq_handler, const int32_t irq_priority)
         {
-            TargetTimer::assign_callback(callback, priority);
+            TargetTimer::assign_irq_handler(irq_handler);
+            TargetTimer::set_irq_priority(irq_priority);
+            TargetTimer::enable_irq();
         }
 #endif
 
-        void remove_callback()
+        void remove_irq_handler()
         {
-            TargetTimer::remove_callback();
+            TargetTimer::disable_irq();
+            TargetTimer::remove_irq_handler();
         }
 };
 

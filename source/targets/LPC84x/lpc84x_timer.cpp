@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.cpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    9 April 2018
+// @date    26 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,16 +43,6 @@ namespace lpc84x
 
 
 
-// Static definition
-constexpr std::size_t                   Timer::NUM_CHANNELS;
-
-// Static initialization
-std::array<Timer*, Timer::NUM_CHANNELS> Timer::m_timers_array { nullptr };
-uint32_t                                Timer::m_timers_used  { 0 };
-
-
-
-
 // --------------------------------------------------------------------
 // IRQ HANDLER
 // --------------------------------------------------------------------
@@ -61,7 +51,7 @@ extern "C" void MRT_IRQHandler(void)
 {
     const int32_t yield = Timer::irq_handler();
 
-#ifdef USE_FREERTOS
+#ifdef XARMLIB_USE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
