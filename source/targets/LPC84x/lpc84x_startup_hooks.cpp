@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    11 April 2018
+// @date    28 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -111,10 +111,10 @@ static inline void mcu_startup_set_xtal_clock()
     // Power-up crystal oscillator
     Power::power_up(Power::Peripheral::SYSOSC);
 
-    // Wait 500 uSec for sysosc to stabilize (typical time from datasheet). The for loop
-    // takes 7 clocks per iteration and executes at a maximum of 30 MHz (33 nSec) based
-    // on FRO settings, so worst case i = (500 uSec) / (7 * 33 nSec) = 2142.
-    for(uint32_t i = 0; i < 2142; i++) __NOP();
+    // Wait 500 uSec for sysosc to stabilize (typical time from datasheet). The for
+    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33 nSec),
+    // so worst case: i = (500 uSec) / (7 * 33 nSec) = 2164.5 => 2165
+    for(uint32_t i = 0; i < 2165; i++) __NOP();
 
     // Choose sys_osc_clk source for external clock select (EXTCLKSEL)
     Clock::set_external_clock_source(Clock::ExternalClockSource::SYS_OSC_CLK);
@@ -154,6 +154,10 @@ static inline void mcu_startup_set_xtal_clock()
 
     // Set sys_pll_clk source for main clock PLL select(MAINCLKPLLSEL)
     Clock::set_main_clock_pll_source(Clock::MainClockPllSource::SYS_PLL_CLK);
+
+    // Disable the unused internal oscillator
+    Power::power_down(Power::Peripheral::FRO);
+    Power::power_down(Power::Peripheral::FROOUT);
 }
 
 
@@ -167,10 +171,50 @@ void mcu_startup_initialize_hardware_early(void)
 {}
 
 
+// PDAWAKECFG and PDRUNCFG register bits
+#define FROOUT_PD         (1<<0)
+#define FRO_PD            (1<<1)
+#define FLASH_PD          (1<<2)
+#define BOD_PD            (1<<3)
+#define ADC_PD            (1<<4)
+#define SYSOSC_PD         (1<<5)
+#define WDTOSC_PD         (1<<6)
+#define SYSPLL_PD         (1<<7)
+#define VREF2_PD          (1<<10)
+#define DAC0_PD           (1<<13)
+#define DAC1_PD           (1<<14)
+#define ACMP_PD           (1<<15)
+
+// BODCTRL register bit field shifters
+#define BODRSTLEV 0
+#define BODINTVAL 2
+#define BODRSTENA 4
+
 
 
 void mcu_startup_initialize_hardware(void)
 {
+    // ------------------------------------------------------------------------
+    // Helder Parracho @ 20 March 2018
+    // @REVIEW: Brown-Out Detector with bug? Disabled while pending for a solution...
+    // Helder Parracho @ 28 April 2018
+    // @REVIEW: Disabled the reset function before powering up the peripheral. Also,
+    //          Inserted a 10us waiting loop between power up and enabling reset function.
+    //          The workaround seems to work. Lets leave it enabled for now.
+
+    // Disable brown-out reset function before powering up peripheral
+    BrownOut::disable_reset();
+    Power::power_up(Power::Peripheral::BOD);
+
+    // Wait 10 uSec. The for loop takes 7 clocks per iteration
+    // and executes at a maximum of 30 MHz (33 nSec), so worst case:
+    // i = (10 uSec) / (7 * 33 nSec) = 43.3 => 44
+    for(uint32_t i = 0; i < 44; i++) __NOP();
+
+    // Enable brown-out detection with reset level 3 (2.63V ~ 2.76V)
+    BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
+    // ------------------------------------------------------------------------
+
     // Patch the AEABI integer divide functions to use MCU's romdivide library
     ROMDIVIDE_PatchAeabiIntegerDivide();
 
@@ -208,16 +252,6 @@ void mcu_startup_initialize_hardware(void)
     // Call the CSMSIS system clock routine to store the clock
     // frequency in the SystemCoreClock global RAM location.
     SystemCoreClockUpdate();
-
-    // ------------------------------------------------------------------------
-    // Helder Parracho @ 20 March 2018
-    // @REVIEW: Brown-Out Detector with bug? Disabled while pending for a solution...
-#if 0
-    // Enable brown-out detection with reset level 3 (2.63V ~ 2.76V)
-    Power::power_up(Power::Peripheral::BOD);
-    BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
-#endif
-    // ------------------------------------------------------------------------
 }
 
 

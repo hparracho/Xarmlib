@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    28 March 2018
+// @date    29 April 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -173,7 +173,7 @@ class BrownOut
         static void enable_reset(const Level level)
         {
             // BOD reset enable (BODRSTENA) = (1 << 4)
-            LPC_SYSCON->BODCTRL = static_cast<uint32_t>(level) | (1 << 4);
+            LPC_SYSCON->BODCTRL |= static_cast<uint32_t>(level) | (1 << 4);
         }
 
         // Disables brown-out detection reset
