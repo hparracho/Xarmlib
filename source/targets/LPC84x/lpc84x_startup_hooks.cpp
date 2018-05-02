@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    28 April 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -170,25 +170,6 @@ static inline void mcu_startup_set_xtal_clock()
 void mcu_startup_initialize_hardware_early(void)
 {}
 
-
-// PDAWAKECFG and PDRUNCFG register bits
-#define FROOUT_PD         (1<<0)
-#define FRO_PD            (1<<1)
-#define FLASH_PD          (1<<2)
-#define BOD_PD            (1<<3)
-#define ADC_PD            (1<<4)
-#define SYSOSC_PD         (1<<5)
-#define WDTOSC_PD         (1<<6)
-#define SYSPLL_PD         (1<<7)
-#define VREF2_PD          (1<<10)
-#define DAC0_PD           (1<<13)
-#define DAC1_PD           (1<<14)
-#define ACMP_PD           (1<<15)
-
-// BODCTRL register bit field shifters
-#define BODRSTLEV 0
-#define BODINTVAL 2
-#define BODRSTENA 4
 
 
 

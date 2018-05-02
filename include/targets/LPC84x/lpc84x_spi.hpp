@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    27 April 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -459,13 +459,13 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // -------- READ / WRITE ----------------------------------------------
 
-        // Write data to be transmitted
+        // Read data that has been received
         uint32_t read_data() const
         {
             return m_spi->RXDAT & 0x0000FFFF;
         }
 
-        // Read data that has been received
+        // Write data to be transmitted
         void write_data(const uint32_t value)
         {
             m_spi->TXDAT = value & 0x0000FFFF;
