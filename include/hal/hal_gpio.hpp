@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   GPIO HAL interface class.
-// @date    28 March 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,31 +53,26 @@ class Gpio : private TargetGpio
 
         using Pin = xarmlib::Pin;
 
+        using InputMode               = typename TargetGpio::InputMode;
+        using OutputMode              = typename TargetGpio::OutputMode;
+        using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
+        using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
+
+        using InputFilter             = typename TargetGpio::InputFilter;
+        using InputInvert             = typename TargetGpio::InputInvert;
+        using InputHysteresis         = typename TargetGpio::InputHysteresis;
+
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Gpio(const Pin::Name      pin_name,
-             const Pin::Direction pin_direction,
-             const Pin::Mode      pin_mode) : TargetGpio(pin_name,
-                                                         pin_direction,
-                                                         pin_mode)
-        {}
+        // Expose target constructors
+        using TargetGpio::TargetGpio;
 
-        void mode(const Pin::Mode pin_mode)
-        {
-            TargetGpio::mode(pin_mode);
-        }
-
-        void write(const uint32_t value)
-        {
-            TargetGpio::write(value);
-        }
-
-        uint32_t read() const
-        {
-            return TargetGpio::read();
-        }
+        // Expose target member functions
+        using TargetGpio::mode;
+        using TargetGpio::read;
+        using TargetGpio::write;
 };
 
 

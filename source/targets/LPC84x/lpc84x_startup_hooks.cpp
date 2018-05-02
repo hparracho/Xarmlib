@@ -96,8 +96,8 @@ static inline void mcu_startup_set_fro_clock()
 static inline void mcu_startup_set_xtal_clock()
 {
     // Disable pull-up and pull-down for XTALIN and XTALOUT pin
-    Pin::mode(Pin::Name::P0_8, Pin::Mode::PULL_NONE);
-    Pin::mode(Pin::Name::P0_9, Pin::Mode::PULL_NONE);
+    Pin::mode(Pin::Name::P0_8, Pin::FunctionMode::HIZ);
+    Pin::mode(Pin::Name::P0_9, Pin::FunctionMode::HIZ);
 
     // Use Switch Matrix to enable XTALIN/XTALOUT functions
     Swm::enable(Swm::PinFixed::XTALIN);

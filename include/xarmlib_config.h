@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.h
 // @brief   Xarmlib template configuration header file.
-// @date    29 March 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -76,7 +76,7 @@ constexpr System::Swd XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLE
 constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
 constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
 
-constexpr std::array<Pin::Config, 0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                  // Use all IOs with pull-up by default
+constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                     // Use all IOs with pull-up by default
 
 
 

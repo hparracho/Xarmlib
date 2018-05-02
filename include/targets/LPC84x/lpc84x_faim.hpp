@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    26 April 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -61,6 +61,13 @@ class Faim
             LOW_POWER
         };
 
+        // Pin configuration type
+        using PinConfig = std::pair<Pin::Name, Pin::FunctionMode>;
+
+        // Pin configuration array type
+        template <std::size_t Size>
+        using PinConfigArray = std::array<PinConfig, Size>;
+
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -68,12 +75,12 @@ class Faim
         // Make sure the supplied parameters are the ones saved into FAIM
         // NOTE: If the configuration is updated a system reset is
         //       performed immediately after the FAIM Memory is written.
-        template<std::size_t Size>
-        static bool ensures(const System::Swd swd_config,
-                            const Boot        boot_config,
-                            const Pin::Name   isp_uart0_tx,
-                            const Pin::Name   isp_uart0_rx,
-                            const std::array<Pin::Config, Size>& pin_config)
+        template<std::size_t SIZE>
+        static bool ensures(const System::Swd           swd_config,
+                            const Boot                  boot_config,
+                            const Pin::Name             isp_uart0_tx,
+                            const Pin::Name             isp_uart0_rx,
+                            const PinConfigArray<SIZE>& pin_config)
         {
             // Get intended configuration words
             const auto faim_words = get_config_words(swd_config, boot_config, isp_uart0_tx, isp_uart0_rx, pin_config);
@@ -119,12 +126,12 @@ class Faim
         // --------------------------------------------------------------------
 
         // Make and return the 8 words of FAIM accordingly to the supplied parameters
-        template<std::size_t Size>
-        static constexpr auto get_config_words(const System::Swd swd_config,
-                                               const Boot        boot_config,
-                                               const Pin::Name   isp_uart0_tx,
-                                               const Pin::Name   isp_uart0_rx,
-                                               const std::array<Pin::Config, Size>& pin_config)
+        template<std::size_t SIZE>
+        static constexpr auto get_config_words(const System::Swd           swd_config,
+                                               const Boot                  boot_config,
+                                               const Pin::Name             isp_uart0_tx,
+                                               const Pin::Name             isp_uart0_rx,
+                                               const PinConfigArray<SIZE>& pin_config)
         {
             // Helder Parracho @ 27 March 2018
             // @REVIEW: Need GCC 7 to make the following 'static_assert()' work.
@@ -150,19 +157,15 @@ class Faim
 
                 if(pin_name != Pin::Name::NC)
                 {
-                    const Pin::Mode pin_mode = std::get<1>(pin_config[i]);
+                    const int32_t pin_word = ((63 - static_cast<int32_t>(pin_name)) / 16) + 4;
+                    const int32_t pin_bit  = ((63 - static_cast<int32_t>(pin_name)) % 16) * 2;
 
-                    if(pin_mode != Pin::Mode::OPEN_DRAIN)
-                    {
-                        const int32_t pin_word = ((63 - static_cast<int32_t>(pin_name)) / 16) + 4;
-                        const int32_t pin_bit  = ((63 - static_cast<int32_t>(pin_name)) % 16) * 2;
+                    // Clear the default pin mode
+                    faim_data[pin_word] &= ~(0x03 << pin_bit);
 
-                        // Clear the default pin mode
-                        faim_data[pin_word] &= ~(0x03 << pin_bit);
-
-                        // Set new value
-                        faim_data[pin_word] |= static_cast<int32_t>(pin_mode) << pin_bit;
-                    }
+                    // Set new value
+                    const Pin::FunctionMode pin_mode = std::get<1>(pin_config[i]);
+                    faim_data[pin_word] |= static_cast<int32_t>(pin_mode) << pin_bit;
                 }
             }
 

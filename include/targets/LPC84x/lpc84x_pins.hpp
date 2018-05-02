@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pins.hpp
 // @brief   NXP LPC84x pin and port classes.
-// @date    28 March 2018
+// @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_PINS_HPP
 #define __XARMLIB_TARGETS_LPC84X_PINS_HPP
 
+#include "system/cassert"
 #include "system/array"
 #include "system/target.h"
 #include "targets/LPC84x/lpc84x_cmsis.h"
@@ -125,58 +126,111 @@ class Pin
             NC
         };
 
-        // Pin direction options
-        enum class Direction
+        // Function modes (defined to map the PIO register directly)
+        enum class FunctionMode
         {
-            INPUT = 0,
-            OUTPUT
+            HIZ       = (0 << 3),
+            PULL_DOWN = (1 << 3),
+            PULL_UP   = (2 << 3),
+            REPEATER  = (3 << 3)
         };
 
-        // Pin mode options
-        enum class Mode
+        // Input hysteresis (defined to map the PIO register directly)
+        enum class InputHysteresis
         {
-            PULL_NONE  = 0,
-            PULL_DOWN,
-            PULL_UP,
-            REPEATER,
-            OPEN_DRAIN
+            DISABLE = (0 << 5),
+            ENABLE  = (1 << 5)
         };
 
-        // Pin configuration type for FAIM
-        using Config = std::pair<Name, Mode>;
+        // Input invert (defined to map the PIO register directly)
+        enum class InputInvert
+        {
+            NORMAL   = (0 << 6),
+            INVERTED = (1 << 6)
+        };
+
+        // I2C mode (defined to map the PIO register directly)
+        enum class I2cMode
+        {
+            STANDARD_FAST_I2C = (0 << 8),
+            STANDARD_GPIO     = (1 << 8),
+            FAST_PLUS_I2C     = (2 << 8)
+        };
+
+        // Open-drain mode (defined to map the PIO register directly)
+        enum class OpenDrain
+        {
+            DISABLE = (0 << 10),
+            ENABLE  = (1 << 10)
+        };
+
+        // Input filter samples (defined to map the PIO register directly)
+        enum class InputFilter
+        {
+            BYPASS              = (0 << 11) | (0 << 13),
+            CLOCK_CYCLE_1_DIV_1 = (1 << 11) | (1 << 13),
+            CLOCK_CYCLE_1_DIV_2 = (1 << 11) | (2 << 13),
+            CLOCK_CYCLE_1_DIV_3 = (1 << 11) | (3 << 13),
+            CLOCK_CYCLE_1_DIV_4 = (1 << 11) | (4 << 13),
+            CLOCK_CYCLE_1_DIV_5 = (1 << 11) | (5 << 13),
+            CLOCK_CYCLE_1_DIV_6 = (1 << 11) | (6 << 13),
+            CLOCK_CYCLE_2_DIV_1 = (2 << 11) | (1 << 13),
+            CLOCK_CYCLE_2_DIV_2 = (2 << 11) | (2 << 13),
+            CLOCK_CYCLE_2_DIV_3 = (2 << 11) | (3 << 13),
+            CLOCK_CYCLE_2_DIV_4 = (2 << 11) | (4 << 13),
+            CLOCK_CYCLE_2_DIV_5 = (2 << 11) | (5 << 13),
+            CLOCK_CYCLE_2_DIV_6 = (2 << 11) | (6 << 13),
+            CLOCK_CYCLE_3_DIV_1 = (3 << 11) | (1 << 13),
+            CLOCK_CYCLE_3_DIV_2 = (3 << 11) | (2 << 13),
+            CLOCK_CYCLE_3_DIV_3 = (3 << 11) | (3 << 13),
+            CLOCK_CYCLE_3_DIV_4 = (3 << 11) | (4 << 13),
+            CLOCK_CYCLE_3_DIV_5 = (3 << 11) | (5 << 13),
+            CLOCK_CYCLE_3_DIV_6 = (3 << 11) | (6 << 13)
+        };
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static void mode(const Name pin, const Mode mode)
+        // Set mode of normal pins
+        static void mode(const Name pin, const FunctionMode    function_mode,
+                                         const OpenDrain       open_drain       = OpenDrain::DISABLE,
+                                         const InputFilter     input_filter     = InputFilter::BYPASS,
+                                         const InputInvert     input_invert     = InputInvert::NORMAL,
+                                         const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            if(pin == Pin::Name::NC)
-            {
-                return;
-            }
+            assert(pin != Pin::Name::NC);
+#if (__LPC84X_PINS__ == 64)
+            // True open-drain pins
+            assert(pin != Name::P0_10 && pin != Name::P0_11);
+#endif
+            const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin)];
+
+            LPC_IOCON->PIO[pin_index] = static_cast<uint32_t>(function_mode)
+                                      | static_cast<uint32_t>(input_hysteresis)
+                                      | static_cast<uint32_t>(input_invert)
+                                      | static_cast<uint32_t>(open_drain)
+                                      | (1 << 7) // RESERVED
+                                      | static_cast<uint32_t>(input_filter);
+        }
 
 #if (__LPC84X_PINS__ == 64)
-            if(pin == Name::P0_10 || pin == Name::P0_11)
-            {
-                // True open-drain pins
-                return;
-            }
-#endif
+        // Set mode of true open-drain pins (only available on P0_10 and P0_11)
+        static void mode(const Name pin, const I2cMode     i2c_mode,
+                                         const InputFilter input_filter,
+                                         const InputInvert input_invert)
+        {
+            // True open-drain pins
+            assert(pin == Name::P0_10 || pin == Name::P0_11);
 
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin)];
 
-            __IO uint32_t* reg = &LPC_IOCON->PIO[pin_index];
-
-            if(mode == Mode::OPEN_DRAIN)
-            {
-                *reg |= (1 << 10);
-            }
-            else
-            {
-                *reg = (*reg & ~(0x03 << 3)) | ((static_cast<uint32_t>(mode) & 0x03) << 3);
-            }
+            LPC_IOCON->PIO[pin_index] = static_cast<uint32_t>(input_invert)
+                                      | (1 << 7) // RESERVED
+                                      | static_cast<uint32_t>(i2c_mode)
+                                      | static_cast<uint32_t>(input_filter);
         }
+#endif
 
     private:
 

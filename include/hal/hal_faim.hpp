@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pins.hpp
-// @brief   Pins and Ports HAL interface classes.
+// @file    hal_faim.hpp
+// @brief   Fast Initialization Memory (FAIM) HAL interface class.
 // @date    2 May 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,8 +29,10 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PINS_HPP
-#define __XARMLIB_HAL_PINS_HPP
+#ifndef __XARMLIB_HAL_FAIM_HPP
+#define __XARMLIB_HAL_FAIM_HPP
+
+#include <cstdint>
 
 namespace xarmlib
 {
@@ -40,8 +42,8 @@ namespace hal
 
 
 
-template <class TargetPin>
-class Pin
+template <class TargetFaim>
+class Faim
 {
     public:
 
@@ -49,22 +51,10 @@ class Pin
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Name = typename TargetPin::Name;
-};
+        using PinConfig = typename TargetFaim::PinConfig;
 
-
-
-
-template <class TargetPort>
-class Port
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name = typename TargetPort::Name;
+        template<std::size_t SIZE>
+        using PinConfigArray = typename TargetFaim::template PinConfigArray<SIZE>;
 };
 
 
@@ -83,12 +73,11 @@ class Port
 
 #if defined __LPC84X__
 
-#include "targets/LPC84x/lpc84x_pins.hpp"
+#include "targets/LPC84x/lpc84x_faim.hpp"
 
 namespace xarmlib
 {
-using Pin  = hal::Pin <lpc84x::Pin >;
-using Port = hal::Port<lpc84x::Port>;
+using Faim = hal::Faim<lpc84x::Faim>;
 }
 
 #elif defined __OHER_TARGET__
@@ -97,8 +86,7 @@ using Port = hal::Port<lpc84x::Port>;
 
 namespace xarmlib
 {
-using Pin  = hal::Pin <other_target::Pin >;
-using Port = hal::Port<other_target::Port>;
+using Faim = hal::Faim<other_target::Faim>;
 }
 
 #endif
@@ -106,4 +94,4 @@ using Port = hal::Port<other_target::Port>;
 
 
 
-#endif // __XARMLIB_HAL_PINS_HPP
+#endif // __XARMLIB_HAL_FAIM_HPP
