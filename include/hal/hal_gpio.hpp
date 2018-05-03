@@ -66,13 +66,80 @@ class Gpio : private TargetGpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // Expose target constructors
-        using TargetGpio::TargetGpio;
+        // -------- CONSTRUCTORS ----------------------------------------------
 
-        // Expose target member functions
-        using TargetGpio::mode;
-        using TargetGpio::read;
-        using TargetGpio::write;
+        // Normal input pin constructor
+        Gpio(const Pin::Name       pin_name,
+             const InputMode       input_mode,
+             const InputFilter     input_filter     = InputFilter::BYPASS,
+             const InputInvert     input_invert     = InputInvert::NORMAL,
+             const InputHysteresis input_hysteresis = InputHysteresis::ENABLE) : TargetGpio(pin_name,
+                                                                                            input_mode,
+                                                                                            input_filter,
+                                                                                            input_invert,
+                                                                                            input_hysteresis)
+        {}
+
+        // Normal output pin constructor
+        Gpio(const Pin::Name pin_name, const OutputMode output_mode) : TargetGpio(pin_name, output_mode)
+        {}
+
+        // True open-drain input pin constructor
+        Gpio(const Pin::Name              pin_name,
+             const InputModeTrueOpenDrain input_mode,
+             const InputFilter            input_filter = InputFilter::BYPASS,
+             const InputInvert            input_invert = InputInvert::NORMAL) : TargetGpio(pin_name,
+                                                                                           input_mode,
+                                                                                           input_filter,
+                                                                                           input_invert)
+        {}
+
+        // True open-drain output pin constructor
+        Gpio(const Pin::Name pin_name, const OutputModeTrueOpenDrain output_mode) : TargetGpio(pin_name, output_mode)
+        {}
+
+        // -------- MODE ------------------------------------------------------
+
+        // Set normal input pin mode
+        void mode(const InputMode       input_mode,
+                  const InputFilter     input_filter     = InputFilter::BYPASS,
+                  const InputInvert     input_invert     = InputInvert::NORMAL,
+                  const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        {
+            TargetGpio::mode(input_mode, input_filter, input_invert, input_hysteresis);
+        }
+
+        // Set normal output pin mode
+        void mode(const OutputMode output_mode)
+        {
+            TargetGpio::mode(output_mode);
+        }
+
+        // Set true open-drain input pin mode
+        void mode(const InputModeTrueOpenDrain input_mode,
+                  const InputFilter            input_filter = InputFilter::BYPASS,
+                  const InputInvert            input_invert = InputInvert::NORMAL)
+        {
+            mode(input_mode, input_filter, input_invert);
+        }
+
+        // Set true open-drain output pin mode
+        void mode(const OutputModeTrueOpenDrain output_mode)
+        {
+            TargetGpio::mode(output_mode);
+        }
+
+        // -------- READ / WRITE ----------------------------------------------
+
+        uint32_t read() const
+        {
+            return TargetGpio::read();
+        }
+
+        void write(const uint32_t value)
+        {
+            TargetGpio::write(value);
+        }
 };
 
 
