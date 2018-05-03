@@ -83,42 +83,6 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // -------- CTOR / DTOR -----------------------------------------------
-
-        Timer() : PeripheralTimer(*this)
-        {
-            // Enable MRT if this is the first timer created
-            if(get_used() == 1)
-            {
-                Clock::enable(Clock::Peripheral::MRT);
-                Power::reset(Power::ResetPeripheral::MRT);
-
-                NVIC_EnableIRQ(MRT_IRQn);
-            }
-
-            const auto channel_index = get_index();
-
-            // Set pointer to the available channel structure
-            m_channel = &LPC_MRT->CHANNEL[channel_index];
-
-            set_interval(0);
-            clear_pending_irq();
-        }
-
-        ~Timer()
-        {
-            set_interval(0);
-            clear_pending_irq();
-
-            // Disable MRT if this the last timer deleted
-            if(get_used() == 1)
-            {
-                Clock::disable(Clock::Peripheral::MRT);
-
-                NVIC_DisableIRQ(MRT_IRQn);
-            }
-        }
-
         // -------- START / STOP ----------------------------------------------
 
         // Start the timer with the supplied interval and mode
@@ -192,6 +156,48 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         void remove_irq_handler()
         {
             m_irq_handler = nullptr;
+        }
+
+    protected:
+
+        // --------------------------------------------------------------------
+        // PROTECTED MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
+
+        Timer() : PeripheralTimer(*this)
+        {
+            // Enable MRT if this is the first timer created
+            if(get_used() == 1)
+            {
+                Clock::enable(Clock::Peripheral::MRT);
+                Power::reset(Power::ResetPeripheral::MRT);
+
+                NVIC_EnableIRQ(MRT_IRQn);
+            }
+
+            const auto channel_index = get_index();
+
+            // Set pointer to the available channel structure
+            m_channel = &LPC_MRT->CHANNEL[channel_index];
+
+            set_interval(0);
+            clear_pending_irq();
+        }
+
+        ~Timer()
+        {
+            set_interval(0);
+            clear_pending_irq();
+
+            // Disable MRT if this the last timer deleted
+            if(get_used() == 1)
+            {
+                Clock::disable(Clock::Peripheral::MRT);
+
+                NVIC_DisableIRQ(MRT_IRQn);
+            }
         }
 
     private:

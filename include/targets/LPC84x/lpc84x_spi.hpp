@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    2 May 2018
+// @date    3 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -333,7 +333,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // -------- CTOR / DTOR -----------------------------------------------
+        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
         Spi() : PeripheralSpi(*this)
         {}

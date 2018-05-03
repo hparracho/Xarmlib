@@ -93,53 +93,6 @@ class Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // Normal input pin constructor
-        Gpio(const Pin::Name pin_name, const InputMode       input_mode,
-                                       const InputFilter     input_filter,
-                                       const InputInvert     input_invert,
-                                       const InputHysteresis input_hysteresis) : m_pin {pin_name}
-        {
-            if(pin_name != Pin::Name::NC)
-            {
-                config_port();
-                mode(input_mode, input_filter, input_invert, input_hysteresis);
-            }
-        }
-
-        // Normal output pin constructor
-        Gpio(const Pin::Name pin_name, const OutputMode output_mode) : m_pin {pin_name}
-        {
-            if(pin_name != Pin::Name::NC)
-            {
-                config_port();
-                mode(output_mode);
-            }
-        }
-
-#if (__LPC84X_PINS__ == 64)
-        // True open-drain input pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name pin_name, const InputModeTrueOpenDrain input_mode,
-                                       const InputFilter            input_filter,
-                                       const InputInvert            input_invert) : m_pin {pin_name}
-        {
-            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
-            {
-                config_port();
-                mode(input_mode, input_filter, input_invert);
-            }
-        }
-
-        // True open-drain output pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name pin_name, const OutputModeTrueOpenDrain output_mode) : m_pin {pin_name}
-        {
-            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
-            {
-                config_port();
-                mode(output_mode);
-            }
-        }
-#endif
-
         // Set normal input pin mode
         void mode(const InputMode       input_mode,
                   const InputFilter     input_filter,
@@ -246,10 +199,65 @@ class Gpio
             }
         }
 
+    protected:
+
+        // --------------------------------------------------------------------
+        // PROTECTED MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // -------- CONSTRUCTORS ----------------------------------------------
+
+        // Normal input pin constructor
+        Gpio(const Pin::Name pin_name, const InputMode       input_mode,
+                                       const InputFilter     input_filter,
+                                       const InputInvert     input_invert,
+                                       const InputHysteresis input_hysteresis) : m_pin {pin_name}
+        {
+            if(pin_name != Pin::Name::NC)
+            {
+                config_port();
+                mode(input_mode, input_filter, input_invert, input_hysteresis);
+            }
+        }
+
+        // Normal output pin constructor
+        Gpio(const Pin::Name pin_name, const OutputMode output_mode) : m_pin {pin_name}
+        {
+            if(pin_name != Pin::Name::NC)
+            {
+                config_port();
+                mode(output_mode);
+            }
+        }
+
+#if (__LPC84X_PINS__ == 64)
+        // True open-drain input pin constructor (only available on P0_10 and P0_11)
+        Gpio(const Pin::Name pin_name, const InputModeTrueOpenDrain input_mode,
+                                       const InputFilter            input_filter,
+                                       const InputInvert            input_invert) : m_pin {pin_name}
+        {
+            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
+            {
+                config_port();
+                mode(input_mode, input_filter, input_invert);
+            }
+        }
+
+        // True open-drain output pin constructor (only available on P0_10 and P0_11)
+        Gpio(const Pin::Name pin_name, const OutputModeTrueOpenDrain output_mode) : m_pin {pin_name}
+        {
+            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
+            {
+                config_port();
+                mode(output_mode);
+            }
+        }
+#endif
+
     private:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
         // Pin direction
