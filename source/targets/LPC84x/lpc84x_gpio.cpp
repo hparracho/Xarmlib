@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_syscon_clock.cpp
+// @file    lpc84x_gpio.cpp
 // @brief   NXP LPC84x GPIO class.
-// @date    28 March 2018
+// @date    3 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_syscon_clock.hpp
+// @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    2 May 2018
+// @date    3 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,6 +31,8 @@
 
 #ifndef __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 #define __XARMLIB_TARGETS_LPC84X_GPIO_HPP
+
+#include <cstdint>
 
 #include "targets/LPC84x/lpc84x_pins.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
@@ -148,7 +150,7 @@ class Gpio
 
 #if (__LPC84X_PINS__ == 64)
             // Exclude true open-drain pins
-            assert(pin != Name::P0_10 && pin != Name::P0_11);
+            assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
 #endif
 
             Pin::FunctionMode function_mode;
@@ -175,7 +177,7 @@ class Gpio
 
 #if (__LPC84X_PINS__ == 64)
             // Exclude true open-drain pins
-            assert(pin != Name::P0_10 && pin != Name::P0_11);
+            assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
 #endif
 
             uint32_t pin_value;
@@ -205,7 +207,7 @@ class Gpio
             (void)input_mode; // Input mode only used to identify the type of pin
 
             // Available only on true open-drain pins
-            assert(pin == Name::P0_10 || pin == Name::P0_11);
+            assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
 
             write(0);
             direction(Direction::INPUT);
@@ -217,7 +219,7 @@ class Gpio
         void mode(const OutputModeTrueOpenDrain output_mode)
         {
             // Available only on true open-drain pins
-            assert(pin == Name::P0_10 || pin == Name::P0_11);
+            assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
 
             write((output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
             direction(Direction::OUTPUT);

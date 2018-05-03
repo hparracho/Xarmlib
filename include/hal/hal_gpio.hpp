@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_watchdog.hpp
+// @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    2 May 2018
+// @date    3 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
