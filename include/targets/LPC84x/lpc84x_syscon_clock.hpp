@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    10 April 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -72,9 +72,9 @@ class Clock
             SPI0,
             SPI1,
             CRC,
-            UART0,
-            UART1,
-            UART2,
+            USART0,
+            USART1,
+            USART2,
             WWDT,
             IOCON,
             ACOMP,
@@ -88,8 +88,8 @@ class Clock
             DAC0,
             GPIOINT,
             DMA,
-            UART3,
-            UART4,
+            USART3,
+            USART4,
 
             // SYSAHBCLKCTRL1, System clock control 1 register
             CAPT = 32,
@@ -195,11 +195,11 @@ class Clock
         // Peripheral to select respective clock source
         enum class PeripheralClockSelect
         {
-            UART0 = 0,
-            UART1,
-            UART2,
-            UART3,
-            UART4,
+            USART0 = 0,
+            USART1,
+            USART2,
+            USART3,
+            USART4,
             I2C0,
             I2C1,
             I2C2,

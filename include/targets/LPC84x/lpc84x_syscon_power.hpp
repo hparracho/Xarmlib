@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    29 April 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -81,9 +81,9 @@ class Power
             SPI0,
             SPI1,
             CRC,
-            UART0,
-            UART1,
-            UART2,
+            USART0,
+            USART1,
+            USART2,
          // RESERVED
             IOCON = 18,
             ACOMP,
@@ -97,8 +97,8 @@ class Power
             DAC0 = 27,
             GPIOINT,
             DMA,
-            UART3,
-            UART4,
+            USART3,
+            USART4,
 
             // PRESETCTRL1, Peripheral reset control 1 register
             CAPT = 32,
