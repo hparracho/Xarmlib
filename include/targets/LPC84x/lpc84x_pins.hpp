@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pins.hpp
 // @brief   NXP LPC84x pin and port classes.
-// @date    2 May 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -193,11 +193,11 @@ class Pin
         // --------------------------------------------------------------------
 
         // Set mode of normal pins
-        static void mode(const Name pin, const FunctionMode    function_mode,
-                                         const OpenDrain       open_drain       = OpenDrain::DISABLE,
-                                         const InputFilter     input_filter     = InputFilter::BYPASS,
-                                         const InputInvert     input_invert     = InputInvert::NORMAL,
-                                         const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        static void set_mode(const Name pin, const FunctionMode    function_mode,
+                                             const OpenDrain       open_drain       = OpenDrain::DISABLE,
+                                             const InputFilter     input_filter     = InputFilter::BYPASS,
+                                             const InputInvert     input_invert     = InputInvert::NORMAL,
+                                             const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
             assert(pin != Pin::Name::NC);
 #if (__LPC84X_PINS__ == 64)
@@ -216,9 +216,9 @@ class Pin
 
 #if (__LPC84X_PINS__ == 64)
         // Set mode of true open-drain pins (only available on P0_10 and P0_11)
-        static void mode(const Name pin, const I2cMode     i2c_mode,
-                                         const InputFilter input_filter,
-                                         const InputInvert input_invert)
+        static void set_mode(const Name pin, const I2cMode     i2c_mode,
+                                             const InputFilter input_filter,
+                                             const InputInvert input_invert)
         {
             // True open-drain pins
             assert(pin == Name::P0_10 || pin == Name::P0_11);

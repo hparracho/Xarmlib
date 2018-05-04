@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    3 May 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -94,10 +94,10 @@ class Gpio
         // --------------------------------------------------------------------
 
         // Set normal input pin mode
-        void mode(const InputMode       input_mode,
-                  const InputFilter     input_filter,
-                  const InputInvert     input_invert,
-                  const InputHysteresis input_hysteresis)
+        void set_mode(const InputMode       input_mode,
+                      const InputFilter     input_filter,
+                      const InputInvert     input_invert,
+                      const InputHysteresis input_hysteresis)
         {
             assert(m_pin != Pin::Name::NC);
 
@@ -118,13 +118,17 @@ class Gpio
             }
 
             write(0);
-            direction(Direction::INPUT);
+            set_direction(Direction::INPUT);
 
-            Pin::mode(m_pin, function_mode, Pin::OpenDrain::DISABLE, input_filter, input_invert, input_hysteresis);
+            Pin::set_mode(m_pin, function_mode,
+                                 Pin::OpenDrain::DISABLE,
+                                 input_filter,
+                                 input_invert,
+                                 input_hysteresis);
         }
 
         // Set normal output pin mode
-        void mode(const OutputMode output_mode)
+        void set_mode(const OutputMode output_mode)
         {
             assert(m_pin != Pin::Name::NC);
 
@@ -146,16 +150,20 @@ class Gpio
             }
 
             write(pin_value);
-            direction(Direction::OUTPUT);
+            set_direction(Direction::OUTPUT);
 
-            Pin::mode(m_pin, Pin::FunctionMode::HIZ, open_drain, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL, Pin::InputHysteresis::ENABLE);
+            Pin::set_mode(m_pin, Pin::FunctionMode::HIZ,
+                                 open_drain,
+                                 Pin::InputFilter::BYPASS,
+                                 Pin::InputInvert::NORMAL,
+                                 Pin::InputHysteresis::ENABLE);
         }
 
 #if (__LPC84X_PINS__ == 64)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
-        void mode(const InputModeTrueOpenDrain input_mode,
-                  const InputFilter            input_filter,
-                  const InputInvert            input_invert)
+        void set_mode(const InputModeTrueOpenDrain input_mode,
+                      const InputFilter            input_filter,
+                      const InputInvert            input_invert)
         {
             (void)input_mode; // Input mode only used to identify the type of pin
 
@@ -163,21 +171,21 @@ class Gpio
             assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
 
             write(0);
-            direction(Direction::INPUT);
+            set_direction(Direction::INPUT);
 
-            Pin::mode(m_pin, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
+            Pin::set_mode(m_pin, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
         }
 
         // Set true open-drain output pin mode (only available on P0_10 and P0_11)
-        void mode(const OutputModeTrueOpenDrain output_mode)
+        void set_mode(const OutputModeTrueOpenDrain output_mode)
         {
             // Available only on true open-drain pins
             assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
 
             write((output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
-            direction(Direction::OUTPUT);
+            set_direction(Direction::OUTPUT);
 
-            Pin::mode(m_pin, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
+            Pin::set_mode(m_pin, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
         }
 #endif
 
@@ -216,7 +224,7 @@ class Gpio
             if(pin_name != Pin::Name::NC)
             {
                 config_port();
-                mode(input_mode, input_filter, input_invert, input_hysteresis);
+                set_mode(input_mode, input_filter, input_invert, input_hysteresis);
             }
         }
 
@@ -226,7 +234,7 @@ class Gpio
             if(pin_name != Pin::Name::NC)
             {
                 config_port();
-                mode(output_mode);
+                set_mode(output_mode);
             }
         }
 
@@ -239,7 +247,7 @@ class Gpio
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
-                mode(input_mode, input_filter, input_invert);
+                set_mode(input_mode, input_filter, input_invert);
             }
         }
 
@@ -249,7 +257,7 @@ class Gpio
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
-                mode(output_mode);
+                set_mode(output_mode);
             }
         }
 #endif
@@ -277,7 +285,7 @@ class Gpio
             {
                 m_mask = 1 << static_cast<uint32_t>(m_pin);
 
-                reg_w   = &LPC_GPIO->W0[m_mask];
+                reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin)];
                 reg_dir = &LPC_GPIO->DIR0;
 
                 if(m_gpio0_enabled == false)
@@ -293,7 +301,7 @@ class Gpio
             {
                 m_mask = 1 << (static_cast<uint32_t>(m_pin) - 32);
 
-                reg_w   = &LPC_GPIO->W1[m_mask];
+                reg_w   = &LPC_GPIO->W1[static_cast<uint32_t>(m_pin) - 32];
                 reg_dir = &LPC_GPIO->DIR1;
 
                 if(m_gpio1_enabled == false)
@@ -308,7 +316,7 @@ class Gpio
         }
 
         // Set pin direction
-        void direction(const Direction direction)
+        void set_direction(const Direction direction)
         {
             if(reg_dir != nullptr)
             {

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    3 May 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -101,32 +101,32 @@ class Gpio : private TargetGpio
         // -------- MODE ------------------------------------------------------
 
         // Set normal input pin mode
-        void mode(const InputMode       input_mode,
-                  const InputFilter     input_filter     = InputFilter::BYPASS,
-                  const InputInvert     input_invert     = InputInvert::NORMAL,
-                  const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        void set_mode(const InputMode       input_mode,
+                      const InputFilter     input_filter     = InputFilter::BYPASS,
+                      const InputInvert     input_invert     = InputInvert::NORMAL,
+                      const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            TargetGpio::mode(input_mode, input_filter, input_invert, input_hysteresis);
+            TargetGpio::set_mode(input_mode, input_filter, input_invert, input_hysteresis);
         }
 
         // Set normal output pin mode
-        void mode(const OutputMode output_mode)
+        void set_mode(const OutputMode output_mode)
         {
-            TargetGpio::mode(output_mode);
+            TargetGpio::set_mode(output_mode);
         }
 
         // Set true open-drain input pin mode
-        void mode(const InputModeTrueOpenDrain input_mode,
-                  const InputFilter            input_filter = InputFilter::BYPASS,
-                  const InputInvert            input_invert = InputInvert::NORMAL)
+        void set_mode(const InputModeTrueOpenDrain input_mode,
+                      const InputFilter            input_filter = InputFilter::BYPASS,
+                      const InputInvert            input_invert = InputInvert::NORMAL)
         {
-            mode(input_mode, input_filter, input_invert);
+            set_mode(input_mode, input_filter, input_invert);
         }
 
         // Set true open-drain output pin mode
-        void mode(const OutputModeTrueOpenDrain output_mode)
+        void set_mode(const OutputModeTrueOpenDrain output_mode)
         {
-            TargetGpio::mode(output_mode);
+            TargetGpio::set_mode(output_mode);
         }
 
         // -------- READ / WRITE ----------------------------------------------

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    2 May 2018
+// @date    4 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -96,8 +96,8 @@ static inline void mcu_startup_set_fro_clock()
 static inline void mcu_startup_set_xtal_clock()
 {
     // Disable pull-up and pull-down for XTALIN and XTALOUT pin
-    Pin::mode(Pin::Name::P0_8, Pin::FunctionMode::HIZ);
-    Pin::mode(Pin::Name::P0_9, Pin::FunctionMode::HIZ);
+    Pin::set_mode(Pin::Name::P0_8, Pin::FunctionMode::HIZ);
+    Pin::set_mode(Pin::Name::P0_9, Pin::FunctionMode::HIZ);
 
     // Use Switch Matrix to enable XTALIN/XTALOUT functions
     Swm::enable(Swm::PinFixed::XTALIN);
