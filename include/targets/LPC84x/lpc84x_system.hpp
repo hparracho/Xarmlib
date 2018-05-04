@@ -83,6 +83,60 @@ class System
         static constexpr int32_t CRYSTAL_12MHZ_FREQ = 12000000;
         // External clock pin input frequency (currently not implemented)
         static constexpr int32_t CLK_INPUT_PIN_FREQ = 0;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        static constexpr int32_t get_core_clock_frequency(const Clock clock)
+        {
+            switch(clock)
+            {
+                case Clock::OSC_LOW_POWER_1125KHZ: return  1125000; break;
+                case Clock::OSC_LOW_POWER_1500KHZ: return  1500000; break;
+                case Clock::OSC_LOW_POWER_1875KHZ: return  1875000; break;
+
+                case Clock::OSC_9MHZ:              return  9000000; break;
+                case Clock::OSC_12MHZ:             return 12000000; break;
+                case Clock::OSC_15MHZ:             return 15000000; break;
+                case Clock::OSC_18MHZ:             return 18000000; break;
+                case Clock::OSC_24MHZ:             return 24000000; break;
+                case Clock::OSC_30MHZ:             return 30000000; break;
+
+                case Clock::XTAL_9MHZ:             return  9000000; break;
+                case Clock::XTAL_12MHZ:            return 12000000; break;
+                case Clock::XTAL_15MHZ:            return 15000000; break;
+                case Clock::XTAL_18MHZ:            return 18000000; break;
+                case Clock::XTAL_24MHZ:            return 24000000; break;
+                case Clock::XTAL_30MHZ:            return 30000000; break;
+                default:                           return        0; break;
+            }
+        }
+
+        static constexpr int32_t get_main_clock_frequency(const Clock clock)
+        {
+            switch(clock)
+            {
+                case Clock::OSC_LOW_POWER_1125KHZ: return  1125000; break;
+                case Clock::OSC_LOW_POWER_1500KHZ: return  1500000; break;
+                case Clock::OSC_LOW_POWER_1875KHZ: return  1875000; break;
+
+                case Clock::OSC_9MHZ:              return  9000000; break;
+                case Clock::OSC_12MHZ:             return 12000000; break;
+                case Clock::OSC_15MHZ:             return 15000000; break;
+                case Clock::OSC_18MHZ:             return 18000000; break;
+                case Clock::OSC_24MHZ:             return 24000000; break;
+                case Clock::OSC_30MHZ:             return 30000000; break;
+
+                case Clock::XTAL_9MHZ:             return 36000000; break;
+                case Clock::XTAL_12MHZ:            return 24000000; break;
+                case Clock::XTAL_15MHZ:            return 60000000; break;
+                case Clock::XTAL_18MHZ:            return 36000000; break;
+                case Clock::XTAL_24MHZ:            return 24000000; break;
+                case Clock::XTAL_30MHZ:            return 60000000; break;
+                default:                           return        0; break;
+            }
+        }
 };
 
 
