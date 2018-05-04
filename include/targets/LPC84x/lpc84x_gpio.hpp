@@ -323,7 +323,7 @@ class Gpio
                 switch(direction)
                 {
                     case Direction::INPUT:  *reg_dir &= ~m_mask; break;
-                    case Direction::OUTPUT: *reg_dir &= ~m_mask; break;
+                    case Direction::OUTPUT: *reg_dir |=  m_mask; break;
                 }
             }
         }
