@@ -9,7 +9,7 @@ Commit: d8f5a1d38a2a87154f2fe842487bbc2f519b6a0e
 ---
 ## GSL: Guideline Support Library
 
-Date: 15 March 2018  
+Date: 3 May 2018  
 Branch: master  
-Commit: d846fe50a3f0bb7767c7e087a05f4be95f4da0ec  
+Commit: 5cbde3008aa43a9c5f6c219ee15b8388336d4433  
 ### https://github.com/Microsoft/GSL
