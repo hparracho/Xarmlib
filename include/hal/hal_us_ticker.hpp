@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    11 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,7 +43,7 @@ namespace hal
 
 
 template <class TargetUsTicker>
-class UsTicker
+class UsTicker : private TargetUsTicker
 {
     public:
 
@@ -52,17 +52,14 @@ class UsTicker
         // --------------------------------------------------------------------
 
         // Read the current ticker value
-        static std::chrono::microseconds now()
-        {
-            return TargetUsTicker::now();
-        }
-        
+        using TargetUsTicker::now;
+
         // Wait for the supplied duration time
         static void wait(const std::chrono::microseconds duration)
         {
-            const auto start = TargetUsTicker::now();
+            const auto start = now();
 
-            while(static_cast<uint32_t>((TargetUsTicker::now() - start).count()) <
+            while(static_cast<uint32_t>((now() - start).count()) <
                   static_cast<uint32_t>(duration.count()))
             {}
         }

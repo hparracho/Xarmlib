@@ -2,7 +2,7 @@
 // @file    peripheral_ref_counter.hpp
 // @brief   Peripheral reference counter class (helper class to keep a record
 //          of the peripherals objects that are created and destructed).
-// @date    24 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -93,7 +93,7 @@ class PeripheralRefCounter
             return __builtin_popcount(m_used_mask);
         }
 
-    protected:
+    private:
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS

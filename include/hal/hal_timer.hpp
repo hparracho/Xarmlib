@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    27 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,6 @@
 #ifndef __XARMLIB_HAL_TIMER_HPP
 #define __XARMLIB_HAL_TIMER_HPP
 
-#include "system/chrono"
 #include "system/target.h"
 
 namespace xarmlib
@@ -59,55 +58,23 @@ class Timer : private TargetTimer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Timer() : TargetTimer()
-        {}
-
         // -------- START / STOP ----------------------------------------------
 
-        void start(const std::chrono::microseconds rate_us, const Mode mode)
-        {
-            TargetTimer::start(rate_us, mode);
-        }
-
-        void reload()
-        {
-            TargetTimer::reload();
-        }
-
-        void stop()
-        {
-            TargetTimer::stop();
-        }
-
-        bool is_running() const
-        {
-            return TargetTimer::is_running();
-        }
+        using TargetTimer::start;
+        using TargetTimer::reload;
+        using TargetTimer::stop;
+        using TargetTimer::is_running;
 
         // -------- INTERRUPTS ------------------------------------------------
 
-        bool is_pending_irq() const
-        {
-            return TargetTimer::is_pending_irq();
-        }
-
-        void clear_pending_irq()
-        {
-            TargetTimer::clear_pending_irq();
-        }
-
-        bool is_enabled_irq() const
-        {
-            return TargetTimer::is_enabled_irq();
-        }
+        using TargetTimer::is_pending_irq;
+        using TargetTimer::clear_pending_irq;
+        using TargetTimer::is_enabled_irq;
 
 #ifdef __TARGET_TIMER_TYPE_IS_MRT__
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
-        static void set_mrt_irq_priority(const int32_t irq_priority)
-        {
-            TargetTimer::set_mrt_irq_priority(irq_priority);
-        }
+        using TargetTimer::set_mrt_irq_priority;
 
         void assign_irq_handler(const IrqHandler& irq_handler)
         {

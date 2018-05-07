@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    4 May 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -778,6 +778,16 @@ class Clock
     private:
 
         // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
+
+        // FRO Oscillator Control Register (FROOSCCTRL) bits
+        enum FROOSCCTRL : uint32_t
+        {
+            FROOSCCTRL_FRO_DIRECT = (1 << 17)
+        };
+
+        // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
@@ -802,14 +812,8 @@ class Clock
         }
 
         // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
+        // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
-
-        // FRO Oscillator Control Register (FROOSCCTRL) bits
-        enum FROOSCCTRL : uint32_t
-        {
-            FROOSCCTRL_FRO_DIRECT = (1 << 17)
-        };
 
         // Imprecise clock rates for the watchdog oscillator
         static constexpr std::array<int32_t, 16> m_watchdog_osc_frequency

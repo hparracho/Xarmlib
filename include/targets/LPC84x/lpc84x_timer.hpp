@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    26 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -59,10 +59,10 @@ static constexpr std::size_t TIMER_COUNT { 4 };
 
 class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PROTECTED DEFINITIONS
         // --------------------------------------------------------------------
 
         // Base class alias
@@ -80,8 +80,44 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         using IrqHandler     = Delegate<IrqHandlerType>;
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
+
+        Timer() : PeripheralTimer(*this)
+        {
+            // Enable MRT if this is the first timer created
+            if(get_used() == 1)
+            {
+                Clock::enable(Clock::Peripheral::MRT);
+                Power::reset(Power::ResetPeripheral::MRT);
+
+                NVIC_EnableIRQ(MRT_IRQn);
+            }
+
+            const auto channel_index = get_index();
+
+            // Set pointer to the available channel structure
+            m_channel = &LPC_MRT->CHANNEL[channel_index];
+
+            set_interval(0);
+            clear_pending_irq();
+        }
+
+        ~Timer()
+        {
+            set_interval(0);
+            clear_pending_irq();
+
+            // Disable MRT if this the last timer deleted
+            if(get_used() == 1)
+            {
+                Clock::disable(Clock::Peripheral::MRT);
+
+                NVIC_DisableIRQ(MRT_IRQn);
+            }
+        }
 
         // -------- START / STOP ----------------------------------------------
 
@@ -156,48 +192,6 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         void remove_irq_handler()
         {
             m_irq_handler = nullptr;
-        }
-
-    protected:
-
-        // --------------------------------------------------------------------
-        // PROTECTED MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
-
-        Timer() : PeripheralTimer(*this)
-        {
-            // Enable MRT if this is the first timer created
-            if(get_used() == 1)
-            {
-                Clock::enable(Clock::Peripheral::MRT);
-                Power::reset(Power::ResetPeripheral::MRT);
-
-                NVIC_EnableIRQ(MRT_IRQn);
-            }
-
-            const auto channel_index = get_index();
-
-            // Set pointer to the available channel structure
-            m_channel = &LPC_MRT->CHANNEL[channel_index];
-
-            set_interval(0);
-            clear_pending_irq();
-        }
-
-        ~Timer()
-        {
-            set_interval(0);
-            clear_pending_irq();
-
-            // Disable MRT if this the last timer deleted
-            if(get_used() == 1)
-            {
-                Clock::disable(Clock::Peripheral::MRT);
-
-                NVIC_DisableIRQ(MRT_IRQn);
-            }
         }
 
     private:

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    10 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,6 @@
 
 #ifndef __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
 #define __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
-
-#include <assert.h>
 
 #include "system/chrono"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
@@ -102,8 +100,6 @@ class Watchdog
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
-        static bool m_initialized;
-
         // Windowed Watchdog MOD Register bits
         enum MOD
         {
@@ -114,6 +110,12 @@ class Watchdog
             MOD_WDPROTECT = (1 << 4),       // WWDT update mode bit
             MOD_LOCK      = (1 << 5)        // WWDT osc lock mode bit
         };
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        static bool m_initialized;
 };
 
 

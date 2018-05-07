@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    27 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -69,18 +69,15 @@ class SpiMaster : private TargetSpi
                   const Pin::Name    master_miso,
                   const Pin::Name    master_sck,
                   const int32_t      max_frequency,
-                  const SpiMode      spi_mode,
+                  const SpiMode      spi_mode      = SpiMode::MODE3,
                   const DataBits     data_bits     = DataBits::BITS_8,
                   const DataOrder    data_order    = DataOrder::MSB_FIRST,
                   const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
        {
-            using MasterMode   = typename TargetSpi::MasterMode;
-            using SselPolarity = typename TargetSpi::SselPolarity;
-
             // Initialize peripheral structure and pins
             TargetSpi::initialize(master_mosi, master_miso, master_sck, Pin::Name::NC);
             // Configure data format and operating modes
-            TargetSpi::set_configuration(MasterMode::MASTER, spi_mode, data_bits, data_order, SselPolarity::LOW, loopback_mode);
+            TargetSpi::set_configuration(TargetSpi::MasterMode::MASTER, spi_mode, data_bits, data_order, TargetSpi::SselPolarity::LOW, loopback_mode);
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 
@@ -210,20 +207,18 @@ class SpiSlave : private TargetSpi
                  const Pin::Name    slave_sck,
                  const Pin::Name    slave_sel,
                  const int32_t      max_frequency,
-                 const SpiMode      spi_mode,
+                 const SpiMode      spi_mode      = SpiMode::MODE3,
                  const DataBits     data_bits     = DataBits::BITS_8,
                  const DataOrder    data_order    = DataOrder::MSB_FIRST,
                  const SselPolarity ssel_polarity = SselPolarity::LOW,
                  const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
         {
-            using MasterMode = typename TargetSpi::MasterMode;
-
             assert(slave_sel != Pin::Name::NC);
 
             // Initialize peripheral structure and pins
             TargetSpi::initialize(slave_mosi, slave_miso, slave_sck, slave_sel);
             // Configure data format and operating modes
-            TargetSpi::set_configuration(MasterMode::SLAVE, spi_mode, data_bits, data_order, ssel_polarity, loopback_mode);
+            TargetSpi::set_configuration(TargetSpi::MasterMode::SLAVE, spi_mode, data_bits, data_order, ssel_polarity, loopback_mode);
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 

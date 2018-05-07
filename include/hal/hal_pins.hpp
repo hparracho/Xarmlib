@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pins.hpp
 // @brief   Pins and Ports HAL interface classes.
-// @date    2 May 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -49,7 +49,8 @@ class Pin
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Name = typename TargetPin::Name;
+        using Name         = typename TargetPin::Name;
+        using FunctionMode = typename TargetPin::FunctionMode;
 };
 
 

@@ -1,13 +1,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_us_ticker.hpp
 // @brief   NXP LPC84x SysTick timer class (microsecond resolution).
-// @date    9 April 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// See README.md file for additional credits and acknowledgments. 
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -46,10 +46,10 @@ namespace lpc84x
 
 class UsTicker
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         static std::chrono::microseconds now()
@@ -67,7 +67,7 @@ class UsTicker
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
-    
+
         static void initialize()
         {
             m_initialized = true;
@@ -90,7 +90,7 @@ class UsTicker
         }
 
         // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
+        // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
         static bool m_initialized;

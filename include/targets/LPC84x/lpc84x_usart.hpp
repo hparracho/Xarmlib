@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    4 May 2018
+// @date    7 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -77,10 +77,10 @@ static constexpr std::size_t USART_COUNT { 5 };
 
 class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PROTECTED DEFINITIONS
         // --------------------------------------------------------------------
 
         // Base class alias
@@ -126,8 +126,133 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         using IrqHandler     = Delegate<IrqHandlerType>;
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
+
+        Usart() : PeripheralUsart(*this)
+        {
+            // Initialize and configure FRG0 if this is the first USART peripheral instantiation
+            if(get_used() == 1)
+            {
+                initialize_frg0();
+            }
+        }
+
+        ~Usart()
+        {
+            // Disable peripheral
+            disable();
+
+            const Name name = static_cast<Name>(get_index());
+
+            // Disable peripheral clock sources and interrupts
+            switch(name)
+            {
+                case Name::USART0: Clock::disable(Clock::Peripheral::USART0);
+                                   NVIC_DisableIRQ(USART0_IRQn);
+                                   break;
+                case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
+                                   NVIC_DisableIRQ(USART1_IRQn);
+                                   break;
+#ifdef __LPC845__
+                case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
+                                   NVIC_DisableIRQ(USART2_IRQn);
+                                   break;
+                case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
+                                   break;
+                case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
+                                   break;
+#endif
+            }
+        }
+
+        // -------- INITIALIZATION / CONFIGURATION ----------------------------
+
+        // Initialize USART peripheral structure and pins for asynchronous mode (constructor helper function)
+        void initialize(const Pin::Name txd,
+                        const Pin::Name rxd,
+                        const int32_t   baudrate,
+                        const DataBits  data_bits,
+                        const StopBits  stop_bits,
+                        const Parity    parity)
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::USART0: m_usart = LPC_USART0;
+                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART0,
+                                                                      Clock::PeripheralClockSource::FRG0_CLK);
+                                   Clock::enable(Clock::Peripheral::USART0);
+                                   Power::reset(Power::ResetPeripheral::USART0);
+                                   Swm::assign(Swm::PinMovable::U0_RXD_I, rxd);
+                                   Swm::assign(Swm::PinMovable::U0_TXD_O, txd);
+                                   break;
+
+                case Name::USART1: m_usart = LPC_USART1;
+                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART1,
+                                                                      Clock::PeripheralClockSource::FRG0_CLK);
+                                   Clock::enable(Clock::Peripheral::USART1);
+                                   Power::reset(Power::ResetPeripheral::USART1);
+                                   Swm::assign(Swm::PinMovable::U1_RXD_I, rxd);
+                                   Swm::assign(Swm::PinMovable::U1_TXD_O, txd);
+                                   break;
+#ifdef __LPC845__
+                case Name::USART2: m_usart = LPC_USART2;
+                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART2,
+                                                                      Clock::PeripheralClockSource::FRG0_CLK);
+                                   Clock::enable(Clock::Peripheral::USART2);
+                                   Power::reset(Power::ResetPeripheral::USART2);
+                                   Swm::assign(Swm::PinMovable::U2_RXD_I, rxd);
+                                   Swm::assign(Swm::PinMovable::U2_TXD_O, txd);
+                                   break;
+
+                case Name::USART3: m_usart = LPC_USART3;
+                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART3,
+                                                                      Clock::PeripheralClockSource::FRG0_CLK);
+                                   Clock::enable(Clock::Peripheral::USART3);
+                                   Power::reset(Power::ResetPeripheral::USART3);
+                                   Swm::assign(Swm::PinMovable::U3_RXD_I, rxd);
+                                   Swm::assign(Swm::PinMovable::U3_TXD_O, txd);
+                                   break;
+
+                case Name::USART4: m_usart = LPC_USART4;
+                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART4,
+                                                                      Clock::PeripheralClockSource::FRG0_CLK);
+                                   Clock::enable(Clock::Peripheral::USART4);
+                                   Power::reset(Power::ResetPeripheral::USART4);
+                                   Swm::assign(Swm::PinMovable::U4_RXD_I, rxd);
+                                   Swm::assign(Swm::PinMovable::U4_TXD_O, txd);
+                                   break;
+#endif
+            };
+
+            Pin::set_mode(txd, Pin::FunctionMode::HIZ);
+
+            disable_irq();
+
+            // No continuous break, no address detect, no Tx disable, no CC, no CLRCC
+            m_usart->CTL = 0;
+
+            // Clear all status bits
+            m_usart->STAT = STAT_DELTACTS
+                          | STAT_OVERRUNINT
+                          | STAT_DELTARXBRK
+                          | STAT_START
+                          | STAT_FRAMERRINT
+                          | STAT_PARITYERRINT
+                          | STAT_RXNOISEINT
+                          | STAT_ABERR;
+
+            set_format(data_bits, stop_bits, parity);
+            set_baudrate(baudrate);
+
+            enable();
+        }
 
         // -------- FORMAT / BAUDRATE -----------------------------------------
 
@@ -146,8 +271,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 // USART enabled...
 
-                // Make sure the USART is not currently sending or receiving data...
-                while(is_rx_idle() == false || is_tx_idle() == false)
+                // Make sure the USART is not currently sending or receiving data
+                while(is_tx_idle() == false || is_rx_idle() == false)
                 {}
 
                 // Disable USART
@@ -172,8 +297,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 // USART enabled...
 
-                // Make sure the USART is not currently sending or receiving data...
-                while(is_rx_idle() == false || is_tx_idle() == false)
+                // Make sure the USART is not currently sending or receiving data
+                while(is_tx_idle() == false || is_rx_idle() == false)
                 {}
 
                 // Disable USART
@@ -198,8 +323,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 // USART enabled...
 
-                // Make sure the USART is not currently sending or receiving data...
-                while(is_rx_idle() == false || is_tx_idle() == false)
+                // Make sure the USART is not currently sending or receiving data
+                while(is_tx_idle() == false || is_rx_idle() == false)
                 {}
 
                 // Disable USART
@@ -226,8 +351,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 // USART enabled...
 
-                // Make sure the USART is not currently sending or receiving data...
-                while(is_rx_idle() == false || is_tx_idle() == false)
+                // Make sure the USART is not currently sending or receiving data
+                while(is_tx_idle() == false || is_rx_idle() == false)
                 {}
 
                 // Disable USART
@@ -412,149 +537,16 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             m_usart->TXDAT = value & 0x000001FF;
         }
 
-    //protected:
-    public:
-
-        // --------------------------------------------------------------------
-        // PROTECTED MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
-
-        Usart() : PeripheralUsart(*this)
-        {
-            // Initialize and configure FRG0 if this is the first USART peripheral instantiation
-            if(get_used() == 1)
-            {
-                initialize_frg0();
-            }
-        }
-
-        ~Usart()
-        {
-            // Disable peripheral
-            disable();
-
-            const Name name = static_cast<Name>(get_index());
-
-            // Disable peripheral clock sources and interrupts
-            switch(name)
-            {
-                case Name::USART0: Clock::disable(Clock::Peripheral::USART0);
-                                   NVIC_DisableIRQ(USART0_IRQn);
-                                   break;
-                case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
-                                   NVIC_DisableIRQ(USART1_IRQn);
-                                   break;
-#ifdef __LPC845__
-                case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
-                                   NVIC_DisableIRQ(USART2_IRQn);
-                                   break;
-                case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
-                                   break;
-                case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
-                                   break;
-#endif
-            }
-        }
-
-        // -------- INITIALIZATION / CONFIGURATION ----------------------------
-
-        // Initialize USART peripheral structure and pins for asynchronous mode (constructor helper function)
-        void initialize(const Pin::Name txd,
-                        const Pin::Name rxd,
-                        const int32_t   baudrate,
-                        const DataBits  data_bits,
-                        const StopBits  stop_bits,
-                        const Parity    parity)
-        {
-            const Name name = static_cast<Name>(get_index());
-
-            switch(name)
-            {
-                case Name::USART0: m_usart = LPC_USART0;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART0,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART0);
-                                   Power::reset(Power::ResetPeripheral::USART0);
-                                   Swm::assign(Swm::PinMovable::U0_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U0_TXD_O, txd);
-                                   break;
-
-                case Name::USART1: m_usart = LPC_USART1;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART1,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART1);
-                                   Power::reset(Power::ResetPeripheral::USART1);
-                                   Swm::assign(Swm::PinMovable::U1_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U1_TXD_O, txd);
-                                   break;
-#ifdef __LPC845__
-                case Name::USART2: m_usart = LPC_USART2;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART2,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART2);
-                                   Power::reset(Power::ResetPeripheral::USART2);
-                                   Swm::assign(Swm::PinMovable::U2_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U2_TXD_O, txd);
-                                   break;
-
-                case Name::USART3: m_usart = LPC_USART3;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART3,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART3);
-                                   Power::reset(Power::ResetPeripheral::USART3);
-                                   Swm::assign(Swm::PinMovable::U3_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U3_TXD_O, txd);
-                                   break;
-
-                case Name::USART4: m_usart = LPC_USART4;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART4,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART4);
-                                   Power::reset(Power::ResetPeripheral::USART4);
-                                   Swm::assign(Swm::PinMovable::U4_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U4_TXD_O, txd);
-                                   break;
-#endif
-            };
-
-            Pin::set_mode(txd, Pin::FunctionMode::HIZ);
-
-            disable_irq();
-
-            // No continuous break, no address detect, no Tx disable, no CC, no CLRCC
-            m_usart->CTL = 0;
-
-            // Clear all status bits
-            m_usart->STAT = STAT_DELTACTS
-                          | STAT_OVERRUNINT
-                          | STAT_DELTARXBRK
-                          | STAT_START
-                          | STAT_FRAMERRINT
-                          | STAT_PARITYERRINT
-                          | STAT_RXNOISEINT
-                          | STAT_ABERR;
-
-            set_format(data_bits, stop_bits, parity);
-            set_baudrate(baudrate);
-
-            enable();
-        }
-
     private:
 
         // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
-        // Friend IRQ handler C function to give access to private IRQ handler member function
+        // Friend IRQ handler C functions to give access to private IRQ handler member function
         friend void USART0_IRQHandler(void);
         friend void USART1_IRQHandler(void);
 #ifdef __LPC845__
-// Forward declaration of IRQ handlers
         friend void USART2_IRQHandler(void);
         friend void PININT6_IRQHandler(void);   // PIO INT6 shared slot with USART3
         friend void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
