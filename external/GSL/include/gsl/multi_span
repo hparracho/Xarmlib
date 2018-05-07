@@ -22,8 +22,17 @@
 #include <gsl/gsl_util>   // for narrow_cast
 
 #include <algorithm> // for transform, lexicographical_compare
+
+#if 0
 #include <array>     // for array
 #include <cassert>
+#endif
+
+// Helder Parracho @ 7 May 2018
+// @NOTE: Replaced standard array and assert files with own system implementation
+#include "system/array"
+#include "system/cassert"
+
 #include <cstddef>          // for ptrdiff_t, size_t, nullptr_t
 #include <cstdint>          // for PTRDIFF_MAX
 #include <functional>       // for divides, multiplies, minus, negate, plus
