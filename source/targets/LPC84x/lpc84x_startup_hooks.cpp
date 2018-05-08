@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    4 May 2018
+// @date    8 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -112,9 +112,9 @@ static inline void mcu_startup_set_xtal_clock()
     Power::power_up(Power::Peripheral::SYSOSC);
 
     // Wait 500 uSec for sysosc to stabilize (typical time from datasheet). The for
-    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33 nSec),
-    // so worst case: i = (500 uSec) / (7 * 33 nSec) = 2164.5 => 2165
-    for(uint32_t i = 0; i < 2165; i++) __NOP();
+    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 nSec),
+    // so worst case: i = (500 uSec) / (7 * 33.333 nSec) = 2142.9 => 2143
+    for(uint32_t i = 0; i < 2143; i++) __NOP();
 
     // Choose sys_osc_clk source for external clock select (EXTCLKSEL)
     Clock::set_external_clock_source(Clock::ExternalClockSource::SYS_OSC_CLK);
@@ -188,9 +188,9 @@ void mcu_startup_initialize_hardware(void)
     Power::power_up(Power::Peripheral::BOD);
 
     // Wait 10 uSec. The for loop takes 7 clocks per iteration
-    // and executes at a maximum of 30 MHz (33 nSec), so worst case:
-    // i = (10 uSec) / (7 * 33 nSec) = 43.3 => 44
-    for(uint32_t i = 0; i < 44; i++) __NOP();
+    // and executes at a maximum of 30 MHz (33.333 nSec), so
+    // worst case: i = (10 uSec) / (7 * 33.333 nSec) = 42.9 => 43
+    for(uint32_t i = 0; i < 43; i++) __NOP();
 
     // Enable brown-out detection with reset level 3 (2.63V ~ 2.76V)
     BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
