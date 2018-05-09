@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    7 May 2018
+// @date    9 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -58,6 +58,7 @@ class Gpio : private TargetGpio
         using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
         using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
 
+        using InputFilterClockDiv     = typename TargetGpio::InputFilterClockDiv;
         using InputFilter             = typename TargetGpio::InputFilter;
         using InputInvert             = typename TargetGpio::InputInvert;
         using InputHysteresis         = typename TargetGpio::InputHysteresis;
@@ -110,6 +111,10 @@ class Gpio : private TargetGpio
 
         using TargetGpio::read;
         using TargetGpio::write;
+
+        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+
+        using TargetGpio::set_input_filter_clock_div;
 };
 
 

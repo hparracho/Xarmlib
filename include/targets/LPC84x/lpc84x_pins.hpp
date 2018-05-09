@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pins.hpp
 // @brief   NXP LPC84x pin and port classes.
-// @date    4 May 2018
+// @date    9 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,6 +41,11 @@ namespace xarmlib
 {
 namespace lpc84x
 {
+
+
+
+
+class Clock;
 
 
 
@@ -167,25 +172,28 @@ class Pin
         // Input filter samples (defined to map the PIO register directly)
         enum class InputFilter
         {
-            BYPASS              = (0 << 11) | (0 << 13),
-            CLOCK_CYCLE_1_DIV_1 = (1 << 11) | (1 << 13),
-            CLOCK_CYCLE_1_DIV_2 = (1 << 11) | (2 << 13),
-            CLOCK_CYCLE_1_DIV_3 = (1 << 11) | (3 << 13),
-            CLOCK_CYCLE_1_DIV_4 = (1 << 11) | (4 << 13),
-            CLOCK_CYCLE_1_DIV_5 = (1 << 11) | (5 << 13),
-            CLOCK_CYCLE_1_DIV_6 = (1 << 11) | (6 << 13),
-            CLOCK_CYCLE_2_DIV_1 = (2 << 11) | (1 << 13),
-            CLOCK_CYCLE_2_DIV_2 = (2 << 11) | (2 << 13),
-            CLOCK_CYCLE_2_DIV_3 = (2 << 11) | (3 << 13),
-            CLOCK_CYCLE_2_DIV_4 = (2 << 11) | (4 << 13),
-            CLOCK_CYCLE_2_DIV_5 = (2 << 11) | (5 << 13),
-            CLOCK_CYCLE_2_DIV_6 = (2 << 11) | (6 << 13),
-            CLOCK_CYCLE_3_DIV_1 = (3 << 11) | (1 << 13),
-            CLOCK_CYCLE_3_DIV_2 = (3 << 11) | (2 << 13),
-            CLOCK_CYCLE_3_DIV_3 = (3 << 11) | (3 << 13),
-            CLOCK_CYCLE_3_DIV_4 = (3 << 11) | (4 << 13),
-            CLOCK_CYCLE_3_DIV_5 = (3 << 11) | (5 << 13),
-            CLOCK_CYCLE_3_DIV_6 = (3 << 11) | (6 << 13)
+            BYPASS           = (0 << 11),
+            CLOCKS_1_CLKDIV0 = (1 << 11) | (0 << 13),
+            CLOCKS_1_CLKDIV1 = (1 << 11) | (1 << 13),
+            CLOCKS_1_CLKDIV2 = (1 << 11) | (2 << 13),
+            CLOCKS_1_CLKDIV3 = (1 << 11) | (3 << 13),
+            CLOCKS_1_CLKDIV4 = (1 << 11) | (4 << 13),
+            CLOCKS_1_CLKDIV5 = (1 << 11) | (5 << 13),
+            CLOCKS_1_CLKDIV6 = (1 << 11) | (6 << 13),
+            CLOCKS_2_CLKDIV0 = (2 << 11) | (0 << 13),
+            CLOCKS_2_CLKDIV1 = (2 << 11) | (1 << 13),
+            CLOCKS_2_CLKDIV2 = (2 << 11) | (2 << 13),
+            CLOCKS_2_CLKDIV3 = (2 << 11) | (3 << 13),
+            CLOCKS_2_CLKDIV4 = (2 << 11) | (4 << 13),
+            CLOCKS_2_CLKDIV5 = (2 << 11) | (5 << 13),
+            CLOCKS_2_CLKDIV6 = (2 << 11) | (6 << 13),
+            CLOCKS_3_CLKDIV0 = (3 << 11) | (0 << 13),
+            CLOCKS_3_CLKDIV1 = (3 << 11) | (1 << 13),
+            CLOCKS_3_CLKDIV2 = (3 << 11) | (2 << 13),
+            CLOCKS_3_CLKDIV3 = (3 << 11) | (3 << 13),
+            CLOCKS_3_CLKDIV4 = (3 << 11) | (4 << 13),
+            CLOCKS_3_CLKDIV5 = (3 << 11) | (5 << 13),
+            CLOCKS_3_CLKDIV6 = (3 << 11) | (6 << 13)
         };
 
         // --------------------------------------------------------------------

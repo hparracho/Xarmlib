@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    7 May 2018
+// @date    9 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -85,9 +85,10 @@ class Gpio
             HIZ
         };
 
-        using InputFilter     = Pin::InputFilter;
-        using InputInvert     = Pin::InputInvert;
-        using InputHysteresis = Pin::InputHysteresis;
+        using InputFilterClockDiv = Clock::IoconClockDivSelect;
+        using InputFilter         = Pin::InputFilter;
+        using InputInvert         = Pin::InputInvert;
+        using InputHysteresis     = Pin::InputHysteresis;
 
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
@@ -264,6 +265,15 @@ class Gpio
             }
         }
 
+        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+
+        // Set the value of the supplied IOCON clock divider (used by input filters)
+        // NOTE: The input filter source (where the divider is applied) is the MAIN clock
+        static void set_input_filter_clock_div(const InputFilterClockDiv clock_div, const uint8_t div)
+        {
+            Clock::set_iocon_clock_div(clock_div, div);
+        }
+
     private:
 
         // --------------------------------------------------------------------
@@ -290,10 +300,8 @@ class Gpio
                 reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin)];
                 reg_dir = &LPC_GPIO->DIR0;
 
-                if(m_gpio0_enabled == false)
+                if(Clock::is_enabled(Clock::Peripheral::GPIO0) == false)
                 {
-                    m_gpio0_enabled = true;
-
                     // Enable GPIO port 0
                     Clock::enable(Clock::Peripheral::GPIO0);
                     Power::reset(Power::ResetPeripheral::GPIO0);
@@ -306,10 +314,8 @@ class Gpio
                 reg_w   = &LPC_GPIO->W1[static_cast<uint32_t>(m_pin) - 32];
                 reg_dir = &LPC_GPIO->DIR1;
 
-                if(m_gpio1_enabled == false)
+                if(Clock::is_enabled(Clock::Peripheral::GPIO1) == false)
                 {
-                    m_gpio1_enabled = true;
-
                     // Enable GPIO port 1
                     Clock::enable(Clock::Peripheral::GPIO1);
                     Power::reset(Power::ResetPeripheral::GPIO1);
@@ -338,9 +344,6 @@ class Gpio
              uint32_t       m_mask  { 0 };
         __IO uint32_t*      reg_w   { nullptr };
         __IO uint32_t*      reg_dir { nullptr };
-
-        static bool         m_gpio0_enabled;
-        static bool         m_gpio1_enabled;
 };
 
 
