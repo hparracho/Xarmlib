@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    7 May 2018
+// @date    9 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -248,11 +248,25 @@ class Clock
             uint32_t            counter;
         };
 
+        // IOCON glitch filter clock divider selection
+        // NOTE: The clock selection is actually reversed. This is not a bug!
+        enum class IoconClockDivSelect
+        {
+            CLKDIV6 = 0,            // IOCONCLKDIV6
+            CLKDIV5,                // IOCONCLKDIV5
+            CLKDIV4,                // IOCONCLKDIV4
+            CLKDIV3,                // IOCONCLKDIV3
+            CLKDIV2,                // IOCONCLKDIV2
+            CLKDIV1,                // IOCONCLKDIV1
+            CLKDIV0                 // IOCONCLKDIV0
+        };
+
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         // ------------ ENABLE / DISABLE PERIPHERAL CLOCKS --------------------
+
         // Enable system or peripheral clock
         static void enable(const Peripheral peripheral)
         {
@@ -279,7 +293,21 @@ class Clock
             }
         }
 
+        // Get the system or peripheral clock state
+        static bool is_enabled(const Peripheral peripheral)
+        {
+            if(static_cast<const uint32_t>(peripheral) < 32)
+            {
+                return (LPC_SYSCON->SYSAHBCLKCTRL0 & (1 << static_cast<uint32_t>(peripheral))) != 0;
+            }
+            else
+            {
+                return (LPC_SYSCON->SYSAHBCLKCTRL1 & (1 << (static_cast<uint32_t>(peripheral) - 32))) != 0;
+            }
+        }
+
         // ------------ SYSTEM OSCILLATOR -------------------------------------
+
         // Set System Oscillator
         // @bypass:    Flag to bypass oscillator
         // @high_freq: Flag to set oscillator range from 15-25 MHz
@@ -304,6 +332,7 @@ class Clock
         }
 
         // ------------ SYSTEM CLOCK ------------------------------------------
+
         // Set system clock divider
         // @div: Divider for system clock.
         // NOTE: Use 0 to disable, or a divider value of 1 to 255.
@@ -321,6 +350,7 @@ class Clock
         }
 
         // ------------ FREE RUNNING OSCILLATOR (FRO) -------------------------
+
         // Set clock frequency
         // NOTE: If fro_direct = false, FRO also depends on the FAIM setting.
         static void set_fro_frequency(const FroFrequency fro_frequency, const bool fro_direct)
@@ -405,6 +435,7 @@ class Clock
         }
 
         // ------------ EXTERNAL CLOCK (CRYSTAL / CLOCK INPUT PIN) ------------
+
         // Set clock source
         static void set_external_clock_source(const ExternalClockSource source)
         {
@@ -430,6 +461,7 @@ class Clock
         }
 
         // ------------ SYSTEM PLL --------------------------------------------
+
         // Set clock source
         static void set_system_pll_source(const SystemPllSource source)
         {
@@ -487,6 +519,7 @@ class Clock
         }
 
         // ------------ MAIN CLOCK --------------------------------------------
+
         // Set clock source
         static void set_main_clock_source(const MainClockSource source)
         {
@@ -520,6 +553,7 @@ class Clock
         }
 
         // ------------ MAIN CLOCK PLL ----------------------------------------
+
         // Set clock source
         static void set_main_clock_pll_source(const MainClockPllSource source)
         {
@@ -551,6 +585,7 @@ class Clock
         }
 
         // ------------ CLOCKOUT ---------------------------------------------
+
         // Set clock source
         static void set_clockout_source(const ClockoutSource source)
         {
@@ -566,6 +601,7 @@ class Clock
         }
 
         // ------------ SCT CLOCK --------------------------------------------
+
         // Set clock source
         static void set_sct_clock_source(const SctClockSource source)
         {
@@ -581,6 +617,7 @@ class Clock
         }
 
         // ------------ CAPTOUCH CLOCK ---------------------------------------
+
         // Set clock source
         static void set_capt_clock_source(const CaptClockSource source)
         {
@@ -588,6 +625,7 @@ class Clock
         }
 
         // ------------ ADC CLOCK --------------------------------------------
+
         // Set clock source
         static void set_adc_clock_source(const AdcClockSource source)
         {
@@ -603,6 +641,7 @@ class Clock
         }
 
         // ------------ FRACTIONAL RATE GENERATOR (FRG) CLOCK -----------------
+
         // Set clock source
         static void set_frg_clock_source(const FrgClockSelect frg, const FrgClockSource source)
         {
@@ -694,6 +733,7 @@ class Clock
         }
 
         // ------------ PERIPHERALS CLOCK -------------------------------------
+
         // Set clock source
         static void set_peripheral_clock_source(const PeripheralClockSelect peripheral, const PeripheralClockSource source)
         {
@@ -725,6 +765,7 @@ class Clock
         }
 
         // ------------ WATCHDOG OSCILLATOR -----------------------------------
+
         // Set watchdog oscillator analog output frequency and divider
         // @frequency: Selected watchdog analog output frequency.
         // @div:       Watchdog divider value, even value between 2 and 64.
@@ -773,6 +814,14 @@ class Clock
                     }
                 }
             }
+        }
+
+        // -------- IOCON CLOCK DIV SELECTION --------------------------
+
+        // Set the value of the supplied IOCON clock divider
+        static void set_iocon_clock_div(const IoconClockDivSelect clock_div, const uint8_t div)
+        {
+            LPC_SYSCON->IOCONCLKDIV[static_cast<int32_t>(clock_div)] = div;
         }
 
     private:
