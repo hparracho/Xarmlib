@@ -247,13 +247,7 @@ class Pin
         // --------------------------------------------------------------------
 
         // IOCON pin values
-#if (__LPC84X_PINS__ == 33)
-        static constexpr std::array<uint8_t, 29> m_pin_number_to_iocon
-#elif (__LPC84X_PINS__ == 48)
-        static constexpr std::array<uint8_t, 42> m_pin_number_to_iocon
-#elif (__LPC84X_PINS__ == 64)
-        static constexpr std::array<uint8_t, 54> m_pin_number_to_iocon
-#endif
+        static constexpr std::array<uint8_t, __LPC84X_GPIOS__> m_pin_number_to_iocon
         {
             // PORT0
             0x11,   // P0.0

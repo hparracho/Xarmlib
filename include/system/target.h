@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    target.h
 // @brief   System level target configuration header file.
-// @date    3 April 2018
+// @date    9 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -39,26 +39,32 @@
 #   define __LPC845__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
 #elif defined (LPC845M301JBD48 || LPC845M301JHI48)
 #   define __LPC845__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
 #elif defined (LPC845M301JHI33)
 #   define __LPC845__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
 #elif defined (LPC844M201JBD64)
 #   define __LPC844__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
 #elif defined (LPC844M201JBD48 || LPC844M201JHI48)
 #   define __LPC844__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
 #elif defined (LPC844M201JHI33)
 #   define __LPC844__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
 #else
 #   error "Target MCU not defined!"
 #endif
