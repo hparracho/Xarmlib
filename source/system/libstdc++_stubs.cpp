@@ -3,7 +3,7 @@
 // @brief   Minimal implementations of the verbose terminate handler for
 //          exceptions and pure virtual functions call handler to avoid
 //          references to the heavy implementations in the standard C++ library.
-// @date    21 March 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,7 +31,9 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <stdlib.h>
+// Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
+extern "C" __attribute__ ((weak, noreturn))
+void abort(void);
 
 
 
