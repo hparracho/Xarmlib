@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_iap.hpp
 // @brief   NXP LPC84x In-Application Programming (IAP) class.
-// @date    28 March 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,7 +34,7 @@
 
 #include "system/gsl"
 #include "targets/LPC84x/lpc84x_cmsis.h"
-#include "targets/LPC84x/lpc84x_pins.hpp"
+#include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib
 {
@@ -148,7 +148,7 @@ class Iap
             {
                 return false;
             }
-            
+
             // Check for valid address boundary
             if(flash_address < 0 || (flash_address % m_page_size) != 0 ||
               (flash_address + buffer.size()) > (m_page_count * m_page_size))
@@ -184,7 +184,7 @@ class Iap
                                        static_cast<uint32_t>(faim_word),
                                   reinterpret_cast<uint32_t>(&faim_value)
                                 };
-            
+
             iap_entry(command, result);
 
             return (static_cast<StatusCode>(result[0]) == StatusCode::CMD_SUCCESS);
@@ -210,22 +210,22 @@ class Iap
                                        static_cast<uint32_t>(faim_word),
                                   reinterpret_cast<uint32_t>(&faim_value)
                                 };
-            
+
             iap_entry(command, result);
 
             if(static_cast<StatusCode>(result[0]) != StatusCode::CMD_SUCCESS)
             {
                 return false;
             }
-            
+
             // After a Write FAIM, a Read FAIM is required to update the output of the FAIM
             uint32_t faim_read_value = 0;
-            
+
             if(read_faim_word(faim_word, faim_read_value) == false)
             {
                 return false;
             }
-            
+
             return (faim_value == faim_read_value);
         }
 
@@ -234,7 +234,7 @@ class Iap
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
-        
+
         // Get the sector of the specified address
         static constexpr int32_t get_sector(const int32_t flash_address)
         {
@@ -246,7 +246,7 @@ class Iap
         {
             return (flash_address >> 6);        // 64B page (0x40 each)
         }
-        
+
         // Prepare flash sector(s) for erase / writing
         static StatusCode prepare_sectors(const int32_t sector_start, const int32_t sector_end)
         {

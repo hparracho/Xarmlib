@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_api.hpp
 // @brief   HAL API main header file.
-// @date    2 May 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,11 +35,12 @@
 // HAL interface to peripherals
 #include "hal/hal_faim.hpp"
 #include "hal/hal_gpio.hpp"
-#include "hal/hal_pins.hpp"
+#include "hal/hal_pin.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
 #include "hal/hal_us_ticker.hpp"
+#include "hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 

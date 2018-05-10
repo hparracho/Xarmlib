@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_pins.hpp
-// @brief   NXP LPC84x pin and port classes.
-// @date    9 May 2018
+// @file    lpc84x_pin.hpp
+// @brief   NXP LPC84x pin class.
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,11 +29,11 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_PINS_HPP
-#define __XARMLIB_TARGETS_LPC84X_PINS_HPP
+#ifndef __XARMLIB_TARGETS_LPC84X_PIN_HPP
+#define __XARMLIB_TARGETS_LPC84X_PIN_HPP
 
-#include "system/cassert"
 #include "system/array"
+#include "system/cassert"
 #include "system/target.h"
 #include "targets/LPC84x/lpc84x_cmsis.h"
 
@@ -41,11 +41,6 @@ namespace xarmlib
 {
 namespace lpc84x
 {
-
-
-
-
-class Clock;
 
 
 
@@ -322,28 +317,7 @@ class Pin
 
 
 
-class Port
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        // Port names according to the target package
-        enum class Name
-        {
-            PORT0 = 0,
-#if (__LPC84X_PINS__ >= 48)
-            PORT1
-#endif
-        };
-};
-
-
-
-
 } // namespace lpc84x
 } // namespace xarmlib
 
-#endif // __XARMLIB_TARGETS_LPC84X_PINS_HPP
+#endif // __XARMLIB_TARGETS_LPC84X_PIN_HPP

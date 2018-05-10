@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    7 May 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,7 +35,7 @@
 #include "system/cassert"
 #include "system/gsl"
 #include "system/target.h"
-#include "hal/hal_pins.hpp"
+#include "hal/hal_pin.hpp"
 
 namespace xarmlib
 {

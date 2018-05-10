@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pins.hpp
-// @brief   Pins and Ports HAL interface classes.
-// @date    7 May 2018
+// @file    hal_pin.hpp
+// @brief   Pin HAL interface class.
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PINS_HPP
-#define __XARMLIB_HAL_PINS_HPP
+#ifndef __XARMLIB_HAL_PIN_HPP
+#define __XARMLIB_HAL_PIN_HPP
 
 namespace xarmlib
 {
@@ -56,21 +56,6 @@ class Pin
 
 
 
-template <class TargetPort>
-class Port
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name = typename TargetPort::Name;
-};
-
-
-
-
 } // namespace hal
 } // namespace xarmlib
 
@@ -84,12 +69,11 @@ class Port
 
 #if defined __LPC84X__
 
-#include "targets/LPC84x/lpc84x_pins.hpp"
+#include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib
 {
-using Pin  = hal::Pin <lpc84x::Pin >;
-using Port = hal::Port<lpc84x::Port>;
+using Pin = hal::Pin<lpc84x::Pin>;
 }
 
 #elif defined __OHER_TARGET__
@@ -98,8 +82,7 @@ using Port = hal::Port<lpc84x::Port>;
 
 namespace xarmlib
 {
-using Pin  = hal::Pin <other_target::Pin >;
-using Port = hal::Port<other_target::Port>;
+using Pin = hal::Pin<other_target::Pin>;
 }
 
 #endif
@@ -107,4 +90,4 @@ using Port = hal::Port<other_target::Port>;
 
 
 
-#endif // __XARMLIB_HAL_PINS_HPP
+#endif // __XARMLIB_HAL_PIN_HPP

@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    7 May 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,7 +38,7 @@
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
 #include "targets/LPC84x/lpc84x_cmsis.h"
-#include "targets/LPC84x/lpc84x_pins.hpp"
+#include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
@@ -71,6 +71,76 @@ extern "C" void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
 static constexpr std::size_t USART_COUNT { 5 };
 
 #endif // __LPC845__
+
+
+
+
+
+
+template <volatile uint32_t* Register>
+class Status
+{
+    public:
+
+        // -------- GET STATUS FLAGS ------------------------------------------
+
+        bool is_rx_ready        () const { return (*Register & STAT_RXRDY       ) != 0; }
+        bool is_rx_idle         () const { return (*Register & STAT_RXIDLE      ) != 0; }
+        bool is_tx_ready        () const { return (*Register & STAT_TXRDY       ) != 0; }
+        bool is_tx_idle         () const { return (*Register & STAT_TXIDLE      ) != 0; }
+        bool is_cts             () const { return (*Register & STAT_CTS         ) != 0; }
+        bool is_cts_delta       () const { return (*Register & STAT_DELTACTS    ) != 0; }
+        bool is_tx_disabled_int () const { return (*Register & STAT_TXDISINT    ) != 0; }
+        bool is_rx_overrun_int  () const { return (*Register & STAT_OVERRUNINT  ) != 0; }
+        bool is_rx_break        () const { return (*Register & STAT_RXBRK       ) != 0; }
+        bool is_rx_break_delta  () const { return (*Register & STAT_DELTARXBRK  ) != 0; }
+        bool is_start           () const { return (*Register & STAT_START       ) != 0; }
+        bool is_frame_error_int () const { return (*Register & STAT_FRAMERRINT  ) != 0; }
+        bool is_parity_error_int() const { return (*Register & STAT_PARITYERRINT) != 0; }
+        bool is_rx_noise_int    () const { return (*Register & STAT_RXNOISEINT  ) != 0; }
+        bool is_autobaud_error  () const { return (*Register & STAT_ABERR       ) != 0; }
+
+        // -------- CLEAR STATUS FLAGS ----------------------------------------
+
+        void clear_cts_delta       () { *Register |= STAT_DELTACTS;     }
+        void clear_rx_overrun_int  () { *Register |= STAT_OVERRUNINT;   }
+        void clear_rx_break_delta  () { *Register |= STAT_DELTARXBRK;   }
+        void clear_start           () { *Register |= STAT_START;        }
+        void clear_frame_error_int () { *Register |= STAT_FRAMERRINT;   }
+        void clear_parity_error_int() { *Register |= STAT_PARITYERRINT; }
+        void clear_rx_noise_int    () { *Register |= STAT_RXNOISEINT;   }
+        void clear_autobaud_error  () { *Register |= STAT_ABERR;        }
+
+    private:
+
+        // USART Status register (STAT) bits
+        enum STAT : uint32_t
+        {
+            STAT_RXRDY          = (1 << 0),     // Receiver ready
+            STAT_RXIDLE         = (1 << 1),     // Receiver idle
+            STAT_TXRDY          = (1 << 2),     // Transmitter ready for data
+            STAT_TXIDLE         = (1 << 3),     // Transmitter idle
+            STAT_CTS            = (1 << 4),     // Status of CTS signal
+            STAT_DELTACTS       = (1 << 5),     // Change in CTS state
+            STAT_TXDISINT       = (1 << 6),     // Transmitter disabled
+            STAT_OVERRUNINT     = (1 << 8),     // Overrun Error interrupt flag.
+            STAT_RXBRK          = (1 << 10),    // Received break
+            STAT_DELTARXBRK     = (1 << 11),    // Change in receive break detection
+            STAT_START          = (1 << 12),    // Start detected
+            STAT_FRAMERRINT     = (1 << 13),    // Framing Error interrupt flag
+            STAT_PARITYERRINT   = (1 << 14),    // Parity Error interrupt flag
+            STAT_RXNOISEINT     = (1 << 15),    // Received Noise interrupt flag
+            STAT_ABERR          = (1 << 16)     // Auto-baud Error
+        };
+};
+
+
+
+
+
+
+
+
 
 
 
@@ -131,55 +201,19 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Usart() : PeripheralUsart(*this)
+        Usart(const Pin::Name txd,
+              const Pin::Name rxd,
+              const int32_t   baudrate,
+              const DataBits  data_bits,
+              const StopBits  stop_bits,
+              const Parity    parity) : PeripheralUsart(*this)
         {
             // Initialize and configure FRG0 if this is the first USART peripheral instantiation
             if(get_used() == 1)
             {
                 initialize_frg0();
             }
-        }
 
-        ~Usart()
-        {
-            // Disable peripheral
-            disable();
-
-            const Name name = static_cast<Name>(get_index());
-
-            // Disable peripheral clock sources and interrupts
-            switch(name)
-            {
-                case Name::USART0: Clock::disable(Clock::Peripheral::USART0);
-                                   NVIC_DisableIRQ(USART0_IRQn);
-                                   break;
-                case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
-                                   NVIC_DisableIRQ(USART1_IRQn);
-                                   break;
-#ifdef __LPC845__
-                case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
-                                   NVIC_DisableIRQ(USART2_IRQn);
-                                   break;
-                case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
-                                   break;
-                case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
-                                   break;
-#endif
-            }
-        }
-
-        // -------- INITIALIZATION / CONFIGURATION ----------------------------
-
-        // Initialize USART peripheral structure and pins for asynchronous mode (constructor helper function)
-        void initialize(const Pin::Name txd,
-                        const Pin::Name rxd,
-                        const int32_t   baudrate,
-                        const DataBits  data_bits,
-                        const StopBits  stop_bits,
-                        const Parity    parity)
-        {
             const Name name = static_cast<Name>(get_index());
 
             switch(name)
@@ -250,8 +284,36 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
             set_format(data_bits, stop_bits, parity);
             set_baudrate(baudrate);
+        }
 
-            enable();
+        ~Usart()
+        {
+            // Disable peripheral
+            disable();
+
+            const Name name = static_cast<Name>(get_index());
+
+            // Disable peripheral clock sources and interrupts
+            switch(name)
+            {
+                case Name::USART0: Clock::disable(Clock::Peripheral::USART0);
+                                   NVIC_DisableIRQ(USART0_IRQn);
+                                   break;
+                case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
+                                   NVIC_DisableIRQ(USART1_IRQn);
+                                   break;
+#ifdef __LPC845__
+                case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
+                                   NVIC_DisableIRQ(USART2_IRQn);
+                                   break;
+                case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
+                                   break;
+                case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
+                                   break;
+#endif
+            }
         }
 
         // -------- FORMAT / BAUDRATE -----------------------------------------
