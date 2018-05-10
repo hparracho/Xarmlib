@@ -293,7 +293,7 @@ class Gpio
 
         void config_port()
         {
-            if(m_pin <= Pin::Name::P0_31)
+            if(static_cast<uint32_t>(m_pin) < 32)
             {
                 m_mask = 1 << static_cast<uint32_t>(m_pin);
 
@@ -307,7 +307,7 @@ class Gpio
                     Power::reset(Power::ResetPeripheral::GPIO0);
                 }
             }
-            else if(m_pin <= Pin::Name::P1_21)
+            else
             {
                 m_mask = 1 << (static_cast<uint32_t>(m_pin) - 32);
 

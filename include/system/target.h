@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    target.h
 // @brief   System level target configuration header file.
-// @date    9 May 2018
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,7 +40,7 @@
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (64)
 #   define __LPC84X_GPIOS__                 (54)
-#elif defined (LPC845M301JBD48 || LPC845M301JHI48)
+#elif defined (LPC845M301JBD48) || defined (LPC845M301JHI48)
 #   define __LPC845__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (48)
@@ -55,7 +55,7 @@
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (64)
 #   define __LPC84X_GPIOS__                 (54)
-#elif defined (LPC844M201JBD48 || LPC844M201JHI48)
+#elif defined (LPC844M201JBD48) || defined (LPC844M201JHI48)
 #   define __LPC844__
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (48)
