@@ -14,6 +14,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 ## External Dependencies:
 - [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using development commit as of 9 April 2018
 - [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 3 May 2018
+- [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
 
 ---
 ## Credit where it is due:
