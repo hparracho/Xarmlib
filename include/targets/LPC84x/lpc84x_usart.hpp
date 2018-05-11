@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    10 May 2018
+// @date    11 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,6 +35,7 @@
 
 #include <cmath>
 
+#include "system/bitmask"
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
 #include "targets/LPC84x/lpc84x_cmsis.h"
@@ -75,72 +76,52 @@ static constexpr std::size_t USART_COUNT { 5 };
 
 
 
-
-
-template <volatile uint32_t* Register>
-class Status
+namespace usart_private_implementation
 {
-    public:
 
-        // -------- GET STATUS FLAGS ------------------------------------------
-
-        bool is_rx_ready        () const { return (*Register & STAT_RXRDY       ) != 0; }
-        bool is_rx_idle         () const { return (*Register & STAT_RXIDLE      ) != 0; }
-        bool is_tx_ready        () const { return (*Register & STAT_TXRDY       ) != 0; }
-        bool is_tx_idle         () const { return (*Register & STAT_TXIDLE      ) != 0; }
-        bool is_cts             () const { return (*Register & STAT_CTS         ) != 0; }
-        bool is_cts_delta       () const { return (*Register & STAT_DELTACTS    ) != 0; }
-        bool is_tx_disabled_int () const { return (*Register & STAT_TXDISINT    ) != 0; }
-        bool is_rx_overrun_int  () const { return (*Register & STAT_OVERRUNINT  ) != 0; }
-        bool is_rx_break        () const { return (*Register & STAT_RXBRK       ) != 0; }
-        bool is_rx_break_delta  () const { return (*Register & STAT_DELTARXBRK  ) != 0; }
-        bool is_start           () const { return (*Register & STAT_START       ) != 0; }
-        bool is_frame_error_int () const { return (*Register & STAT_FRAMERRINT  ) != 0; }
-        bool is_parity_error_int() const { return (*Register & STAT_PARITYERRINT) != 0; }
-        bool is_rx_noise_int    () const { return (*Register & STAT_RXNOISEINT  ) != 0; }
-        bool is_autobaud_error  () const { return (*Register & STAT_ABERR       ) != 0; }
-
-        // -------- CLEAR STATUS FLAGS ----------------------------------------
-
-        void clear_cts_delta       () { *Register |= STAT_DELTACTS;     }
-        void clear_rx_overrun_int  () { *Register |= STAT_OVERRUNINT;   }
-        void clear_rx_break_delta  () { *Register |= STAT_DELTARXBRK;   }
-        void clear_start           () { *Register |= STAT_START;        }
-        void clear_frame_error_int () { *Register |= STAT_FRAMERRINT;   }
-        void clear_parity_error_int() { *Register |= STAT_PARITYERRINT; }
-        void clear_rx_noise_int    () { *Register |= STAT_RXNOISEINT;   }
-        void clear_autobaud_error  () { *Register |= STAT_ABERR;        }
-
-    private:
-
-        // USART Status register (STAT) bits
-        enum STAT : uint32_t
-        {
-            STAT_RXRDY          = (1 << 0),     // Receiver ready
-            STAT_RXIDLE         = (1 << 1),     // Receiver idle
-            STAT_TXRDY          = (1 << 2),     // Transmitter ready for data
-            STAT_TXIDLE         = (1 << 3),     // Transmitter idle
-            STAT_CTS            = (1 << 4),     // Status of CTS signal
-            STAT_DELTACTS       = (1 << 5),     // Change in CTS state
-            STAT_TXDISINT       = (1 << 6),     // Transmitter disabled
-            STAT_OVERRUNINT     = (1 << 8),     // Overrun Error interrupt flag.
-            STAT_RXBRK          = (1 << 10),    // Received break
-            STAT_DELTARXBRK     = (1 << 11),    // Change in receive break detection
-            STAT_START          = (1 << 12),    // Start detected
-            STAT_FRAMERRINT     = (1 << 13),    // Framing Error interrupt flag
-            STAT_PARITYERRINT   = (1 << 14),    // Parity Error interrupt flag
-            STAT_RXNOISEINT     = (1 << 15),    // Received Noise interrupt flag
-            STAT_ABERR          = (1 << 16)     // Auto-baud Error
-        };
+// USART Status register (STAT) bits
+enum class Status
+{
+    RX_READY         = (1 << 0),    // Receiver ready
+    RX_IDLE          = (1 << 1),    // Receiver idle
+    TX_READY         = (1 << 2),    // Transmitter ready for data
+    TX_IDLE          = (1 << 3),    // Transmitter idle
+    CTS              = (1 << 4),    // Status of CTS signal
+    CTS_DELTA        = (1 << 5),    // Change in CTS state
+    TX_DISABLED_INT  = (1 << 6),    // Transmitter disabled
+    RX_OVERRUN_INT   = (1 << 8),    // Overrun Error interrupt flag
+    RX_BREAK         = (1 << 10),   // Received break
+    RX_BREAK_DELTA   = (1 << 11),   // Change in receive break detection
+    START            = (1 << 12),   // Start detected
+    FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
+    PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
+    RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
+    AUTOBAUD_ERROR   = (1 << 16),   // Auto-baud Error
+    CLEAR_ALL        = 0x1F920      // 1'1111'1001'0010'0000
 };
 
+// USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
+enum class Interrupt
+{
+    RX_READY         = (1 << 0),    // Receiver ready
+    TX_READY         = (1 << 2),    // Transmitter ready for data
+    TX_IDLE          = (1 << 3),    // Transmitter idle
+    CTS_DELTA        = (1 << 5),    // Change in CTS state
+    TX_DISABLED_INT  = (1 << 6),    // Transmitter disabled
+    RX_OVERRUN_INT   = (1 << 8),    // Overrun Error interrupt flag
+    RX_BREAK_DELTA   = (1 << 11),   // Change in receive break detection
+    START            = (1 << 12),   // Start detected
+    FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
+    PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
+    RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
+    AUTOBAUD_ERROR   = (1 << 16),   // Auto-baud Error
+    ALL              = 0x1F96D      // 1'1111'1001'0110'1101
+};
 
+BITMASK_DEFINE_VALUE_MASK(Status,    0x1FD7F)   // 1'1111'1101'0111'1111
+BITMASK_DEFINE_VALUE_MASK(Interrupt, 0x1F96D)   // 1'1111'1001'0110'1101
 
-
-
-
-
-
+} // namespace usart_private_implementation
 
 
 
@@ -168,7 +149,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 #endif
         };
 
-        // Data length selection (defined to map the ??? register directly)
+        // Data length selection (defined to map the CFG register directly)
         enum class DataBits
         {
             BITS_7 = (0 << 2),  // USART 7 bit data mode
@@ -176,20 +157,28 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             BITS_9 = (2 << 2)   // USART 9 bit data mode
         };
 
-        // Stop bits selection (defined to map the ??? register directly)
+        // Stop bits selection (defined to map the CFG register directly)
         enum class StopBits
         {
             BITS_1 = (0 << 6),  // USART 1 stop bit
             BITS_2 = (1 << 6)   // USART 2 stop bits
         };
 
-        // Parity selection (defined to map the ??? register directly)
+        // Parity selection (defined to map the CFG register directly)
         enum class Parity
         {
             NONE = (0 << 4),    // USART no parity
             EVEN = (2 << 4),    // USART even parity select
             ODD  = (3 << 4)     // USART odd parity select
         };
+
+        // Type safe accessor to STAT register
+        using Status        = usart_private_implementation::Status;
+        using StatusBitmask = bitmask::bitmask<Status>;
+
+        // Type safe accessor to INTSTAT / INTENSET / INTENCLR registers
+        using Interrupt        = usart_private_implementation::Interrupt;
+        using InterruptBitmask = bitmask::bitmask<Interrupt>;
 
         // IRQ handler definition
         using IrqHandlerType = int32_t();
@@ -266,6 +255,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             };
 
             Pin::set_mode(txd, Pin::FunctionMode::HIZ);
+            Pin::set_mode(rxd, Pin::FunctionMode::PULL_UP);
 
             disable_irq();
 
@@ -273,14 +263,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             m_usart->CTL = 0;
 
             // Clear all status bits
-            m_usart->STAT = STAT_DELTACTS
-                          | STAT_OVERRUNINT
-                          | STAT_DELTARXBRK
-                          | STAT_START
-                          | STAT_FRAMERRINT
-                          | STAT_PARITYERRINT
-                          | STAT_RXNOISEINT
-                          | STAT_ABERR;
+            clear_status(Status::CLEAR_ALL);
 
             set_format(data_bits, stop_bits, parity);
             set_baudrate(baudrate);
@@ -445,36 +428,24 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // Gets the enable state
         bool is_enabled() const { return (m_usart->CFG & CFG_ENABLE) != 0; }
 
-        // -------- GET STATUS FLAGS ------------------------------------------
+        // -------- STATUS FLAGS ----------------------------------------------
 
-        bool is_rx_ready        () const { return (m_usart->STAT & STAT_RXRDY       ) != 0; }
-        bool is_rx_idle         () const { return (m_usart->STAT & STAT_RXIDLE      ) != 0; }
-        bool is_tx_ready        () const { return (m_usart->STAT & STAT_TXRDY       ) != 0; }
-        bool is_tx_idle         () const { return (m_usart->STAT & STAT_TXIDLE      ) != 0; }
-        bool is_cts             () const { return (m_usart->STAT & STAT_CTS         ) != 0; }
-        bool is_cts_delta       () const { return (m_usart->STAT & STAT_DELTACTS    ) != 0; }
-        bool is_tx_disabled_int () const { return (m_usart->STAT & STAT_TXDISINT    ) != 0; }
-        bool is_rx_overrun_int  () const { return (m_usart->STAT & STAT_OVERRUNINT  ) != 0; }
-        bool is_rx_break        () const { return (m_usart->STAT & STAT_RXBRK       ) != 0; }
-        bool is_rx_break_delta  () const { return (m_usart->STAT & STAT_DELTARXBRK  ) != 0; }
-        bool is_start           () const { return (m_usart->STAT & STAT_START       ) != 0; }
-        bool is_frame_error_int () const { return (m_usart->STAT & STAT_FRAMERRINT  ) != 0; }
-        bool is_parity_error_int() const { return (m_usart->STAT & STAT_PARITYERRINT) != 0; }
-        bool is_rx_noise_int    () const { return (m_usart->STAT & STAT_RXNOISEINT  ) != 0; }
-        bool is_autobaud_error  () const { return (m_usart->STAT & STAT_ABERR       ) != 0; }
+        bool is_rx_ready() const { return (get_status() & Status::RX_READY) != 0; }
+        bool is_rx_idle () const { return (get_status() & Status::RX_IDLE ) != 0; }
+        bool is_tx_ready() const { return (get_status() & Status::TX_READY) != 0; }
+        bool is_tx_idle () const { return (get_status() & Status::TX_IDLE ) != 0; }
 
-        // -------- CLEAR STATUS FLAGS ----------------------------------------
+        StatusBitmask get_status() const
+        {
+            return static_cast<Status>(m_usart->STAT);
+        }
 
-        void clear_cts_delta       () { m_usart->STAT |= STAT_DELTACTS;     }
-        void clear_rx_overrun_int  () { m_usart->STAT |= STAT_OVERRUNINT;   }
-        void clear_rx_break_delta  () { m_usart->STAT |= STAT_DELTARXBRK;   }
-        void clear_start           () { m_usart->STAT |= STAT_START;        }
-        void clear_frame_error_int () { m_usart->STAT |= STAT_FRAMERRINT;   }
-        void clear_parity_error_int() { m_usart->STAT |= STAT_PARITYERRINT; }
-        void clear_rx_noise_int    () { m_usart->STAT |= STAT_RXNOISEINT;   }
-        void clear_autobaud_error  () { m_usart->STAT |= STAT_ABERR;        }
+        void clear_status(const StatusBitmask bitmask)
+        {
+            m_usart->STAT = bitmask.bits();
+        }
 
-        // -------- ENABLE INTERRUPTS -----------------------------------------
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
 
         void enable_irq()
         {
@@ -493,11 +464,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             }
         }
 
-        void enable_irq_rx_ready() { m_usart->INTENSET |= INTEN_RXRDY; }
-        void enable_irq_tx_ready() { m_usart->INTENSET |= INTEN_TXRDY; }
-
-        // -------- DISABLE INTERRUPTS ----------------------------------------
-
         void disable_irq()
         {
             const Name name = static_cast<Name>(get_index());
@@ -514,11 +480,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                 default:                                                  break;
             }
         }
-
-        void disable_irq_rx_ready() { m_usart->INTENCLR |= INTEN_RXRDY; }
-        void disable_irq_tx_ready() { m_usart->INTENCLR |= INTEN_TXRDY; }
-
-        // -------- GET ENABLED INTERRUPTS ------------------------------------
 
         bool is_enabled_irq()
         {
@@ -537,11 +498,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             }
         }
 
-        bool is_enabled_irq_rx_ready     () const { return (m_usart->INTENSET & INTEN_RXRDY) != 0; }
-        bool is_enabled_irq_tx_ready     () const { return (m_usart->INTENSET & INTEN_TXRDY) != 0; }
-
-        // -------- IRQ HANDLER ASSIGNMENT ------------------------------------
-
         void set_irq_priority(const int32_t irq_priority)
         {
             const Name name = static_cast<Name>(get_index());
@@ -559,28 +515,33 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             }
         }
 
-        void assign_irq_handler_rx_ready(const IrqHandler& irq_handler_rx_ready)
+        void assign_irq_handler(const IrqHandler& irq_handler)
         {
-            assert(irq_handler_rx_ready != nullptr);
+            assert(irq_handler != nullptr);
 
-            m_irq_handler_rx_ready = irq_handler_rx_ready;
+            m_irq_handler = irq_handler;
         }
 
-        void assign_irq_handler_tx_ready(const IrqHandler& irq_handler_tx_ready)
+        void remove_irq_handler()
         {
-            assert(irq_handler_tx_ready != nullptr);
-
-            m_irq_handler_tx_ready = irq_handler_tx_ready;
+            m_irq_handler = nullptr;
         }
 
-        void remove_irq_handler_rx_ready()
+        // -------- INTERRUPTS ------------------------------------------------
+
+        void enable_interrupts(const InterruptBitmask bitmask)
         {
-            m_irq_handler_rx_ready = nullptr;
+            m_usart->INTENSET = bitmask.bits();
         }
 
-        void remove_irq_handler_tx_ready()
+        void disable_interrupts(const InterruptBitmask bitmask)
         {
-            m_irq_handler_tx_ready = nullptr;
+            m_usart->INTENCLR = bitmask.bits();
+        }
+
+        InterruptBitmask get_enabled_interrupts() const
+        {
+            return static_cast<Interrupt>(m_usart->INTSTAT);
         }
 
         // -------- READ / WRITE ----------------------------------------------
@@ -623,40 +584,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             CFG_PARITY_BITMASK  = (3 << 4)      // USART parity bitmask
         };
 
-        // USART Status register (STAT) bits
-        enum STAT : uint32_t
-        {
-            STAT_RXRDY          = (1 << 0),     // Receiver ready
-            STAT_RXIDLE         = (1 << 1),     // Receiver idle
-            STAT_TXRDY          = (1 << 2),     // Transmitter ready for data
-            STAT_TXIDLE         = (1 << 3),     // Transmitter idle
-            STAT_CTS            = (1 << 4),     // Status of CTS signal
-            STAT_DELTACTS       = (1 << 5),     // Change in CTS state
-            STAT_TXDISINT       = (1 << 6),     // Transmitter disabled
-            STAT_OVERRUNINT     = (1 << 8),     // Overrun Error interrupt flag.
-            STAT_RXBRK          = (1 << 10),    // Received break
-            STAT_DELTARXBRK     = (1 << 11),    // Change in receive break detection
-            STAT_START          = (1 << 12),    // Start detected
-            STAT_FRAMERRINT     = (1 << 13),    // Framing Error interrupt flag
-            STAT_PARITYERRINT   = (1 << 14),    // Parity Error interrupt flag
-            STAT_RXNOISEINT     = (1 << 15),    // Received Noise interrupt flag
-            STAT_ABERR          = (1 << 16)     // Auto-baud Error
-        };
-
-        // USART Interrupt Enable read and Set or Clear Register (INTENSET/INTENCLR) bits
-        enum INTEN : uint32_t
-        {
-            INTEN_RXRDY         = (1 << 0),     // Receive Ready interrupt
-            INTEN_TXRDY         = (1 << 2)      // Transmit Ready interrupt
-        };
-
-        // USART Interrupt Status Register (INTSTAT) bits
-        enum INTSTAT : uint32_t
-        {
-            INTSTAT_RXRDY       = (1 << 0),     // Receive Ready interrupt
-            INTSTAT_TXRDY       = (1 << 2)      // Transmit Ready interrupt
-        };
-
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -696,19 +623,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 
-        // IRQ handler private implementation (manage interrupt flags and call user IRQ handlers)
+        // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
             int32_t yield = 0;  // User in FreeRTOS
 
-            if((m_usart->INTSTAT & INTSTAT_RXRDY) != 0 && m_irq_handler_rx_ready != nullptr)
+            if(m_irq_handler != nullptr)
             {
-                yield |= m_irq_handler_rx_ready();
-            }
-
-            if((m_usart->INTSTAT & INTSTAT_TXRDY) != 0 && m_irq_handler_tx_ready != nullptr)
-            {
-                yield |= m_irq_handler_tx_ready();
+                yield |= m_irq_handler();
             }
 
             return yield;
@@ -729,8 +651,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
         LPC_USART_T* m_usart { nullptr };
 
-        IrqHandler   m_irq_handler_rx_ready;    // User defined RX ready IRQ handler
-        IrqHandler   m_irq_handler_tx_ready;    // User defined TX ready IRQ handler
+        IrqHandler   m_irq_handler;         // User defined IRQ handler
 };
 
 
