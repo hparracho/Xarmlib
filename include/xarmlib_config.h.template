@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.h
 // @brief   Xarmlib template configuration header file.
-// @date    2 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace xarmlib
 // SYSTEM DEFINITIONS
 // ----------------------------------------------------------------------------
 
-constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::XTAL_24MHZ };
+constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
 
 
 
