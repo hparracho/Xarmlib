@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    7 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -62,6 +62,13 @@ class UsTicker : private TargetUsTicker
             while(static_cast<uint32_t>((now() - start).count()) <
                   static_cast<uint32_t>(duration.count()))
             {}
+        }
+
+        static bool is_timeout(const std::chrono::microseconds start,
+                               const std::chrono::microseconds duration)
+        {
+            return static_cast<uint32_t>((now() - start).count()) >=
+                   static_cast<uint32_t>(duration.count());
         }
 };
 
