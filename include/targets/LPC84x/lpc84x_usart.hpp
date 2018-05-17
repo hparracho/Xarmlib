@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    11 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -630,7 +630,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
             if(m_irq_handler != nullptr)
             {
-                yield |= m_irq_handler();
+                yield = m_irq_handler();
             }
 
             return yield;
@@ -649,8 +649,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        LPC_USART_T* m_usart { nullptr };
-
+        LPC_USART_T* m_usart { nullptr };   // Pointer to the CMSIS USART structure
         IrqHandler   m_irq_handler;         // User defined IRQ handler
 };
 

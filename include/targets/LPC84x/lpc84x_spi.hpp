@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    10 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -503,8 +503,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        LPC_SPI_T* m_spi { nullptr };   // Pointer to the low level SPI structure
-
+        LPC_SPI_T* m_spi { nullptr };   // Pointer to the CMSIS SPI structure
         IrqHandler m_irq_handler;       // User defined IRQ handler
 };
 
