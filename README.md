@@ -12,7 +12,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 - [GNU Arm Embedded Toolchain](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm) - developed with version "6-2017-q2-update" on NXP MCUXpresso IDE v10.1.1
 
 ## External Dependencies:
-- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using development commit as of 9 April 2018
+- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using development commit as of 17 May 2018
 - [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 3 May 2018
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
 
