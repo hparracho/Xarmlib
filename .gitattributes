@@ -10,6 +10,8 @@
 *.txt text
 *.md text
 *.bat text
+*.template text
+*.cmake text
 
 # Declare files that will always have CRLF line endings on checkout.
 *.project text eol=crlf
@@ -21,3 +23,7 @@
 *.a binary
 *.lib binary
 *.exe binary
+*.axf binary
+*.elf binary
+*.hex binary
+*.bin binary
