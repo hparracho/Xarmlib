@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_api.hpp
-// @brief   HAL API main header file.
+// @file    xarmlib.hpp
+// @brief   Xarmlib main header file.
 // @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_API_HPP
-#define __XARMLIB_HAL_API_HPP
+#ifndef __XARMLIB_HPP
+#define __XARMLIB_HPP
 
 // HAL interface to peripherals
 #include "hal/hal_faim.hpp"
@@ -43,7 +43,10 @@
 #include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
+// API interface
+#include "api/api_digital_out.hpp"
 
 
 
-#endif // __XARMLIB_HAL_API_HPP
+
+#endif // __XARMLIB_HPP

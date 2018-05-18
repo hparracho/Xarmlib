@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_config.h
+// @file    xarmlib_config.hpp.template
 // @brief   Xarmlib template configuration header file.
 // @date    18 May 2018
 // ----------------------------------------------------------------------------
@@ -29,10 +29,10 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_CONFIG_H
-#define __XARMLIB_CONFIG_H
+#ifndef __XARMLIB_CONFIG_HPP
+#define __XARMLIB_CONFIG_HPP
 
-#include "hal/hal_api.hpp"
+#include "xarmlib.hpp"
 
 namespace xarmlib
 {
@@ -83,4 +83,4 @@ constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_CONFIG_H
+#endif // __XARMLIB_CONFIG_HPP

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_crp.cpp
 // @brief   CRP (Code Read Protect) word definition.
-// @date    28 March 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,7 +34,7 @@
 #ifdef __LPC84X__
 
 #include "targets/LPC84x/lpc84x_section_macros.h"
-#include "xarmlib_config.h"
+#include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
