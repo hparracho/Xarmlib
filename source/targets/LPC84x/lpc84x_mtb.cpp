@@ -88,7 +88,7 @@ namespace lpc84x
 // Check that buffer size requested is > 0 bytes in size
 #if (__MTB_BUFFER_SIZE > 0)
 
-#include "targets/LPC84x/lpc84x_section_macros.h"
+#include "targets/LPC84x/lpc84x_section_macros.hpp"
 
 #define __MTB_BUFFER_EXT(size, bank)         \
              __SECTION(mtb, bank)            \
