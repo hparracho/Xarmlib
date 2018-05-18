@@ -45,6 +45,7 @@
 #include "hal/hal_watchdog.hpp"
 
 // API interface
+#include "api/api_digital_in.hpp"
 #include "api/api_digital_out.hpp"
 
 
