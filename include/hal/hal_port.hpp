@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
+// @file    hal_port.hpp
+// @brief   Port HAL interface class.
 // @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,25 +29,61 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#ifndef __XARMLIB_HAL_PORT_HPP
+#define __XARMLIB_HAL_PORT_HPP
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
+#include "system/target"
 
-// API interface
-#include "api/api_digital_out.hpp"
+namespace xarmlib
+{
+namespace hal
+{
 
 
 
 
-#endif // __XARMLIB_HPP
+template <class TargetPort>
+class Port
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        using Name = typename TargetPort::Name;
+};
+
+
+
+
+} // namespace hal
+} // namespace xarmlib
+
+
+
+
+#if defined __LPC84X__
+
+#include "targets/LPC84x/lpc84x_port.hpp"
+
+namespace xarmlib
+{
+using Port = hal::Port<targets::lpc84x::Port>;
+}
+
+#elif defined __OHER_TARGET__
+
+// Other target include files
+
+namespace xarmlib
+{
+using Port = hal::Port<targets::other_target::Port>;
+}
+
+#endif
+
+
+
+
+#endif // __XARMLIB_HAL_PORT_HPP

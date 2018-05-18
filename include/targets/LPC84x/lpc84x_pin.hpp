@@ -91,7 +91,7 @@ class Pin
 
             // The following pins are not present
             // in HVQFN33 packages
-#if (__LPC84X_PINS__ >= 48)
+#if (__LPC84X_GPIOS__ >= 42)
             P0_29,
             P0_30,
             P0_31,
@@ -108,7 +108,7 @@ class Pin
 
             // The following pins are not present
             // in HVQFN33, HVQFN48 or LQFP48 packages
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
             P1_10,
             P1_11,
             P1_12,
@@ -121,8 +121,8 @@ class Pin
             P1_19,
             P1_20,
             P1_21,
-#endif // (__LPC84X_PINS__ == 64)
-#endif // (__LPC84X_PINS__ >= 48)
+#endif // (__LPC84X_GPIOS__ == 54)
+#endif // (__LPC84X_GPIOS__ >= 42)
 
             // Not connected
             NC
@@ -205,7 +205,7 @@ class Pin
                                              const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
             assert(pin != Pin::Name::NC);
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
             // True open-drain pins
             assert(pin != Name::P0_10 && pin != Name::P0_11);
 #endif
@@ -219,7 +219,7 @@ class Pin
                                       | static_cast<uint32_t>(input_filter);
         }
 
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
         // Set mode of true open-drain pins (only available on P0_10 and P0_11)
         static void set_mode(const Name pin, const I2cMode     i2c_mode,
                                              const InputFilter input_filter,
@@ -279,7 +279,7 @@ class Pin
 
             // The following pins are not present
             // in HVQFN33 packages
-#if (__LPC84X_PINS__ >= 48)
+#if (__LPC84X_GPIOS__ >= 42)
             0x32,   // P0.29
             0x33,   // P0.30
             0x23,   // P0.31
@@ -298,7 +298,7 @@ class Pin
 
             // The following pins are not present
             // in HVQFN33, HVQFN48 or LQFP48 packages
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
             0x37,   // P1.10
             0x36,   // P1.11
             0x21,   // P1.12
@@ -311,8 +311,8 @@ class Pin
             0x30,   // P1.19
             0x34,   // P1.20
             0x35,   // P1.21
-#endif // (__LPC84X_PINS__ == 64)
-#endif // (__LPC84X_PINS__ >= 48)
+#endif // (__LPC84X_GPIOS__ == 54)
+#endif // (__LPC84X_GPIOS__ >= 42)
         };
 };
 

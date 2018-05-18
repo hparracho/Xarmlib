@@ -123,7 +123,7 @@ class Gpio
             }
         }
 
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name pin_name,
              const InputModeTrueOpenDrain input_mode,
@@ -159,7 +159,7 @@ class Gpio
         {
             assert(m_pin != Pin::Name::NC);
 
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
             // Exclude true open-drain pins
             assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
 #endif
@@ -190,7 +190,7 @@ class Gpio
         {
             assert(m_pin != Pin::Name::NC);
 
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
             // Exclude true open-drain pins
             assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
 #endif
@@ -217,7 +217,7 @@ class Gpio
                                  Pin::InputHysteresis::ENABLE);
         }
 
-#if (__LPC84X_PINS__ == 64)
+#if (__LPC84X_GPIOS__ == 54)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
         void set_mode(const InputModeTrueOpenDrain input_mode,
                       const InputFilter            input_filter = InputFilter::BYPASS,
