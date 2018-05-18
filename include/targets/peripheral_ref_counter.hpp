@@ -2,7 +2,7 @@
 // @file    peripheral_ref_counter.hpp
 // @brief   Peripheral reference counter class (helper class to keep a record
 //          of the peripherals objects that are created and destructed).
-// @date    7 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,6 +37,8 @@
 #include "system/cassert"
 
 namespace xarmlib
+{
+namespace targets
 {
 
 
@@ -135,6 +137,7 @@ uint32_t PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT>::m_used_mask { 0 };
 
 
 
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __XARMLIB_TARGETS_PERIPHERAL_REF_COUNTER_HPP

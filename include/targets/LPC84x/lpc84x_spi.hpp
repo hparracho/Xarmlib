@@ -35,13 +35,15 @@
 #include "system/array"
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
-#include "targets/LPC84x/lpc84x_cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -511,6 +513,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __XARMLIB_TARGETS_LPC84X_SPI_HPP

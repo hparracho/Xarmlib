@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.cpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    26 April 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,13 +29,15 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
 #include "targets/LPC84x/lpc84x_timer.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -62,6 +64,7 @@ extern "C" void MRT_IRQHandler(void)
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

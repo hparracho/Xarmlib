@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.cpp
 // @brief   NXP LPC84x SPI class.
-// @date    27 April 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,6 +34,8 @@
 #ifdef __LPC84X__
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -74,6 +76,7 @@ extern "C" void SPI1_IRQHandler(void)
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

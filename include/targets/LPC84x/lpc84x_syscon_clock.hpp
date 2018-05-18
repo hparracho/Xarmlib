@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    9 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,11 +34,13 @@
 
 #include "system/array"
 #include "system/chrono"
-#include "targets/LPC84x/lpc84x_cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_iap.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -890,6 +892,7 @@ class Clock
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif  // __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP

@@ -33,6 +33,7 @@
 #define __XARMLIB_HAL_US_TICKER_HPP
 
 #include "system/chrono"
+#include "system/target"
 
 namespace xarmlib
 {
@@ -81,18 +82,13 @@ class UsTicker : private TargetUsTicker
 
 
 
-#include "system/target.h"
-
-
-
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_us_ticker.hpp"
 
 namespace xarmlib
 {
-using UsTicker = hal::UsTicker<lpc84x::UsTicker>;
+using UsTicker = hal::UsTicker<targets::lpc84x::UsTicker>;
 }
 
 #elif defined __OHER_TARGET__
@@ -101,7 +97,7 @@ using UsTicker = hal::UsTicker<lpc84x::UsTicker>;
 
 namespace xarmlib
 {
-using UsTicker = hal::UsTicker<other_target::UsTicker>;
+using UsTicker = hal::UsTicker<targets::other_target::UsTicker>;
 }
 
 #endif

@@ -30,13 +30,15 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
 #include "xarmlib_config.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -113,6 +115,7 @@ __MTB_BUFFER(__MTB_BUFFER_SIZE);
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

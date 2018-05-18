@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_cmsis.h
+// @file    lpc84x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    9 April 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,8 +35,8 @@
 // https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_H
-#define __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
+#define __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
 
 #include "cmsis_compiler.h"
 #include "cmsis_version.h"
@@ -126,7 +126,7 @@ extern uint32_t SystemCoreClock;            // CMSIS system core clock variable 
 // Update system core clock frequency
 // NOTE: This function is called in startup functions but should be
 //       called every time the system has a clock frequency change.
-void SystemCoreClockUpdate();
+void SystemCoreClockUpdate(void);
 
 
 
@@ -1258,4 +1258,4 @@ const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 }
 #endif
 
-#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_HPP

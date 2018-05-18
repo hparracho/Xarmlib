@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.cpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    28 March 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,13 +29,15 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
 #include "targets/LPC84x/lpc84x_watchdog.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -49,6 +51,7 @@ bool Watchdog::m_initialized {false};
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_swm.hpp
 // @brief   NXP LPC84x Switch Matrix (SWM) class.
-// @date    10 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,6 +35,8 @@
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -219,6 +221,7 @@ class Swm
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __XARMLIB_TARGETS_LPC84X_SWM_HPP

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pin.cpp
 // @brief   NXP LPC84x pin class.
-// @date    10 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,13 +29,15 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -50,6 +52,7 @@ constexpr std::array<uint8_t, __LPC84X_GPIOS__> Pin::m_pin_number_to_iocon;
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    9 April 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,11 +29,13 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -163,7 +165,7 @@ const IRQ_HandlerPtr __interrupts[] =
     I2C0_IRQHandler,                        // I2C0 controller
     SCT_IRQHandler,                         // Smart Counter Timer
     MRT_IRQHandler,                         // Multi-Rate Timer
-    CMP_IRQHandler,                         // Comparator shared slot with CAP Touch 
+    CMP_IRQHandler,                         // Comparator shared slot with CAP Touch
     WDT_IRQHandler,                         // Watchdog
     BOD_IRQHandler,                         // Brown Out Detect
     FLASH_IRQHandler,                       // Flash Interrupt
@@ -283,6 +285,7 @@ void SysTick_Handler(void)
 } // extern "C"
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

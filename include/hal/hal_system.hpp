@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    28 March 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_HAL_SYSTEM_HPP
 #define __XARMLIB_HAL_SYSTEM_HPP
 
-#include "system/target.h"
+#include "system/target"
 
 
 
@@ -43,7 +43,7 @@
 
 namespace xarmlib
 {
-using System = lpc84x::System;
+using System = targets::lpc84x::System;
 }
 
 #elif defined __OHER_TARGET__
@@ -52,7 +52,7 @@ using System = lpc84x::System;
 
 namespace xarmlib
 {
-using System = other_target::System;
+using System = targets::other_target::System;
 }
 
 #endif

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_faim.hpp
 // @brief   Fast Initialization Memory (FAIM) HAL interface class.
-// @date    2 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,6 +33,8 @@
 #define __XARMLIB_HAL_FAIM_HPP
 
 #include <cstdint>
+
+#include "system/target"
 
 namespace xarmlib
 {
@@ -66,18 +68,13 @@ class Faim
 
 
 
-#include "system/target.h"
-
-
-
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_faim.hpp"
 
 namespace xarmlib
 {
-using Faim = hal::Faim<lpc84x::Faim>;
+using Faim = hal::Faim<targets::lpc84x::Faim>;
 }
 
 #elif defined __OHER_TARGET__
@@ -86,7 +83,7 @@ using Faim = hal::Faim<lpc84x::Faim>;
 
 namespace xarmlib
 {
-using Faim = hal::Faim<other_target::Faim>;
+using Faim = hal::Faim<targets::other_target::Faim>;
 }
 
 #endif

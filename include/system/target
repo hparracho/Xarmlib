@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    cmsis.h
-// @brief   CMSIS Core generic header include file.
-// @date    29 March 2018
+// @file    target
+// @brief   System level target configuration header file.
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,13 +29,54 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_CMSIS_H
-#define __XARMLIB_SYSTEM_CMSIS_H
+#ifndef __XARMLIB_SYSTEM_TARGET
+#define __XARMLIB_SYSTEM_TARGET
 
-#include "system/target.h"
 
-#ifdef __LPC84X__
-#include "targets/LPC84x/lpc84x_cmsis.h"
+
+
+#if defined (LPC845M301JBD64)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
+#elif defined (LPC845M301JBD48) || defined (LPC845M301JHI48)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
+#elif defined (LPC845M301JHI33)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
+#elif defined (LPC844M201JBD64)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
+#elif defined (LPC844M201JBD48) || defined (LPC844M201JHI48)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
+#elif defined (LPC844M201JHI33)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
+#else
+#   error "Target MCU not defined!"
 #endif
 
-#endif // __XARMLIB_SYSTEM_CMSIS_H
+
+
+
+#if defined __LPC84X__
+#   define __TARGET_TIMER_TYPE_IS_MRT__
+#endif
+
+
+
+
+#endif // __XARMLIB_SYSTEM_TARGET

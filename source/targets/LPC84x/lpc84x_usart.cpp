@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
@@ -39,6 +39,8 @@
 #include "xarmlib_config.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -136,6 +138,7 @@ extern "C" void USART2_IRQHandler(void)
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

@@ -35,7 +35,7 @@
 
 #include "system/cassert"
 #include "system/gsl"
-#include "system/target.h"
+#include "system/target"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_us_ticker.hpp"
 
@@ -224,7 +224,7 @@ class Usart : private TargetUsart
 
 namespace xarmlib
 {
-using Usart = hal::Usart<lpc84x::Usart>;
+using Usart = hal::Usart<targets::lpc84x::Usart>;
 }
 
 #elif defined __OHER_TARGET__
@@ -233,7 +233,7 @@ using Usart = hal::Usart<lpc84x::Usart>;
 
 namespace xarmlib
 {
-using Usart = hal::Usart<other_target::Usart>;
+using Usart = hal::Usart<targets::other_target::Usart>;
 }
 
 #endif

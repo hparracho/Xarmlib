@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    target.h
-// @brief   System level target configuration header file.
-// @date    10 May 2018
+// @file    lpc84x_romdivide.hpp
+// @brief   Patch the AEABI integer divide functions to use MCU's romdivide library.
+// @date    28 March 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,54 +29,27 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_TARGET_H
-#define __XARMLIB_SYSTEM_TARGET_H
+#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP
+#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP
+
+namespace xarmlib
+{
+namespace targets
+{
+namespace lpc84x
+{
 
 
 
 
-#if defined (LPC845M301JBD64)
-#   define __LPC845__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (64)
-#   define __LPC84X_GPIOS__                 (54)
-#elif defined (LPC845M301JBD48) || defined (LPC845M301JHI48)
-#   define __LPC845__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (48)
-#   define __LPC84X_GPIOS__                 (42)
-#elif defined (LPC845M301JHI33)
-#   define __LPC845__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (33)
-#   define __LPC84X_GPIOS__                 (29)
-#elif defined (LPC844M201JBD64)
-#   define __LPC844__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (64)
-#   define __LPC84X_GPIOS__                 (54)
-#elif defined (LPC844M201JBD48) || defined (LPC844M201JHI48)
-#   define __LPC844__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (48)
-#   define __LPC84X_GPIOS__                 (42)
-#elif defined (LPC844M201JHI33)
-#   define __LPC844__
-#   define __LPC84X__
-#   define __LPC84X_PINS__                  (33)
-#   define __LPC84X_GPIOS__                 (29)
-#else
-#   error "Target MCU not defined!"
-#endif
+// Patch the AEABI integer divide functions to use MCU's romdivide library.
+extern "C" void ROMDIVIDE_PatchAeabiIntegerDivide(void);
 
 
 
 
-#if defined __LPC84X__
-#   define __TARGET_TIMER_TYPE_IS_MRT__
-#endif
+} // namespace lpc84x
+} // namespace targets
+} // namespace xarmlib
 
-
-
-
-#endif // __XARMLIB_SYSTEM_TARGET_H
+#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP

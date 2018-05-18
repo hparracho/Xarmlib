@@ -29,14 +29,16 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target.h"
+#include "system/target"
 
 #ifdef __LPC84X__
 
-#include "targets/LPC84x/lpc84x_section_macros.h"
+#include "targets/LPC84x/lpc84x_section_macros.hpp"
 #include "xarmlib_config.hpp"
 
 namespace xarmlib
+{
+namespace targets
 {
 namespace lpc84x
 {
@@ -108,6 +110,7 @@ __CRP const unsigned int CRP_WORD = CURRENT_CRP_SETTING;
 
 
 } // namespace lpc84x
+} // namespace targets
 } // namespace xarmlib
 
 #endif // __LPC84X__

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    10 May 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_HAL_GPIO_HPP
 #define __XARMLIB_HAL_GPIO_HPP
 
+#include "system/target"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
@@ -126,18 +127,13 @@ class Gpio : private TargetGpio
 
 
 
-#include "system/target.h"
-
-
-
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_gpio.hpp"
 
 namespace xarmlib
 {
-using Gpio = hal::Gpio<lpc84x::Gpio>;
+using Gpio = hal::Gpio<targets::lpc84x::Gpio>;
 }
 
 #elif defined __OHER_TARGET__
@@ -146,7 +142,7 @@ using Gpio = hal::Gpio<lpc84x::Gpio>;
 
 namespace xarmlib
 {
-using Gpio = hal::Gpio<other_target::Gpio>;
+using Gpio = hal::Gpio<targets::other_target::Gpio>;
 }
 
 #endif
