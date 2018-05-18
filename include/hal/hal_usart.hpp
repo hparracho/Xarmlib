@@ -56,8 +56,7 @@ class Usart : private TargetUsart
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Pin      = xarmlib::Pin;
-        using UsTicker = xarmlib::UsTicker;
+        using Pin = xarmlib::Pin;
 
         using DataBits = typename TargetUsart::DataBits;
         using StopBits = typename TargetUsart::StopBits;
@@ -208,6 +207,14 @@ class Usart : private TargetUsart
 
             return count;
         }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
+
+        using UsTicker = xarmlib::UsTicker;
 };
 
 
