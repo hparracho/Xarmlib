@@ -198,18 +198,18 @@ class Pin
         // --------------------------------------------------------------------
 
         // Set mode of normal pins
-        static void set_mode(const Name pin, const FunctionMode    function_mode,
-                                             const OpenDrain       open_drain       = OpenDrain::DISABLE,
-                                             const InputFilter     input_filter     = InputFilter::BYPASS,
-                                             const InputInvert     input_invert     = InputInvert::NORMAL,
-                                             const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        static void set_mode(const Name pin_name, const FunctionMode    function_mode,
+                                                  const OpenDrain       open_drain       = OpenDrain::DISABLE,
+                                                  const InputFilter     input_filter     = InputFilter::BYPASS,
+                                                  const InputInvert     input_invert     = InputInvert::NORMAL,
+                                                  const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            assert(pin != Pin::Name::NC);
+            assert(pin_name != Pin::Name::NC);
 #if (__LPC84X_GPIOS__ == 54)
             // True open-drain pins
-            assert(pin != Name::P0_10 && pin != Name::P0_11);
+            assert(pin_name != Name::P0_10 && pin_name != Name::P0_11);
 #endif
-            const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin)];
+            const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
 
             LPC_IOCON->PIO[pin_index] = static_cast<uint32_t>(function_mode)
                                       | static_cast<uint32_t>(input_hysteresis)
@@ -221,14 +221,14 @@ class Pin
 
 #if (__LPC84X_GPIOS__ == 54)
         // Set mode of true open-drain pins (only available on P0_10 and P0_11)
-        static void set_mode(const Name pin, const I2cMode     i2c_mode,
-                                             const InputFilter input_filter,
-                                             const InputInvert input_invert)
+        static void set_mode(const Name pin_name, const I2cMode     i2c_mode,
+                                                  const InputFilter input_filter,
+                                                  const InputInvert input_invert)
         {
             // True open-drain pins
-            assert(pin == Name::P0_10 || pin == Name::P0_11);
+            assert(pin_name == Name::P0_10 || pin_name == Name::P0_11);
 
-            const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin)];
+            const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
 
             LPC_IOCON->PIO[pin_index] = static_cast<uint32_t>(input_invert)
                                       | (1 << 7) // RESERVED

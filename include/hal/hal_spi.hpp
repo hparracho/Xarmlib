@@ -54,8 +54,6 @@ class SpiMaster : private TargetSpi
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Pin = xarmlib::Pin;
-
         using SpiMode      = typename TargetSpi::SpiMode;
         using DataBits     = typename TargetSpi::DataBits;
         using DataOrder    = typename TargetSpi::DataOrder;
@@ -65,17 +63,17 @@ class SpiMaster : private TargetSpi
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMaster(const Pin::Name    master_mosi,
-                  const Pin::Name    master_miso,
-                  const Pin::Name    master_sck,
-                  const int32_t      max_frequency,
-                  const SpiMode      spi_mode      = SpiMode::MODE3,
-                  const DataBits     data_bits     = DataBits::BITS_8,
-                  const DataOrder    data_order    = DataOrder::MSB_FIRST,
-                  const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
+        SpiMaster(const xarmlib::Pin::Name master_mosi,
+                  const xarmlib::Pin::Name master_miso,
+                  const xarmlib::Pin::Name master_sck,
+                  const int32_t            max_frequency,
+                  const SpiMode            spi_mode      = SpiMode::MODE3,
+                  const DataBits           data_bits     = DataBits::BITS_8,
+                  const DataOrder          data_order    = DataOrder::MSB_FIRST,
+                  const LoopbackMode       loopback_mode = LoopbackMode::DISABLED)
        {
             // Initialize peripheral structure and pins
-            TargetSpi::initialize(master_mosi, master_miso, master_sck, Pin::Name::NC);
+            TargetSpi::initialize(master_mosi, master_miso, master_sck, xarmlib::Pin::Name::NC);
             // Configure data format and operating modes
             TargetSpi::set_configuration(TargetSpi::MasterMode::MASTER, spi_mode, data_bits, data_order, TargetSpi::SselPolarity::LOW, loopback_mode);
             // Set supplied maximum frequency
@@ -188,8 +186,6 @@ class SpiSlave : private TargetSpi
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Pin = xarmlib::Pin;
-
         using SpiMode      = typename TargetSpi::SpiMode;
         using DataBits     = typename TargetSpi::DataBits;
         using DataOrder    = typename TargetSpi::DataOrder;
@@ -202,18 +198,18 @@ class SpiSlave : private TargetSpi
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlave(const Pin::Name    slave_mosi,
-                 const Pin::Name    slave_miso,
-                 const Pin::Name    slave_sck,
-                 const Pin::Name    slave_sel,
-                 const int32_t      max_frequency,
-                 const SpiMode      spi_mode      = SpiMode::MODE3,
-                 const DataBits     data_bits     = DataBits::BITS_8,
-                 const DataOrder    data_order    = DataOrder::MSB_FIRST,
-                 const SselPolarity ssel_polarity = SselPolarity::LOW,
-                 const LoopbackMode loopback_mode = LoopbackMode::DISABLED)
+        SpiSlave(const xarmlib::Pin::Name slave_mosi,
+                 const xarmlib::Pin::Name slave_miso,
+                 const xarmlib::Pin::Name slave_sck,
+                 const xarmlib::Pin::Name slave_sel,
+                 const int32_t            max_frequency,
+                 const SpiMode            spi_mode      = SpiMode::MODE3,
+                 const DataBits           data_bits     = DataBits::BITS_8,
+                 const DataOrder          data_order    = DataOrder::MSB_FIRST,
+                 const SselPolarity       ssel_polarity = SselPolarity::LOW,
+                 const LoopbackMode       loopback_mode = LoopbackMode::DISABLED)
         {
-            assert(slave_sel != Pin::Name::NC);
+            assert(slave_sel != xarmlib::Pin::Name::NC);
 
             // Initialize peripheral structure and pins
             TargetSpi::initialize(slave_mosi, slave_miso, slave_sck, slave_sel);

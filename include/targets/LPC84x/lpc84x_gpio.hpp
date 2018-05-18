@@ -103,7 +103,7 @@ class Gpio
              const InputMode       input_mode,
              const InputFilter     input_filter,
              const InputInvert     input_invert,
-             const InputHysteresis input_hysteresis) : m_pin {pin_name}
+             const InputHysteresis input_hysteresis) : m_pin_name {pin_name}
         {
             if(pin_name != Pin::Name::NC)
             {
@@ -114,7 +114,7 @@ class Gpio
 
         // Normal output pin constructor
         Gpio(const Pin::Name  pin_name,
-             const OutputMode output_mode) : m_pin {pin_name}
+             const OutputMode output_mode) : m_pin_name {pin_name}
         {
             if(pin_name != Pin::Name::NC)
             {
@@ -125,10 +125,10 @@ class Gpio
 
 #if (__LPC84X_GPIOS__ == 54)
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name pin_name,
+        Gpio(const Pin::Name              pin_name,
              const InputModeTrueOpenDrain input_mode,
              const InputFilter            input_filter,
-             const InputInvert            input_invert) : m_pin {pin_name}
+             const InputInvert            input_invert) : m_pin_name {pin_name}
         {
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
@@ -139,7 +139,7 @@ class Gpio
 
         // True open-drain output pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name               pin_name,
-             const OutputModeTrueOpenDrain output_mode) : m_pin {pin_name}
+             const OutputModeTrueOpenDrain output_mode) : m_pin_name {pin_name}
         {
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
@@ -157,11 +157,11 @@ class Gpio
                       const InputInvert     input_invert     = InputInvert::NORMAL,
                       const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            assert(m_pin != Pin::Name::NC);
+            assert(m_pin_name != Pin::Name::NC);
 
 #if (__LPC84X_GPIOS__ == 54)
             // Exclude true open-drain pins
-            assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
+            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
 
             Pin::FunctionMode function_mode;
@@ -178,24 +178,24 @@ class Gpio
             write(0);
             set_direction(Direction::INPUT);
 
-            Pin::set_mode(m_pin, function_mode,
-                                 Pin::OpenDrain::DISABLE,
-                                 input_filter,
-                                 input_invert,
-                                 input_hysteresis);
+            Pin::set_mode(m_pin_name, function_mode,
+                                      Pin::OpenDrain::DISABLE,
+                                      input_filter,
+                                      input_invert,
+                                      input_hysteresis);
         }
 
         // Set normal output pin mode
         void set_mode(const OutputMode output_mode)
         {
-            assert(m_pin != Pin::Name::NC);
+            assert(m_pin_name != Pin::Name::NC);
 
 #if (__LPC84X_GPIOS__ == 54)
             // Exclude true open-drain pins
-            assert(m_pin != Pin::Name::P0_10 && m_pin != Pin::Name::P0_11);
+            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
 
-            uint32_t pin_value;
+            uint32_t       pin_value;
             Pin::OpenDrain open_drain;
 
             switch(output_mode)
@@ -210,11 +210,11 @@ class Gpio
             write(pin_value);
             set_direction(Direction::OUTPUT);
 
-            Pin::set_mode(m_pin, Pin::FunctionMode::HIZ,
-                                 open_drain,
-                                 Pin::InputFilter::BYPASS,
-                                 Pin::InputInvert::NORMAL,
-                                 Pin::InputHysteresis::ENABLE);
+            Pin::set_mode(m_pin_name, Pin::FunctionMode::HIZ,
+                                      open_drain,
+                                      Pin::InputFilter::BYPASS,
+                                      Pin::InputInvert::NORMAL,
+                                      Pin::InputHysteresis::ENABLE);
         }
 
 #if (__LPC84X_GPIOS__ == 54)
@@ -226,24 +226,24 @@ class Gpio
             (void)input_mode; // Input mode only used to identify the type of pin
 
             // Available only on true open-drain pins
-            assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
+            assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
 
             write(0);
             set_direction(Direction::INPUT);
 
-            Pin::set_mode(m_pin, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
+            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
         }
 
         // Set true open-drain output pin mode (only available on P0_10 and P0_11)
         void set_mode(const OutputModeTrueOpenDrain output_mode)
         {
             // Available only on true open-drain pins
-            assert(m_pin == Pin::Name::P0_10 || m_pin == Pin::Name::P0_11);
+            assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
 
             write((output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
             set_direction(Direction::OUTPUT);
 
-            Pin::set_mode(m_pin, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
+            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
         }
 #endif
 
@@ -295,11 +295,11 @@ class Gpio
 
         void config_port()
         {
-            if(static_cast<uint32_t>(m_pin) < 32)
+            if(static_cast<uint32_t>(m_pin_name) < 32)
             {
-                m_mask = 1 << static_cast<uint32_t>(m_pin);
+                m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 
-                reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin)];
+                reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin_name)];
                 reg_dir = &LPC_GPIO->DIR0;
 
                 if(Clock::is_enabled(Clock::Peripheral::GPIO0) == false)
@@ -311,9 +311,9 @@ class Gpio
             }
             else
             {
-                m_mask = 1 << (static_cast<uint32_t>(m_pin) - 32);
+                m_pin_mask = 1 << (static_cast<uint32_t>(m_pin_name) - 32);
 
-                reg_w   = &LPC_GPIO->W1[static_cast<uint32_t>(m_pin) - 32];
+                reg_w   = &LPC_GPIO->W1[static_cast<uint32_t>(m_pin_name) - 32];
                 reg_dir = &LPC_GPIO->DIR1;
 
                 if(Clock::is_enabled(Clock::Peripheral::GPIO1) == false)
@@ -332,8 +332,8 @@ class Gpio
             {
                 switch(direction)
                 {
-                    case Direction::INPUT:  *reg_dir &= ~m_mask; break;
-                    case Direction::OUTPUT: *reg_dir |=  m_mask; break;
+                    case Direction::INPUT:  *reg_dir &= ~m_pin_mask; break;
+                    case Direction::OUTPUT: *reg_dir |=  m_pin_mask; break;
                 }
             }
         }
@@ -342,10 +342,10 @@ class Gpio
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        const Pin::Name     m_pin;
-             uint32_t       m_mask  { 0 };
-        __IO uint32_t*      reg_w   { nullptr };
-        __IO uint32_t*      reg_dir { nullptr };
+        const Pin::Name     m_pin_name;
+             uint32_t       m_pin_mask { 0 };
+        __IO uint32_t*      reg_w      { nullptr };
+        __IO uint32_t*      reg_dir    { nullptr };
 };
 
 

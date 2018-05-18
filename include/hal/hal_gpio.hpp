@@ -52,8 +52,6 @@ class Gpio : private TargetGpio
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Pin = xarmlib::Pin;
-
         using InputMode               = typename TargetGpio::InputMode;
         using OutputMode              = typename TargetGpio::OutputMode;
         using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
@@ -71,25 +69,25 @@ class Gpio : private TargetGpio
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Normal input pin constructor
-        Gpio(const Pin::Name       pin_name,
-             const InputMode       input_mode,
-             const InputFilter     input_filter     = InputFilter::BYPASS,
-             const InputInvert     input_invert     = InputInvert::NORMAL,
-             const InputHysteresis input_hysteresis = InputHysteresis::ENABLE) : TargetGpio(pin_name,
-                                                                                            input_mode,
-                                                                                            input_filter,
-                                                                                            input_invert,
-                                                                                            input_hysteresis)
+        Gpio(const xarmlib::Pin::Name pin_name,
+             const InputMode          input_mode,
+             const InputFilter        input_filter     = InputFilter::BYPASS,
+             const InputInvert        input_invert     = InputInvert::NORMAL,
+             const InputHysteresis    input_hysteresis = InputHysteresis::ENABLE) : TargetGpio(pin_name,
+                                                                                               input_mode,
+                                                                                               input_filter,
+                                                                                               input_invert,
+                                                                                               input_hysteresis)
         {}
 
         // Normal output pin constructor
-        Gpio(const Pin::Name  pin_name,
-             const OutputMode output_mode) : TargetGpio(pin_name,
-                                                        output_mode)
+        Gpio(const xarmlib::Pin::Name pin_name,
+             const OutputMode         output_mode) : TargetGpio(pin_name,
+                                                                output_mode)
         {}
 
         // True open-drain input pin constructor
-        Gpio(const Pin::Name              pin_name,
+        Gpio(const xarmlib::Pin::Name     pin_name,
              const InputModeTrueOpenDrain input_mode,
              const InputFilter            input_filter = InputFilter::BYPASS,
              const InputInvert            input_invert = InputInvert::NORMAL) : TargetGpio(pin_name,
@@ -99,7 +97,7 @@ class Gpio : private TargetGpio
         {}
 
         // True open-drain output pin constructor
-        Gpio(const Pin::Name               pin_name,
+        Gpio(const xarmlib::Pin::Name      pin_name,
              const OutputModeTrueOpenDrain output_mode) : TargetGpio(pin_name,
                                                                      output_mode)
         {}

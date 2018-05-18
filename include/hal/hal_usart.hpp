@@ -56,8 +56,6 @@ class Usart : private TargetUsart
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Pin = xarmlib::Pin;
-
         using DataBits = typename TargetUsart::DataBits;
         using StopBits = typename TargetUsart::StopBits;
         using Parity   = typename TargetUsart::Parity;
@@ -74,17 +72,17 @@ class Usart : private TargetUsart
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Usart(const Pin::Name txd,
-              const Pin::Name rxd,
-              const int32_t   baudrate,
-              const DataBits  data_bits = DataBits::BITS_8,
-              const StopBits  stop_bits = StopBits::BITS_1,
-              const Parity    parity    = Parity::NONE) : TargetUsart(txd,
-                                                                      rxd,
-                                                                      baudrate,
-                                                                      data_bits,
-                                                                      stop_bits,
-                                                                      parity)
+        Usart(const xarmlib::Pin::Name txd,
+              const xarmlib::Pin::Name rxd,
+              const int32_t            baudrate,
+              const DataBits           data_bits = DataBits::BITS_8,
+              const StopBits           stop_bits = StopBits::BITS_1,
+              const Parity             parity    = Parity::NONE) : TargetUsart(txd,
+                                                                               rxd,
+                                                                               baudrate,
+                                                                               data_bits,
+                                                                               stop_bits,
+                                                                               parity)
         {}
 
         // -------- FORMAT / BAUDRATE -----------------------------------------
