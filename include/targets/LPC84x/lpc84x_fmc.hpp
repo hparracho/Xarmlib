@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_fmc.hpp
 // @brief   NXP LPC84x Flash Memory Controller (FMC) class.
-// @date    18 May 2018
+// @date    21 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_FMC_HPP
 #define __XARMLIB_TARGETS_LPC84X_FMC_HPP
 
-#include "targets/LPC84x/lpc84x_cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 
 namespace xarmlib
 {
