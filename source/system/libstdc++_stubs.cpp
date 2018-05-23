@@ -3,7 +3,7 @@
 // @brief   Minimal implementations of the verbose terminate handler for
 //          exceptions and pure virtual functions call handler to avoid
 //          references to the heavy implementations in the standard C++ library.
-// @date    10 May 2018
+// @date    22 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,9 +38,6 @@ void abort(void);
 
 
 
-namespace __gnu_cxx
-{
-
 // ----------------------------------------------------------------------------
 // This function is called when an uncaught C++ exception is encountered. The
 // default version within the C++ library prints the name of the uncaught
@@ -48,6 +45,9 @@ namespace __gnu_cxx
 // amount of code to be pulled in. The below minimal implementation can reduce
 // code size noticeably. Note that this function should not return.
 // ----------------------------------------------------------------------------
+namespace __gnu_cxx
+{
+
 [[noreturn]] void __verbose_terminate_handler()
 {
     abort();
@@ -69,3 +69,10 @@ extern "C" [[noreturn]] void __cxa_pure_virtual()
 {
     abort();
 }
+
+
+
+
+// ----------------------------------------------------------------------------
+// Handle for the DSO (Dynamic Shared Object)
+void* __dso_handle __attribute__ ((weak));
