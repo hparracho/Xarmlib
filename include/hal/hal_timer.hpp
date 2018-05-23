@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    18 May 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -67,36 +67,26 @@ class Timer : private TargetTimer
 
         // -------- INTERRUPTS ------------------------------------------------
 
+        using TargetTimer::enable_irq;
+        using TargetTimer::disable_irq;
+
+        using TargetTimer::is_enabled_irq;
         using TargetTimer::is_pending_irq;
         using TargetTimer::clear_pending_irq;
-        using TargetTimer::is_enabled_irq;
 
-#ifdef __TARGET_TIMER_TYPE_IS_MRT__
+        #ifdef __TARGET_TIMER_TYPE_IS_MRT__
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
         using TargetTimer::set_mrt_irq_priority;
-
-        void assign_irq_handler(const IrqHandler& irq_handler)
-        {
-            TargetTimer::assign_irq_handler(irq_handler);
-            TargetTimer::enable_irq();
-        }
 #else
         // NOTE: Timer type is independent timer (multiple individual timers).
         //       Each timer have their own IRQ with different priorities.
-        void assign_irq_handler(const IrqHandler& irq_handler, const int32_t irq_priority)
-        {
-            TargetTimer::assign_irq_handler(irq_handler);
-            TargetTimer::set_irq_priority(irq_priority);
-            TargetTimer::enable_irq();
-        }
+
+        using TargetTimer::set_irq_priority;
 #endif
 
-        void remove_irq_handler()
-        {
-            TargetTimer::disable_irq();
-            TargetTimer::remove_irq_handler();
-        }
+        using TargetTimer::assign_irq_handler;
+        using TargetTimer::remove_irq_handler;
 };
 
 

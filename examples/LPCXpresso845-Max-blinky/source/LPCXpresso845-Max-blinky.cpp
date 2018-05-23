@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    LPCXpresso845-Max-blinky.cpp
 // @brief   LPCXpresso845-Max board Blinky example application.
-// @date    18 May 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,10 +43,12 @@ class Blinker : public Timer
 
         Blinker(const Pin::Name pin_name) : m_output(pin_name, DigitalOut::OutputMode::PUSH_PULL_HIGH)
         {
-            // Create an assign the timer IRQ handler to
+            // Create and assign the timer IRQ handler to
             // the Blinker::toggle() member function.
             auto handler = Timer::IrqHandler::create<Blinker, &Blinker::toggle>(this);
             assign_irq_handler(handler);
+
+            enable_irq();
         }
 
         void turn_on()
