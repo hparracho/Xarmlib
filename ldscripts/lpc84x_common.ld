@@ -2,13 +2,13 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_common.ld
 // @brief   Linker Script common part for NXP LPC84x MCUs.
-// @date    21 March 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
-// See README.md file for additional credits and acknowledgments. 
+// See README.md file for additional credits and acknowledgments.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -164,7 +164,7 @@ SECTIONS
         _ebss = .;
         /*PROVIDE(end = .);*/
     } > RAM
-    
+
     /* Default NOINIT section */
     .noinit (NOLOAD) : ALIGN(4)
     {
