@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    18 May 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -78,7 +78,7 @@ static constexpr std::size_t USART_COUNT { 5 };
 
 
 
-namespace usart_private_implementation
+namespace private_usart
 {
 
 // USART Status register (STAT) bits
@@ -123,7 +123,7 @@ enum class Interrupt
 BITMASK_DEFINE_VALUE_MASK(Status,    0x1FD7F)   // 1'1111'1101'0111'1111
 BITMASK_DEFINE_VALUE_MASK(Interrupt, 0x1F96D)   // 1'1111'1001'0110'1101
 
-} // namespace usart_private_implementation
+} // namespace private_usart
 
 
 
@@ -175,11 +175,11 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         };
 
         // Type safe accessor to STAT register
-        using Status        = usart_private_implementation::Status;
+        using Status        = private_usart::Status;
         using StatusBitmask = bitmask::bitmask<Status>;
 
         // Type safe accessor to INTSTAT / INTENSET / INTENCLR registers
-        using Interrupt        = usart_private_implementation::Interrupt;
+        using Interrupt        = private_usart::Interrupt;
         using InterruptBitmask = bitmask::bitmask<Interrupt>;
 
         // IRQ handler definition

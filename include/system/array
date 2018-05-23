@@ -46,7 +46,7 @@
 
 
 
-namespace __array_detail
+namespace private_array
 {
 
 template<std::size_t Size, typename T, std::size_t... indexes>
@@ -58,7 +58,7 @@ constexpr auto make_array_n_impl(T&& value, std::index_sequence<indexes...>)
     return std::array<std::decay_t<T>, Size>{ (static_cast<void>(indexes), value)..., std::forward<T>(value) };
 }
 
-} // namespace __array_detail
+} // namespace private_array
 
 
 
@@ -72,7 +72,7 @@ constexpr auto make_array_n(std::integral_constant<std::size_t, 0>, T&&)
 template<std::size_t Size, typename T>
 constexpr auto make_array_n(std::integral_constant<std::size_t, Size>, T&& value)
 {
-    return __array_detail::make_array_n_impl<Size>(std::forward<T>(value), std::make_index_sequence<Size - 1>{});
+    return private_array::make_array_n_impl<Size>(std::forward<T>(value), std::make_index_sequence<Size - 1>{});
 }
 
 template<std::size_t Size, typename T>
