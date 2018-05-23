@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    18 May 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,7 +43,7 @@ namespace hal
 
 
 template <class TargetPort>
-class Port
+class Port : private TargetPort
 {
     public:
 
@@ -52,6 +52,21 @@ class Port
         // --------------------------------------------------------------------
 
         using Name = typename TargetPort::Name;
+
+        using TargetPort::COUNT;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using TargetPort::set_mask;
+        using TargetPort::clear_mask;
+
+        using TargetPort::read;
+        using TargetPort::read_masked;
+
+        using TargetPort::write;
+        using TargetPort::write_masked;
 };
 
 

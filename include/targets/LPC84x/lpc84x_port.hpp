@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    18 May 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,6 +46,12 @@ namespace lpc84x
 
 
 
+// HVQFN48 and LQFP48 packages have 2 ports
+// HVQFN33 package only has 1 port
+
+
+
+
 class Port
 {
     public:
@@ -58,12 +64,17 @@ class Port
         enum class Name
         {
             PORT0 = 0,
-            // The following port are not present
-            // in HVQFN33 packages
-#if (__LPC84X_PORTS__ == 2)
+#if (__LPC84X_PINS__ > 33)
             PORT1
 #endif
         };
+
+        // Number of ports available according to the target package
+#if (__LPC84X_PINS__ == 33)
+        static const std::size_t COUNT = 1;
+#else
+        static const std::size_t COUNT = 2;
+#endif
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -74,7 +85,7 @@ class Port
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
             //       positions when reading.
-            LPC_GPIO->MASK[static_cast<uint32_t>(port)] = 0xFFFFFFFF;
+            LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0xFFFFFFFF;
         }
 
         static void clear_mask(const Name port)
@@ -82,7 +93,7 @@ class Port
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
             //       positions when reading.
-            LPC_GPIO->MASK[static_cast<uint32_t>(port)] = 0;
+            LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0;
         }
 
         static void set_mask(const Pin::Name pin)
@@ -95,11 +106,11 @@ class Port
 
             if(static_cast<uint32_t>(pin) < 32)
             {
-                LPC_GPIO->MASK0 |= 1 << static_cast<uint32_t>(pin);
+                LPC_GPIO->MASK0 |= 1UL << static_cast<uint32_t>(pin);
             }
             else
             {
-                LPC_GPIO->MASK1 |= 1 << (static_cast<uint32_t>(pin) - 32);
+                LPC_GPIO->MASK1 |= 1UL << (static_cast<uint32_t>(pin) - 32);
             }
         }
 
@@ -113,32 +124,32 @@ class Port
 
             if(static_cast<uint32_t>(pin) < 32)
             {
-                LPC_GPIO->MASK0 &= ~(1 << static_cast<uint32_t>(pin));
+                LPC_GPIO->MASK0 &= ~(1UL << static_cast<uint32_t>(pin));
             }
             else
             {
-                LPC_GPIO->MASK1 &= ~(1 << (static_cast<uint32_t>(pin) - 32));
+                LPC_GPIO->MASK1 &= ~(1UL << (static_cast<uint32_t>(pin) - 32));
             }
         }
 
         static uint32_t read(const Name port)
         {
-            return LPC_GPIO->PIN[static_cast<uint32_t>(port)];
+            return LPC_GPIO->PIN[static_cast<std::size_t>(port)];
         }
 
         static uint32_t read_masked(const Name port)
         {
-            return LPC_GPIO->MPIN[static_cast<uint32_t>(port)];
+            return LPC_GPIO->MPIN[static_cast<std::size_t>(port)];
         }
 
         static void write(const Name port, const uint32_t value)
         {
-            LPC_GPIO->PIN[static_cast<uint32_t>(port)] = value;
+            LPC_GPIO->PIN[static_cast<std::size_t>(port)] = value;
         }
 
         static void write_masked(const Name port, const uint32_t value)
         {
-            LPC_GPIO->MPIN[static_cast<uint32_t>(port)] = value;
+            LPC_GPIO->MPIN[static_cast<std::size_t>(port)] = value;
         }
 };
 
