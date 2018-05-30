@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_gpio.hpp
-// @brief   NXP LPC84x GPIO class.
+// @file    lpc81x_gpio.hpp
+// @brief   NXP LPC81x GPIO class.
 // @date    30 May 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,20 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_GPIO_HPP
-#define __XARMLIB_TARGETS_LPC84X_GPIO_HPP
+#ifndef __XARMLIB_TARGETS_LPC81X_GPIO_HPP
+#define __XARMLIB_TARGETS_LPC81X_GPIO_HPP
 
 #include <cstdint>
 
-#include "targets/LPC84x/lpc84x_pin.hpp"
-#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
-#include "targets/LPC84x/lpc84x_syscon_power.hpp"
+#include "targets/LPC81x/lpc81x_pin.hpp"
+#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
+#include "targets/LPC81x/lpc81x_syscon_power.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
@@ -123,7 +123,7 @@ class Gpio
             }
         }
 
-#if (__LPC84X_GPIOS__ == 54)
+#if (__LPC81X_GPIOS__ >= 14)
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name              pin_name,
              const InputModeTrueOpenDrain input_mode,
@@ -159,7 +159,7 @@ class Gpio
         {
             assert(m_pin_name != Pin::Name::NC);
 
-#if (__LPC84X_GPIOS__ == 54)
+#if (__LPC81X_GPIOS__ >= 14)
             // Exclude true open-drain pins
             assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
@@ -190,7 +190,7 @@ class Gpio
         {
             assert(m_pin_name != Pin::Name::NC);
 
-#if (__LPC84X_GPIOS__ == 54)
+#if (__LPC81X_GPIOS__ >= 14)
             // Exclude true open-drain pins
             assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
@@ -217,7 +217,7 @@ class Gpio
                                       Pin::InputHysteresis::ENABLE);
         }
 
-#if (__LPC84X_GPIOS__ == 54)
+#if (__LPC81X_GPIOS__ >= 14)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
         void set_mode(const InputModeTrueOpenDrain input_mode,
                       const InputFilter            input_filter = InputFilter::BYPASS,
@@ -295,33 +295,16 @@ class Gpio
 
         void config_port()
         {
-            if(static_cast<uint32_t>(m_pin_name) < 32)
+            m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
+
+            reg_w   = &LPC_GPIO->W[0][static_cast<uint32_t>(m_pin_name)];
+            reg_dir = &LPC_GPIO->DIR[0];
+
+            if(Clock::is_enabled(Clock::Peripheral::GPIO) == false)
             {
-                m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
-
-                reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin_name)];
-                reg_dir = &LPC_GPIO->DIR0;
-
-                if(Clock::is_enabled(Clock::Peripheral::GPIO0) == false)
-                {
-                    // Enable GPIO port 0
-                    Clock::enable(Clock::Peripheral::GPIO0);
-                    Power::reset(Power::ResetPeripheral::GPIO0);
-                }
-            }
-            else
-            {
-                m_pin_mask = 1 << (static_cast<uint32_t>(m_pin_name) - 32);
-
-                reg_w   = &LPC_GPIO->W1[static_cast<uint32_t>(m_pin_name) - 32];
-                reg_dir = &LPC_GPIO->DIR1;
-
-                if(Clock::is_enabled(Clock::Peripheral::GPIO1) == false)
-                {
-                    // Enable GPIO port 1
-                    Clock::enable(Clock::Peripheral::GPIO1);
-                    Power::reset(Power::ResetPeripheral::GPIO1);
-                }
+                // Enable GPIO
+                Clock::enable(Clock::Peripheral::GPIO);
+                Power::reset(Power::ResetPeripheral::GPIO);
             }
         }
 
@@ -351,8 +334,8 @@ class Gpio
 
 
 
-} // namespace lpc84x
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __XARMLIB_TARGETS_LPC84X_GPIO_HPP
+#endif // __XARMLIB_TARGETS_LPC81X_GPIO_HPP

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    30 May 2018
+// @file    lpc81x_cmsis.cpp
+// @brief   CMSIS Core Peripheral Access Layer source file for NXP LPC81x MCUs.
+// @date    24 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,71 +29,47 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
-
 #include "system/target"
 
+#ifdef __LPC81X__
+
+#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
+
 namespace xarmlib
 {
-namespace hal
+namespace targets
+{
+namespace lpc81x
+{
+
+extern "C"
 {
 
 
 
 
-template <class TargetPin>
-class Pin
+// CMSIS system core clock variable
+uint32_t SystemCoreClock;
+
+
+
+
+// Update system core clock frequency
+// NOTE: This function is called in startup functions but should be
+//       called every time the system has a clock frequency change.
+void SystemCoreClockUpdate()
 {
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
+    // Store the clock frequency in the SystemCoreClock global RAM location
+    SystemCoreClock = Clock::get_system_clock_frequency();
+}
 
 
 
 
-} // namespace hal
+} // extern "C"
+
+} // namespace lpc81x
+} // namespace targets
 } // namespace xarmlib
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc81x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __LPC81X__

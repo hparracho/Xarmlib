@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    30 May 2018
+// @file    lpc81x_fmc.hpp
+// @brief   NXP LPC81x Flash Memory Controller (FMC) class.
+// @date    28 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,21 +29,22 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_TARGETS_LPC81X_FMC_HPP
+#define __XARMLIB_TARGETS_LPC81X_FMC_HPP
 
-#include "system/target"
+#include "targets/LPC81x/lpc81x_cmsis.hpp"
 
 namespace xarmlib
 {
-namespace hal
+namespace targets
+{
+namespace lpc81x
 {
 
 
 
 
-template <class TargetPin>
-class Pin
+class Fmc
 {
     public:
 
@@ -51,49 +52,30 @@ class Pin
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
+        // Flash access time
+        enum class AccessTime
+        {
+            TIME_1_SYSCLK = 0,      // Flash accesses use 1 system clock. Use for up to 20 MHz CPU clock
+            TIME_2_SYSCLK,          // Flash accesses use 2 system clocks. Use for up to 30 MHz CPU clock
+        };
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Set flash memory access time in clocks
+        static void set_access_time(const AccessTime clocks)
+        {
+            LPC_FMC->FLASHCFG = (LPC_FMC->FLASHCFG & (~0x03))
+                              | static_cast<uint32_t>(clocks);
+        }
 };
 
 
 
 
-} // namespace hal
+} // namespace lpc81x
+} // namespace targets
 } // namespace xarmlib
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc81x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __XARMLIB_TARGETS_LPC81X_FMC_HPP

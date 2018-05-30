@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    30 May 2018
+// @file    lpc81x_syscon_clock.cpp
+// @brief   NXP LPC81x SYSCON clock control class.
+// @date    29 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,71 +29,31 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
-
 #include "system/target"
 
+#ifdef __LPC81X__
+
+#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
+
 namespace xarmlib
 {
-namespace hal
+namespace targets
+{
+namespace lpc81x
 {
 
 
 
 
-template <class TargetPin>
-class Pin
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
+// Static definition
+// Imprecise clock rates for the watchdog oscillator
+constexpr std::array<int32_t, 16> Clock::m_watchdog_osc_frequency;
 
 
 
 
-} // namespace hal
+} // namespace lpc81x
+} // namespace targets
 } // namespace xarmlib
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc81x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __LPC81X__

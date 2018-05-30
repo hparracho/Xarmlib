@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    30 May 2018
+// @file    api_group_debounced.hpp
+// @brief   API group debounced helper class for debouncer class.
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,71 +29,59 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_API_GROUP_DEBOUNCED_HPP
+#define __XARMLIB_API_GROUP_DEBOUNCED_HPP
 
-#include "system/target"
+#include <initializer_list>
+#include "hal/hal_pin.hpp"
 
 namespace xarmlib
 {
-namespace hal
-{
 
 
 
 
-template <class TargetPin>
-class Pin
+class GroupDebounced
 {
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
+        GroupDebounced(const std::initializer_list<Pin::Name> pin_names) : m_pin_names (pin_names)
+        {}
+
+        uint32_t read() const
+        {
+            return m_value;
+        }
+
+        operator uint32_t () const
+        {
+            return m_value;
+        }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
+
+        friend class Debouncer;
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        const std::initializer_list<Pin::Name>  m_pin_names;
+
+        uint32_t                                m_value { 0 };
 };
 
 
 
 
-} // namespace hal
 } // namespace xarmlib
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc81x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __XARMLIB_API_GROUP_DEBOUNCED_HPP

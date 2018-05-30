@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    30 May 2018
+// @file    api_debouncer.cpp
+// @brief   API debouncer class (takes control of one available Timer).
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,71 +29,39 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
-
-#include "system/target"
+#include "api/api_debouncer.hpp"
+#include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
-namespace hal
-{
 
 
 
 
-template <class TargetPin>
-class Pin
-{
-    public:
+// Static initializations
+Timer Debouncer::m_timer;
 
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
+//@TODO: APAGAR !!
+Gpio Debouncer::temp_m_led_red(Pin::Name::P0_12, Gpio::OutputMode::PUSH_PULL_HIGH);
 
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
+std::array<private_debouncer::Input, XARMLIB_CONFIG_DEBOUNCER_INPUT_COUNT_MAX> g_input { { Pin::Name::NC, 0, 0, 0 } };
+gsl::span<private_debouncer::Input> Debouncer::m_input { g_input };
+
+std::ptrdiff_t Debouncer::m_input_count { 0 };
+
+std::array<uint32_t, Port::COUNT> Debouncer::m_pins_mask { 0 };
+
+std::array<uint32_t, Port::COUNT> Debouncer::m_last_read_pins { 0 };
+
+std::array<uint32_t, Port::COUNT> Debouncer::m_current_debounced { 0 };
+
+std::array<uint32_t, Port::COUNT> Debouncer::m_last_debounced { 0 };
+
+std::array<uint32_t, Port::COUNT> Debouncer::m_sampling { 0 };
+
+Debouncer::NewDebouncedHandler Debouncer::m_new_debounced_handler;
 
 
 
 
-} // namespace hal
 } // namespace xarmlib
-
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc81x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
