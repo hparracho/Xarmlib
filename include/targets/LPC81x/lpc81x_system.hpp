@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_system.hpp
 // @brief   NXP LPC81x system level configuration class.
-// @date    29 May 2018
+// @date    7 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -59,9 +59,13 @@ class System
             OSC_24MHZ,                  // Using 12 MHz internal RC oscillator and PLL
             OSC_30MHZ,                  // Using 12 MHz internal RC oscillator and PLL
 
+            // The following clock frequencies are not possible
+            // in DIP8 packages
+#if (__LPC81X_GPIOS__ >= 14)
             XTAL_12MHZ,                 // Using direct external crystal
             XTAL_24MHZ,                 // Using external crystal and PPL
             XTAL_30MHZ                  // Using external crystal and PPL
+#endif
         };
 
         // 12 MHz internal RC oscillator
@@ -83,9 +87,11 @@ class System
                 case Clock::OSC_24MHZ:             return 24000000; break;
                 case Clock::OSC_30MHZ:             return 30000000; break;
 
+#if (__LPC81X_GPIOS__ >= 14)
                 case Clock::XTAL_12MHZ:            return 12000000; break;
                 case Clock::XTAL_24MHZ:            return 24000000; break;
                 case Clock::XTAL_30MHZ:            return 30000000; break;
+#endif
                 default:                           return        0; break;
             }
         }
@@ -94,13 +100,15 @@ class System
         {
             switch(clock)
             {
-                case Clock::OSC_12MHZ:             return 24000000; break;
+                case Clock::OSC_12MHZ:             return 12000000; break;
                 case Clock::OSC_24MHZ:             return 24000000; break;
                 case Clock::OSC_30MHZ:             return 60000000; break;
 
-                case Clock::XTAL_12MHZ:            return 24000000; break;
+#if (__LPC81X_GPIOS__ >= 14)
+                case Clock::XTAL_12MHZ:            return 12000000; break;
                 case Clock::XTAL_24MHZ:            return 24000000; break;
                 case Clock::XTAL_30MHZ:            return 60000000; break;
+#endif
                 default:                           return        0; break;
             }
         }
