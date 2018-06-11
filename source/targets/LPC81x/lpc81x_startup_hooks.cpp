@@ -188,6 +188,13 @@ void mcu_startup_initialize_hardware(void)
     // Enable IOCON clock
     Clock::enable(Clock::Peripheral::IOCON);
 
+#if (__LPC81X_GPIOS__ < 14)
+    // NOTE from manual:
+    // If the open-drain pins PIO0_10 and PIO0_11 are not available on the package,
+    // prevent the pins from internally floating
+    Gpio::set_open_drain_pins_as_low_output();
+#endif
+
     if(XARMLIB_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
     {
         mcu_startup_set_irc_clock();

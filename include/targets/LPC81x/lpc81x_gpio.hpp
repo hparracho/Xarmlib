@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    30 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -50,6 +50,24 @@ namespace lpc81x
 
 class Gpio
 {
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+#if (__LPC81X_GPIOS__ < 14)
+        static void set_open_drain_pins_as_low_output()
+        {
+            const uint32_t open_drain_pins_mask = (1 << 10) | (1 << 11);
+
+            // Set bits 10 and 11 in the GPIO DIR0 register to 1 to enable the output driver
+            // and write 1 to bits 10 and 11 in the GPIO CLR0 register to drive the outputs LOW internally.
+            LPC_GPIO->DIR[0] |= open_drain_pins_mask;
+            LPC_GPIO->CLR[0] |= open_drain_pins_mask;
+        }
+#endif
+
     protected:
 
         // --------------------------------------------------------------------

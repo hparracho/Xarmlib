@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
+// @file    lpc81x_watchdog.cpp
+// @brief   NXP LPC81x Watchdog class.
 // @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,28 +29,29 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "system/target"
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-//#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
+#ifdef __LPC81X__
 
-// API interface
-#include "api/api_crc.hpp"
-//#include "api/api_debouncer.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_out.hpp"
+#include "targets/LPC81x/lpc81x_watchdog.hpp"
+
+namespace xarmlib
+{
+namespace targets
+{
+namespace lpc81x
+{
+
+
+
+// Static initialization
+bool Watchdog::m_initialized {false};
 
 
 
 
-#endif // __XARMLIB_HPP
+} // namespace lpc81x
+} // namespace targets
+} // namespace xarmlib
+
+#endif // __LPC81X__

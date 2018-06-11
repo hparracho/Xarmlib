@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    30 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -123,7 +123,6 @@ class Gpio
             }
         }
 
-#if (__LPC84X_GPIOS__ == 54)
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name              pin_name,
              const InputModeTrueOpenDrain input_mode,
@@ -147,7 +146,6 @@ class Gpio
                 set_mode(output_mode);
             }
         }
-#endif
 
         // -------- CONFIGURATION ---------------------------------------------
 
@@ -157,12 +155,8 @@ class Gpio
                       const InputInvert     input_invert     = InputInvert::NORMAL,
                       const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            assert(m_pin_name != Pin::Name::NC);
-
-#if (__LPC84X_GPIOS__ == 54)
-            // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
-#endif
+            // Exclude NC and true open-drain pins
+            assert(m_pin_name != Pin::Name::NC && m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 
             Pin::FunctionMode function_mode;
 
@@ -188,12 +182,8 @@ class Gpio
         // Set normal output pin mode
         void set_mode(const OutputMode output_mode)
         {
-            assert(m_pin_name != Pin::Name::NC);
-
-#if (__LPC84X_GPIOS__ == 54)
-            // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
-#endif
+            // Exclude NC and true open-drain pins
+            assert(m_pin_name != Pin::Name::NC && m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 
             uint32_t       pin_value;
             Pin::OpenDrain open_drain;
@@ -217,7 +207,6 @@ class Gpio
                                       Pin::InputHysteresis::ENABLE);
         }
 
-#if (__LPC84X_GPIOS__ == 54)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
         void set_mode(const InputModeTrueOpenDrain input_mode,
                       const InputFilter            input_filter = InputFilter::BYPASS,
@@ -245,7 +234,6 @@ class Gpio
 
             Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
         }
-#endif
 
         // -------- READ / WRITE ----------------------------------------------
 

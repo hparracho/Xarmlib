@@ -1,7 +1,8 @@
+/*
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    11 June 2018
+// @file    lpc810.ld
+// @brief   Linker Script for NXP LPC810 MCU.
+// @date    8 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -28,29 +29,42 @@
 // DEALINGS IN THE SOFTWARE.
 //
 // ----------------------------------------------------------------------------
-
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
-
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-//#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
-
-// API interface
-#include "api/api_crc.hpp"
-//#include "api/api_debouncer.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_out.hpp"
+*/
 
 
 
 
-#endif // __XARMLIB_HPP
+MEMORY
+{
+    /* Define each memory region */
+    Flash (rx)  : ORIGIN = 0x0,        LENGTH = 0x1000      /* 4K bytes */
+    RAM   (rwx) : ORIGIN = 0x10000000, LENGTH = 0x400       /* 1K bytes */
+}
+
+
+
+
+/* Define a symbol for the base and top of each memory region */
+__flash_base    = 0x0;                  /* Flash */
+__flash_top     = 0x0 + 0x1000;         /* 4K bytes */
+__ram_base      = 0x10000000;           /* RAM */
+__ram_top       = 0x10000000 + 0x400;   /* 1K bytes */
+
+
+
+
+/* Define the required Stack and Heap sizes */
+__stack_size    = 0x80;                 /* 128 bytes */
+__heap_size     = 0x400;                /* 1K bytes */
+
+/* IAP commands, which results in a flash write/erase operation, use 32 bytes
+ * of space in the top portion of the on-chip RAM for execution. The user
+ * program should not use this space if IAP flash programming is permitted
+ * in the application.
+ */
+__stack_offset  = 32;                   /* Stack offset : 0 or 32 */
+
+
+
+
+INCLUDE "lpc84x_common.ld"

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    18 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,7 +51,7 @@ class DigitalIn : private Gpio
         using InputMode               = typename Gpio::InputMode;
         using InputModeTrueOpenDrain  = typename Gpio::InputModeTrueOpenDrain;
 
-        using InputFilterClockDiv     = typename Gpio::InputFilterClockDiv;
+        using InputFilterClockDivider = typename Gpio::InputFilterClockDivider;
         using InputFilter             = typename Gpio::InputFilter;
         using InputInvert             = typename Gpio::InputInvert;
         using InputHysteresis         = typename Gpio::InputHysteresis;
@@ -89,9 +89,9 @@ class DigitalIn : private Gpio
             return Gpio::read();
         }
 
-        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
 
-        using Gpio::set_input_filter_clock_div;
+        using Gpio::set_input_filter_clock_divider;
 };
 
 

@@ -57,7 +57,7 @@ class Gpio : private TargetGpio
         using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
         using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
 
-        using InputFilterClockDiv     = typename TargetGpio::InputFilterClockDiv;
+        using InputFilterClockDivider = typename TargetGpio::InputFilterClockDivider;
         using InputFilter             = typename TargetGpio::InputFilter;
         using InputInvert             = typename TargetGpio::InputInvert;
         using InputHysteresis         = typename TargetGpio::InputHysteresis;
