@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pin.hpp
 // @brief   NXP LPC84x pin class.
-// @date    18 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -204,11 +204,9 @@ class Pin
                                                   const InputInvert     input_invert     = InputInvert::NORMAL,
                                                   const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
-            assert(pin_name != Pin::Name::NC);
-#if (__LPC84X_GPIOS__ == 54)
-            // True open-drain pins
-            assert(pin_name != Name::P0_10 && pin_name != Name::P0_11);
-#endif
+            // Exclude NC and true open-drain pins
+            assert(pin_name != Pin::Name::NC && pin_name != Name::P0_10 && pin_name != Name::P0_11);
+
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
 
             LPC_IOCON->PIO[pin_index] = static_cast<uint32_t>(function_mode)
@@ -219,13 +217,12 @@ class Pin
                                       | static_cast<uint32_t>(input_filter);
         }
 
-#if (__LPC84X_GPIOS__ == 54)
         // Set mode of true open-drain pins (only available on P0_10 and P0_11)
         static void set_mode(const Name pin_name, const I2cMode     i2c_mode,
                                                   const InputFilter input_filter,
                                                   const InputInvert input_invert)
         {
-            // True open-drain pins
+            // Available only on true open-drain pins
             assert(pin_name == Name::P0_10 || pin_name == Name::P0_11);
 
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
@@ -235,7 +232,6 @@ class Pin
                                       | static_cast<uint32_t>(i2c_mode)
                                       | static_cast<uint32_t>(input_filter);
         }
-#endif
 
     private:
 
