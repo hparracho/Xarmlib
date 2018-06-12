@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_spi.cpp
-// @brief   NXP LPC84x SPI class.
+// @file    lpc81x_spi.cpp
+// @brief   NXP LPC81x SPI class.
 // @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
@@ -31,15 +31,15 @@
 
 #include "system/target"
 
-#ifdef __LPC84X__
+#ifdef __LPC81X__
 
-#include "targets/LPC84x/lpc84x_spi.hpp"
+#include "targets/LPC81x/lpc81x_spi.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
@@ -63,6 +63,8 @@ extern "C" void SPI0_IRQHandler(void)
 
 
 
+#if (__LPC81X_SPIS__ == 2)
+
 extern "C" void SPI1_IRQHandler(void)
 {
     const int32_t yield = Spi::irq_handler(Spi::Name::SPI1);
@@ -74,11 +76,13 @@ extern "C" void SPI1_IRQHandler(void)
 #endif
 }
 
+#endif // (__LPC81X_SPIS__ == 2)
 
 
 
-} // namespace lpc84x
+
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __LPC84X__
+#endif // __LPC81X__

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    11 June 2018
+// @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,16 +37,16 @@
 #include "hal/hal_gpio.hpp"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
+#include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
-//#include "hal/hal_timer.hpp"
+#include "hal/hal_timer.hpp"
 #include "hal/hal_us_ticker.hpp"
 //#include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 // API interface
 #include "api/api_crc.hpp"
-//#include "api/api_debouncer.hpp"
+#include "api/api_debouncer.hpp"
 #include "api/api_digital_in.hpp"
 #include "api/api_digital_out.hpp"
 

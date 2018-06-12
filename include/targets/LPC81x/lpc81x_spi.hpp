@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_spi.hpp
-// @brief   NXP LPC84x SPI class.
+// @file    lpc81x_spi.hpp
+// @brief   NXP LPC81x SPI class.
 // @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,37 +29,48 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_SPI_HPP
-#define __XARMLIB_TARGETS_LPC84X_SPI_HPP
+#ifndef __XARMLIB_TARGETS_LPC81X_SPI_HPP
+#define __XARMLIB_TARGETS_LPC81X_SPI_HPP
 
 #include "system/array"
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
-#include "targets/LPC84x/lpc84x_pin.hpp"
-#include "targets/LPC84x/lpc84x_swm.hpp"
-#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
-#include "targets/LPC84x/lpc84x_syscon_power.hpp"
+#include "targets/LPC81x/lpc81x_cmsis.hpp"
+#include "targets/LPC81x/lpc81x_pin.hpp"
+#include "targets/LPC81x/lpc81x_swm.hpp"
+#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
+#include "targets/LPC81x/lpc81x_syscon_power.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
 
 
-// Forward declaration of IRQ handlers
+// Forward declaration of IRQ handler for all LPC81x packages
 extern "C" void SPI0_IRQHandler(void);
+
+#if (__LPC81X_SPIS__ == 1)
+
+// Number of available SPI peripherals
+static constexpr std::size_t SPI_COUNT { 1 };
+
+#elif (__LPC81X_SPIS__ == 2)
+
+// Forward declaration of additional IRQ handlers
 extern "C" void SPI1_IRQHandler(void);
-
-
-
 
 // Number of available SPI peripherals
 static constexpr std::size_t SPI_COUNT { 2 };
+
+#endif // (__LPC81X_SPIS__ == 2)
+
+
+
 
 class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 {
@@ -76,7 +87,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         enum class Name
         {
             SPI0 = 0,
+#if (__LPC81X_SPIS__ == 2)
             SPI1
+#endif
         };
 
         // Master modes selection (defined to map the CFG register directly)
@@ -181,7 +194,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: Clock::disable(Clock::Peripheral::SPI0); NVIC_DisableIRQ(SPI0_IRQn); break;
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1: Clock::disable(Clock::Peripheral::SPI1); NVIC_DisableIRQ(SPI1_IRQn); break;
+#endif
                 default:                                                                              break;
             }
         }
@@ -206,19 +221,17 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
                     Clock::enable(Clock::Peripheral::SPI0);
                     Power::reset(Power::ResetPeripheral::SPI0);
 
-                    Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::SPI0,
-                                                       Clock::PeripheralClockSource::MAIN_CLK);
-
                     Swm::assign(Swm::PinMovable::SPI0_MOSI_IO, mosi);
                     Swm::assign(Swm::PinMovable::SPI0_MISO_IO, miso);
                     Swm::assign(Swm::PinMovable::SPI0_SCK_IO, sck);
 
                     if(slave_sel != Pin::Name::NC)
                     {
-                        Swm::assign(Swm::PinMovable::SPI0_SSEL0_IO, slave_sel);
+                        Swm::assign(Swm::PinMovable::SPI0_SSEL_IO, slave_sel);
                     }
                 }   break;
 
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1:
                 {
                     // Set pointer to the available SPI structure
@@ -227,18 +240,16 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
                     Clock::enable(Clock::Peripheral::SPI1);
                     Power::reset(Power::ResetPeripheral::SPI1);
 
-                    Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::SPI1,
-                                                       Clock::PeripheralClockSource::MAIN_CLK);
-
                     Swm::assign(Swm::PinMovable::SPI1_MOSI_IO, mosi);
                     Swm::assign(Swm::PinMovable::SPI1_MISO_IO, miso);
                     Swm::assign(Swm::PinMovable::SPI1_SCK_IO, sck);
 
                     if(slave_sel != Pin::Name::NC)
                     {
-                        Swm::assign(Swm::PinMovable::SPI1_SSEL0_IO, slave_sel);
+                        Swm::assign(Swm::PinMovable::SPI1_SSEL_IO, slave_sel);
                     }
                 }   break;
+#endif
 
                 default: break;
             }
@@ -275,7 +286,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         //       the closest frequency that is below the target frequency.
         void set_frequency(const int32_t max_frequency)
         {
-            const int32_t clock_freq = Clock::get_main_clock_frequency();
+            const int32_t clock_freq = Clock::get_system_clock_frequency();
 
             assert(max_frequency >= (clock_freq / 65536) &&  max_frequency <= clock_freq);
 
@@ -343,7 +354,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_EnableIRQ(SPI0_IRQn); break;
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1: NVIC_EnableIRQ(SPI1_IRQn); break;
+#endif
                 default:                                    break;
             }
         }
@@ -364,7 +377,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_DisableIRQ(SPI0_IRQn); break;
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1: NVIC_DisableIRQ(SPI1_IRQn); break;
+#endif
                 default:                                     break;
             }
         }
@@ -385,7 +400,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: return (__NVIC_GetEnableIRQ(SPI0_IRQn) != 0); break;
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1: return (__NVIC_GetEnableIRQ(SPI1_IRQn) != 0); break;
+#endif
                 default:         return false;                                 break;
             }
         }
@@ -406,7 +423,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
+#if (__LPC81X_SPIS__ == 2)
                 case Name::SPI1: NVIC_SetPriority(SPI1_IRQn, irq_priority); break;
+#endif
                 default:                                                    break;
             }
         }
@@ -431,7 +450,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // Friend IRQ handler C function to give access to private IRQ handler member function
         friend void SPI0_IRQHandler(void);
+#if (__LPC81X_SPIS__ == 2)
         friend void SPI1_IRQHandler(void);
+#endif
 
         // SPI Configuration Register (CFG) bits
         enum CFG : uint32_t
@@ -442,10 +463,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             CFG_CPHA   = (1 << 4),
             CFG_CPOL   = (1 << 5),
             CFG_LOOP   = (1 << 7),
-            CFG_SPOL0  = (1 << 8),
-            CFG_SPOL1  = (1 << 9),
-            CFG_SPOL2  = (1 << 10),
-            CFG_SPOL3  = (1 << 11)
+            CFG_SPOL   = (1 << 8)
         };
 
         // SPI Status Register (STAT) bits
@@ -512,8 +530,8 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
 
 
-} // namespace lpc84x
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __XARMLIB_TARGETS_LPC84X_SPI_HPP
+#endif // __XARMLIB_TARGETS_LPC81X_SPI_HPP

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC81x MCUs.
-// @date    25 May 2018
+// @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -417,7 +417,7 @@ typedef struct
     __I  uint32_t  RXDAT;                   // Receive Data register
     __IO uint32_t  TXDATCTL;                // Transmit Data with Control register
     __IO uint32_t  TXDAT;                   // Transmit Data register
-    __IO uint32_t  TXCTRL;                  // Transmit Control register
+    __IO uint32_t  TXCTL;                   // Transmit Control register
     __IO uint32_t  DIV;                     // clock Divider register
     __I  uint32_t  INTSTAT;                 // Interrupt Status register
 } LPC_SPI_T;

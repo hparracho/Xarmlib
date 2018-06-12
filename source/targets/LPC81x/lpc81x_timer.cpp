@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_spi.cpp
-// @brief   NXP LPC84x SPI class.
+// @file    lpc81x_timer.cpp
+// @brief   NXP LPC81x Timer (MRT) class.
 // @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
@@ -31,27 +31,27 @@
 
 #include "system/target"
 
-#ifdef __LPC84X__
+#ifdef __LPC81X__
 
-#include "targets/LPC84x/lpc84x_spi.hpp"
+#include "targets/LPC81x/lpc81x_timer.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
 
 
 // --------------------------------------------------------------------
-// IRQ HANDLERS
+// IRQ HANDLER
 // --------------------------------------------------------------------
 
-extern "C" void SPI0_IRQHandler(void)
+extern "C" void MRT_IRQHandler(void)
 {
-    const int32_t yield = Spi::irq_handler(Spi::Name::SPI0);
+    const int32_t yield = Timer::irq_handler();
 
 #ifdef XARMLIB_USE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -63,22 +63,8 @@ extern "C" void SPI0_IRQHandler(void)
 
 
 
-extern "C" void SPI1_IRQHandler(void)
-{
-    const int32_t yield = Spi::irq_handler(Spi::Name::SPI1);
-
-#ifdef XARMLIB_USE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
-}
-
-
-
-
-} // namespace lpc84x
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __LPC84X__
+#endif // __LPC81X__
