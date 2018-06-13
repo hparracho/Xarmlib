@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_usart.hpp
-// @brief   NXP LPC84x USART class (takes control of FRG0).
+// @file    lpc81x_usart.hpp
+// @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
 // @date    13 June 2018
 // ----------------------------------------------------------------------------
@@ -30,50 +30,48 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_USART_HPP
-#define __XARMLIB_TARGETS_LPC84X_USART_HPP
+#ifndef __XARMLIB_TARGETS_LPC81X_USART_HPP
+#define __XARMLIB_TARGETS_LPC81X_USART_HPP
 
 #include <cmath>
 
 #include "system/bitmask"
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
-#include "targets/LPC84x/lpc84x_pin.hpp"
-#include "targets/LPC84x/lpc84x_swm.hpp"
-#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
-#include "targets/LPC84x/lpc84x_syscon_power.hpp"
+#include "targets/LPC81x/lpc81x_cmsis.hpp"
+#include "targets/LPC81x/lpc81x_pin.hpp"
+#include "targets/LPC81x/lpc81x_swm.hpp"
+#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
+#include "targets/LPC81x/lpc81x_syscon_power.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
 
 
-// Forward declaration of IRQ handlers for both LPC844 and LPC845
+// Forward declaration of IRQ handlers for all LPC81x packages
 extern "C" void USART0_IRQHandler(void);
 extern "C" void USART1_IRQHandler(void);
 
-#if defined __LPC845__
+#if (__LPC81X_USARTS__ == 3)
 
-// Forward declaration of additional IRQ handlers for LPC845
+// Forward declaration of additional IRQ handlers
 extern "C" void USART2_IRQHandler(void);
-extern "C" void PININT6_IRQHandler(void);   // PIO INT6 shared slot with USART3
-extern "C" void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
 
-// Number of available USART peripherals on LPC845
-static constexpr std::size_t USART_COUNT { 5 };
+// Number of available USART peripherals
+static constexpr std::size_t USART_COUNT { 3 };
 
 #else
 
-// Number of available USART peripherals on LPC844
+// Number of available USART peripherals
 static constexpr std::size_t USART_COUNT { 2 };
 
-#endif // __LPC845__
+#endif // (__LPC81X_USARTS__ == 3)
 
 
 
@@ -98,8 +96,7 @@ enum class Status
     FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
     PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
     RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
-    AUTOBAUD_ERROR   = (1 << 16),   // Auto-baud Error
-    CLEAR_ALL        = 0x1F920      // 1'1111'1001'0010'0000
+    CLEAR_ALL        = 0xF920       // 1111'1001'0010'0000
 };
 
 // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
@@ -107,7 +104,6 @@ enum class Interrupt
 {
     RX_READY         = (1 << 0),    // Receiver ready
     TX_READY         = (1 << 2),    // Transmitter ready for data
-    TX_IDLE          = (1 << 3),    // Transmitter idle
     CTS_DELTA        = (1 << 5),    // Change in CTS state
     TX_DISABLED_INT  = (1 << 6),    // Transmitter disabled
     RX_OVERRUN_INT   = (1 << 8),    // Overrun Error interrupt flag
@@ -116,12 +112,11 @@ enum class Interrupt
     FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
     PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
     RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
-    AUTOBAUD_ERROR   = (1 << 16),   // Auto-baud Error
-    ALL              = 0x1F96D      // 1'1111'1001'0110'1101
+    ALL              = 0xF965       // 1111'1001'0110'0101
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    0x1FD7F)   // 1'1111'1101'0111'1111
-BITMASK_DEFINE_VALUE_MASK(Interrupt, 0x1F96D)   // 1'1111'1001'0110'1101
+BITMASK_DEFINE_VALUE_MASK(Status,    0xFD7F)   // 1111'1101'0111'1111
+BITMASK_DEFINE_VALUE_MASK(Interrupt, 0xF965)   // 1111'1001'0110'0101
 
 } // namespace private_usart
 
@@ -144,10 +139,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         {
             USART0 = 0,
             USART1,
-#ifdef __LPC845__
-            USART2,
-            USART3,
-            USART4
+#if (__LPC81X_USARTS__ == 3)
+            USART2
 #endif
         };
 
@@ -199,10 +192,13 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
               const StopBits  stop_bits,
               const Parity    parity) : PeripheralUsart(*this)
         {
-            // Initialize and configure FRG0 if this is the first USART peripheral instantiation
+            // Configure USART clock if this is the first USART peripheral instantiation
             if(get_used() == 1)
             {
-                initialize_frg0();
+                // Set USART clock divider to 1 for USART FRG clock in to be equal to the main clock
+                Clock::set_usart_clock_divider(1);
+
+                initialize_usart_frg();
             }
 
             const Name name = static_cast<Name>(get_index());
@@ -210,8 +206,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             switch(name)
             {
                 case Name::USART0: m_usart = LPC_USART0;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART0,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
                                    Clock::enable(Clock::Peripheral::USART0);
                                    Power::reset(Power::ResetPeripheral::USART0);
                                    Swm::assign(Swm::PinMovable::U0_RXD_I, rxd);
@@ -219,39 +213,17 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                                    break;
 
                 case Name::USART1: m_usart = LPC_USART1;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART1,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
                                    Clock::enable(Clock::Peripheral::USART1);
                                    Power::reset(Power::ResetPeripheral::USART1);
                                    Swm::assign(Swm::PinMovable::U1_RXD_I, rxd);
                                    Swm::assign(Swm::PinMovable::U1_TXD_O, txd);
                                    break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: m_usart = LPC_USART2;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART2,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
                                    Clock::enable(Clock::Peripheral::USART2);
                                    Power::reset(Power::ResetPeripheral::USART2);
                                    Swm::assign(Swm::PinMovable::U2_RXD_I, rxd);
                                    Swm::assign(Swm::PinMovable::U2_TXD_O, txd);
-                                   break;
-
-                case Name::USART3: m_usart = LPC_USART3;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART3,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART3);
-                                   Power::reset(Power::ResetPeripheral::USART3);
-                                   Swm::assign(Swm::PinMovable::U3_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U3_TXD_O, txd);
-                                   break;
-
-                case Name::USART4: m_usart = LPC_USART4;
-                                   Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::USART4,
-                                                                      Clock::PeripheralClockSource::FRG0_CLK);
-                                   Clock::enable(Clock::Peripheral::USART4);
-                                   Power::reset(Power::ResetPeripheral::USART4);
-                                   Swm::assign(Swm::PinMovable::U4_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U4_TXD_O, txd);
                                    break;
 #endif
             };
@@ -287,17 +259,17 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                 case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
                                    NVIC_DisableIRQ(USART1_IRQn);
                                    break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
                                    NVIC_DisableIRQ(USART2_IRQn);
                                    break;
-                case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
-                                   break;
-                case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
-                                   break;
 #endif
+            }
+
+            // Disable USART clock if this the last USART peripheral deleted
+            if(get_used() == 1)
+            {
+                Clock::set_usart_clock_divider(0);
             }
         }
 
@@ -457,10 +429,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_EnableIRQ(USART0_IRQn); break;
                 case Name::USART1: NVIC_EnableIRQ(USART1_IRQn); break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: NVIC_EnableIRQ(USART2_IRQn); break;
-                case Name::USART3: NVIC_EnableIRQ(USART3_IRQn); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: NVIC_EnableIRQ(USART4_IRQn); break;  // PIO INT7 shared slot with USART4
 #endif
                 default:                                        break;
             }
@@ -474,10 +444,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_DisableIRQ(USART0_IRQn);          break;
                 case Name::USART1: NVIC_DisableIRQ(USART1_IRQn);          break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: NVIC_DisableIRQ(USART2_IRQn);          break;
-                case Name::USART3: /* DO NOT DISABLE SHARED INTERRUPTS */ break;    // PIO INT6 shared slot with USART3
-                case Name::USART4: /* DO NOT DISABLE SHARED INTERRUPTS */ break;    // PIO INT7 shared slot with USART4
 #endif
                 default:                                                  break;
             }
@@ -491,10 +459,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0); break;
                 case Name::USART1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0); break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0); break;
-                case Name::USART3: return (NVIC_GetEnableIRQ(USART3_IRQn) != 0); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: return (NVIC_GetEnableIRQ(USART4_IRQn) != 0); break;  // PIO INT7 shared slot with USART4
 #endif
                 default:           return false;                                 break;
             }
@@ -508,10 +474,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_SetPriority(USART0_IRQn, irq_priority); break;
                 case Name::USART1: NVIC_SetPriority(USART1_IRQn, irq_priority); break;
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
                 case Name::USART2: NVIC_SetPriority(USART2_IRQn, irq_priority); break;
-                case Name::USART3: NVIC_SetPriority(USART3_IRQn, irq_priority); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: NVIC_SetPriority(USART4_IRQn, irq_priority); break;  // PIO INT7 shared slot with USART4
 #endif
                 default:                                                        break;
             }
@@ -571,10 +535,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // Friend IRQ handler C functions to give access to private IRQ handler member function
         friend void USART0_IRQHandler(void);
         friend void USART1_IRQHandler(void);
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
         friend void USART2_IRQHandler(void);
-        friend void PININT6_IRQHandler(void);   // PIO INT6 shared slot with USART3
-        friend void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
 #endif
 
         // USART Configuration Register (CFG) bits and masks
@@ -590,12 +552,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // -------- FRG0 CONFIGURATION ----------------------------------------
+        // -------- USART FRG CONFIGURATION -----------------------------------
 
-        // Configure the FRG0 to be used and shared by all USART peripherals.
+        // NOTE: USART FRG clock in is equal to the main clock due to the USART clock divider was previously set to 1.
+
+        // Configure the USART FRG that is shared by all USART peripherals.
         // NOTE: implemented on the CPP file because it uses parameters from
         //       the library configuration file (xarmlib_config.h).
-        void initialize_frg0();
+        void initialize_usart_frg();
 
         // Return the FRG MUL value for the supplied USART and main clock frequencies
         static constexpr uint8_t get_frg_mul(const int32_t usart_freq, const int32_t main_clk_freq)
@@ -658,8 +622,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
 
 
-} // namespace lpc84x
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __XARMLIB_TARGETS_LPC84X_USART_HPP
+#endif // __XARMLIB_TARGETS_LPC81X_USART_HPP

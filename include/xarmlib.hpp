@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    12 June 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,7 +41,7 @@
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
 #include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
+#include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 // API interface

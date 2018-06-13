@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_clock.hpp
 // @brief   NXP LPC81x SYSCON clock control class.
-// @date    29 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -323,23 +323,23 @@ class Clock
         // @div:  Denominator of the fractional divider. DIV is equal to the
         //        programmed value +1. Always set to 0xFF to use with the
         //        fractional baud rate generator.
-        static void set_usartfrg_clock_divider(const uint8_t mult, const uint8_t div)
+        static void set_usart_frg_clock_divider(const uint8_t mult, const uint8_t div)
         {
             LPC_SYSCON->UARTFRGMULT = static_cast<uint32_t>(mult);
             LPC_SYSCON->UARTFRGDIV  = static_cast<uint32_t>(div);
         }
 
         // Get fractional rate generator clock input frequency
-        static int32_t get_usartfrg_clock_in_frequency()
+        static int32_t get_usart_frg_clock_in_frequency()
         {
             return get_main_clock_frequency() / LPC_SYSCON->UARTCLKDIV;
         }
 
         // Get fractional rate generator clock output frequency
-        static int32_t get_usartfrg_clock_out_frequency()
+        static int32_t get_usart_frg_clock_out_frequency()
         {
             // Get FRG clock input rate
-            int64_t input_freq = get_usartfrg_clock_in_frequency();
+            int64_t input_freq = get_usart_frg_clock_in_frequency();
 
             if(input_freq != 0)
             {

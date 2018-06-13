@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    12 June 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,18 +54,18 @@ namespace lpc81x
 // Forward declaration of IRQ handler for all LPC81x packages
 extern "C" void SPI0_IRQHandler(void);
 
-#if (__LPC81X_SPIS__ == 1)
-
-// Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { 1 };
-
-#elif (__LPC81X_SPIS__ == 2)
+#if (__LPC81X_SPIS__ == 2)
 
 // Forward declaration of additional IRQ handlers
 extern "C" void SPI1_IRQHandler(void);
 
 // Number of available SPI peripherals
 static constexpr std::size_t SPI_COUNT { 2 };
+
+#else
+
+// Number of available SPI peripherals
+static constexpr std::size_t SPI_COUNT { 1 };
 
 #endif // (__LPC81X_SPIS__ == 2)
 

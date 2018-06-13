@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC81x MCUs.
-// @date    12 June 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -69,9 +69,9 @@ typedef enum IRQn
     SPI0_IRQn                     = 0,      // SPI0
     SPI1_IRQn                     = 1,      // SPI1
     Reserved0_IRQn                = 2,      // Reserved Interrupt
-    UART0_IRQn                    = 3,      // USART0
-    UART1_IRQn                    = 4,      // USART1
-    UART2_IRQn                    = 5,      // USART2
+    USART0_IRQn                   = 3,      // USART0
+    USART1_IRQn                   = 4,      // USART1
+    USART2_IRQn                   = 5,      // USART2
     Reserved1_IRQn                = 6,      // Reserved Interrupt
     Reserved2_IRQn                = 7,      // Reserved Interrupt
     I2C_IRQn                      = 8,      // I2C0
@@ -390,7 +390,7 @@ typedef struct
 typedef struct
 {
     __IO uint32_t  CFG;                     // Configuration register
-    __IO uint32_t  CTRL;                    // Control register
+    __IO uint32_t  CTL;                     // Control register
     __IO uint32_t  STAT;                    // Status register
     __IO uint32_t  INTENSET;                // Interrupt Enable read and set register
     __O  uint32_t  INTENCLR;                // Interrupt Enable clear register
@@ -399,8 +399,6 @@ typedef struct
     __IO uint32_t  TXDAT;                   // Transmit data register
     __IO uint32_t  BRG;                     // Baud Rate Generator register
     __IO uint32_t  INTSTAT;                 // Interrupt status register
-    __IO uint32_t  OSR;                     // Oversampling Selection register
-    __IO uint32_t  ADDR;                    // Address register for automatic address matching
 } LPC_USART_T;
 
 

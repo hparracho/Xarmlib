@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_usart.cpp
-// @brief   NXP LPC84x USART class (takes control of FRG0).
+// @file    lpc81x_usart.cpp
+// @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    18 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,16 +32,16 @@
 
 #include "system/target"
 
-#ifdef __LPC84X__
+#ifdef __LPC81X__
 
-#include "targets/LPC84x/lpc84x_usart.hpp"
+#include "targets/LPC81x/lpc81x_usart.hpp"
 #include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
 namespace targets
 {
-namespace lpc84x
+namespace lpc81x
 {
 
 
@@ -51,7 +51,7 @@ namespace lpc84x
 // PRIVATE MEMBER FUNCTIONS
 // --------------------------------------------------------------------
 
-void Usart::initialize_frg0()
+void Usart::initialize_usart_frg()
 {
     constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
@@ -59,17 +59,14 @@ void Usart::initialize_frg0()
     constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
     constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
 
-    // Select main clock as the source for FRG0
-    Clock::set_frg_clock_source(Clock::FrgClockSelect::FRG0, Clock::FrgClockSource::MAIN_CLK);
-
-    // Set the FRG0 fractional divider
-    Clock::set_frg_clock_divider(Clock::FrgClockSelect::FRG0, mul, div);
+    // Set the USART FRG fractional divider
+    Clock::set_usart_frg_clock_divider(mul, div);
 }
 
 
 
 
-int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
+int32_t Usart::get_baudrate_generator_divider(const int32_t baudrate)
 {
     constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
@@ -112,7 +109,7 @@ extern "C" void USART1_IRQHandler(void)
 
 
 
-#ifdef __LPC845__
+#if (__LPC81X_USARTS__ == 3)
 
 extern "C" void USART2_IRQHandler(void)
 {
@@ -125,19 +122,13 @@ extern "C" void USART2_IRQHandler(void)
 #endif
 }
 
-
-
-
-// NOTE: USART3 and USART4 interrupts that are shared with PIO INT6 and
-//       PIO INT7 are implemented in 'lpc84x_shared_interrupts.cpp' file.
-
-#endif // __LPC845__
+#endif // (__LPC81X_USARTS__ == 3)
 
 
 
 
-} // namespace lpc84x
+} // namespace lpc81x
 } // namespace targets
 } // namespace xarmlib
 
-#endif // __LPC84X__
+#endif // __LPC81X__
