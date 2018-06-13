@@ -1,9 +1,10 @@
 // ----------------------------------------------------------------------------
 // @file    api_crc.hpp
 // @brief   Generic CRC class (usable when a hardware implementation is not
-//          available). Specializations for some common types of 8, 16 and 32 bits.
-//          Formulas taken from https://barrgroup.com/Embedded-Systems/How-To/CRC-Calculation-C-Code
-// @date    21 May 2018
+//          available). Specializations for some common types of 8, 16 and
+//          32 bits. Formulas taken from:
+//          https://barrgroup.com/Embedded-Systems/How-To/CRC-Calculation-C-Code
+// @date    12 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -196,6 +197,10 @@ constexpr std::array<Type, 256> Crc<Type,
 
 // Catalog of parameterized CRC algorithms
 // http://reveng.sourceforge.net/crc-catalogue/all.htm
+
+// --------------------------------------------------------------------
+// Most commonly used CRC types definition
+// --------------------------------------------------------------------
 
 using Crc32 = Crc<uint32_t, 0x04C11DB7, 0xFFFFFFFF, 0xFFFFFFFF, true, true>;
 
