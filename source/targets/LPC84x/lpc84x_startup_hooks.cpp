@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    18 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -168,13 +168,13 @@ static inline void mcu_startup_set_xtal_clock()
 // PUBLIC FUNCTIONS
 // ----------------------------------------------------------------------------
 
-void mcu_startup_initialize_hardware_early(void)
+void mcu_startup_initialize_hardware_early()
 {}
 
 
 
 
-void mcu_startup_initialize_hardware(void)
+void mcu_startup_initialize_hardware()
 {
     // ------------------------------------------------------------------------
     // Helder Parracho @ 20 March 2018

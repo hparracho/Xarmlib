@@ -2,7 +2,7 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    18 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,15 +30,16 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <sys/types.h>
-#include <errno.h>
-
 #include "system/cmsis"
 
 
 
 
-#ifndef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
+#if !defined(MCUXPRESSO_MANAGED_LINKER_SCRIPTS) && !defined(CPP_NO_HEAP)
+
+#include <sys/types.h>
+#include <errno.h>
+
 // ----------------------------------------------------------------------------
 // The function below is taken from the µOS++ IIIe project.
 // (https://github.com/micro-os-plus)
@@ -77,7 +78,7 @@ extern "C" caddr_t _sbrk(int incr)
 #else
         // Heap has overflowed
         errno = ENOMEM;
-        return (caddr_t) - 1;
+        return (caddr_t)-1;
 #endif
     }
 

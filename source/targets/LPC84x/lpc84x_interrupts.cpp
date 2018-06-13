@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    18 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -225,10 +225,20 @@ void IRQ_DefaultHandler(void)
 // defining your own handler routines in your application code.
 // ----------------------------------------------------------------------------
 
-// Forward declaration of MCU startup function.
-void mcu_startup(void);
+// Forward declaration of MCU startup function
+__attribute__ ((section(".after_vectors"), noreturn))
+void mcu_startup();
 
-__attribute__ ((section(".after_vectors")))
+#ifndef NDEBUG
+// If both CRP word placement and LTO are enabled the 'Reset_Handler()'
+// function cannot be placed after vectors because it's size overlaps the CRP
+// word location. In debug this doesn't happen since you are not supposed to
+// enable LTO in debug mode. The attribute effectively reduces the debug build
+// size a few bytes.
+__attribute__ ((section(".after_vectors"), noreturn))
+#else
+__attribute__ ((noreturn))
+#endif
 void Reset_Handler(void)
 {
     mcu_startup();
