@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    LPCXpresso845-Max-blinky.cpp
 // @brief   LPCXpresso845-Max board Blinky example application.
-// @date    23 May 2018
+// @date    14 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -76,7 +76,7 @@ class Blinker : public Timer
         int32_t toggle()
         {
             // Toggle pin
-            m_output = !m_output.read();
+            m_output = !m_output;
 
             return 0;
         }
@@ -114,12 +114,12 @@ int main(void)
     {
         // When the SW2 WAKE button is released turn on the
         // red LED and turn it off again after 3 seconds.
-        if(button.read() == 0 && button_pressed == false)
+        if(button == 0 && button_pressed == false)
         {
             button_pressed = true;
         }
 
-        if(button.read() == 1 && button_pressed == true)
+        if(button == 1 && button_pressed == true)
         {
             button_pressed = false;
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    18 May 2018
+// @date    14 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -87,6 +87,12 @@ class DigitalIn : private Gpio
         operator uint32_t () const
         {
             return Gpio::read();
+        }
+
+        // Read negated value operator
+        uint32_t operator ! () const
+        {
+            return !Gpio::read();
         }
 
         // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
