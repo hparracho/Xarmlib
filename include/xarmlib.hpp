@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    21 May 2018
+// @date    15 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,6 +47,7 @@
 // API interface
 #include "api/api_crc.hpp"
 #include "api/api_digital_in.hpp"
+#include "api/api_digital_in_bus.hpp"
 #include "api/api_digital_out.hpp"
 
 
