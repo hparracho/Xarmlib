@@ -19,14 +19,7 @@
 
 #include <gsl/gsl_assert> // for Expects
 
-#if 0
 #include <array>
-#endif
-
-// Helder Parracho @ 7 May 2018
-// @NOTE: Replaced standard array file with own system implementation
-#include "system/array"
-
 #include <cstddef>          // for ptrdiff_t, size_t
 #include <exception>        // for exception
 #include <initializer_list> // for initializer_list
