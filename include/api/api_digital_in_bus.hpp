@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in_bus.hpp
 // @brief   API digital input bus class.
-// @date    15 June 2018
+// @date    18 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,10 @@
 #ifndef __XARMLIB_API_DIGITAL_IN_BUS_HPP
 #define __XARMLIB_API_DIGITAL_IN_BUS_HPP
 
+#include <type_traits>
+
 #include "hal/hal_gpio.hpp"
+#include "api/api_pin_bus.hpp"
 
 namespace xarmlib
 {
@@ -40,69 +43,84 @@ namespace xarmlib
 
 
 
-template <std::size_t BusWidth>
+template <Pin::Name... pins>
 class DigitalInBus
 {
+        using Type = typename std::conditional<sizeof...(pins) <= 32, uint32_t, uint64_t>::type;
+
     public:
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalInBus(const Pin::Name           (&pin_names)[BusWidth],
-                     const Gpio::InputMode       input_mode,
-                     const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
-                     const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
-                     const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE)
-            : m_bus  { make_array(pin_names,
-                                  input_mode,
-                                  input_filter,
-                                  input_invert,
-                                  input_hysteresis,
-                                  std::make_index_sequence<BusWidth>()) }
+        //template <Pin::Name... pins>
+        constexpr DigitalInBus(const PinBus<pins...>&      pin_bus,
+                               const Gpio::InputMode       input_mode,
+                               const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
+                               const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
+                               const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE)
+            : m_bus { make_array(pin_bus,
+                                 input_mode,
+                                 input_filter,
+                                 input_invert,
+                                 input_hysteresis,
+                                 std::make_index_sequence<sizeof...(pins)>()) }
         {}
 
-        DigitalInBus(const Pin::Name                  (&pin_names)[BusWidth],
-                     const Gpio::InputModeTrueOpenDrain input_mode,
-                     const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
-                     const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL)
-            : m_bus  { make_array(pin_names,
-                                  input_mode,
-                                  input_filter,
-                                  input_invert,
-                                  std::make_index_sequence<BusWidth>()) }
+        constexpr DigitalInBus(const PinBus<pins...>&             pin_bus,
+                               const Gpio::InputModeTrueOpenDrain input_mode,
+                               const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
+                               const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL)
+            : m_bus { make_array(pin_bus,
+                                 input_mode,
+                                 input_filter,
+                                 input_invert,
+                                 std::make_index_sequence<sizeof...(pins)>()) }
         {}
 
         // -------- READ ------------------------------------------------------
 
-        uint32_t read() const
+        Type read() const
         {
-            uint32_t value = 0;
+            Type value = 0;
 
-            for(std::size_t pin = 0; pin < BusWidth; pin++)
+            for(std::size_t pin = 0; pin < get_width(); pin++)
             {
-                value |= m_bus[pin].read() << pin;
+                value |= static_cast<Type>(m_bus[pin].read()) << pin;
             }
 
             return value;
         }
 
-        operator uint32_t () const
+        operator Type () const
         {
             return read();
         }
 
         // Read negated value operator
-        uint32_t operator ! () const
+        Type operator ! () const
         {
             return !read();
         }
 
-        // -------- MASK ------------------------------------------------------
+        // -------- BUS WIDTH / MASK ------------------------------------------------------
 
-        constexpr uint32_t get_mask() const
+        constexpr std::size_t get_width() const
         {
-            return static_cast<uint32_t>((1ULL << BusWidth) - 1);
+            return sizeof...(pins);
+        }
+
+        constexpr Type get_mask() const
+        {
+            Type mask = 0;
+
+            for(std::size_t bit = 0; bit < get_width(); bit++)
+            {
+                mask |= static_cast<Type>(1) << bit;
+            }
+
+            return mask;
         }
 
     private:
@@ -111,36 +129,32 @@ class DigitalInBus
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        template<std::size_t ...Pin>
-        static constexpr std::array<Gpio, BusWidth> make_array(const Pin::Name           (&pin_names)[BusWidth],
-                                                               const Gpio::InputMode       input_mode,
-                                                               const Gpio::InputFilter     input_filter,
-                                                               const Gpio::InputInvert     input_invert,
-                                                               const Gpio::InputHysteresis input_hysteresis,
-                                                               std::index_sequence<Pin...>)
+        template<std::size_t... index>
+        static constexpr std::array<Gpio, sizeof...(pins)> make_array(const PinBus<pins...>&      pin_bus,
+                                                                      const Gpio::InputMode       input_mode,
+                                                                      const Gpio::InputFilter     input_filter,
+                                                                      const Gpio::InputInvert     input_invert,
+                                                                      const Gpio::InputHysteresis input_hysteresis,
+                                                                      std::index_sequence<index...>)
         {
-            static_assert(BusWidth > 0 && BusWidth <= 32, "Invalid bus width.");
-
-            return { Gpio(pin_names[Pin], input_mode, input_filter, input_invert, input_hysteresis) ... };
+            return { Gpio(pin_bus.get_pin_name(index), input_mode, input_filter, input_invert, input_hysteresis)... };
         }
 
-        template<std::size_t ...Pin>
-        static constexpr std::array<Gpio, BusWidth> make_array(const Pin::Name                  (&pin_names)[BusWidth],
-                                                               const Gpio::InputModeTrueOpenDrain input_mode,
-                                                               const Gpio::InputFilter            input_filter,
-                                                               const Gpio::InputInvert            input_invert,
-                                                               std::index_sequence<Pin...>)
+        template<std::size_t... index>
+        static constexpr std::array<Gpio, sizeof...(pins)> make_array(const PinBus<pins...>&             pin_bus,
+                                                                      const Gpio::InputModeTrueOpenDrain input_mode,
+                                                                      const Gpio::InputFilter            input_filter,
+                                                                      const Gpio::InputInvert            input_invert,
+                                                                      std::index_sequence<index...>)
         {
-            static_assert(BusWidth > 0 && BusWidth <= 32, "Invalid bus width.");
-
-            return { Gpio(pin_names[Pin], input_mode, input_filter, input_invert) ... };
+            return { Gpio(pin_bus.get_pin_name(index), input_mode, input_filter, input_invert)... };
         }
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        std::array<Gpio, BusWidth> m_bus;
+        std::array<Gpio, sizeof...(pins)> m_bus;
 };
 
 
