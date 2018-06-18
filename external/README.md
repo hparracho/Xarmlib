@@ -2,15 +2,15 @@
 
 ---
 ## CMSIS-Core(M) Version 5
-Date: 17 May 2018  
+Date: 18 June 2018  
 Branch: development  
-Commit: 6017b22459d2534c461e7b0c8875c0575296de95  
+Commit: f7d6092e0947ab71cd53399707aa385db1d01e3a  
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
 ## GSL: Guideline Support Library
 
-Date: 3 May 2018  
+Date: 15 June 2018  
 Branch: master  
-Commit: 5cbde3008aa43a9c5f6c219ee15b8388336d4433  
+Commit: 0cebbd77bfc21acbf1cc05983ad626539eeeb8e0  
 ### https://github.com/Microsoft/GSL
