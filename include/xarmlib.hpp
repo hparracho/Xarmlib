@@ -49,6 +49,7 @@
 #include "api/api_debouncer.hpp"
 #include "api/api_digital_in.hpp"
 #include "api/api_digital_out.hpp"
+#include "api/api_spi_io_module.hpp"
 
 
 
