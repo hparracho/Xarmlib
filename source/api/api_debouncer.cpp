@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_debouncer.cpp
 // @brief   API debouncer class (takes control of one available Timer).
-// @date    23 May 2018
+// @date    19 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ Timer Debouncer::m_timer;
 //@TODO: APAGAR !!
 Gpio Debouncer::temp_m_led_red(Pin::Name::P0_12, Gpio::OutputMode::PUSH_PULL_HIGH);
 
-std::array<private_debouncer::Input, XARMLIB_CONFIG_DEBOUNCER_INPUT_COUNT_MAX> g_input { { Pin::Name::NC, 0, 0, 0 } };
+std::array<private_debouncer::Input, XARMLIB_CONFIG_DEBOUNCER_INPUT_COUNT_MAX> g_input { /*{ Pin::Name::NC, 0, 0, 0 }*/ };
 gsl::span<private_debouncer::Input> Debouncer::m_input { g_input };
 
 std::ptrdiff_t Debouncer::m_input_count { 0 };
