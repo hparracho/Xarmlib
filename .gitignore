@@ -37,3 +37,6 @@
 
 # Ignore everything inside build directories
 /**/build/**
+
+# Ignore user copies/backups (Emanuel Pinto)
+__*
