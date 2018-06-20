@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_group_debounced.hpp
 // @brief   API group debounced helper class for debouncer class.
-// @date    23 May 2018
+// @date    20 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -50,7 +50,17 @@ class GroupDebounced
         // --------------------------------------------------------------------
 
         GroupDebounced(const std::initializer_list<Pin::Name> pin_names) : m_pin_names (pin_names)
-        {}
+        {
+            for(std::size_t index = 0; index < pin_names.size(); index++)
+            {
+                m_mask |= 1 << index;
+            }
+        }
+
+        uint32_t mask() const
+        {
+            return m_mask;
+        }
 
         uint32_t read() const
         {
@@ -75,6 +85,8 @@ class GroupDebounced
         // --------------------------------------------------------------------
 
         const std::initializer_list<Pin::Name>  m_pin_names;
+
+        uint32_t                                m_mask { 0 };
 
         uint32_t                                m_value { 0 };
 };
