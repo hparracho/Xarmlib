@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    11 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -98,6 +98,9 @@ class Gpio
 
         // -------- CONSTRUCTORS ----------------------------------------------
 
+        // Default constructor (assign a NC pin)
+        Gpio() = default;
+
         // Normal input pin constructor
         Gpio(const Pin::Name       pin_name,
              const InputMode       input_mode,
@@ -148,6 +151,14 @@ class Gpio
         }
 
         // -------- CONFIGURATION ---------------------------------------------
+
+        // Assign a new pin
+        void set_pin(const Pin::Name pin_name)
+        {
+        	m_pin_name = pin_name;
+
+        	config_port();
+        }
 
         // Set normal input pin mode
         void set_mode(const InputMode       input_mode,
@@ -283,7 +294,13 @@ class Gpio
 
         void config_port()
         {
-            if(static_cast<uint32_t>(m_pin_name) < 32)
+        	if(m_pin_name == Pin::Name::NC)
+        	{
+        		m_pin_mask = 0;
+        		reg_w      = nullptr;
+        		reg_dir    = nullptr;
+        	}
+        	else if(static_cast<uint32_t>(m_pin_name) < 32)
             {
                 m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 
@@ -330,7 +347,7 @@ class Gpio
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        const Pin::Name     m_pin_name;
+        Pin::Name     		m_pin_name { Pin::Name::NC };
              uint32_t       m_pin_mask { 0 };
         __IO uint32_t*      reg_w      { nullptr };
         __IO uint32_t*      reg_dir    { nullptr };

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    18 May 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -68,6 +68,9 @@ class Gpio : private TargetGpio
 
         // -------- CONSTRUCTORS ----------------------------------------------
 
+        // Default constructor (assign a NC pin)
+        Gpio() = default;
+
         // Normal input pin constructor
         Gpio(const xarmlib::Pin::Name pin_name,
              const InputMode          input_mode,
@@ -102,8 +105,9 @@ class Gpio : private TargetGpio
                                                                      output_mode)
         {}
 
-        // -------- MODE ------------------------------------------------------
+        // -------- CONFIGURATION ---------------------------------------------
 
+        using TargetGpio::set_pin;
         using TargetGpio::set_mode;
 
         // -------- READ / WRITE ----------------------------------------------
