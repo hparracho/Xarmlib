@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    FPIO32S-V1-test_FPIO8SM.cpp
 // @brief   FPIO32S-V1 board Test FPIO8SM example application.
-// @date    20 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -119,21 +119,21 @@ void test_FPIO8SM(Usart& usart, SpiMaster& spi_master, const std::size_t module_
         const SpiIoModule<4>::Type output_set   = pins_mask & ~(1 << pin);
 
         // Sets pin and verifies if pin was initially clear
-        if((spi_io_module.read_write(module_count, output_set) & pins_mask) != output_clear)
+        if((spi_io_module.transfer(output_set, module_count) & pins_mask) != output_clear)
         {
             pin_init_failed |= 1 << pin;
         }
         UsTicker::wait(10ms);
 
         // Clears pin and verifies if pin was set
-        if((spi_io_module.read_write(module_count, output_clear) & pins_mask) != output_set)
+        if((spi_io_module.transfer(output_clear, module_count) & pins_mask) != output_set)
         {
             pin_set_failed |= 1 << pin;
         }
         UsTicker::wait(10ms);
 
         // Clears pin again to verify if pin was clear
-        if((spi_io_module.read_write(module_count, output_clear) & pins_mask) != output_clear)
+        if((spi_io_module.transfer(output_clear, module_count) & pins_mask) != output_clear)
         {
             pin_clear_failed |= 1 << pin;
         }
@@ -193,11 +193,6 @@ int main(void)
 
     // RS485 USART output enable
     DigitalOut usart_oe(Pin::Name::P0_4, DigitalOut::OutputMode::PUSH_PULL_HIGH);
-
-    // Emanuel Pinto @ 20 June 2018
-    // @FIXME: The first few characters are not sent after power reset.
-    //         Delay 1ms before USART instantiation while pending for a solution...
-    UsTicker::wait(1ms);
 
     // RS485 USART
     Usart usart(Pin::Name::P0_13, Pin::Name::P0_17, 115200);
