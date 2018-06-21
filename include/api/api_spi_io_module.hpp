@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_spi_io_module.hpp
 // @brief   API SPI I/O module (FPIO8SM) class.
-// @date    18 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -82,40 +82,15 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
             m_spi_master.enable();
 
             // Clear shift registers
-            read_write(static_cast<Type>(0xFFFFFFFFFFFFFFFF));
+            transfer(static_cast<Type>(0xFFFFFFFFFFFFFFFF));
         }
 
-        // Reads and writes to all modules
-        Type read_write(const Type output_value)
-        {
-            return transfer(IO_MODULE_COUNT_MAX, output_value);
-        }
-
-        // Reads and writes to a specified number of modules (up to IO_MODULE_COUNT_MAX)
-        Type read_write(const std::size_t io_module_count, const Type output_value)
+        // Transfer a value (simultaneous write and read) [to a specified number of modules (up to IO_MODULE_COUNT_MAX)]
+        // NOTE: Return the input value
+        Type transfer(const Type output_value, const std::size_t io_module_count = IO_MODULE_COUNT_MAX)
         {
             assert(io_module_count >= 1 && io_module_count <= IO_MODULE_COUNT_MAX);
 
-            return transfer(io_module_count, output_value);
-        }
-
-        // Enable IO module
-        void enable() { m_enable = 0; }
-
-        // Disable IO module
-        void disable() { m_enable = 1; }
-
-        // Gets the enable state
-        bool is_enabled() const { return (m_enable == 0); }
-
-    private:
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-        Type transfer(const std::size_t io_module_count, const Type output_value)
-        {
             Type input_value = 0;
 
             int32_t shift = get_shift(io_module_count);
@@ -139,6 +114,21 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
 
             return input_value;
         }
+
+        // Enable IO module
+        void enable() { m_enable = 0; }
+
+        // Disable IO module
+        void disable() { m_enable = 1; }
+
+        // Gets the enable state
+        bool is_enabled() const { return (m_enable == 0); }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
 
         static constexpr int32_t get_shift(const std::size_t io_module_count)
         {
