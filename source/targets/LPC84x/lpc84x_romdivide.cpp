@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_romdivide.h
+// @file    lpc84x_romdivide.cpp
 // @brief   Patch the AEABI integer divide functions to use MCU's romdivide library.
-// @date    19 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,24 +29,37 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
-#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
+#include "system/target"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifdef __LPC84X__
+
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
+
+extern "C"
+{
+
+
+
+
+// Variables to store addresses of idiv and udiv functions within MCU ROM
+uint32_t* __romdiv_idiv;
+uint32_t* __romdiv_uidiv;
 
 
 
 
 // Patch the AEABI integer divide functions to use MCU's romdivide library.
-void ROMDIVIDE_PatchAeabiIntegerDivide(void);
-
-
-
-
-#ifdef __cplusplus
+void ROMDIVIDE_PatchAeabiIntegerDivide(void)
+{
+    // Get addresses of integer divide routines in ROM
+    // These address are then used by the code in aeabi_romdiv_patch.s
+    __romdiv_idiv  = (uint32_t*)LPC_ROM_DIV_API->idiv;
+    __romdiv_uidiv = (uint32_t*)LPC_ROM_DIV_API->uidiv;
 }
-#endif
 
-#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
+
+
+
+} // extern "C"
+
+#endif // __LPC84X__

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_section_macros.h
 // @brief   Macros to allow code/data to be placed into different memory banks.
-// @date    19 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib

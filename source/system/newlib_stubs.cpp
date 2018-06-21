@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// @file    newlib_stubs.c
+// @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
 // @date    21 June 2018
@@ -31,6 +31,9 @@
 // ----------------------------------------------------------------------------
 
 #include "system/cmsis"
+
+extern "C"
+{
 
 
 
@@ -92,7 +95,6 @@ caddr_t _sbrk(int incr)
 
 
 
-
 __attribute__ ((weak, noreturn))
 void _exit(int code __attribute__ ((unused)))
 {
@@ -112,3 +114,8 @@ void abort(void)
 {
     _exit(1);
 }
+
+
+
+
+} // extern "C"

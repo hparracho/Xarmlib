@@ -36,9 +36,8 @@
 
 #include "xarmlib_config.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern "C"
+{
 
 
 
@@ -85,7 +84,7 @@ extern "C" {
 // Check that buffer size requested is > 0 bytes in size
 #if (__MTB_BUFFER_SIZE > 0)
 
-#include "targets/LPC84x/lpc84x_section_macros.h"
+#include "targets/LPC84x/lpc84x_section_macros.hpp"
 
 #define __MTB_BUFFER_EXT(size, bank)         \
              __SECTION(mtb, bank)            \
@@ -111,8 +110,6 @@ __MTB_BUFFER(__MTB_BUFFER_SIZE);
 
 
 
-#ifdef __cplusplus
-}
-#endif
+} // extern "C
 
 #endif // __LPC84X__

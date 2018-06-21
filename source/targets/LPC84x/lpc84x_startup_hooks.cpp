@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    13 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,9 +33,9 @@
 
 #ifdef __LPC84X__
 
-#include <targets/LPC84x/lpc84x_cmsis.h>
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_faim.hpp"
-#include <targets/LPC84x/lpc84x_romdivide.h>
+#include "targets/LPC84x/lpc84x_romdivide.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
@@ -47,9 +47,6 @@ namespace targets
 {
 namespace lpc84x
 {
-
-
-
 
 extern "C"
 {

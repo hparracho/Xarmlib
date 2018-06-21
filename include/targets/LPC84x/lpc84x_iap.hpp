@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_iap.hpp
 // @brief   NXP LPC84x In-Application Programming (IAP) class.
-// @date    19 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,7 @@
 #define __XARMLIB_TARGETS_LPC84X_IAP_HPP
 
 #include "system/gsl"
-#include "targets/LPC84x/lpc84x_cmsis.h"
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib

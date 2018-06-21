@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    19 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -1255,7 +1255,7 @@ static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_B
 
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
 
 #endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H

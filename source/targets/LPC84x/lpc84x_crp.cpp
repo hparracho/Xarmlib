@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_crp.cpp
 // @brief   CRP (Code Read Protect) word definition.
-// @date    19 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,12 +33,11 @@
 
 #ifdef __LPC84X__
 
-#include "targets/LPC84x/lpc84x_section_macros.h"
+#include "targets/LPC84x/lpc84x_section_macros.hpp"
 #include "xarmlib_config.hpp"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+extern "C"
+{
 
 
 
@@ -106,8 +105,6 @@ __CRP const unsigned int CRP_WORD = CURRENT_CRP_SETTING;
 
 
 
-#ifdef __cplusplus
-}
-#endif
+} // extern "C"
 
 #endif // __LPC84X__

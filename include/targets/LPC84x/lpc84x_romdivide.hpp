@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_romdivide.cpp
+// @file    lpc84x_romdivide.h
 // @brief   Patch the AEABI integer divide functions to use MCU's romdivide library.
-// @date    18 May 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,39 +29,24 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
+#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
 
-#ifdef __LPC84X__
-
-#include <targets/LPC84x/lpc84x_cmsis.h>
-
-
-
-
-// Variables to store addresses of idiv and udiv functions within MCU ROM
-uint32_t* __romdiv_idiv;
-uint32_t* __romdiv_uidiv;
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 
 
 
 // Patch the AEABI integer divide functions to use MCU's romdivide library.
-void ROMDIVIDE_PatchAeabiIntegerDivide(void)
-{
+void ROMDIVIDE_PatchAeabiIntegerDivide(void);
 
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wpedantic"
-	// ISO C forbids conversion of function pointer to object pointer type [-Wpedantic]
 
-    // Get addresses of integer divide routines in ROM
-    // These address are then used by the code in aeabi_romdiv_patch.s
-    __romdiv_idiv  = (uint32_t*)LPC_ROM_DIV_API->idiv;
-    __romdiv_uidiv = (uint32_t*)LPC_ROM_DIV_API->uidiv;
 
-#pragma GCC diagnostic pop
+
+#ifdef __cplusplus
 }
+#endif
 
-
-
-
-#endif // __LPC84X__
+#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
