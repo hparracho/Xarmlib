@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    23 May 2018
+// @date    19 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,7 +38,7 @@
 #include "system/bitmask"
 #include "system/delegate"
 #include "targets/peripheral_ref_counter.hpp"
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
+#include "targets/LPC84x/lpc84x_cmsis.h"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"

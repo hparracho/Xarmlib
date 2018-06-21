@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_cmsis.hpp
+// @file    lpc84x_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    18 May 2018
+// @date    19 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,8 +35,8 @@
 // https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
-#define __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
+#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#define __XARMLIB_TARGETS_LPC84X_CMSIS_H
 
 #include "cmsis_compiler.h"
 #include "cmsis_version.h"
@@ -1184,7 +1184,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_ROM_DIV_API         ((LPC_ROM_DIV_API_T  *)(LPC_ROM_API->DIV_BASE_PTR))
 
 // IAP entry function pointer
-const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
+static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 
 // APB0 peripherals
 #define LPC_WWDT                ((LPC_WWDT_T         *) LPC_WWDT_BASE)
@@ -1258,4 +1258,4 @@ const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 }
 #endif
 
-#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
+#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H
