@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_system.hpp
 // @brief   NXP LPC81x system level configuration class.
-// @date    7 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,8 +63,11 @@ class System
             // in DIP8 packages
 #if (__LPC81X_GPIOS__ >= 14)
             XTAL_12MHZ,                 // Using direct external crystal
+            XTAL_12MHZ_NO_OSC,          // Using direct external crystal with internal RC oscillator powered down
             XTAL_24MHZ,                 // Using external crystal and PPL
-            XTAL_30MHZ                  // Using external crystal and PPL
+            XTAL_24MHZ_NO_OSC,          // Using external crystal and PPL with internal RC oscillator powered down
+            XTAL_30MHZ,                 // Using external crystal and PPL
+            XTAL_30MHZ_NO_OSC           // Using external crystal and PPL with internal RC oscillator powered down
 #endif
         };
 
@@ -88,9 +91,12 @@ class System
                 case Clock::OSC_30MHZ:             return 30000000; break;
 
 #if (__LPC81X_GPIOS__ >= 14)
-                case Clock::XTAL_12MHZ:            return 12000000; break;
-                case Clock::XTAL_24MHZ:            return 24000000; break;
-                case Clock::XTAL_30MHZ:            return 30000000; break;
+                case Clock::XTAL_12MHZ:
+                case Clock::XTAL_12MHZ_NO_OSC:     return 12000000; break;
+                case Clock::XTAL_24MHZ:
+                case Clock::XTAL_24MHZ_NO_OSC:     return 24000000; break;
+                case Clock::XTAL_30MHZ:
+                case Clock::XTAL_30MHZ_NO_OSC:     return 30000000; break;
 #endif
                 default:                           return        0; break;
             }
@@ -105,9 +111,12 @@ class System
                 case Clock::OSC_30MHZ:             return 60000000; break;
 
 #if (__LPC81X_GPIOS__ >= 14)
-                case Clock::XTAL_12MHZ:            return 12000000; break;
-                case Clock::XTAL_24MHZ:            return 24000000; break;
-                case Clock::XTAL_30MHZ:            return 60000000; break;
+                case Clock::XTAL_12MHZ:
+                case Clock::XTAL_12MHZ_NO_OSC:     return 12000000; break;
+                case Clock::XTAL_24MHZ:
+                case Clock::XTAL_24MHZ_NO_OSC:     return 24000000; break;
+                case Clock::XTAL_30MHZ:
+                case Clock::XTAL_30MHZ_NO_OSC:     return 60000000; break;
 #endif
                 default:                           return        0; break;
             }

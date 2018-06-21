@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC81x MCU.
-// @date    7 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -77,11 +77,11 @@ static inline void mcu_startup_set_irc_clock()
         // Configure the PLL subsystem according to the system configuration
         switch(XARMLIB_SYSTEM_CLOCK)
         {
-            case System::Clock::OSC_30MHZ: Clock::set_system_pll_divider(4, 1); // 30MHz => M=5; P=2; DIV=2
+            case System::Clock::OSC_30MHZ: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
                                            Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
                                            break;
             case System::Clock::OSC_24MHZ:
-            default:                       Clock::set_system_pll_divider(1, 2); // 24MHz => M=2; P=3; DIV=1
+            default:                       Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
                                            Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
                                            break;
         }
@@ -119,15 +119,15 @@ static inline void mcu_startup_set_xtal_clock()
     // Power-up crystal oscillator
     Power::power_up(Power::Peripheral::SYSOSC);
 
-    // Wait 500 uSec for system oscillator to stabilize (typical time from datasheet). The for
-    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 nSec),
-    // so worst case: i = (500 uSec) / (7 * 33.333 nSec) = 2142.9 => 2143
+    // Wait 500 us for system oscillator to stabilize (typical time from datasheet). The for
+    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 ns),
+    // so worst case: i = (500 us) / (7 * 33.333 ns) = 2142.9 => 2143
     for(uint32_t i = 0; i < 2143; i++) __NOP();
 
     // Set system oscillator source for system PLL clock select
     Clock::set_system_pll_source(Clock::SystemPllSource::SYS_OSC_CLK);
 
-    if(XARMLIB_SYSTEM_CLOCK == System::Clock::XTAL_12MHZ)
+    if(XARMLIB_SYSTEM_CLOCK <= System::Clock::XTAL_12MHZ_NO_OSC)
     {
         // Set the main clock divide by 1
         Clock::set_system_clock_divider(1);
@@ -140,13 +140,15 @@ static inline void mcu_startup_set_xtal_clock()
         // Configure the PLL subsystem according to the system configuration
         switch(XARMLIB_SYSTEM_CLOCK)
         {
-            case System::Clock::XTAL_30MHZ: Clock::set_system_pll_divider(4, 1); // 30MHz => M=5; P=2; DIV=2
-                                            Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
-                                            break;
+            case System::Clock::XTAL_30MHZ:
+            case System::Clock::XTAL_30MHZ_NO_OSC: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
+                                                   Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
+                                                   break;
             case System::Clock::XTAL_24MHZ:
-            default:                        Clock::set_system_pll_divider(1, 2); // 24MHz => M=2; P=3; DIV=1
-                                            Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
-                                            break;
+            case System::Clock::XTAL_24MHZ_NO_OSC:
+            default:                               Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
+                                                   Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
+                                                   break;
         }
 
         // Power-up system PLL *ONLY* after setting the dividers
@@ -160,9 +162,14 @@ static inline void mcu_startup_set_xtal_clock()
     }
 #endif
 
-    // Disable the unused IRC oscillator
-    Power::power_down(Power::Peripheral::IRC);
-    Power::power_down(Power::Peripheral::IRCOUT);
+    if(XARMLIB_SYSTEM_CLOCK == System::Clock::XTAL_12MHZ_NO_OSC ||
+       XARMLIB_SYSTEM_CLOCK == System::Clock::XTAL_24MHZ_NO_OSC ||
+       XARMLIB_SYSTEM_CLOCK == System::Clock::XTAL_30MHZ_NO_OSC)
+    {
+        // Disable the unused IRC oscillator
+        Power::power_down(Power::Peripheral::IRC);
+        Power::power_down(Power::Peripheral::IRCOUT);
+    }
 }
 
 
@@ -180,6 +187,17 @@ void mcu_startup_initialize_hardware_early(void)
 
 void mcu_startup_initialize_hardware(void)
 {
+    // ------------------------------------------------------------------------
+    // Emanuel Pinto @ 21 June 2018
+    // NOTE: The errata sheet advises that the required minimum wait time
+    //       of the power supply on the VDD pin specification is 2 ms.
+
+    // Wait 2 ms before ramping up.
+    // The for loop takes 7 clocks per iteration and executes at a maximum of 30 MHz
+    // (33.333 ns), so worst case: i = (2 ms) / (7 * 33.333 ns) = 8571.5 => 8572
+    for(uint32_t i = 0; i < 8572; i++) __NOP();
+    // ------------------------------------------------------------------------
+
     // Enable brown-out detection with reset level 3 (2.63V ~ 2.71V)
     BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
 
