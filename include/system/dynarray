@@ -1,0 +1,331 @@
+// ----------------------------------------------------------------------------
+// @file    dynarray
+// @brief   Fixed size dynamic allocated (heap) array class.
+// @date    22 June 2018
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
+
+#ifndef __XARMLIB_SYSTEM_DYNARRAY
+#define __XARMLIB_SYSTEM_DYNARRAY
+
+#include <algorithm>
+#include <cstddef>
+#include <initializer_list>
+#include <iterator>
+#include <memory>
+
+namespace xarmlib
+{
+
+
+
+
+template <typename T>
+class dynarray
+{
+    public:
+    
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using value_type             = T;
+        using size_type              = size_t;
+        using difference_type        = std::ptrdiff_t;
+        using reference              = value_type &;
+        using const_reference        = const value_type&;
+        using pointer                = value_type *;
+        using const_pointer          = const value_type*;
+        using iterator               = pointer;
+        using const_iterator         = const_pointer;
+        using reverse_iterator       = std::reverse_iterator<iterator>;
+        using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+        
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+        
+        // -------- CONSTRUCTORS ----------------------------------------------
+        
+        explicit dynarray(const size_type count) : m_data { new T[count] },
+                                                   m_size { count }
+        {}
+
+        template <class Allocator>
+        dynarray(const size_type count, const Allocator& allocator) : m_data{ allocator.allocate(count) },
+                                                                      m_size{ count }
+        {}
+        
+        dynarray(const size_type count, const T& value) : m_data { new T[count] },
+                                                          m_size { count }
+        {
+            std::fill(begin(), end(), value);
+        }
+        
+        template <class Allocator>
+        dynarray(const size_type count, const T& value, const Allocator& allocator) : m_data{ allocator.allocate(count) },
+                                                                                      m_size{ count }
+        {
+            std::fill(begin(), end(), value);
+        }
+        
+        dynarray(const dynarray& other) : m_data{ new T[other.size()] },
+                                          m_size{ other.size() }
+        {
+            std::copy(other.begin(), other.end(), begin());
+        }
+
+        template <class Allocator>
+        dynarray(const dynarray& other, const Allocator& allocator) : m_data{ allocator.allocate(other.size()) },
+                                                                      m_size{ other.size() }
+        {
+            std::copy(other.begin(), other.end(), begin());
+        }
+        
+        dynarray(dynarray&& other) : m_data{ std::move(other.m_data) },
+                                     m_size{ other.size() }
+        {}
+        
+        dynarray(std::initializer_list<T> list) : m_data{ new T[list.size()] },
+                                                  m_size{ list.size() }
+        {
+            std::copy(list.begin(), list.end(), begin());
+        }
+        
+        template <class Allocator>
+        dynarray(std::initializer_list<T> list, const Allocator& allocator) : m_data{ allocator.allocate(list.size()) },
+                                                                              m_size{ list.size() }
+        {
+            std::copy(list.begin(), list.end(), begin());
+        }
+        
+        // -------- ASSIGNMENT OPERATORS --------------------------------------
+        
+        dynarray& operator = (const dynarray& other)
+        {
+            assert(size() == other.size());
+            
+            std::copy(other.begin(), other.end(), begin());
+            
+            return *this;
+        }
+        
+        dynarray& operator = (dynarray&& other)
+        {
+            std::swap(m_data, other.m_data);
+            std::swap(m_size, other.m_size);
+            
+            return *this;
+        }
+        
+        dynarray& operator = (std::initializer_list<T> list)
+        {
+            assert(size() == list.size());
+            
+            std::copy(list.begin(), list.end(), begin());
+            
+            return *this;
+        }
+        
+        // -------- ACCESS FUNCTIONS / OPERATORS ------------------------------
+
+        // Access the element at the specified position with bounds checking
+        reference at(const size_type pos)
+        {
+            assert(pos < size());
+            
+            return m_data[pos];
+        }
+        
+        // Read-only access to the element at the specified position with bounds checking
+        const_reference at(const size_type pos) const
+        {
+            assert(pos < size());
+            
+            return m_data[pos];
+        }
+        
+        // Access the element at the specified position without bounds checking
+        reference operator []( const size_type pos)
+        {
+            return m_data[pos];
+        }
+
+        // Read-only access the element at the specified position without bounds checking
+        const_reference operator [] (const size_type pos) const
+        {
+            return m_data[pos];
+        }
+        
+        // Access the first element
+        reference front()
+        {
+            return m_data[0];
+        }
+        
+        // Read-only access the first element
+        const_reference front() const
+        {
+            return m_data[0];
+        }
+        
+        // Access the last element
+        reference back()
+        {
+            return m_data[size() - 1];
+        }
+        
+        // Read-only access the last element
+        const_reference back() const
+        {
+            return m_data[size() - 1];
+        }
+        
+        // Return a raw-pointer to the underlying data buffer
+        pointer data()
+        {
+            return m_data.data();
+        }
+        
+        // Return a read-only raw-pointer to the underlying data buffer
+        const_pointer data() const
+        {
+            return m_data.data();
+        }
+        
+        // -------- CAPACITY FUNCTIONS ----------------------------------------
+
+        // Return 'true' if empty and 'false' otherwise
+        bool empty() const
+        {
+            return (m_size == 0);
+        }
+
+        // Return the number of elements
+        size_type size() const
+        {
+            return m_size;
+        }
+        
+        // -------- FILL FUNCTION ---------------------------------------------
+        
+        // Fill with elements of the specified value
+        void fill(const T& value)
+        {
+            std::fill(begin(), end(), value);
+        }
+        
+        // -------- ITERATORS -------------------------------------------------
+
+        // Return an iterator to the first element
+        iterator begin()
+        {
+            return m_data.data();
+        }
+
+        // Return a read-only iterator to the first element
+        const_iterator begin() const
+        {
+            return m_data.data();
+        }
+
+        // Returns a read-only iterator to the first element
+        const_iterator cbegin() const
+        {
+            return m_data.data();
+        }
+
+        // Return an iterator to the position behind the last element
+        iterator end()
+        {
+            return m_data.data() + size();
+        }
+
+        // Return a read-only iterator to the position behind the last element
+        const_iterator end() const
+        {
+            return m_data.data() + size();
+        }
+
+        // Return a read-only iterator to the position behind the last element
+        const_iterator cend() const
+        {
+            return m_data.data() + size();
+        }
+
+        // Return an iterator to the first element in reverse order
+        reverse_iterator rbegin()
+        {
+            return reverse_iterator { end() };
+        }
+
+        // Return a read-only iterator to the first element in reverse order
+        const_reverse_iterator rbegin() const
+        {
+            return reverse_iterator { end() };
+        }
+
+        // Return a read-only iterator to the first element in reverse order
+        const_reverse_iterator crbegin() const
+        {
+            return reverse_iterator { cend() };
+        }
+
+        // Return an iterator to the position behind the last element in reverse order
+        reverse_iterator rend()
+        {
+            return reverse_iterator { begin() };
+        }
+
+        // Return a read-only iterator to the position behind the last element in reverse order
+        const_reverse_iterator rend() const
+        {
+            return reverse_iterator { begin() };
+        }
+
+        // Return a read-only iterator to the position behind the last element in reverse order
+        const_reverse_iterator crend() const
+        {
+            return reverse_iterator { cbegin() };
+        }
+        
+    private:
+        
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        std::unique_ptr<T[]> m_data;
+        size_type            m_size;
+};
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_SYSTEM_DYNARRAY
