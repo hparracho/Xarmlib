@@ -32,11 +32,11 @@
 #ifndef __XARMLIB_SYSTEM_DYNARRAY
 #define __XARMLIB_SYSTEM_DYNARRAY
 
-#include <algorithm>
-#include <cstddef>
 #include <initializer_list>
 #include <iterator>
 #include <memory>
+
+#include "system/cassert"
 
 namespace xarmlib
 {
