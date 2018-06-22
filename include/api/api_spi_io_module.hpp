@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_spi_io_module.hpp
 // @brief   API SPI I/O module (FPIO8SM) class.
-// @date    21 June 2018
+// @date    22 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -74,15 +74,30 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiIoModule(SpiMaster& spi_master, const Pin::Name latch, const Pin::Name enable) : m_spi_master(spi_master),
-                                                                                            m_latch(latch, DigitalOut::OutputMode::PUSH_PULL_HIGH),
-                                                                                            m_enable(enable, DigitalOut::OutputMode::PUSH_PULL_HIGH)
+        SpiIoModule(const Pin::Name               latch,
+                    const Pin::Name               enable,
+                    const Pin::Name               spi_master_mosi,
+                    const Pin::Name               spi_master_miso,
+                    const Pin::Name               spi_master_sck,
+                    const int32_t                 spi_max_frequency,
+                    const SpiMaster::SpiMode      spi_mode          = SpiMaster::SpiMode::MODE3,
+                    const SpiMaster::DataBits     spi_data_bits     = SpiMaster::DataBits::BITS_8,
+                    const SpiMaster::DataOrder    spi_data_order    = SpiMaster::DataOrder::MSB_FIRST,
+                    const SpiMaster::LoopbackMode spi_loopback_mode = SpiMaster::LoopbackMode::DISABLED) : m_latch(latch, DigitalOut::OutputMode::PUSH_PULL_HIGH),
+                                                                                                           m_enable(enable, DigitalOut::OutputMode::PUSH_PULL_HIGH),
+                                                                                                           m_spi_master(spi_master_mosi,
+                                                                                                                        spi_master_miso,
+                                                                                                                        spi_master_sck,
+                                                                                                                        spi_max_frequency,
+                                                                                                                        spi_mode,
+                                                                                                                        spi_data_bits,
+                                                                                                                        spi_data_order,
+                                                                                                                        spi_loopback_mode)
         {
-            // Just to make sure SPI is enable
             m_spi_master.enable();
 
             // Clear shift registers
-            transfer(static_cast<Type>(0xFFFFFFFFFFFFFFFF));
+            transfer(m_output_value);
         }
 
         // Transfer a value (simultaneous write and read) [to a specified number of modules (up to IO_MODULE_COUNT_MAX)]
@@ -115,6 +130,18 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
             return input_value;
         }
 
+        Type read(const std::size_t io_module_count = IO_MODULE_COUNT_MAX) const
+        {
+            return transfer(m_output_value, io_module_count);
+        }
+
+        void write(const Type output_value, const std::size_t io_module_count = IO_MODULE_COUNT_MAX)
+        {
+            m_output_value = output_value;
+
+            transfer(m_output_value, io_module_count);
+        }
+
         // Enable IO module
         void enable() { m_enable = 0; }
 
@@ -139,10 +166,12 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        SpiMaster&  m_spi_master;
-
         DigitalOut  m_latch;
         DigitalOut  m_enable;
+
+        SpiMaster   m_spi_master;
+
+        Type        m_output_value { static_cast<Type>(0xFFFFFFFFFFFFFFFF) };
 };
 
 
