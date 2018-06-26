@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    dynarray
 // @brief   Fixed size dynamic allocated (heap) array class.
-// @date    22 June 2018
+// @date    26 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -208,13 +208,13 @@ class dynarray
         // Return a raw-pointer to the underlying data buffer
         pointer data()
         {
-            return m_data.data();
+            return m_data.get();
         }
         
         // Return a read-only raw-pointer to the underlying data buffer
         const_pointer data() const
         {
-            return m_data.data();
+            return m_data.get();
         }
         
         // -------- CAPACITY FUNCTIONS ----------------------------------------
@@ -244,37 +244,37 @@ class dynarray
         // Return an iterator to the first element
         iterator begin()
         {
-            return m_data.data();
+            return data();
         }
 
         // Return a read-only iterator to the first element
         const_iterator begin() const
         {
-            return m_data.data();
+            return data();
         }
 
         // Returns a read-only iterator to the first element
         const_iterator cbegin() const
         {
-            return m_data.data();
+            return data();
         }
 
         // Return an iterator to the position behind the last element
         iterator end()
         {
-            return m_data.data() + size();
+            return data() + size();
         }
 
         // Return a read-only iterator to the position behind the last element
         const_iterator end() const
         {
-            return m_data.data() + size();
+            return data() + size();
         }
 
         // Return a read-only iterator to the position behind the last element
         const_iterator cend() const
         {
-            return m_data.data() + size();
+            return data() + size();
         }
 
         // Return an iterator to the first element in reverse order
