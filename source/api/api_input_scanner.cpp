@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
+// @file    api_input_scannerr.hpp
+// @brief   API input scanner class (takes control of one available Timer).
 // @date    26 June 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,30 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "xarmlib_config.hpp"
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
-
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_input_scanner.hpp"
-#include "api/api_pin_bus.hpp"
+namespace xarmlib
+{
 
 
 
 
-#endif // __XARMLIB_HPP
+// Static initialization
+Timer                                InputScanner::m_timer;
+dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
+InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
+
+
+
+
+} // namespace xarmlib
