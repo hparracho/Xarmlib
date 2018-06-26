@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    18 June 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,7 @@
 #ifndef __XARMLIB_API_PIN_BUS_HPP
 #define __XARMLIB_API_PIN_BUS_HPP
 
-#include <system/array>
-
+#include "system/array"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
