@@ -118,10 +118,6 @@ class InputScanner
 
         static void resume()
         {
-            // Uses the enabled IRQ state to verify if the timer was already started once.
-            // Disallows a call to the 'resume()' without having previously called the 'start()'.
-            assert(m_timer.is_enabled_irq() == true);
-
             if(m_timer.is_running() == false)
             {
                 const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
