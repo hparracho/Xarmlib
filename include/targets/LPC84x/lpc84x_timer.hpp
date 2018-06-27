@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    21 June 2018
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -135,9 +135,12 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             set_interval(m_interval);
         }
 
-        // Reload previously set interval and start or re-start timer
+        // Reload previously set interval and re-start the timer
         void reload()
         {
+            // Ensure interval is set
+            assert(m_interval != 0);
+
             set_interval(m_interval);
         }
 
