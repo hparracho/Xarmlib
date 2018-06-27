@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_scannerr.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    26 June 2018
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -95,21 +95,40 @@ class InputScanner
 
         static void start(const std::chrono::milliseconds scan_time)
         {
-            if(m_timer.is_running() == true)
+            if(m_timer.is_running() == false)
             {
-                m_timer.stop();
+                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                m_timer.assign_irq_handler(handler);
+                m_timer.enable_irq();
             }
 
-            const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
-            m_timer.assign_irq_handler(handler);
-
+            // Start or restart the timer with the new specified scan time
             m_timer.start(scan_time, Timer::Mode::FREE_RUNNING);
         }
 
         static void stop()
         {
             m_timer.stop();
+
+            while(m_timer.is_pending_irq() == true);
+
+            m_timer.disable_irq();
             m_timer.remove_irq_handler();
+        }
+
+        static void resume()
+        {
+            // Uses the enabled IRQ state to verify if the timer was already started once.
+            // Disallows a call to the 'resume()' without having previously called the 'start()'.
+            assert(m_timer.is_enabled_irq() == true);
+
+            if(m_timer.is_running() == false)
+            {
+                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                m_timer.assign_irq_handler(handler);
+                m_timer.enable_irq();
+                m_timer.reload();
+            }
         }
 
         static bool is_running()
@@ -129,7 +148,7 @@ class InputScanner
         //       Each timer have their own IRQ with different priorities.
         static void set_timer_irq_priority(const int32_t irq_priority)
         {
-            Timer::set_irq_priority(irq_priority);
+            m_timer.set_irq_priority(irq_priority);
         }
 #endif
 
