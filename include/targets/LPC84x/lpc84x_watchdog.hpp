@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    18 May 2018
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -117,7 +117,7 @@ class Watchdog
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static bool m_initialized;
+        inline static bool m_initialized { false };
 };
 
 
