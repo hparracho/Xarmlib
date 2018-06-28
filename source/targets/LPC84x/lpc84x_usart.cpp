@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    18 May 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,9 +34,8 @@
 
 #ifdef __LPC84X__
 
-#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
-#include "targets/LPC84x/lpc84x_usart.hpp"
 #include "xarmlib_config.hpp"
+#include "targets/LPC84x/lpc84x_usart.hpp"
 
 namespace xarmlib
 {
@@ -48,9 +47,9 @@ namespace lpc84x
 
 
 
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // PRIVATE MEMBER FUNCTIONS
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 void Usart::initialize_frg0()
 {
@@ -81,9 +80,18 @@ int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
 
 
 
-// --------------------------------------------------------------------
+} // namespace lpc84x
+} // namespace targets
+} // namespace xarmlib
+
+
+
+
+using namespace xarmlib::targets::lpc84x;
+
+// ----------------------------------------------------------------------------
 // IRQ HANDLERS
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 extern "C" void USART0_IRQHandler(void)
 {
@@ -129,16 +137,9 @@ extern "C" void USART2_IRQHandler(void)
 
 
 
-// NOTE: USART3 and USART4 interrupts that are shared with PIO INT6 and
-//       PIO INT7 are implemented in 'lpc84x_shared_interrupts.cpp' file.
+// NOTE: USART3 and USART4 interrupts that are shared with PININT6 and
+//       PININT7 are implemented in 'lpc84x_shared_interrupts.cpp' file.
 
 #endif // __LPC845__
-
-
-
-
-} // namespace lpc84x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC84X__
