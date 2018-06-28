@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    27 June 2018
+// @file    api_pin_bus.hpp
+// @brief   API pin bus class.
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,32 +29,51 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#ifndef __XARMLIB_API_PIN_BUS_HPP
+#define __XARMLIB_API_PIN_BUS_HPP
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
+#include "system/array"
 #include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_input_scanner.hpp"
-#include "api/api_pin_bus.hpp"
-//#include "api/api_port_in.hpp"
-//#include "api/api_spi_io_module.hpp"
+namespace xarmlib
+{
 
 
 
 
-#endif // __XARMLIB_HPP
+template <Pin::Name... pins>
+class PinBus
+{
+    public:
+
+        constexpr PinBus() : m_pin_names { pins... }
+        {}
+
+        constexpr std::size_t get_count() const
+        {
+            return sizeof...(pins);
+        }
+
+        constexpr const std::array<Pin::Name, sizeof...(pins)>& get_array() const
+        {
+            return m_pin_names;
+        }
+
+        constexpr Pin::Name get_pin_name(const std::size_t index) const
+        {
+            assert(index < get_count());
+
+            return m_pin_names[index];
+        }
+
+    private:
+
+        const std::array<Pin::Name, sizeof...(pins)> m_pin_names;
+};
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_API_PIN_BUS_HPP

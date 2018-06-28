@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_debouncer.cpp
-// @brief   API debouncer class (takes control of one available Timer).
-// @date    19 June 2018
+// @file    api_input_scanner.cpp
+// @brief   API input scanner class (takes control of one available Timer).
+// @date    26 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,6 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "api/api_debouncer.hpp"
 #include "xarmlib_config.hpp"
 
 namespace xarmlib
@@ -38,28 +37,10 @@ namespace xarmlib
 
 
 
-// Static initializations
-Timer Debouncer::m_timer;
-
-//@TODO: APAGAR !!
-Gpio Debouncer::temp_m_led_red(Pin::Name::P0_12, Gpio::OutputMode::PUSH_PULL_HIGH);
-
-std::array<private_debouncer::Input, XARMLIB_CONFIG_DEBOUNCER_INPUT_COUNT_MAX> g_input { /*{ Pin::Name::NC, 0, 0, 0 }*/ };
-gsl::span<private_debouncer::Input> Debouncer::m_input { g_input };
-
-std::ptrdiff_t Debouncer::m_input_count { 0 };
-
-std::array<uint32_t, Port::COUNT> Debouncer::m_pins_mask { 0 };
-
-std::array<uint32_t, Port::COUNT> Debouncer::m_last_read_pins { 0 };
-
-std::array<uint32_t, Port::COUNT> Debouncer::m_current_debounced { 0 };
-
-std::array<uint32_t, Port::COUNT> Debouncer::m_last_debounced { 0 };
-
-std::array<uint32_t, Port::COUNT> Debouncer::m_sampling { 0 };
-
-Debouncer::NewDebouncedHandler Debouncer::m_new_debounced_handler;
+// Static initialization
+Timer                                InputScanner::m_timer;
+dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
+InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
 
 
 
