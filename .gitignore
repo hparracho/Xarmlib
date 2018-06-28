@@ -35,5 +35,8 @@
 *.hex
 *.bin
 
-# Ignore everything inside build directories
+# Ignore everything inside these directories
 /**/build/**
+/**/deprecated/**
+/**/backup/**
+/**/temp/**
