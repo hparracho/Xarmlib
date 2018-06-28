@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    18 May 2018
+// @date    14 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -68,6 +68,12 @@ class DigitalOut : private Gpio
         operator uint32_t () const
         {
             return Gpio::read();
+        }
+
+        // Read negated value operator
+        uint32_t operator ! () const
+        {
+            return !Gpio::read();
         }
 
         // -------- WRITE -----------------------------------------------------
