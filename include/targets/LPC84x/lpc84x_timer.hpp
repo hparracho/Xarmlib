@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    18 May 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,6 +40,15 @@
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 
+
+
+
+// Forward declaration of IRQ handler
+extern "C" void MRT_IRQHandler(void);
+
+
+
+
 namespace xarmlib
 {
 namespace targets
@@ -50,17 +59,18 @@ namespace lpc84x
 
 
 
-// Forward declaration of IRQ handler
-extern "C" void MRT_IRQHandler(void);
-
-
-
-
 // Number of available timer channels
 static constexpr std::size_t TIMER_COUNT { 4 };
 
 class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C function to give access to private IRQ handler member function
+        friend void ::MRT_IRQHandler(void);
+
     protected:
 
         // --------------------------------------------------------------------
@@ -135,9 +145,12 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             set_interval(m_interval);
         }
 
-        // Reload previously set interval and start or re-start timer
+        // Reload previously set interval and re-start the timer
         void reload()
         {
+            // Ensure interval is set
+            assert(m_interval != 0);
+
             set_interval(m_interval);
         }
 
@@ -223,9 +236,6 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             STAT_INTFLAG        = (1 << 0),
             STAT_RUN            = (1 << 1)
         };
-
-        // Friend IRQ handler C function to give access to private IRQ handler member function
-        friend void MRT_IRQHandler(void);
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS

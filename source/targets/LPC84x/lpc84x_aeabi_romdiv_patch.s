@@ -4,7 +4,7 @@
 //          replace the standard ones pulled in from the C library, which
 //          vector integer divides onto the rom division functions contained
 //          in specific NXP MCUs such as LPC8xx, LPC11Uxx and LPC12xx.
-// @date    21 March 2018
+// @date    19 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,6 +37,8 @@
 // copyright, permission, and disclaimer notice must appear in all copies of
 // this code.
 // ----------------------------------------------------------------------------
+
+#include "system/target"
 
 #ifdef __LPC84X__
 

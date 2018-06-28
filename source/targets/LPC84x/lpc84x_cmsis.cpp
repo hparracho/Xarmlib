@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.cpp
 // @brief   CMSIS Core Peripheral Access Layer source file for NXP LPC84x MCUs.
-// @date    18 May 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,13 +35,6 @@
 
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc84x
-{
-
 extern "C"
 {
 
@@ -60,16 +53,12 @@ uint32_t SystemCoreClock;
 void SystemCoreClockUpdate()
 {
     // Store the clock frequency in the SystemCoreClock global RAM location
-    SystemCoreClock = Clock::get_system_clock_frequency();
+    SystemCoreClock = xarmlib::targets::lpc84x::Clock::get_system_clock_frequency();
 }
 
 
 
 
 } // extern "C"
-
-} // namespace lpc84x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC84X__

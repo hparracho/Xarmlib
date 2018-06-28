@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_syscon_clock.cpp
-// @brief   NXP LPC84x SYSCON clock control class.
-// @date    18 May 2018
+// @file    api_input_scannerr.hpp
+// @brief   API input scanner class (takes control of one available Timer).
+// @date    26 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,31 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
-
-#ifdef __LPC84X__
-
-#include "targets/LPC84x/lpc84x_syscon_clock.hpp"
+#include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
-namespace targets
-{
-namespace lpc84x
-{
 
 
 
 
-// Static definition
-// Imprecise clock rates for the watchdog oscillator
-constexpr std::array<int32_t, 16> Clock::m_watchdog_osc_frequency;
+// Static initialization
+Timer                                InputScanner::m_timer;
+dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
+InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
 
 
 
 
-} // namespace lpc84x
-} // namespace targets
 } // namespace xarmlib
-
-#endif // __LPC84X__

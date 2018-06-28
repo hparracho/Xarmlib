@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    18 May 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,13 +33,12 @@
 
 #ifdef __LPC84X__
 
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
+#include "xarmlib_config.hpp"
 #include "targets/LPC84x/lpc84x_faim.hpp"
 #include "targets/LPC84x/lpc84x_romdivide.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
-#include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
@@ -47,9 +46,6 @@ namespace targets
 {
 namespace lpc84x
 {
-
-
-
 
 extern "C"
 {
@@ -168,13 +164,13 @@ static inline void mcu_startup_set_xtal_clock()
 // PUBLIC FUNCTIONS
 // ----------------------------------------------------------------------------
 
-void mcu_startup_initialize_hardware_early(void)
+void mcu_startup_initialize_hardware_early()
 {}
 
 
 
 
-void mcu_startup_initialize_hardware(void)
+void mcu_startup_initialize_hardware()
 {
     // ------------------------------------------------------------------------
     // Helder Parracho @ 20 March 2018

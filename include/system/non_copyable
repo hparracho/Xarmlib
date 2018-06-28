@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_watchdog.cpp
-// @brief   NXP LPC84x Watchdog class.
-// @date    18 May 2018
+// @file    non_copyable
+// @brief   Non copyable helper class. Classes which are not value type should
+//          inherit privately from this class to avoid generation of invalid
+//          copy constructor or copy assignment operator.
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,29 +31,43 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
-
-#ifdef __LPC84X__
-
-#include "targets/LPC84x/lpc84x_watchdog.hpp"
+#ifndef __XARMLIB_SYSTEM_NON_COPYABLE
+#define __XARMLIB_SYSTEM_NON_COPYABLE
 
 namespace xarmlib
 {
-namespace targets
+
+
+
+
+template<typename Type>
+class NonCopyable
 {
-namespace lpc84x
-{
+        // The template parameter 'Type' is the type that should be made non copyable.
+        // It prevent cases where the empty base optimization cannot be applied and
+        // therefore ensure zero cost while using this class.
+    
+    protected:
+
+        // Prevent the use of this class as a final one (without being derived)
+        NonCopyable()
+        {}
+
+        ~NonCopyable()
+        {}
+
+    private:
+
+        // NonCopyable copy constructor
+        NonCopyable(const NonCopyable&) = delete;
+
+        // NonCopyable copy assignment operator
+        NonCopyable& operator = (const NonCopyable&) = delete;
+};
 
 
 
-// Static initialization
-bool Watchdog::m_initialized {false};
 
-
-
-
-} // namespace lpc84x
-} // namespace targets
 } // namespace xarmlib
 
-#endif // __LPC84X__
+#endif // __XARMLIB_SYSTEM_NON_COPYABLE

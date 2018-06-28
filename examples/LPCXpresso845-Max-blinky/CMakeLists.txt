@@ -2,7 +2,7 @@
 #cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCOMPILER_PATH="c:/GNU ARM Toolchain/bin/" ..
 
 #Using NXP MCUXpresso toolchain command line example in Windows
-#cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCOMPILER_PATH="c:/nxp/MCUXpressoIDE_10.1.1_606/ide/tools/bin/" ..
+#cmake -G "MinGW Makefiles" -DCMAKE_BUILD_TYPE=Release -DCOMPILER_PATH="c:/nxp/MCUXpressoIDE_10.2.0_759/ide/tools/bin/" ..
 
 cmake_minimum_required(VERSION 3.0)
 
@@ -17,7 +17,7 @@ add_definitions(-D ${MCU})
 set(CMAKE_TOOLCHAIN_FILE toolchain.cmake)
 
 set(project_name LPCXpresso845-Max-blinky)
-project(${project_name} CXX ASM)
+project(${project_name} CXX C ASM)
 
 include_directories("../../external/BITMASK/include")
 include_directories("../../external/CMSIS/Core/include")
@@ -25,9 +25,10 @@ include_directories("../../external/GSL/include")
 include_directories("../../include")
 include_directories("include")
 
-file(GLOB_RECURSE xarmlib_source "../../source/system/*.cpp"
-                                 "../../source/targets/LPC84x/*.cpp"
-                                 "../../source/targets/LPC84x/*.s")
+file(GLOB_RECURSE xarmlib_source "../../source/*.cpp"
+                                 "../../source/*.c"
+                                 "../../source/*.s")
+                                 
 file(GLOB_RECURSE user_source    "source/*.cpp")
 
 add_library(xarmlib OBJECT ${xarmlib_source})

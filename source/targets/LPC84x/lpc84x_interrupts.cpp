@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    18 May 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,13 +32,6 @@
 #include "system/target"
 
 #ifdef __LPC84X__
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc84x
-{
 
 extern "C"
 {
@@ -87,38 +80,38 @@ void SysTick_Handler   (void);
 // ----------------------------------------------------------------------------
 
 // Chip level (LPC84x) peripheral handlers
-void SPI0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void SPI1_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void DAC0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void USART0_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void USART1_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void USART2_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void FAIM_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void I2C1_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void I2C0_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void SCT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void MRT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void CMP_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void WDT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void BOD_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void FLASH_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void WKT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void ADC_SEQA_IRQHandler (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void ADC_SEQB_IRQHandler (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void ADC_THCMP_IRQHandler(void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void ADC_OVR_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void DMA_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void I2C2_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void I2C3_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void CTIMER_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT0_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT1_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT2_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT3_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT4_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT5_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT6_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void PININT7_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void SPI0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void SPI1_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void DAC0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART0_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART1_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void USART2_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void FAIM_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void I2C1_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void I2C0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void SCT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void MRT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void CMP_CAPT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void WDT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void BOD_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void FLASH_IRQHandler         (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void WKT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ADC_SEQA_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ADC_SEQB_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ADC_THCMP_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ADC_OVR_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void DMA_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void I2C2_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void I2C3_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void CTIMER_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT0_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT1_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT2_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT3_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT4_IRQHandler       (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT5_DAC1_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT6_USART3_IRQHandler(void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void PININT7_USART4_IRQHandler(void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 
 
 
@@ -136,56 +129,56 @@ __attribute__ ((used, section(".isr_vector")))
 const IRQ_HandlerPtr __interrupts[] =
 {
     // Core level (CM0+) exception handlers
-    (IRQ_HandlerPtr)(&__STACK_TOP),         // The initial stack pointer
-    Reset_Handler,                          // The reset handler (application entry)
-    NMI_Handler,                            // The NMI handler
-    HardFault_Handler,                      // The hard fault handler
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
+    (IRQ_HandlerPtr)(&__STACK_TOP),         // Initial stack pointer
+    Reset_Handler,                          // Reset handler (application entry)
+    NMI_Handler,                            // NMI handler
+    HardFault_Handler,                      // Hard Fault handler
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
     __valid_user_code_checksum,             // LPC MCU Checksum
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
     SVC_Handler,                            // SVCall handler
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    PendSV_Handler,                         // The PendSV handler
-    SysTick_Handler,                        // The SysTick handler
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
+    PendSV_Handler,                         // PendSV handler
+    SysTick_Handler,                        // SysTick handler
 
     // Chip level (LPC84x) peripheral handlers
-    SPI0_IRQHandler,                        // SPI0
-    SPI1_IRQHandler,                        // SPI1
-    DAC0_IRQHandler,                        // DAC0
-    USART0_IRQHandler,                      // USART0
-    USART1_IRQHandler,                      // USART1
-    USART2_IRQHandler,                      // USART2
-    FAIM_IRQHandler,                        // FAIM
-    I2C1_IRQHandler,                        // I2C1 controller
-    I2C0_IRQHandler,                        // I2C0 controller
-    SCT_IRQHandler,                         // Smart Counter Timer
-    MRT_IRQHandler,                         // Multi-Rate Timer
-    CMP_IRQHandler,                         // Comparator shared slot with CAP Touch
-    WDT_IRQHandler,                         // Watchdog
-    BOD_IRQHandler,                         // Brown Out Detect
-    FLASH_IRQHandler,                       // Flash Interrupt
-    WKT_IRQHandler,                         // Wakeup timer
-    ADC_SEQA_IRQHandler,                    // ADC sequence A completion
-    ADC_SEQB_IRQHandler,                    // ADC sequence B completion
-    ADC_THCMP_IRQHandler,                   // ADC threshold compare
-    ADC_OVR_IRQHandler,                     // ADC overrun
-    DMA_IRQHandler,                         // DMA
-    I2C2_IRQHandler,                        // I2C2 controller
-    I2C3_IRQHandler,                        // I2C3 controller
-    CTIMER_IRQHandler,                      // Standard Counter / Timer
-    PININT0_IRQHandler,                     // PIO INT0
-    PININT1_IRQHandler,                     // PIO INT1
-    PININT2_IRQHandler,                     // PIO INT2
-    PININT3_IRQHandler,                     // PIO INT3
-    PININT4_IRQHandler,                     // PIO INT4
-    PININT5_IRQHandler,                     // PIO INT5 shared slot with DAC1
-    PININT6_IRQHandler,                     // PIO INT6 shared slot with USART3
-    PININT7_IRQHandler,                     // PIO INT7 shared slot with USART4
+    SPI0_IRQHandler,                        // SPI0 handler
+    SPI1_IRQHandler,                        // SPI1 handler
+    DAC0_IRQHandler,                        // DAC0 handler
+    USART0_IRQHandler,                      // USART0 handler
+    USART1_IRQHandler,                      // USART1 handler
+    USART2_IRQHandler,                      // USART2 handler
+    FAIM_IRQHandler,                        // FAIM handler
+    I2C1_IRQHandler,                        // I2C1 handler
+    I2C0_IRQHandler,                        // I2C0 handler
+    SCT_IRQHandler,                         // SCT handler
+    MRT_IRQHandler,                         // MRT handler
+    CMP_CAPT_IRQHandler,                    // Analog Comparator / Cap Touch shared handler
+    WDT_IRQHandler,                         // Watchdog handler
+    BOD_IRQHandler,                         // BOD handler
+    FLASH_IRQHandler,                       // Flash handler
+    WKT_IRQHandler,                         // WKT handler
+    ADC_SEQA_IRQHandler,                    // ADC sequence A completion handler
+    ADC_SEQB_IRQHandler,                    // ADC sequence B completion handler
+    ADC_THCMP_IRQHandler,                   // ADC threshold compare handler
+    ADC_OVR_IRQHandler,                     // ADC overrun handler
+    DMA_IRQHandler,                         // DMA handler
+    I2C2_IRQHandler,                        // I2C2 handler
+    I2C3_IRQHandler,                        // I2C3 handler
+    CTIMER_IRQHandler,                      // Standard Counter / Timer handler
+    PININT0_IRQHandler,                     // Pin Interrupt 0 handler
+    PININT1_IRQHandler,                     // Pin Interrupt 1 handler
+    PININT2_IRQHandler,                     // Pin Interrupt 2 handler
+    PININT3_IRQHandler,                     // Pin Interrupt 3 handler
+    PININT4_IRQHandler,                     // Pin Interrupt 4 handler
+    PININT5_DAC1_IRQHandler,                // Pin Interrupt 5 / DAC1 shared handler
+    PININT6_USART3_IRQHandler,              // Pin Interrupt 6 / USART3 shared handler
+    PININT7_USART4_IRQHandler,              // Pin Interrupt 7 / USART4 shared handler
 };
 
 
@@ -225,10 +218,20 @@ void IRQ_DefaultHandler(void)
 // defining your own handler routines in your application code.
 // ----------------------------------------------------------------------------
 
-// Forward declaration of MCU startup function.
-void mcu_startup(void);
+// Forward declaration of MCU startup function
+__attribute__ ((section(".after_vectors"), noreturn))
+void mcu_startup();
 
-__attribute__ ((section(".after_vectors")))
+#ifndef NDEBUG
+// If both CRP word placement and LTO are enabled the 'Reset_Handler()'
+// function cannot be placed after vectors because it's size overlaps the CRP
+// word location. In debug this doesn't happen since you are not supposed to
+// enable LTO in debug mode. The attribute effectively reduces the debug build
+// size a few bytes.
+__attribute__ ((section(".after_vectors"), noreturn))
+#else
+__attribute__ ((noreturn))
+#endif
 void Reset_Handler(void)
 {
     mcu_startup();
@@ -283,9 +286,5 @@ void SysTick_Handler(void)
 
 
 } // extern "C"
-
-} // namespace lpc84x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC84X__

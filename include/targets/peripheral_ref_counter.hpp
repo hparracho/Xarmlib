@@ -2,7 +2,7 @@
 // @file    peripheral_ref_counter.hpp
 // @brief   Peripheral reference counter class (helper class to keep a record
 //          of the peripherals objects that are created and destructed).
-// @date    18 May 2018
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,6 +35,7 @@
 
 #include "system/array"
 #include "system/cassert"
+#include "system/non_copyable"
 
 namespace xarmlib
 {
@@ -45,9 +46,9 @@ namespace targets
 
 
 template<class Peripheral, std::size_t PERIPHERAL_COUNT>
-class PeripheralRefCounter
+class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT>>
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS

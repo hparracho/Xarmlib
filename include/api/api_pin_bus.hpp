@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_us_ticker.cpp
-// @brief   NXP LPC84x SysTick timer class (microsecond resolution).
-// @date    18 May 2018
+// @file    api_pin_bus.hpp
+// @brief   API pin bus class.
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,29 +29,51 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#ifndef __XARMLIB_API_PIN_BUS_HPP
+#define __XARMLIB_API_PIN_BUS_HPP
 
-#ifdef __LPC84X__
-
-#include "targets/LPC84x/lpc84x_us_ticker.hpp"
+#include "system/array"
+#include "hal/hal_pin.hpp"
 
 namespace xarmlib
 {
-namespace targets
+
+
+
+
+template <Pin::Name... pins>
+class PinBus
 {
-namespace lpc84x
-{
+    public:
+
+        constexpr PinBus() : m_pin_names { pins... }
+        {}
+
+        constexpr std::size_t get_count() const
+        {
+            return sizeof...(pins);
+        }
+
+        constexpr const std::array<Pin::Name, sizeof...(pins)>& get_array() const
+        {
+            return m_pin_names;
+        }
+
+        constexpr Pin::Name get_pin_name(const std::size_t index) const
+        {
+            assert(index < get_count());
+
+            return m_pin_names[index];
+        }
+
+    private:
+
+        const std::array<Pin::Name, sizeof...(pins)> m_pin_names;
+};
 
 
 
-// Static initialization
-bool UsTicker::m_initialized {false};
 
-
-
-
-} // namespace lpc84x
-} // namespace targets
 } // namespace xarmlib
 
-#endif // __LPC84X__
+#endif // __XARMLIB_API_PIN_BUS_HPP

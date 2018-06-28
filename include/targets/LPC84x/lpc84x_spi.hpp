@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    18 May 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,13 +41,6 @@
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc84x
-{
-
 
 
 
@@ -58,11 +51,29 @@ extern "C" void SPI1_IRQHandler(void);
 
 
 
+namespace xarmlib
+{
+namespace targets
+{
+namespace lpc84x
+{
+
+
+
+
 // Number of available SPI peripherals
 static constexpr std::size_t SPI_COUNT { 2 };
 
 class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C function to give access to private IRQ handler member function
+        friend void ::SPI0_IRQHandler(void);
+        friend void ::SPI1_IRQHandler(void);
+
     protected:
 
         // --------------------------------------------------------------------
@@ -406,7 +417,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
-                case Name::SPI1: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
+                case Name::SPI1: NVIC_SetPriority(SPI1_IRQn, irq_priority); break;
                 default:                                                    break;
             }
         }
@@ -428,10 +439,6 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
-
-        // Friend IRQ handler C function to give access to private IRQ handler member function
-        friend void SPI0_IRQHandler(void);
-        friend void SPI1_IRQHandler(void);
 
         // SPI Configuration Register (CFG) bits
         enum CFG : uint32_t

@@ -2,7 +2,7 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    18 May 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,22 +30,26 @@
 //
 // ----------------------------------------------------------------------------
 
+#include "system/cmsis"
+
+extern "C"
+{
+
+
+
+
+#if !defined (MCUXPRESSO_MANAGED_LINKER_SCRIPTS) && !defined (CPP_NO_HEAP)
+
 #include <sys/types.h>
 #include <errno.h>
 
-#include "system/cmsis"
-
-
-
-
-#ifndef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 // ----------------------------------------------------------------------------
 // The function below is taken from the µOS++ IIIe project.
 // (https://github.com/micro-os-plus)
 // Copyright (c) 2016 Liviu Ionescu.
 
 // A custom _sbrk() function to match the settings defined by the linker script.
-extern "C" caddr_t _sbrk(int incr)
+caddr_t _sbrk(int incr)
 {
     extern char __heap_begin;   // Defined in the linker script
     extern char __heap_limit;   // Defined in the linker script
@@ -77,7 +81,7 @@ extern "C" caddr_t _sbrk(int incr)
 #else
         // Heap has overflowed
         errno = ENOMEM;
-        return (caddr_t) - 1;
+        return (caddr_t)-1;
 #endif
     }
 
@@ -86,18 +90,18 @@ extern "C" caddr_t _sbrk(int incr)
     return (caddr_t)current_block_address;
 }
 // ----------------------------------------------------------------------------
-#endif // !MCUXPRESSO_MANAGED_LINKER_SCRIPTS
+#endif // !MCUXPRESSO_MANAGED_LINKER_SCRITS && !CPP_NO_HEAP
 
 
 
 
-extern "C" __attribute__ ((weak, noreturn))
+__attribute__ ((weak, noreturn))
 void _exit(int code __attribute__ ((unused)))
 {
-#ifndef DEBUG
+#ifdef NDEBUG
     NVIC_SystemReset();
 #else
-    while(true)
+    while(1)
     {}
 #endif
 }
@@ -105,8 +109,13 @@ void _exit(int code __attribute__ ((unused)))
 
 
 
-extern "C" __attribute__ ((weak, noreturn))
+__attribute__ ((weak, noreturn))
 void abort(void)
 {
     _exit(1);
 }
+
+
+
+
+} // extern "C"
