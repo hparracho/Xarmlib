@@ -37,12 +37,32 @@
 
 #include "system/bitmask"
 #include "system/delegate"
+#include "system/target"
 #include "targets/peripheral_ref_counter.hpp"
 #include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
+
+
+
+
+// Forward declaration of IRQ handlers for both LPC844 and LPC845
+extern "C" void USART0_IRQHandler(void);
+extern "C" void USART1_IRQHandler(void);
+
+#if defined __LPC845__
+
+// Forward declaration of additional IRQ handlers for LPC845
+extern "C" void USART2_IRQHandler(void);
+extern "C" void PININT6_USART3_IRQHandler(void); // Pin Interrupt 6 / USART3 shared handler
+extern "C" void PININT7_USART4_IRQHandler(void); // Pin Interrupt 7 / USART4 shared handler
+
+#endif // __LPC845__
+
+
+
 
 namespace xarmlib
 {
@@ -54,21 +74,12 @@ namespace lpc84x
 
 
 
-// Forward declaration of IRQ handlers for both LPC844 and LPC845
-extern "C" void USART0_IRQHandler(void);
-extern "C" void USART1_IRQHandler(void);
-
 #if defined __LPC844__
 
-// Number of available USART peripherals on LPC844
+    // Number of available USART peripherals on LPC844
 static constexpr std::size_t USART_COUNT { 2 };
 
 #elif defined __LPC845__
-
-// Forward declaration of additional IRQ handlers for LPC845
-extern "C" void USART2_IRQHandler(void);
-extern "C" void PININT6_IRQHandler(void);   // PIO INT6 shared slot with USART3
-extern "C" void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
 
 // Number of available USART peripherals on LPC845
 static constexpr std::size_t USART_COUNT { 5 };
@@ -130,6 +141,19 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, 0x1F96D)   // 1'1111'1001'0110'1101
 
 class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C functions to give access to private IRQ handler member function
+        friend void ::USART0_IRQHandler(void);
+        friend void ::USART1_IRQHandler(void);
+#ifdef __LPC845__
+        friend void ::USART2_IRQHandler(void);
+        friend void ::PININT6_USART3_IRQHandler(void); // Pin Interrupt 6 / USART3 shared handler
+        friend void ::PININT7_USART4_IRQHandler(void); // Pin Interrupt 7 / USART4 shared handler
+#endif
+
     protected:
 
         // --------------------------------------------------------------------
@@ -292,10 +316,10 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                                    NVIC_DisableIRQ(USART2_IRQn);
                                    break;
                 case Name::USART3: Clock::disable(Clock::Peripheral::USART3);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT6 shared slot with USART3
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */     // Pin Interrupt 6 / USART3 shared interrupt
                                    break;
                 case Name::USART4: Clock::disable(Clock::Peripheral::USART4);
-                                   /* DO NOT DISABLE SHARED INTERRUPTS */           // PIO INT7 shared slot with USART4
+                                   /* DO NOT DISABLE SHARED INTERRUPTS */     // Pin Interrupt 7 / USART4 shared interrupt
                                    break;
 #endif
             }
@@ -455,14 +479,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
             switch(name)
             {
-                case Name::USART0: NVIC_EnableIRQ(USART0_IRQn); break;
-                case Name::USART1: NVIC_EnableIRQ(USART1_IRQn); break;
+                case Name::USART0: NVIC_EnableIRQ(USART0_IRQn);         break;
+                case Name::USART1: NVIC_EnableIRQ(USART1_IRQn);         break;
 #ifdef __LPC845__
-                case Name::USART2: NVIC_EnableIRQ(USART2_IRQn); break;
-                case Name::USART3: NVIC_EnableIRQ(USART3_IRQn); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: NVIC_EnableIRQ(USART4_IRQn); break;  // PIO INT7 shared slot with USART4
+                case Name::USART2: NVIC_EnableIRQ(USART2_IRQn);         break;
+                case Name::USART3: NVIC_EnableIRQ(PININT6_USART3_IRQn); break; // Pin Interrupt 6 / USART3 shared interrupt
+                case Name::USART4: NVIC_EnableIRQ(PININT7_USART4_IRQn); break; // Pin Interrupt 7 / USART4 shared interrupt
 #endif
-                default:                                        break;
+                default:                                                break;
             }
         }
 
@@ -476,8 +500,8 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                 case Name::USART1: NVIC_DisableIRQ(USART1_IRQn);          break;
 #ifdef __LPC845__
                 case Name::USART2: NVIC_DisableIRQ(USART2_IRQn);          break;
-                case Name::USART3: /* DO NOT DISABLE SHARED INTERRUPTS */ break;    // PIO INT6 shared slot with USART3
-                case Name::USART4: /* DO NOT DISABLE SHARED INTERRUPTS */ break;    // PIO INT7 shared slot with USART4
+                case Name::USART3: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // Pin Interrupt 6 / USART3 shared interrupt
+                case Name::USART4: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // Pin Interrupt 7 / USART4 shared interrupt
 #endif
                 default:                                                  break;
             }
@@ -489,14 +513,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
             switch(name)
             {
-                case Name::USART0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0); break;
-                case Name::USART1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0); break;
+                case Name::USART0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0);         break;
+                case Name::USART1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0);         break;
 #ifdef __LPC845__
-                case Name::USART2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0); break;
-                case Name::USART3: return (NVIC_GetEnableIRQ(USART3_IRQn) != 0); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: return (NVIC_GetEnableIRQ(USART4_IRQn) != 0); break;  // PIO INT7 shared slot with USART4
+                case Name::USART2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0);         break;
+                case Name::USART3: return (NVIC_GetEnableIRQ(PININT6_USART3_IRQn) != 0); break; // Pin Interrupt 6 / USART3 shared interrupt
+                case Name::USART4: return (NVIC_GetEnableIRQ(PININT7_USART4_IRQn) != 0); break; // Pin Interrupt 7 / USART4 shared interrupt
 #endif
-                default:           return false;                                 break;
+                default:           return false;                                         break;
             }
         }
 
@@ -506,14 +530,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
             switch(name)
             {
-                case Name::USART0: NVIC_SetPriority(USART0_IRQn, irq_priority); break;
-                case Name::USART1: NVIC_SetPriority(USART1_IRQn, irq_priority); break;
+                case Name::USART0: NVIC_SetPriority(USART0_IRQn,         irq_priority); break;
+                case Name::USART1: NVIC_SetPriority(USART1_IRQn,         irq_priority); break;
 #ifdef __LPC845__
-                case Name::USART2: NVIC_SetPriority(USART2_IRQn, irq_priority); break;
-                case Name::USART3: NVIC_SetPriority(USART3_IRQn, irq_priority); break;  // PIO INT6 shared slot with USART3
-                case Name::USART4: NVIC_SetPriority(USART4_IRQn, irq_priority); break;  // PIO INT7 shared slot with USART4
+                case Name::USART2: NVIC_SetPriority(USART2_IRQn,         irq_priority); break;
+                case Name::USART3: NVIC_SetPriority(PININT6_USART3_IRQn, irq_priority); break; // Pin Interrupt 6 / USART3 shared interrupt
+                case Name::USART4: NVIC_SetPriority(PININT7_USART4_IRQn, irq_priority); break; // Pin Interrupt 7 / USART4 shared interrupt
 #endif
-                default:                                                        break;
+                default:                                                                break;
             }
         }
 
@@ -567,15 +591,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
-
-        // Friend IRQ handler C functions to give access to private IRQ handler member function
-        friend void USART0_IRQHandler(void);
-        friend void USART1_IRQHandler(void);
-#ifdef __LPC845__
-        friend void USART2_IRQHandler(void);
-        friend void PININT6_IRQHandler(void);   // PIO INT6 shared slot with USART3
-        friend void PININT7_IRQHandler(void);   // PIO INT7 shared slot with USART4
-#endif
 
         // USART Configuration Register (CFG) bits and masks
         enum CFG : uint32_t

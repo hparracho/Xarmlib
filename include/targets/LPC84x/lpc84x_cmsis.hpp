@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_cmsis.h
+// @file    lpc84x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    21 June 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,8 +35,8 @@
 // https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_H
-#define __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#ifndef __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
+#define __XARMLIB_TARGETS_LPC84X_CMSIS_HPP
 
 #include "cmsis_compiler.h"
 #include "cmsis_version.h"
@@ -59,51 +59,47 @@ typedef enum IRQn
 {
     // Cortex-M0+ Processor Exceptions Numbers
     Reset_IRQn                  = -15,      // 1 Reset Vector, invoked on Power up and warm reset
-    NonMaskableInt_IRQn         = -14,      // 2 Non Maskable Interrupt
-    HardFault_IRQn              = -13,      // 3 Cortex-M0 Hard Fault Interrupt
-    SVCall_IRQn                 = -5,       // 11 Cortex-M0 SV Call Interrupt
-    DebugMonitor_IRQn           = -4,       // 12 Debug Monitor
-    PendSV_IRQn                 = -2,       // 14 Cortex-M0 Pend SV Interrupt
-    SysTick_IRQn                = -1,       // 15 Cortex-M0 System Tick Interrupt
+    NonMaskableInt_IRQn         = -14,      // 2 Non Maskable interrupt
+    HardFault_IRQn              = -13,      // 3 Cortex-M0 Hard Fault interrupt
+    SVCall_IRQn                 = -5,       // 11 Cortex-M0 SV Call interrupt
+    DebugMonitor_IRQn           = -4,       // 12 Debug Monitor interrupt
+    PendSV_IRQn                 = -2,       // 14 Cortex-M0 Pend SV interrupt
+    SysTick_IRQn                = -1,       // 15 Cortex-M0 System Tick interrupt
 
     // LPC84x Specific Interrupt Numbers
-    SPI0_IRQn                   = 0,        // SPI0
-    SPI1_IRQn                   = 1,        // SPI1
+    SPI0_IRQn                   = 0,        // SPI0 interrupt
+    SPI1_IRQn                   = 1,        // SPI1 interrupt
     DAC0_IRQn                   = 2,        // DAC0 Interrupt
-    USART0_IRQn                 = 3,        // USART0
-    USART1_IRQn                 = 4,        // USART1
-    USART2_IRQn                 = 5,        // USART2
-    I2C1_IRQn                   = 7,        // I2C1
-    I2C0_IRQn                   = 8,        // I2C0
-    SCT_IRQn                    = 9,        // SCT
-    MRT_IRQn                    = 10,       // MRT
-    CMP_IRQn                    = 11,       // Analog Comparator shared slot with Cap Touch
-    WDT_IRQn                    = 12,       // WDT
-    BOD_IRQn                    = 13,       // BOD
-    FLASH_IRQn                  = 14,       // FLASH
-    WKT_IRQn                    = 15,       // WKT Interrupt
-    ADC_SEQA_IRQn               = 16,       // ADC Seq. A
-    ADC_SEQB_IRQn               = 17,       // ADC Seq. B
-    ADC_THCMP_IRQn              = 18,       // ADC Thresh Comp
-    ADC_OVR_IRQn                = 19,       // ADC overrun
-    DMA_IRQn                    = 20,       // DMA
-    I2C2_IRQn                   = 21,       // I2C2
-    I2C3_IRQn                   = 22,       // I2C3
-    CTIMER_IRQn                 = 23,       // Standard Counter / Timer Interrupt
-    PININT0_IRQn                = 24,       // External Interrupt 0
-    PININT1_IRQn                = 25,       // External Interrupt 1
-    PININT2_IRQn                = 26,       // External Interrupt 2
-    PININT3_IRQn                = 27,       // External Interrupt 3
-    PININT4_IRQn                = 28,       // External Interrupt 4
-    PININT5_IRQn                = 29,       // External Interrupt 5 shared slot with DAC1
-    PININT6_IRQn                = 30,       // External Interrupt 6 shared slot with USART3
-    PININT7_IRQn                = 31,       // External Interrupt 7 shared slot with USART4
+    USART0_IRQn                 = 3,        // USART0 interrupt
+    USART1_IRQn                 = 4,        // USART1 interrupt
+    USART2_IRQn                 = 5,        // USART2 interrupt
+    FAIM_IRQn                   = 6,        // FAIM interrupt
+    I2C1_IRQn                   = 7,        // I2C1 interrupt
+    I2C0_IRQn                   = 8,        // I2C0 interrupt
+    SCT_IRQn                    = 9,        // SCT interrupt
+    MRT_IRQn                    = 10,       // MRT interrupt
+    CMP_CAPT_IRQn               = 11,       // Analog Comparator / Cap Touch shared interrupt
+    WDT_IRQn                    = 12,       // WDT interrupt
+    BOD_IRQn                    = 13,       // BOD interrupt
+    FLASH_IRQn                  = 14,       // FLASH interrupt
+    WKT_IRQn                    = 15,       // WKT interrupt
+    ADC_SEQA_IRQn               = 16,       // ADC sequence A completion interrupt
+    ADC_SEQB_IRQn               = 17,       // ADC sequence B completion interrupt
+    ADC_THCMP_IRQn              = 18,       // ADC threshold compare interrupt
+    ADC_OVR_IRQn                = 19,       // ADC overrun interrupt
+    DMA_IRQn                    = 20,       // DMA interrupt
+    I2C2_IRQn                   = 21,       // I2C2 interrupt
+    I2C3_IRQn                   = 22,       // I2C3 interrupt
+    CTIMER_IRQn                 = 23,       // Standard Counter / Timer interrupt
+    PININT0_IRQn                = 24,       // Pin Interrupt 0
+    PININT1_IRQn                = 25,       // Pin Interrupt 1
+    PININT2_IRQn                = 26,       // Pin Interrupt 2
+    PININT3_IRQn                = 27,       // Pin Interrupt 3
+    PININT4_IRQn                = 28,       // Pin Interrupt 4
+    PININT5_DAC1_IRQn           = 29,       // Pin Interrupt 5 / DAC1 shared interrupt
+    PININT6_USART3_IRQn         = 30,       // Pin Interrupt 6 / USART3 shared interrupt
+    PININT7_USART4_IRQn         = 31,       // PIn Interrupt 7 / USART4 shared interrupt
 } IRQn_Type;
-
-#define CAPT_IRQn   CMP_IRQn                // Analog Comparator shared slot with Cap Touch
-#define DAC1_IRQn   PININT5_IRQn            // Pin int. 5 shared slot with DAC1
-#define USART3_IRQn PININT6_IRQn            // Pin int. 6 shared slot with USART3
-#define USART4_IRQn PININT7_IRQn            // Pin int. 7 shared slot with USART4
 
 
 
@@ -1258,4 +1254,4 @@ static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_B
 } // extern "C"
 #endif
 
-#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_H
+#endif // __XARMLIB_TARGETS_LPC84X_CMSIS_HPP

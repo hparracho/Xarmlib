@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_romdivide.h
+// @file    lpc84x_romdivide.hpp
 // @brief   Patch the AEABI integer divide functions to use MCU's romdivide library.
-// @date    21 June 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,24 +29,16 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
-#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#ifndef __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP
+#define __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP
 
 
 
 
 // Patch the AEABI integer divide functions to use MCU's romdivide library.
-void ROMDIVIDE_PatchAeabiIntegerDivide(void);
+extern "C" void ROMDIVIDE_PatchAeabiIntegerDivide(void);
 
 
 
 
-#ifdef __cplusplus
-}
-#endif
-
-#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_H
+#endif // __XARMLIB_TARGETS_LPC84X_ROMDIVIDE_HPP
