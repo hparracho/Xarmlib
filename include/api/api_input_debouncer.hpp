@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer helper class.
-// @date    28 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,6 @@
 #ifndef __XARMLIB_API_INPUT_DEBOUNCER_HPP
 #define __XARMLIB_API_INPUT_DEBOUNCER_HPP
 
-#include "system/dynarray"
 #include "system/gsl"
 
 namespace xarmlib
@@ -51,8 +50,8 @@ class InputDebouncer
 
         struct Input
         {
-            std::size_t port_index;
-            std::size_t bit_index;
+            int8_t      port_index;
+            int8_t      bit_index;
             int16_t     sample_count_ms_high;   // Number of samples (in ms) to accept an input as debounced at low level
             int16_t     sample_count_ms_low;    // Number of samples (in ms) to accept an input as debounced at high level
             int16_t     sample_counter;
@@ -64,24 +63,13 @@ class InputDebouncer
             uint32_t    last_read;
             uint32_t    current_debounced;
             uint32_t    last_debounced;
-            uint32_t    sampling;               // Inputs that are being sampled and not yet filtered
+            uint32_t    last_last_debounced;
+            uint32_t    current_sampling;       // Inputs that are being sampled and not yet filtered
+            uint32_t    last_sampling;          // Inputs that are being sampled and not yet filtered
         };
 
         static bool debounce(const gsl::span<Input>& inputs, const gsl::span<InputPort>& input_ports)
         {
-            dynarray<uint32_t> debounced(input_ports.size());
-            dynarray<uint32_t> sampling(input_ports.size());
-
-            std::size_t port_index = 0;
-
-            for(auto input_port : input_ports)
-            {
-                debounced[port_index] = input_port.current_debounced;
-                sampling[port_index] = 0;
-
-                port_index++;
-            }
-
             for(auto input : inputs)
             {
                 const uint32_t current_read_bit = input_ports[input.port_index].current_read & (1 << input.bit_index);
@@ -108,15 +96,15 @@ class InputDebouncer
                 if(input.sample_counter == 0)
                 {
                     // Clear pin mask
-                    debounced[input.port_index] &= ~(1UL << input.bit_index);
+                    input_ports[input.port_index].current_debounced &= ~(1UL << input.bit_index);
 
                     // Input debounced
-                    debounced[input.port_index] |= current_read_bit;
+                    input_ports[input.port_index].current_debounced |= current_read_bit;
                 }
                 else
                 {
                     // Sampling
-                    sampling[input.port_index] |= (1UL << input.bit_index);
+                    input_ports[input.port_index].current_sampling |= (1UL << input.bit_index);
 
                     input.sample_counter--;
                 }
@@ -124,19 +112,19 @@ class InputDebouncer
 
             bool result = false;
 
-            port_index = 0;
+            std::size_t port_index = 0;
 
             for(auto input_port : input_ports)
             {
                 input_port.last_read = input_port.current_read;
 
-                if(debounced[port_index] != input_port.current_debounced)
+                if(input_port.current_debounced != input_port.last_debounced)
                 {
+                    input_port.last_last_debounced = input_port.last_debounced;
+
                     input_port.last_debounced = input_port.current_debounced;
 
-                    input_port.current_debounced = debounced[port_index];
-
-                    input_port.sampling = sampling[port_index];
+                    input_port.last_sampling = input_port.current_sampling;
 
                     result = true;
                 }
