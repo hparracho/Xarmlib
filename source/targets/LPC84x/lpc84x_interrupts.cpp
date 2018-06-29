@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    28 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -86,7 +86,6 @@ void DAC0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHan
 void USART0_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void USART1_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void USART2_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void FAIM_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C1_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void SCT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -126,23 +125,23 @@ extern void __valid_user_code_checksum(void) __attribute__ ((weak));
 using IRQ_HandlerPtr = void (*)(void);
 
 __attribute__ ((used, section(".isr_vector")))
-const IRQ_HandlerPtr __interrupts[] =
+const IRQ_HandlerPtr __vectors[] =
 {
     // Core level (CM0+) exception handlers
     (IRQ_HandlerPtr)(&__STACK_TOP),         // Initial stack pointer
     Reset_Handler,                          // Reset handler (application entry)
     NMI_Handler,                            // NMI handler
     HardFault_Handler,                      // Hard Fault handler
-    nullptr,                                // Reserved
-    nullptr,                                // Reserved
-    nullptr,                                // Reserved
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
     __valid_user_code_checksum,             // LPC MCU Checksum
-    nullptr,                                // Reserved
-    nullptr,                                // Reserved
-    nullptr,                                // Reserved
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
     SVC_Handler,                            // SVCall handler
-    nullptr,                                // Reserved
-    nullptr,                                // Reserved
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
     PendSV_Handler,                         // PendSV handler
     SysTick_Handler,                        // SysTick handler
 
@@ -153,7 +152,7 @@ const IRQ_HandlerPtr __interrupts[] =
     USART0_IRQHandler,                      // USART0 handler
     USART1_IRQHandler,                      // USART1 handler
     USART2_IRQHandler,                      // USART2 handler
-    FAIM_IRQHandler,                        // FAIM handler
+    nullptr,                                // RESERVED
     I2C1_IRQHandler,                        // I2C1 handler
     I2C0_IRQHandler,                        // I2C0 handler
     SCT_IRQHandler,                         // SCT handler
