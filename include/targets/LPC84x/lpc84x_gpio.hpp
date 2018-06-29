@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    21 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -151,14 +151,6 @@ class Gpio
         }
 
         // -------- CONFIGURATION ---------------------------------------------
-
-        // Assign a new pin
-        void set_pin(const Pin::Name pin_name)
-        {
-        	m_pin_name = pin_name;
-
-        	config_port();
-        }
 
         // Set normal input pin mode
         void set_mode(const InputMode       input_mode,
