@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    12 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
