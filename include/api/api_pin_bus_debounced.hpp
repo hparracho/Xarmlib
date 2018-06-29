@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scanner.cpp
-// @brief   API input scanner class (takes control of one available Timer).
-// @date    26 June 2018
+// @file    api_pin_bus_debounced.hpp
+// @brief   API pin bus debounced class.
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,12 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "xarmlib_config.hpp"
+#ifndef __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
+#define __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
+
+#include "api/api_pin_bus.hpp"
+
+#include <type_traits>
 
 namespace xarmlib
 {
@@ -37,12 +42,55 @@ namespace xarmlib
 
 
 
-// Static initialization
-Timer                                InputScanner::m_timer;
-dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
-InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
+template <Pin::Name... pins>
+class PinBusDebounced : private PinBus<pins...>
+{
+        using Type = typename std::conditional<sizeof...(pins) <= 32, uint32_t, uint64_t>::type;
+
+    public:
+
+        Type read() const
+        {
+            return m_value;
+        }
+
+        operator Type () const
+        {
+            return read();
+        }
+
+        Type operator ! () const
+        {
+            return !read();
+        }
+
+        constexpr std::size_t get_width() const
+        {
+            return sizeof...(pins);
+        }
+
+        constexpr Type get_mask() const
+        {
+            Type mask = 0;
+
+            for(std::size_t bit = 0; bit < get_width(); bit++)
+            {
+                mask |= static_cast<Type>(1) << bit;
+            }
+
+            return mask;
+        }
+
+    private:
+
+        friend class PortIn;
+
+        Type m_value { 0 };
+};
 
 
 
 
 } // namespace xarmlib
+
+#endif // __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP

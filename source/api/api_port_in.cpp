@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scanner.cpp
-// @brief   API input scanner class (takes control of one available Timer).
-// @date    26 June 2018
+// @file    api_port_in.cpp
+// @brief   API port input class.
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,9 +38,12 @@ namespace xarmlib
 
 
 // Static initialization
-Timer                                InputScanner::m_timer;
-dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
-InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
+dynarray<InputDebouncer::Input>                    PortIn::m_inputs(XARMLIB_CONFIG_PORT_IN_INPUTS_COUNT, { 0, 0, 0, 0, 0 });
+std::size_t                                        PortIn::m_inputs_count { 0 };
+
+std::array<InputDebouncer::InputPort, Port::COUNT> PortIn::m_input_ports { 0, 0, 0, 0, 0 };
+
+std::array<uint32_t, Port::COUNT>                  PortIn::m_input_ports_mask { 0 };
 
 
 
