@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    11 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
