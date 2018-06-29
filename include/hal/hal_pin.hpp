@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin.hpp
 // @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -71,6 +71,15 @@ class Pin
 namespace xarmlib
 {
 using Pin = hal::Pin<targets::lpc84x::Pin>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_pin.hpp"
+
+namespace xarmlib
+{
+using Pin = hal::Pin<targets::lpc81x::Pin>;
 }
 
 #elif defined __OHER_TARGET__

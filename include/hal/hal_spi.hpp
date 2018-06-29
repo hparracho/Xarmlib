@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    18 May 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -365,6 +365,16 @@ namespace xarmlib
 {
 using SpiMaster = hal::SpiMaster<targets::lpc84x::Spi>;
 using SpiSlave  = hal::SpiSlave <targets::lpc84x::Spi>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_spi.hpp"
+
+namespace xarmlib
+{
+using SpiMaster = hal::SpiMaster<targets::lpc81x::Spi>;
+using SpiSlave  = hal::SpiSlave <targets::lpc81x::Spi>;
 }
 
 #elif defined __OHER_TARGET__

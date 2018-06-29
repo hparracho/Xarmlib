@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    target
 // @brief   System level target configuration header file.
-// @date    23 May 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,6 +35,7 @@
 
 
 
+// LPC84x
 #if defined (LPC845M301JBD64)
 #   define __LPC845__
 #   define __LPC84X__
@@ -65,6 +66,43 @@
 #   define __LPC84X__
 #   define __LPC84X_PINS__                  (33)
 #   define __LPC84X_GPIOS__                 (29)
+
+// LPC81x
+#elif defined (LPC812M101JDH20)
+#   define __LPC812__
+#   define __LPC81X__
+#   define __LPC81X_PINS__                  (20)
+#   define __LPC81X_GPIOS__                 (18)
+#   define __LPC81X_USARTS__                (3)
+#   define __LPC81X_SPIS__                  (2)
+#elif defined (LPC812M101JD20)
+#   define __LPC812__
+#   define __LPC81X__
+#   define __LPC81X_PINS__                  (20)
+#   define __LPC81X_GPIOS__                 (18)
+#   define __LPC81X_USARTS__                (2)
+#   define __LPC81X_SPIS__                  (1)
+#elif defined (LPC812M101JDH16) || defined (LPC812M101JTB16)
+#   define __LPC812__
+#   define __LPC81X__
+#   define __LPC81X_PINS__                  (16)
+#   define __LPC81X_GPIOS__                 (14)
+#   define __LPC81X_USARTS__                (3)
+#   define __LPC81X_SPIS__                  (2)
+#elif defined (LPC811M001JDH16)
+#   define __LPC811__
+#   define __LPC81X__
+#   define __LPC81X_PINS__                  (16)
+#   define __LPC81X_GPIOS__                 (14)
+#   define __LPC81X_USARTS__                (2)
+#   define __LPC81X_SPIS__                  (1)
+#elif defined (LPC810M021FN8)
+#   define __LPC810__
+#   define __LPC81X__
+#   define __LPC81X_PINS__                  (8)
+#   define __LPC81X_GPIOS__                 (6)
+#   define __LPC81X_USARTS__                (2)
+#   define __LPC81X_SPIS__                  (1)
 #else
 #   error "Target MCU not defined!"
 #endif
@@ -75,6 +113,11 @@
 #if defined __LPC84X__
 #   define __TARGET_TIMER_TYPE_IS_MRT__
 #   define __TARGET_GPIOS__                 (__LPC84X_GPIOS__)
+#elif defined __LPC81X__
+#   define __TARGET_TIMER_TYPE_IS_MRT__
+#   define __TARGET_GPIOS__                 (__LPC81X_GPIOS__)
+//#   define __TARGET_USARTS__                (__LPC81X_USARTS__)
+//#   define __TARGET_SPIS__                  (__LPC81X_SPIS__)
 #endif
 
 
