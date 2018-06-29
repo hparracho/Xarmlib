@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scannerr.hpp
+// @file    api_input_scanner.cpp
 // @brief   API input scanner class (takes control of one available Timer).
 // @date    26 June 2018
 // ----------------------------------------------------------------------------
