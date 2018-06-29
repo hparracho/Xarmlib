@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    29 June 2018
+// @file    api_port_in.cpp
+// @brief   API port input class.
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,33 +29,23 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "xarmlib_config.hpp"
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
-
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_input_debouncer.hpp"
-#include "api/api_input_scanner.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_bus_debounced.hpp"
-#include "api/api_port_in.hpp"
+namespace xarmlib
+{
 
 
 
 
-#endif // __XARMLIB_HPP
+// Static initialization
+dynarray<InputDebouncer::Input>                    PortIn::m_inputs(XARMLIB_CONFIG_PORT_IN_INPUTS_COUNT, { 0, 0, 0, 0, 0 });
+std::size_t                                        PortIn::m_inputs_count { 0 };
+
+std::array<InputDebouncer::InputPort, Port::COUNT> PortIn::m_input_ports { 0, 0, 0, 0, 0 };
+
+std::array<uint32_t, Port::COUNT>                  PortIn::m_input_ports_mask { 0 };
+
+
+
+
+} // namespace xarmlib
