@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    29 June 2018
+// @file    api_pin_bus_debounced.hpp
+// @brief   API pin bus debounced class.
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,32 +29,68 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#ifndef __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
+#define __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
 
-// HAL interface to peripherals
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
-
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_input_debouncer.hpp"
-#include "api/api_input_scanner.hpp"
 #include "api/api_pin_bus.hpp"
-#include "api/api_pin_bus_debounced.hpp"
+
+#include <type_traits>
+
+namespace xarmlib
+{
 
 
 
 
-#endif // __XARMLIB_HPP
+template <Pin::Name... pins>
+class PinBusDebounced : private PinBus<pins...>
+{
+        using Type = typename std::conditional<sizeof...(pins) <= 32, uint32_t, uint64_t>::type;
+
+    public:
+
+        Type read() const
+        {
+            return m_value;
+        }
+
+        operator Type () const
+        {
+            return read();
+        }
+
+        Type operator ! () const
+        {
+            return !read();
+        }
+
+        constexpr std::size_t get_width() const
+        {
+            return sizeof...(pins);
+        }
+
+        constexpr Type get_mask() const
+        {
+            Type mask = 0;
+
+            for(std::size_t bit = 0; bit < get_width(); bit++)
+            {
+                mask |= static_cast<Type>(1) << bit;
+            }
+
+            return mask;
+        }
+
+    private:
+
+        friend class PortIn;
+
+        Type m_value { 0 };
+};
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
