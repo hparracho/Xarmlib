@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    21 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -57,7 +57,7 @@ class Gpio : private TargetGpio
         using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
         using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
 
-        using InputFilterClockDiv     = typename TargetGpio::InputFilterClockDiv;
+        using InputFilterClockDivider = typename TargetGpio::InputFilterClockDivider;
         using InputFilter             = typename TargetGpio::InputFilter;
         using InputInvert             = typename TargetGpio::InputInvert;
         using InputHysteresis         = typename TargetGpio::InputHysteresis;
@@ -115,9 +115,9 @@ class Gpio : private TargetGpio
         using TargetGpio::read;
         using TargetGpio::write;
 
-        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
 
-        using TargetGpio::set_input_filter_clock_div;
+        using TargetGpio::set_input_filter_clock_divider;
 };
 
 
@@ -136,6 +136,15 @@ class Gpio : private TargetGpio
 namespace xarmlib
 {
 using Gpio = hal::Gpio<targets::lpc84x::Gpio>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_gpio.hpp"
+
+namespace xarmlib
+{
+using Gpio = hal::Gpio<targets::lpc81x::Gpio>;
 }
 
 #elif defined __OHER_TARGET__

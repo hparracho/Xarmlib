@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    18 May 2018
+// @date    13 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -230,6 +230,15 @@ class Usart : private TargetUsart
 namespace xarmlib
 {
 using Usart = hal::Usart<targets::lpc84x::Usart>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_usart.hpp"
+
+namespace xarmlib
+{
+using Usart = hal::Usart<targets::lpc81x::Usart>;
 }
 
 #elif defined __OHER_TARGET__

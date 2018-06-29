@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    18 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -89,6 +89,15 @@ class UsTicker : private TargetUsTicker
 namespace xarmlib
 {
 using UsTicker = hal::UsTicker<targets::lpc84x::UsTicker>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_us_ticker.hpp"
+
+namespace xarmlib
+{
+using UsTicker = hal::UsTicker<targets::lpc81x::UsTicker>;
 }
 
 #elif defined __OHER_TARGET__

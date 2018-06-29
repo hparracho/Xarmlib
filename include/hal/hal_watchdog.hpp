@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    18 May 2018
+// @date    11 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -87,6 +87,15 @@ class Watchdog
 namespace xarmlib
 {
 using Watchdog = hal::Watchdog<targets::lpc84x::Watchdog>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_watchdog.hpp"
+
+namespace xarmlib
+{
+using Watchdog = hal::Watchdog<targets::lpc81x::Watchdog>;
 }
 
 #elif defined __OHER_TARGET__
