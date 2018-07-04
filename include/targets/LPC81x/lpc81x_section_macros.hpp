@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_section_macros.hpp
 // @brief   Macros to allow code/data to be placed into different memory banks.
-// @date    28 May 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,13 +37,6 @@
 
 #ifndef __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
 #define __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
 
 
 
@@ -116,9 +109,5 @@ namespace lpc81x
 
 
 
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
