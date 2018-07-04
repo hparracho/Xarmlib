@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in_bus.hpp
 // @brief   API digital input bus class.
-// @date    3 July 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -120,9 +120,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
             return static_cast<uint32_t>((1UL << get_width()) - 1);
         }
 
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
+    private:
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
