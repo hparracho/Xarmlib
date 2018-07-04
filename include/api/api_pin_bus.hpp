@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    21 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,6 +41,12 @@ namespace xarmlib
 
 
 
+using PinBus = std::initializer_list<Pin::Name>;
+
+
+
+
+#if 0 // DEPRECATED 20180703
 template <Pin::Name... pins>
 class PinBus
 {
@@ -70,6 +76,7 @@ class PinBus
 
         const std::array<Pin::Name, sizeof...(pins)> m_pin_names;
 };
+#endif // DEPRECATED 20180703
 
 
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in_bus.hpp
 // @brief   API digital input bus class.
-// @date    18 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,12 @@
 #ifndef __XARMLIB_API_DIGITAL_IN_BUS_HPP
 #define __XARMLIB_API_DIGITAL_IN_BUS_HPP
 
-#include <type_traits>
-
-#include "hal/hal_gpio.hpp"
 #include "api/api_pin_bus.hpp"
+#include "hal/hal_gpio.hpp"
+#include "system/dynarray"
+#include "system/non_copyable"
+
+#include <memory>
 
 namespace xarmlib
 {
@@ -43,6 +45,96 @@ namespace xarmlib
 
 
 
+class DigitalInBus : private NonCopyable<DigitalInBus>
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        //template <Pin::Name... pins>
+        DigitalInBus(const PinBus&               pin_bus,
+                     const Gpio::InputMode       input_mode,
+                     const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
+                     const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
+                     const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_bus(pin_bus.size())
+        {
+            assert(pin_bus.size() <= 32);
+
+            std::size_t index = 0;
+            for(auto pin : pin_bus)
+            {
+                m_bus[index++] = std::make_unique<Gpio>(pin, input_mode, input_filter, input_invert, input_hysteresis);
+            }
+        }
+
+        DigitalInBus(const PinBus&                      pin_bus,
+                     const Gpio::InputModeTrueOpenDrain input_mode,
+                     const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
+                     const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_bus(pin_bus.size())
+        {
+            assert(pin_bus.size() <= 32);
+
+            std::size_t index = 0;
+            for(auto pin : pin_bus)
+            {
+                m_bus[index++] = std::make_unique<Gpio>(pin, input_mode, input_filter, input_invert);
+            }
+        }
+
+        // -------- READ ------------------------------------------------------
+
+        uint32_t read() const
+        {
+            uint32_t value = 0;
+
+            for(std::size_t pin = 0; pin < get_width(); ++pin)
+            {
+                value |= m_bus[pin]->read() << pin;
+            }
+
+            return value;
+        }
+
+        operator uint32_t () const
+        {
+            return read();
+        }
+
+        // Read negated value operator
+        uint32_t operator ! () const
+        {
+            return !read();
+        }
+
+        // -------- BUS WIDTH / MASK ------------------------------------------------------
+
+        std::size_t get_width() const
+        {
+            return m_bus.size();
+        }
+
+        uint32_t get_mask() const
+        {
+            return static_cast<uint32_t>((1UL << get_width()) - 1);
+        }
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        dynarray<std::unique_ptr<Gpio>> m_bus;
+};
+
+
+
+
+#if 0 // DEPRECATED 20180703
 template <Pin::Name... pins>
 class DigitalInBus
 {
@@ -156,6 +248,7 @@ class DigitalInBus
 
         std::array<Gpio, sizeof...(pins)> m_bus;
 };
+#endif // DEPRECATED 20180703
 
 
 
