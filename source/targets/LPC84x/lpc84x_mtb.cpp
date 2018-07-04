@@ -2,7 +2,7 @@
 // @file    lpc84x_mtb.cpp
 // @brief   Optionally defines an array to be used as a buffer for Micro
 //          Trace Buffer (MTB) instruction trace on Cortex-M0+ parts.
-// @date    21 June 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,18 +46,18 @@ extern "C"
 //
 // Symbols controlling behavior of this code...
 //
-// __MTB_DISABLE
-//      If this symbol is defined, then the buffer
-//      array for the MTB will not be created.
+// XARMLIB_ENABLE_MTB
+//      If this symbol is defined, then the
+//      buffer array for the MTB will be created.
 //
-// __MTB_BUFFER_SIZE
+// XARMLIB_CONFIG_MTB_BUFFER_SIZE
 //      Symbol specifying the sizer of the buffer array for the MTB.
 //      This must be a power of 2 in size, and fit into the available
 //      RAM. The MTB buffer will also be aligned to its 'size'
 //      boundary and be placed at the start of a RAM bank (which
 //      should ensure minimal or zero padding due to alignment).
 //
-// __MTB_RAM_BANK
+// XARMLIB_CONFIG_MTB_RAM_BANK
 //      Allows MTB Buffer to be placed into specific RAM
 //      bank. When this is not defined, the "default"
 //      (first if there are several) RAM bank is used.
@@ -73,16 +73,16 @@ extern "C"
 // ----------------------------------------------------------------------------
 
 // Allow MTB to be removed by setting a define
-#ifndef __MTB_DISABLE
+#ifdef XARMLIB_ENABLE_MTB
 
 // Allow for MTB buffer size being set by define set via
 // command line. Otherwise provide small default buffer.
-#ifndef __MTB_BUFFER_SIZE
-#define __MTB_BUFFER_SIZE 128
+#ifndef XARMLIB_CONFIG_MTB_BUFFER_SIZE
+#define XARMLIB_CONFIG_MTB_BUFFER_SIZE      (128)
 #endif
 
 // Check that buffer size requested is > 0 bytes in size
-#if (__MTB_BUFFER_SIZE > 0)
+#if (XARMLIB_CONFIG_MTB_BUFFER_SIZE > 0)
 
 #include "targets/LPC84x/lpc84x_section_macros.hpp"
 
@@ -95,17 +95,17 @@ extern "C"
 
 
 // Check if MTB buffer is to be placed in specific RAM bank
-#ifdef __MTB_RAM_BANK
+#ifdef XARMLIB_CONFIG_MTB_RAM_BANK
 // Place MTB buffer into explicit bank of RAM
-__MTB_BUFFER_EXT(__MTB_BUFFER_SIZE, __MTB_RAM_BANK);
+__MTB_BUFFER_EXT(XARMLIB_CONFIG_MTB_BUFFER_SIZE, XARMLIB_CONFIG_MTB_RAM_BANK);
 #else
 // Place MTB buffer into 'default' bank of RAM
-__MTB_BUFFER(__MTB_BUFFER_SIZE);
+__MTB_BUFFER(XARMLIB_CONFIG_MTB_BUFFER_SIZE);
 #endif
 
-#endif // (__MTB_BUFFER_SIZE > 0)
+#endif // (XARMLIB_CONFIG_MTB_BUFFER_SIZE > 0)
 
-#endif // !__MTB_DISABLE
+#endif // XARMLIB_ENABLE_MTB
 
 
 

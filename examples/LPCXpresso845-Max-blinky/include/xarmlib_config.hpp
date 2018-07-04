@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib configuration file for LPCXpresso845-Max-blinky example.
-// @date    18 May 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,42 +41,39 @@ namespace xarmlib
 
 
 // ----------------------------------------------------------------------------
-// SYSTEM DEFINITIONS
+// SYSTEM AND MCU SPECIFIC DEFINITIONS
 // ----------------------------------------------------------------------------
-
-constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
-
-
-
 
 // CRP (Code Read Protect) word definition
-#define CONFIG_CRP_SETTING_NO_CRP       (1)
+#define XARMLIB_CONFIG_CRP_SETTING_NO_CRP                       (1)
 
 // Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
-#ifdef NDEBUG
-#define __MTB_DISABLE
-#else
-#define __MTB_BUFFER_SIZE               (256)
+#ifndef NDEBUG
+#define XARMLIB_ENABLE_MTB                                      (1)
+#define XARMLIB_CONFIG_MTB_BUFFER_SIZE                          (256)
 #endif
 
-// Uncomment the next line to disable Heap memory allocation functionality
-//#define CPP_NO_HEAP
+// -------- SYSTEM CLOCK ------------------------------------------------------
+constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
+
+// -------- FAIM --------------------------------------------------------------
+constexpr System::Swd             XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
+constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
+constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
+constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
 
 
 
 
 // ----------------------------------------------------------------------------
-// DEFINITIONS
+//XARMLIB LIBRARY DEFINITIONS
 // ----------------------------------------------------------------------------
 
+// -------- INPUT SCANNER / DEBOUNCER -----------------------------------------
+#define XARMLIB_ENABLE_INPUT_DEBOUNCER                          (0)     // Enable / disable input debouncer functionality
 
-
-// Define FAIM custom configuration
-constexpr System::Swd XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
-constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
-constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
-
-constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                     // Use all IOs with pull-up by default
+constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT    { 0 }; // Maximum possible number of debounced pins
+constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 0 }; // Maximum possible number of input scanner sources
 
 
 
