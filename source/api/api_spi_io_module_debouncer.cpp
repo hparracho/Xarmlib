@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_pin_bus_debounced.hpp
-// @brief   API pin bus debounced class.
-// @date    28 June 2018
+// @file    api_spi_io_module_debouncer.cpp
+// @brief   API SPI I/O module (FPIO8SM) debouncer class.
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,12 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
-#define __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP
-
-#include "api/api_pin_bus.hpp"
-
-#include <type_traits>
+#include "xarmlib_config.hpp"
 
 namespace xarmlib
 {
@@ -42,55 +37,18 @@ namespace xarmlib
 
 
 
-template <Pin::Name... pins>
-class PinBusDebounced : private PinBus<pins...>
-{
-        using Type = typename std::conditional<sizeof...(pins) <= 32, uint32_t, uint64_t>::type;
+// --------------------------------------------------------------------
+// PUBLIC MEMBER FUNCTIONS
+// --------------------------------------------------------------------
 
-    public:
-
-        Type read() const
-        {
-            return m_value;
-        }
-
-        operator Type () const
-        {
-            return read();
-        }
-
-        Type operator ! () const
-        {
-            return !read();
-        }
-
-        constexpr std::size_t get_width() const
-        {
-            return sizeof...(pins);
-        }
-
-        constexpr Type get_mask() const
-        {
-            Type mask = 0;
-
-            for(std::size_t bit = 0; bit < get_width(); bit++)
-            {
-                mask |= static_cast<Type>(1) << bit;
-            }
-
-            return mask;
-        }
-
-    private:
-
-        friend class PortIn;
-
-        Type m_value { 0 };
-};
+template<std::size_t IO_MODULE_COUNT_MAX>
+SpiIoModuleDebouncer<IO_MODULE_COUNT_MAX>::SpiIoModuleDebouncer(      SpiMaster& spi_master,
+                                                                const Pin::Name  latch,
+                                                                const Pin::Name  enable) : SpiIoModule<IO_MODULE_COUNT_MAX>(spi_master, latch, enable),
+                                                                                           m_pins(XARMLIB_CONFIG_SPI_IO_MODULE_DEBOUNCER_PIN_COUNT)
+{}
 
 
 
 
 } // namespace xarmlib
-
-#endif // __XARMLIB_API_PIN_BUS_DEBOUNCED_HPP

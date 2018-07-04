@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_spi_io_module.hpp
 // @brief   API SPI I/O module (FPIO8SM) class.
-// @date    29 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -62,6 +62,8 @@ class SpiIoModule; // undefined
 template<std::size_t IO_MODULE_COUNT_MAX>
 class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_module::is_io_module_count_max_1_to_8<IO_MODULE_COUNT_MAX>::value>::type>
 {
+    protected:
+
         using Type = typename std::conditional<IO_MODULE_COUNT_MAX <= 4, uint32_t, uint64_t>::type;
 
     public:
@@ -70,7 +72,7 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiIoModule(const SpiMaster& spi_master,
+        SpiIoModule(      SpiMaster& spi_master,
                     const Pin::Name  latch,
                     const Pin::Name  enable) : m_spi_master { spi_master },
                                                m_latch(latch, DigitalOut::OutputMode::PUSH_PULL_HIGH),
@@ -80,7 +82,7 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
             m_spi_master.enable();
 
             // Clear shift registers
-            transfer(m_output_value);
+            transfer(static_cast<Type>(0xFFFFFFFFFFFFFFFF));
         }
 
         // Transfer a value (simultaneous write and read) [to a specified number of modules (up to IO_MODULE_COUNT_MAX)]
@@ -100,7 +102,9 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
             {
                 const uint32_t output_module = (static_cast<uint32_t>(output_value >> shift)) & 0xFF;
 
+                m_spi_master.MutexTake();
                 const uint32_t input_module = m_spi_master.transfer(output_module) & 0xFF;
+                m_spi_master.MutexGive();
 
                 input_value |= static_cast<Type>(input_module) << shift;
 
@@ -122,28 +126,6 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
         // Gets the enable state
         bool is_enabled() const { return (m_enable == 0); }
 
-        // -------- TO USE WITH INPUT SCANNER CLASS ---------------------------
-
-        // Input reader handler
-        bool debounce_module_inputs()
-        {
-//            for(std::size_t port_index = 0; port_index < Port::COUNT; port_index++)
-//            {
-//                m_input_ports[port_index].current_read = Port::read(static_cast<Port::Name>(port_index));
-//            }
-//
-//            gsl::span<InputDebouncer::Input> inputs{ m_inputs };
-//            auto inputs_used = inputs.first(m_inputs_count);
-//
-//            return InputDebouncer::debounce(inputs_used, m_input_ports);
-        }
-
-        // Update output value to be written in the next transfer
-        void update_output(Type output_value)
-        {
-            m_output_value = output_value;
-        }
-
     private:
 
         // --------------------------------------------------------------------
@@ -159,12 +141,10 @@ class SpiIoModule<IO_MODULE_COUNT_MAX, typename std::enable_if<private_spi_io_mo
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        SpiMaster   m_spi_master;
+        SpiMaster&  m_spi_master;
 
         DigitalOut  m_latch;
         DigitalOut  m_enable;
-
-        Type        m_output_value { static_cast<Type>(0xFFFFFFFFFFFFFFFF) };
 };
 
 

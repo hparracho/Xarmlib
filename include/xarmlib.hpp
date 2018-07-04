@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    29 June 2018
+// @date    2 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,8 +52,9 @@
 #include "api/api_input_debouncer.hpp"
 #include "api/api_input_scanner.hpp"
 #include "api/api_pin_bus.hpp"
-#include "api/api_pin_bus_debounced.hpp"
-#include "api/api_port_in.hpp"
+#include "api/api_pin_debouncer.hpp"
+#include "api/api_spi_io_module.hpp"
+#include "api/api_spi_io_module_debouncer.hpp"
 
 
 

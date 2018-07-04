@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer helper class.
-// @date    29 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,94 +45,82 @@ class InputDebouncer
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
         struct Input
         {
-            int8_t      port_index;
-            int8_t      bit_index;
-            int16_t     sample_count_ms_high;   // Number of samples (in ms) to accept an input as debounced at low level
-            int16_t     sample_count_ms_low;    // Number of samples (in ms) to accept an input as debounced at high level
-            int16_t     sample_counter;
+            int8_t      port_index     { -1 };  // Input's port index
+            int8_t      pin_bit        { -1 };  // Input's bit within a port
+            int16_t     filter_low_ms  { 0 };   // Milliseconds that a pin must be steady at low level to be accepted as filtered (debounced)
+            int16_t     filter_high_ms { 0 };   // Milliseconds that a pin must be steady at high level to be accepted as filtered (debounced)
+            int16_t     counter_ms     { 0 };   // Filter time counter
         };
 
-        struct InputPort
+        struct PortMask
         {
-            uint32_t    current_read;
-            uint32_t    last_read;
-            uint32_t    current_debounced;
-            uint32_t    last_debounced;
-            uint32_t    last_last_debounced;
-            uint32_t    current_sampling;       // Inputs that are being sampled and not yet filtered
-            uint32_t    last_sampling;          // Inputs that are being sampled and not yet filtered
+            uint32_t    current_read { 0 };     // Current iteration inputs
+            uint32_t    last_read    { 0 };     // Previous iteration inputs
+            uint32_t    filtered     { 0 };     // Filtered inputs
+            uint32_t    sampling     { 0 };     // Inputs that are being sampled and not yet filtered
+            uint32_t    enabled      { 0 };     // Enabled inputs
         };
 
-        static bool debounce(const gsl::span<Input>& inputs, const gsl::span<InputPort>& input_ports)
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        static bool debounce(const gsl::span<Input>& inputs, const gsl::span<PortMask>& ports)
         {
-            for(auto input : inputs)
+            bool new_input = false;
+
+            for(auto& input : inputs)
             {
-                const uint32_t current_read_bit = input_ports[input.port_index].current_read & (1 << input.bit_index);
-                const uint32_t last_read_bit    = input_ports[input.port_index].last_read    & (1 << input.bit_index);
+                auto& port = ports[input.port_index];
+
+                const uint32_t pin_mask = (1UL << input.pin_bit);
+
+                const uint32_t current_read_bit = port.current_read & pin_mask;
+                const uint32_t last_read_bit    = port.last_read    & pin_mask;
 
                 if(current_read_bit != last_read_bit)
                 {
-                    if(current_read_bit)
-                    {
-                        // High level
+                    // Inputs are different. Reload counter with filter time.
+                    input.counter_ms = (current_read_bit == 0) ? input.filter_low_ms : input.filter_high_ms;
 
-                        // Reset samples
-                        input.sample_counter = input.sample_count_ms_high;
-                    }
-                    else
-                    {
-                        // Low level
-
-                        // Reset samples
-                        input.sample_counter = input.sample_count_ms_low;
-                    }
-                }
-
-                if(input.sample_counter == 0)
-                {
-                    // Clear pin mask
-                    input_ports[input.port_index].current_debounced &= ~(1UL << input.bit_index);
-
-                    // Input debounced
-                    input_ports[input.port_index].current_debounced |= current_read_bit;
+                    // Set sampling flag
+                    port.sampling |= pin_mask;
                 }
                 else
                 {
-                    // Sampling
-                    input_ports[input.port_index].current_sampling |= (1UL << input.bit_index);
+                    if(input.counter_ms > 0)
+                    {
+                        input.counter_ms--;
+                    }
 
-                    input.sample_counter--;
-                }
-            }
+                    if(input.counter_ms == 0)
+                    {
+                        const uint32_t filtered_bit = port.filtered & pin_mask;
 
-            bool result = false;
+                        if(current_read_bit != filtered_bit)
+                        {
+                            // Update filtered input
+                            port.filtered = (port.filtered & (~pin_mask)) | current_read_bit;
 
-            std::size_t port_index = 0;
+                            // Clear sampling flag
+                            port.sampling &= ~pin_mask;
 
-            for(auto input_port : input_ports)
-            {
-                input_port.last_read = input_port.current_read;
-
-                if(input_port.current_debounced != input_port.last_debounced)
-                {
-                    input_port.last_last_debounced = input_port.last_debounced;
-
-                    input_port.last_debounced = input_port.current_debounced;
-
-                    input_port.last_sampling = input_port.current_sampling;
-
-                    result = true;
+                            // Set new input flag
+                            new_input = true;
+                        }
+                    }
                 }
 
-                port_index++;
+                // Update last read input
+                port.last_read = (port.last_read & (~pin_mask)) | current_read_bit;
             }
 
-            return result;
+            return new_input;
         }
 };
 

@@ -1,0 +1,182 @@
+// ----------------------------------------------------------------------------
+// @file    api_pin_debouncer.hpp
+// @brief   API MCU pin debouncer class.
+// @date    1 July 2018
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
+
+#ifndef __XARMLIB_API_PIN_DEBOUNCER_HPP
+#define __XARMLIB_API_PIN_DEBOUNCER_HPP
+
+#include "api/api_input_debouncer.hpp"
+#include "api/api_input_scanner.hpp"
+#include "system/array"
+#include "system/dynarray"
+#include "system/gsl"
+
+
+namespace xarmlib
+{
+
+
+
+
+class PinDebouncer
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        template<Pin::Name... pins>
+        static void assign_pins(const PinBus<pins...>&          pin_bus,
+                                const std::chrono::milliseconds filter_ms_low,
+                                const std::chrono::milliseconds filter_ms_high,
+                                const Gpio::InputMode           input_mode,
+                                const Gpio::InputInvert         input_invert     = Gpio::InputInvert::NORMAL,
+                                const Gpio::InputHysteresis     input_hysteresis = Gpio::InputHysteresis::ENABLE)
+        {
+            for(const auto pin_name : pin_bus.get_array())
+            {
+                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
+            }
+
+            config_pins(pin_bus, filter_ms_low, filter_ms_high);
+        }
+
+        template<Pin::Name... pins>
+        static void assign_pins(const PinBus<pins...>&             pin_bus,
+                                const std::chrono::milliseconds    filter_ms_low,
+                                const std::chrono::milliseconds    filter_ms_high,
+                                const Gpio::InputModeTrueOpenDrain input_mode,
+                                const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL)
+        {
+            for(const auto pin_name : pin_bus.get_array())
+            {
+                Gpio local_gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
+            }
+
+            config_pins(pin_bus, filter_ms_low, filter_ms_high);
+        }
+
+        static bool debounce_handler()
+        {
+            for(std::size_t port_index = 0; port_index < Port::COUNT; ++port_index)
+            {
+                m_ports[port_index].current_read = Port::read(static_cast<Port::Name>(port_index));
+            }
+
+            return InputDebouncer::debounce((gsl::span<InputDebouncer::Input> { m_pins }).first(m_assigned_pin_count), m_ports);
+        }
+
+     private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        template<Pin::Name... pins>
+        static void config_pins(const PinBus<pins...>&           pin_bus,
+                                const std::chrono::milliseconds& filter_low_ms,
+                                const std::chrono::milliseconds& filter_high_ms)
+        {
+            assert(filter_low_ms.count()  > 0 && filter_low_ms.count()  <= std::numeric_limits<int16_t>::max());
+            assert(filter_high_ms.count() > 0 && filter_high_ms.count() <= std::numeric_limits<int16_t>::max());
+
+            const bool resume = InputScanner::is_running();
+
+            InputScanner::stop();
+
+            for(const auto pin_name : pin_bus.get_array())
+            {
+                config_pin(pin_name, static_cast<int16_t>(filter_low_ms.count()),
+                                     static_cast<int16_t>(filter_high_ms.count()));
+            }
+
+            if(resume == true)
+            {
+                InputScanner::resume();
+            }
+        }
+
+        static void config_pin(Pin::Name pin_name, const int16_t filter_low_ms, const int16_t filter_high_ms)
+        {
+            const int8_t port_index = get_port_index(pin_name);
+            const int8_t pin_bit = get_pin_bit(pin_name);
+
+            std::size_t assigned_pin = 0;
+            bool found = false;
+
+            while(found == false && assigned_pin < m_assigned_pin_count)
+            {
+                if(m_pins[assigned_pin].port_index == port_index && m_pins[assigned_pin].pin_bit == pin_bit)
+                {
+                    found = true;
+                }
+                else
+                {
+                    assigned_pin++;
+                }
+            }
+
+            if(found == false)
+            {
+                m_assigned_pin_count = assigned_pin + 1;
+                assert(m_assigned_pin_count <= m_pins.size());
+
+                m_ports[port_index].enabled |= 1UL << pin_bit;
+            }
+
+            m_pins[assigned_pin] = InputDebouncer::Input {port_index, pin_bit, filter_low_ms, filter_high_ms, 0 };
+        }
+
+        static constexpr std::size_t get_port_index(const Pin::Name pin_name)
+        {
+            return static_cast<std::size_t>(pin_name) >> 5;     // (pin_name / 32)
+        }
+
+        static constexpr std::size_t get_pin_bit(const Pin::Name pin_name)
+        {
+            return static_cast<std::size_t>(pin_name) & 0x1F;   // (pin_name % 32)
+        }
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        static std::array<InputDebouncer::PortMask, Port::COUNT> m_ports;
+        static dynarray<InputDebouncer::Input>                   m_pins;
+        static std::size_t                                       m_assigned_pin_count;
+};
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_API_PIN_DEBOUNCER_HPP

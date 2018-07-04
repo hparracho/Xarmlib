@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_scanner.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    27 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,11 +32,7 @@
 #ifndef __XARMLIB_API_INPUT_SCANNER_HPP
 #define __XARMLIB_API_INPUT_SCANNER_HPP
 
-#include "system/delegate"
 #include "system/dynarray"
-#include "hal/hal_timer.hpp"
-
-#include "api/api_digital_out.hpp" /* TEMP*/
 
 namespace xarmlib
 {
@@ -158,7 +154,7 @@ class InputScanner
 
             bool new_input = false;
 
-            for(auto handler : m_input_handlers)
+            for(const auto& handler : m_input_handlers)
             {
                 if(handler != nullptr && handler() == true)
                 {
