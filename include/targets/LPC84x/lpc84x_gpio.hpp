@@ -87,10 +87,10 @@ class Gpio
             HIZ
         };
 
-        using InputFilterClockDiv = Clock::IoconClockDivSelect;
-        using InputFilter         = Pin::InputFilter;
-        using InputInvert         = Pin::InputInvert;
-        using InputHysteresis     = Pin::InputHysteresis;
+        using InputFilterClockDivider = Clock::IoconClockDividerSelect;
+        using InputFilter             = Pin::InputFilter;
+        using InputInvert             = Pin::InputInvert;
+        using InputHysteresis         = Pin::InputHysteresis;
 
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
@@ -258,13 +258,13 @@ class Gpio
             }
         }
 
-        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
 
         // Set the value of the supplied IOCON clock divider (used by input filters)
         // NOTE: The input filter source (where the divider is applied) is the MAIN clock
-        static void set_input_filter_clock_div(const InputFilterClockDiv clock_div, const uint8_t div)
+        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
         {
-            Clock::set_iocon_clock_div(clock_div, div);
+            Clock::set_iocon_clock_divider(clock_div, div);
         }
 
     private:

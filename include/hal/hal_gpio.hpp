@@ -107,7 +107,6 @@ class Gpio : private TargetGpio
 
         // -------- CONFIGURATION ---------------------------------------------
 
-        using TargetGpio::set_pin;
         using TargetGpio::set_mode;
 
         // -------- READ / WRITE ----------------------------------------------
