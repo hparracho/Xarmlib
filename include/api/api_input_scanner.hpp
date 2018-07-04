@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scannerr.hpp
+// @file    api_input_scanner.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    27 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -42,7 +42,7 @@ namespace xarmlib
 {
 
 /* TEMP */
-static DigitalOut led_blue(Pin::Name::P1_15, DigitalOut::OutputMode::PUSH_PULL_HIGH);
+static DigitalOut led_blue(Pin::Name::P1_15, Gpio::OutputMode::PUSH_PULL_HIGH);
 
 
 
@@ -157,7 +157,7 @@ class InputScanner
 
             bool new_input = false;
 
-            for(auto handler : m_input_handlers)
+            for(const auto& handler : m_input_handlers)
             {
                 if(handler != nullptr && handler() == true)
                 {

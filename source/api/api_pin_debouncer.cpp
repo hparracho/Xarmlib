@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scannerr.hpp
-// @brief   API input scanner class (takes control of one available Timer).
+// @file    api_pin_debouncer.cpp
+// @brief   API pin debouncer class.
 // @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
@@ -39,10 +39,9 @@ namespace xarmlib
 
 
 
-// Static initialization
-Timer                                InputScanner::m_timer;
-dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
-InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
+std::array<InputDebouncer::PortMask, Port::COUNT> PinDebouncer::m_ports {};
+dynarray<InputDebouncer::Input>                   PinDebouncer::m_pins(XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT);
+std::size_t                                       PinDebouncer::m_assigned_pin_count { 0 };
 
 
 
