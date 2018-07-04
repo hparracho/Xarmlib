@@ -32,14 +32,17 @@
 #ifndef __XARMLIB_API_INPUT_SCANNER_HPP
 #define __XARMLIB_API_INPUT_SCANNER_HPP
 
+#include "system/delegate"
 #include "system/dynarray"
+#include "hal/hal_timer.hpp"
+
+#include "api/api_digital_out.hpp" /* TEMP*/
 
 namespace xarmlib
 {
 
 /* TEMP */
-//static DigitalOut led(Pin::Name::P1_15, DigitalOut::OutputMode::PUSH_PULL_HIGH);   // lpcxpresso845-MAX_board led blue
-static DigitalOut led(Pin::Name::P0_6, DigitalOut::OutputMode::PUSH_PULL_HIGH);   // FPIO32S-V1 led red
+static DigitalOut led_blue(Pin::Name::P1_15, Gpio::OutputMode::PUSH_PULL_HIGH);
 
 
 
@@ -150,7 +153,7 @@ class InputScanner
         static int32_t timer_irq_handler()
         {
             // @DEBUG
-            led.write(0);
+            led_blue.write(0);
 
             bool new_input = false;
 
@@ -170,7 +173,7 @@ class InputScanner
             }
 
             // @DEBUG
-            led.write(1);
+            led_blue.write(1);
 
             return yield;
         }

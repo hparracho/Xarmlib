@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    21 June 2018
+// @date    3 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,45 +40,13 @@ namespace xarmlib
 
 
 
-/*
-class PinBus
-{
-    public:
 
-        constexpr PinBus(std::initializer_list<Pin::Name> pin_names) : m_pin_names { pin_names }
-        {}
-
-        constexpr std::size_t get_width() const
-        {
-            return m_pin_names.size();
-        }
-
-        constexpr const Pin::Name* begin() const
-        {
-            return m_pin_names.begin();
-        }
-
-        constexpr const Pin::Name* end() const
-        {
-            return m_pin_names.end();
-        }
-
-        constexpr Pin::Name get_pin_name(const std::size_t index) const
-        {
-            assert(index < get_width());
-
-            return m_pin_names[index];
-        }
-
-    private:
-
-        const std::initializer_list<Pin::Name> m_pin_names;
-};
-*/
+using PinBus = std::initializer_list<Pin::Name>;
 
 
 
 
+#if 0 // DEPRECATED 20180703
 template <Pin::Name... pins>
 class PinBus
 {
@@ -108,6 +76,7 @@ class PinBus
 
         const std::array<Pin::Name, sizeof...(pins)> m_pin_names;
 };
+#endif // DEPRECATED 20180703
 
 
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scanner.cpp
+// @file    api_input_scannerr.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    26 June 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,6 +31,8 @@
 
 #include "xarmlib_config.hpp"
 
+#if (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+
 namespace xarmlib
 {
 
@@ -46,3 +48,5 @@ InputScanner::PinChangeHandler       InputScanner::m_pin_change_handler;
 
 
 } // namespace xarmlib
+
+#endif // (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)

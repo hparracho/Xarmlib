@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp.template_lpc81x
-// @brief   Xarmlib template configuration header file.
-// @date    2 July 2018
+// @brief   Xarmlib template configuration header file for NXP LPC81x targets.
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -72,11 +72,8 @@ constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
 // Define maximum number of input sources to be scanned
 constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 };
 
-// Define maximum number of pins from PinDebouncer to be debounced
-constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT { __TARGET_GPIOS__ };
-
-// Define maximum number of pins from SpiIoModuleDebouncer to be debounced
-constexpr std::size_t XARMLIB_CONFIG_SPI_IO_MODULE_DEBOUNCER_PIN_COUNT { 64 };  // 8 pins * 8 modules
+// Define maximum number of inputs from PortIn to be debounced
+constexpr std::size_t XARMLIB_CONFIG_PORT_IN_INPUTS_COUNT { __TARGET_GPIOS__ };
 
 
 

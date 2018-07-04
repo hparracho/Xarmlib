@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    21 June 2018
+// @date    29 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -87,10 +87,10 @@ class Gpio
             HIZ
         };
 
-        using InputFilterClockDiv = Clock::IoconClockDivSelect;
-        using InputFilter         = Pin::InputFilter;
-        using InputInvert         = Pin::InputInvert;
-        using InputHysteresis     = Pin::InputHysteresis;
+        using InputFilterClockDivider = Clock::IoconClockDividerSelect;
+        using InputFilter             = Pin::InputFilter;
+        using InputInvert             = Pin::InputInvert;
+        using InputHysteresis         = Pin::InputHysteresis;
 
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
@@ -151,14 +151,6 @@ class Gpio
         }
 
         // -------- CONFIGURATION ---------------------------------------------
-
-        // Assign a new pin
-        void set_pin(const Pin::Name pin_name)
-        {
-        	m_pin_name = pin_name;
-
-        	config_port();
-        }
 
         // Set normal input pin mode
         void set_mode(const InputMode       input_mode,
@@ -266,13 +258,13 @@ class Gpio
             }
         }
 
-        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
 
         // Set the value of the supplied IOCON clock divider (used by input filters)
         // NOTE: The input filter source (where the divider is applied) is the MAIN clock
-        static void set_input_filter_clock_div(const InputFilterClockDiv clock_div, const uint8_t div)
+        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
         {
-            Clock::set_iocon_clock_div(clock_div, div);
+            Clock::set_iocon_clock_divider(clock_div, div);
         }
 
     private:

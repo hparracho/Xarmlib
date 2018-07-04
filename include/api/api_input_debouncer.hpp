@@ -90,6 +90,9 @@ class InputDebouncer
 
                     // Set sampling flag
                     port.sampling |= pin_mask;
+
+                    // Update last read input
+                    port.last_read = (port.last_read & (~pin_mask)) | current_read_bit;
                 }
                 else
                 {
@@ -115,9 +118,6 @@ class InputDebouncer
                         }
                     }
                 }
-
-                // Update last read input
-                port.last_read = (port.last_read & (~pin_mask)) | current_read_bit;
             }
 
             return new_input;

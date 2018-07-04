@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    29 June 2018
+// @date    1 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,19 +53,19 @@ class DigitalIn : private Gpio
                   const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
                   const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
                   const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : Gpio(pin_name,
-                                                                                                  input_mode,
-                                                                                                  input_filter,
-                                                                                                  input_invert,
-                                                                                                  input_hysteresis)
+                                                                                                       input_mode,
+                                                                                                       input_filter,
+                                                                                                       input_invert,
+                                                                                                       input_hysteresis)
         {}
 
         DigitalIn(const Pin::Name                    pin_name,
                   const Gpio::InputModeTrueOpenDrain input_mode,
                   const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
                   const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : Gpio(pin_name,
-                                                                                                 input_mode,
-                                                                                                 input_filter,
-                                                                                                 input_invert)
+                                                                                                      input_mode,
+                                                                                                      input_filter,
+                                                                                                      input_invert)
         {}
 
         // -------- READ ------------------------------------------------------

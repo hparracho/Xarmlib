@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.cpp
 // @brief   API pin debouncer class.
-// @date    3 July 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,6 +31,8 @@
 
 #include "xarmlib_config.hpp"
 
+#if (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+
 namespace xarmlib
 {
 
@@ -45,3 +47,5 @@ std::size_t                                       PinDebouncer::m_assigned_pin_c
 
 
 } // namespace xarmlib
+
+#endif // (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)

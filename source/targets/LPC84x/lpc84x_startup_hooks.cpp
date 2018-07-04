@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    28 June 2018
+// @date    4 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -60,7 +60,7 @@ extern "C"
 static inline void mcu_startup_set_fro_clock()
 {
     // Configure the FRO subsystem according to the system configuration
-    switch(XARMLIB_SYSTEM_CLOCK)
+    switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
     {                                                                                         // FRO freq  | FRO direct
         case System::Clock::OSC_LOW_POWER_1125KHZ:
         case System::Clock::OSC_9MHZ:              Clock::set_fro_frequency(Clock::FroFrequency::FREQ_18MHZ, false); break;
@@ -120,7 +120,7 @@ static inline void mcu_startup_set_xtal_clock()
     Clock::set_system_pll_source(Clock::SystemPllSource::EXTERNAL_CLK);
 
     // Configure the PLL subsystem according to the system configuration
-    switch(XARMLIB_SYSTEM_CLOCK)
+    switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
     {
         case System::Clock::XTAL_9MHZ:  Clock::set_system_pll_divider(2, 2); //  9MHz => M=3; P=4; DIV=4
                                         Clock::set_system_clock_divider(4);  // Divide the main_clock by 4 (SYSAHBCLKDIV)
@@ -197,7 +197,7 @@ void mcu_startup_initialize_hardware()
     ROMDIVIDE_PatchAeabiIntegerDivide();
 
     // Get the FAIM low power boot flag from the clock frequency selection in the system configuration
-    const auto boot_config = (XARMLIB_SYSTEM_CLOCK <= System::Clock::OSC_LOW_POWER_1875KHZ) ? Faim::Boot::LOW_POWER : Faim::Boot::NORMAL;
+    const auto boot_config = (XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_LOW_POWER_1875KHZ) ? Faim::Boot::LOW_POWER : Faim::Boot::NORMAL;
 
     // Ensure the FAIM configuration is well defined accordingly to the supplied parameters
     Faim::ensures(XARMLIB_CONFIG_FAIM_SWD,
@@ -218,7 +218,7 @@ void mcu_startup_initialize_hardware()
     // Enable IOCON clock
     Clock::enable(Clock::Peripheral::IOCON);
 
-    if(XARMLIB_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
     {
         mcu_startup_set_fro_clock();
     }
