@@ -73,7 +73,7 @@ class PinDebouncer
         {
             for(const auto pin_name : pin_bus)
             {
-                Gpio local_gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
+                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
             config_pins(pin_bus, filter_ms_low, filter_ms_high);
@@ -136,6 +136,13 @@ class PinDebouncer
             }
 
             return sampling;
+        }
+
+        static uint32_t get_mask(const PinBus& pin_bus)
+        {
+            assert(pin_bus.size() <= 32);
+
+            return static_cast<uint32_t>((1UL << pin_bus.size()) - 1);
         }
 
      private:
