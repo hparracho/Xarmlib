@@ -104,9 +104,9 @@ class SpiMaster : private TargetSpi
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const gsl::span<uint8_t> io_buffer)
+        void transfer(const gsl::span<uint8_t> buffer)
         {
-            for(auto& frame : io_buffer)
+            for(auto& frame : buffer)
             {
                 frame = transfer(frame);
             }
