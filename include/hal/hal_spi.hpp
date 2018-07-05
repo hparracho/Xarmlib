@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    29 June 2018
+// @date    5 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,9 @@
 #ifndef __XARMLIB_HAL_SPI_HPP
 #define __XARMLIB_HAL_SPI_HPP
 
+#include "hal/hal_pin.hpp"
 #include "system/cassert"
 #include "system/gsl"
-#include "system/target"
-#include "hal/hal_pin.hpp"
 
 namespace xarmlib
 {
@@ -105,11 +104,23 @@ class SpiMaster : private TargetSpi
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(gsl::span<uint8_t> buffer)
+        void transfer(const gsl::span<uint8_t> io_buffer)
         {
-            for(auto& elem : buffer)
+            for(auto& elem : io_buffer)
             {
                 elem = transfer(elem);
+            }
+        }
+
+        // Transfer a buffer (simultaneous write and read)
+        // NOTE: The read values will be placed on the 'rx_buffer', keeping the original 'tx_buffer' intact.
+        void transfer(const gsl::span<const uint8_t> tx_buffer, const gsl::span<uint8_t> rx_buffer)
+        {
+            assert(tx_buffer.size() == rx_buffer.size());
+
+            for(std::size_t frame = 0; frame < tx_buffer.size(); ++frame)
+            {
+                rx_buffer[frame] = transfer(tx_buffer[frame]);
             }
         }
 
@@ -126,14 +137,14 @@ class SpiMaster : private TargetSpi
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void MutexTake()
+        void mutex_take()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void MutexGive()
+        void mutex_give()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
@@ -322,14 +333,14 @@ class SpiSlave : private TargetSpi
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void MutexTake()
+        void mutex_take()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void MutexGive()
+        void mutex_give()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
