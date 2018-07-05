@@ -108,7 +108,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
             return !read();
         }
 
-        // -------- BUS WIDTH / MASK ------------------------------------------------------
+        // -------- BUS WIDTH / MASK ------------------------------------------
 
         std::size_t get_width() const
         {
@@ -194,7 +194,7 @@ class DigitalInBus
             return !read();
         }
 
-        // -------- BUS WIDTH / MASK ------------------------------------------------------
+        // -------- BUS WIDTH / MASK ------------------------------------------
 
         constexpr std::size_t get_width() const
         {
