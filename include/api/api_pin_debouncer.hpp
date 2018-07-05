@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.hpp
 // @brief   API MCU pin debouncer class.
-// @date    4 July 2018
+// @date    5 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,6 +34,7 @@
 
 #include "api/api_input_debouncer.hpp"
 #include "api/api_input_scanner.hpp"
+#include "hal/hal_port.hpp"
 #include "system/array"
 
 namespace xarmlib
