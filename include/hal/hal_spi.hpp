@@ -96,9 +96,9 @@ class SpiMaster : private TargetSpi
 
         // Transfer a frame (simultaneous write and read)
         // NOTE: Return the read value
-        uint32_t transfer(const uint32_t value)
+        uint32_t transfer(const uint32_t frame)
         {
-            write(value);
+            write(frame);
             return read();
         }
 
@@ -106,9 +106,9 @@ class SpiMaster : private TargetSpi
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
         void transfer(const gsl::span<uint8_t> io_buffer)
         {
-            for(auto& elem : io_buffer)
+            for(auto& frame : io_buffer)
             {
-                elem = transfer(elem);
+                frame = transfer(frame);
             }
         }
 
@@ -118,9 +118,9 @@ class SpiMaster : private TargetSpi
         {
             assert(tx_buffer.size() == rx_buffer.size());
 
-            for(std::size_t frame = 0; frame < tx_buffer.size(); ++frame)
+            for(std::size_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
             {
-                rx_buffer[frame] = transfer(tx_buffer[frame]);
+                rx_buffer[frame_index] = transfer(tx_buffer[frame_index]);
             }
         }
 
@@ -254,11 +254,11 @@ class SpiSlave : private TargetSpi
         }
 
         // Write a frame as soon as possible
-        void write(const uint32_t value)
+        void write(const uint32_t frame)
         {
             while(TargetSpi::is_writable() == false);
 
-            TargetSpi::write_data(value);
+            TargetSpi::write_data(frame);
         }
 
         // -------- ENABLE / DISABLE ------------------------------------------
