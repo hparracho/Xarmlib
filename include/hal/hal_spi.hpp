@@ -168,11 +168,11 @@ class SpiMaster : private TargetSpi
         }
 
         // Write a frame as soon as possible
-        void write(const uint32_t value)
+        void write(const uint32_t frame)
         {
             while(TargetSpi::is_writable() == false);
 
-            TargetSpi::write_data(value);
+            TargetSpi::write_data(frame);
         }
 
         // --------------------------------------------------------------------
