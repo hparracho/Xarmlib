@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    29 June 2018
+// @date    5 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,11 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 #define __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 
-#include <cstdint>
-
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
+
+#include <cassert>
 
 namespace xarmlib
 {
@@ -286,13 +286,7 @@ class Gpio
 
         void config_port()
         {
-        	if(m_pin_name == Pin::Name::NC)
-        	{
-        		m_pin_mask = 0;
-        		reg_w      = nullptr;
-        		reg_dir    = nullptr;
-        	}
-        	else if(static_cast<uint32_t>(m_pin_name) < 32)
+        	if(static_cast<uint32_t>(m_pin_name) < 32)
             {
                 m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 

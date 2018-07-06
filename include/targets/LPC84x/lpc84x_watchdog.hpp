@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    27 June 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,9 +32,10 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
 #define __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
 
-#include "system/chrono"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
+
+#include <chrono>
 
 namespace xarmlib
 {
