@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    3 July 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,9 @@
 #ifndef __XARMLIB_API_PIN_BUS_HPP
 #define __XARMLIB_API_PIN_BUS_HPP
 
-#include "system/array"
 #include "hal/hal_pin.hpp"
+
+#include <type_traits>
 
 namespace xarmlib
 {
@@ -41,7 +42,73 @@ namespace xarmlib
 
 
 
-using PinBus = std::initializer_list<Pin::Name>;
+template <class Type, class Enable = void>
+class PinBus;
+
+template <class Type>
+class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value == true
+                                        || std::is_same<Type, int8_t   >::value == true>::type>
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        PinBus() = delete;
+
+        constexpr PinBus(const std::initializer_list<Type> pin_list) : m_pin_list (pin_list)
+        {
+            assert(pin_list.size() <= 32);
+
+            for(const auto pin : pin_list)
+            {
+                if constexpr(std::is_same<Type, Pin::Name>::value == true)
+                {
+                    assert(pin != Pin::Name::NC);
+                }
+
+                if constexpr(std::is_same<Type, int8_t>::value == true)
+                {
+                    assert(pin >= 0);
+                }
+            }
+        }
+
+        constexpr std::size_t get_size() const
+        {
+            return m_pin_list.size();
+        }
+
+        constexpr uint32_t get_mask() const
+        {
+            return static_cast<uint32_t>((1UL << get_size()) - 1);
+        }
+
+        constexpr const Type* begin() const
+        {
+            return m_pin_list.begin();
+        }
+
+        constexpr const Type* end() const
+        {
+            return m_pin_list.end();
+        }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        const std::initializer_list<Type> m_pin_list;
+};
+
+
+
+
+using PinNameBus  = PinBus<Pin::Name>;
+using PinIndexBus = PinBus<int8_t>;
 
 
 
