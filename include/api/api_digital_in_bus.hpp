@@ -34,9 +34,9 @@
 
 #include "api/api_pin_bus.hpp"
 #include "hal/hal_gpio.hpp"
-#include "system/dynarray"
-#include "system/non_copyable"
+#include "core/non_copyable.hpp"
 
+#include <dynarray>
 #include <memory>
 
 namespace xarmlib
@@ -109,7 +109,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        dynarray<std::unique_ptr<Gpio>> m_bus;
+        std::dynarray<std::unique_ptr<Gpio>> m_bus;
 };
 
 

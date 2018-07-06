@@ -35,7 +35,8 @@
 #include "api/api_input_debouncer.hpp"
 #include "api/api_input_scanner.hpp"
 #include "hal/hal_port.hpp"
-#include "system/array"
+
+#include <array>
 
 namespace xarmlib
 {
@@ -210,7 +211,7 @@ class PinDebouncer
         // --------------------------------------------------------------------
 
         static std::array<InputDebouncer::PortMask, Port::COUNT> m_ports;
-        static dynarray<InputDebouncer::Input>                   m_pins;
+        static std::dynarray<InputDebouncer::Input>              m_pins;
         static std::size_t                                       m_assigned_pin_count;
 };
 

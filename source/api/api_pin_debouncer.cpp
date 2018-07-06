@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.cpp
 // @brief   API pin debouncer class.
-// @date    4 July 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 std::array<InputDebouncer::PortMask, Port::COUNT> PinDebouncer::m_ports {};
-dynarray<InputDebouncer::Input>                   PinDebouncer::m_pins(XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT);
+std::dynarray<InputDebouncer::Input>              PinDebouncer::m_pins(XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT);
 std::size_t                                       PinDebouncer::m_assigned_pin_count { 0 };
 
 

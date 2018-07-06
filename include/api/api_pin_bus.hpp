@@ -59,6 +59,7 @@ class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value 
 
         constexpr PinBus(const std::initializer_list<Type> pin_list) : m_pin_list (pin_list)
         {
+#ifndef NDEBUG
             assert(pin_list.size() <= 32);
 
             for(const auto pin : pin_list)
@@ -73,6 +74,7 @@ class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value 
                     assert(pin >= 0);
                 }
             }
+#endif
         }
 
         constexpr std::size_t get_size() const

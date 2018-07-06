@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer helper class.
-// @date    3 July 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_API_INPUT_DEBOUNCER_HPP
 #define __XARMLIB_API_INPUT_DEBOUNCER_HPP
 
-#include "system/gsl"
+#include "external/gsl.hpp"
 
 namespace xarmlib
 {
