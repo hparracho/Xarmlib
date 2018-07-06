@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.hpp
 // @brief   API MCU pin debouncer class.
-// @date    5 July 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,33 +51,33 @@ class PinDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static void assign_pins(const PinBus&                   pin_bus,
+        static void assign_pins(const PinNameBus&               pin_name_bus,
                                 const std::chrono::milliseconds filter_ms_low,
                                 const std::chrono::milliseconds filter_ms_high,
                                 const Gpio::InputMode           input_mode,
                                 const Gpio::InputInvert         input_invert     = Gpio::InputInvert::NORMAL,
                                 const Gpio::InputHysteresis     input_hysteresis = Gpio::InputHysteresis::ENABLE)
         {
-            for(const auto pin_name : pin_bus)
+            for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins(pin_bus, filter_ms_low, filter_ms_high);
+            config_pins(pin_name_bus, filter_ms_low, filter_ms_high);
         }
 
-        static void assign_pins(const PinBus&                      pin_bus,
+        static void assign_pins(const PinNameBus&                  pin_name_bus,
                                 const std::chrono::milliseconds    filter_ms_low,
                                 const std::chrono::milliseconds    filter_ms_high,
                                 const Gpio::InputModeTrueOpenDrain input_mode,
                                 const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL)
         {
-            for(const auto pin_name : pin_bus)
+            for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins(pin_bus, filter_ms_low, filter_ms_high);
+            config_pins(pin_name_bus, filter_ms_low, filter_ms_high);
         }
 
         // Debounce handler that is intended to be used as an input handler of the InputScanner class
@@ -91,14 +91,12 @@ class PinDebouncer
             return InputDebouncer::debounce((gsl::span<InputDebouncer::Input>{ m_pins }).first(m_assigned_pin_count), m_ports);
         }
 
-        static uint32_t get_filtered(const PinBus& pin_bus)
+        static uint32_t get_filtered(const PinNameBus& pin_name_bus)
         {
-            assert(pin_bus.size() <= 32);
-
             uint32_t filtered = 0;
             std::size_t filtered_shift_index = 0;
 
-            for(auto pin_name : pin_bus)
+            for(auto pin_name : pin_name_bus)
             {
                 const int8_t port_index = get_port_index(pin_name);
                 const int8_t pin_bit = get_pin_bit(pin_name);
@@ -115,14 +113,12 @@ class PinDebouncer
             return filtered;
         }
 
-        static uint32_t get_sampling(const PinBus& pin_bus)
+        static uint32_t get_sampling(const PinNameBus& pin_name_bus)
         {
-            assert(pin_bus.size() <= 32);
-
             uint32_t sampling = 0;
             std::size_t sampling_shift_index = 0;
 
-            for(auto pin_name : pin_bus)
+            for(auto pin_name : pin_name_bus)
             {
                 const int8_t port_index = get_port_index(pin_name);
                 const int8_t pin_bit = get_pin_bit(pin_name);
@@ -139,20 +135,13 @@ class PinDebouncer
             return sampling;
         }
 
-        static uint32_t get_mask(const PinBus& pin_bus)
-        {
-            assert(pin_bus.size() <= 32);
-
-            return static_cast<uint32_t>((1UL << pin_bus.size()) - 1);
-        }
-
      private:
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static void config_pins(const PinBus&                    pin_bus,
+        static void config_pins(const PinNameBus&                pin_name_bus,
                                 const std::chrono::milliseconds& filter_low_ms,
                                 const std::chrono::milliseconds& filter_high_ms)
         {
@@ -163,7 +152,7 @@ class PinDebouncer
 
             InputScanner::stop();
 
-            for(auto pin_name : pin_bus)
+            for(auto pin_name : pin_name_bus)
             {
                 config_pin(pin_name, static_cast<int16_t>(filter_low_ms.count()),
                                      static_cast<int16_t>(filter_high_ms.count()));
@@ -175,7 +164,7 @@ class PinDebouncer
             }
         }
 
-        static void config_pin(Pin::Name pin_name, const int16_t filter_low_ms, const int16_t filter_high_ms)
+        static void config_pin(const Pin::Name pin_name, const int16_t filter_low_ms, const int16_t filter_high_ms)
         {
             const int8_t port_index = get_port_index(pin_name);
             const int8_t pin_bit = get_pin_bit(pin_name);
