@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    non_copyable
+// @file    non_copyable.hpp
 // @brief   Non copyable helper class. Classes which are not value type should
 //          inherit privately from this class to avoid generation of invalid
 //          copy constructor or copy assignment operator.
-// @date    27 June 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_NON_COPYABLE
-#define __XARMLIB_SYSTEM_NON_COPYABLE
+#ifndef __XARMLIB_CORE_NON_COPYABLE_HPP
+#define __XARMLIB_CORE_NON_COPYABLE_HPP
 
 namespace xarmlib
 {
@@ -70,4 +70,4 @@ class NonCopyable
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_SYSTEM_NON_COPYABLE
+#endif // __XARMLIB_CORE_NON_COPYABLE_HPP

@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------------
-// @file    cassert
-// @brief   Custom assert header file.
-// @date    10 May 2018
+// @file    bitmask.hpp
+// @brief   bitmask header file to use in the library. This should be the only
+//          header file included when bitmask functionality is required.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,34 +30,9 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_CASSERT
-#define __XARMLIB_SYSTEM_CASSERT
+#ifndef __XARMLIB_EXTERNAL_BITMASK_HPP
+#define __XARMLIB_EXTERNAL_BITMASK_HPP
 
-#undef assert
+#include "bitmask/bitmask.hpp"
 
-
-
-
-// Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
-extern "C" __attribute__ ((weak, noreturn))
-void abort(void);
-
-
-
-
-constexpr void assert(const bool expr)
-{
-#ifdef NDEBUG
-    (void)expr;
-#else
-    if(expr == false)
-    {
-        abort();
-    }
-#endif
-}
-
-
-
-
-#endif // __XARMLIB_SYSTEM_CASSERT
+#endif // __XARMLIB_EXTERNAL_BITMASK_HPP

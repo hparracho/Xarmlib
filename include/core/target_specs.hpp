@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    target
-// @brief   System level target configuration header file.
-// @date    29 June 2018
+// @file    target_specs.hpp
+// @brief   Core level target configuration header file.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_TARGET
-#define __XARMLIB_SYSTEM_TARGET
+#ifndef __XARMLIB_CORE_TARGET_SPECS_HPP
+#define __XARMLIB_CORE_TARGET_SPECS_HPP
 
 
 
@@ -123,4 +123,4 @@
 
 
 
-#endif // __XARMLIB_SYSTEM_TARGET
+#endif // __XARMLIB_CORE_TARGET_SPECS_HPP

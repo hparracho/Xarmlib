@@ -1,9 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    gsl
-// @brief   Guideline Support Library (GSL) configuration and main header file
-//          to use in the library. This should be the only header file included
-//          when GSL functionality is required.
-// @date    3 April 2018
+// @file    assert.cpp
+// @brief   Custom 'assert_func()' implementation.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,14 +29,21 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_GSL
-#define __XARMLIB_SYSTEM_GSL
-
-#define GSL_TERMINATE_ON_CONTRACT_VIOLATION
-
-#include "gsl/gsl"
 
 
 
+#ifndef NDEBUG
 
-#endif // __XARMLIB_SYSTEM_GSL
+// Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
+extern "C" __attribute__ ((weak, noreturn))
+void abort(void);
+
+__attribute__ ((noreturn))
+void __xarmlib_assert_func(const bool expr)
+{
+    (void)expr;
+
+    abort();
+}
+
+#endif // !NDEBUG
