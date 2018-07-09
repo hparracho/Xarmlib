@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    29 June 2018
+// @date    8 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -68,16 +68,16 @@ typedef enum IRQn
     // LPC84x Specific Interrupt Numbers
     SPI0_IRQn                   = 0,        // SPI0 interrupt
     SPI1_IRQn                   = 1,        // SPI1 interrupt
-    DAC0_IRQn                   = 2,        // DAC0 Interrupt
+    DAC0_IRQn                   = 2,        // DAC0 interrupt
     USART0_IRQn                 = 3,        // USART0 interrupt
     USART1_IRQn                 = 4,        // USART1 interrupt
     USART2_IRQn                 = 5,        // USART2 interrupt
-                                            // RESERVED
+    Reserved_IRQn               = 6,        // Reserved interrupt
     I2C1_IRQn                   = 7,        // I2C1 interrupt
     I2C0_IRQn                   = 8,        // I2C0 interrupt
     SCT_IRQn                    = 9,        // SCT interrupt
     MRT_IRQn                    = 10,       // MRT interrupt
-    CMP_CAPT_IRQn               = 11,       // Analog Comparator / Cap Touch shared interrupt
+    ACMP_CAPT_IRQn              = 11,       // Analog Comparator / Cap Touch shared interrupt
     WDT_IRQn                    = 12,       // WDT interrupt
     BOD_IRQn                    = 13,       // BOD interrupt
     FLASH_IRQn                  = 14,       // FLASH interrupt
@@ -136,8 +136,6 @@ void SystemCoreClockUpdate(void);
 // Device Specific Peripheral Registers structures
 // ----------------------------------------------------------------------------
 
-
-
 // ------------ System Control (SYSCON) ---------------------------------------
 typedef struct
 {
@@ -152,7 +150,7 @@ typedef struct
          uint32_t RESERVED2;                // (offset: 0x02C) RESERVED
     __IO uint32_t FRODIRECTCLKUEN;          // (offset: 0x030) FRO direct clock source update
          uint32_t RESERVED3;                // (offset: 0x034) RESERVED
-    __IO uint32_t SYSRSTSTAT;               // (offset: 0x038) System reset status 0
+    __IO uint32_t SYSRSTSTAT;               // (offset: 0x038) System reset status
     __IO uint32_t FAIMROWPROTECTCTRL;       // (offset: 0x03C) FAIM row protect control
     __IO uint32_t SYSPLLCLKSEL;             // (offset: 0x040) System PLL clock source select 0
     __IO uint32_t SYSPLLCLKUEN;             // (offset: 0x044) System PLL clock source update
@@ -241,7 +239,7 @@ typedef struct
     __IO uint32_t BODCTRL;                  // (offset: 0x150) Brown-Out Detect
     __IO uint32_t SYSTCKCAL;                // (offset: 0x154) System tick counter calibration
          uint32_t RESERVED12[6];            // (offset: 0x158) RESERVED
-    __IO uint32_t IRQLATENCY;               // (offset: 0x170) IRQ delay. Allows trade-off between interrupt latency and determinism.
+    __IO uint32_t IRQLATENCY;               // (offset: 0x170) IRQ delay.
     __IO uint32_t NMISRC;                   // (offset: 0x174) NMI Source Control
     union
     {
@@ -278,7 +276,7 @@ typedef struct
 {
     union
     {
-        __IO uint32_t PIO[56];          // Digital I/O control for ports
+        __IO uint32_t PIO[56];              // Digital I/O control for ports
         struct
         {
             __IO uint32_t PIO0_17;          // (offset: 0x00)
@@ -366,7 +364,7 @@ typedef struct
 // ------------ Power Management Unit (PMU) -----------------------------------
 typedef struct
 {
-    __IO uint32_t PCON;                     // (offset: 0x00) Power control Register
+    __IO uint32_t PCON;                     // (offset: 0x00) Power control register
     union
     {
         __IO uint32_t GPREG[4];
@@ -389,7 +387,7 @@ typedef struct
 {
     union
     {
-        __IO uint32_t PINASSIGN[15];
+        __IO uint32_t PINASSIGN[15];        // Pin Assign register array
         struct
         {
             __IO uint32_t PINASSIGN0;       // (offset: 0x000) Pin assign register 0
@@ -544,7 +542,7 @@ typedef struct
 
 
 
-// ------------ Pin Interrupts and Pattern Match (PIN_INT) --------------------
+// ------------ Pin Interrupts and Pattern Match (PININT) ---------------------
 typedef struct
 {
     __IO uint32_t ISEL;                     // (offset: 0x00) Pin Interrupt Mode register
@@ -560,7 +558,7 @@ typedef struct
     __IO uint32_t PMCTRL;                   // (offset: 0x28) GPIO pattern match interrupt control register
     __IO uint32_t PMSRC;                    // (offset: 0x2C) GPIO pattern match interrupt bit-slice source register
     __IO uint32_t PMCFG;                    // (offset: 0x30) GPIO pattern match interrupt bit slice configuration register
-} LPC_PIN_INT_T;
+} LPC_PININT_T;
 
 
 
@@ -595,7 +593,7 @@ typedef struct
 {
     __IO uint32_t CTRL;                     // (offset: 0x00) Alarm / Wakeup Timer Control register
          uint32_t RESERVED[2];              // (offset: 0x04) RESERVED
-    __IO uint32_t COUNT;                    // (offset: 0x0C) Alarm / Wakeup TImer counter register
+    __IO uint32_t COUNT;                    // (offset: 0x0C) Alarm / Wakeup Timer counter register
 } LPC_WKT_T;
 
 
@@ -612,7 +610,7 @@ typedef struct
 
 typedef struct
 {
-    LPC_MRT_CHANNEL_T   CHANNEL[4];         // Channels
+    LPC_MRT_CHANNEL_T   CHANNEL[4];         // (offset: 0x00-0x3C) Channels
 
          uint32_t       RESERVED[45];       // (offset: 0x40) RESERVED
     __I  uint32_t       IDLE_CH;            // (offset: 0xF4) Idle channel register
@@ -839,7 +837,7 @@ typedef struct
         __IO uint32_t STATE;                // EVENT[n].STATE  SCT Event n State register
         __IO uint32_t CTRL;                 // EVENT[n].CTRL   SCT Event n Control register
     } EVENT[SCT_NUM_EVENTS];
-    uint32_t RESERVED8[0x200 - (8 * SCT_NUM_EVENTS)];       // (offset: 0x490) RESERVED
+    uint32_t RESERVED8[0x200 - (8 * SCT_NUM_EVENTS)];       // (offset: 0x340) RESERVED
     struct                                                  // (offset: 0x500) Output Set / Clear
     {
         __IO uint32_t SET;                  // OUT[n].SET  Output n Set Register
@@ -1138,6 +1136,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 //-------------------------------------------------------------------------
 // Peripheral memory map
 //-------------------------------------------------------------------------
+
 // Base addresses
 #define LPC_FLASH_BASE          (0x00000000UL)
 #define LPC_ROM_BASE            (0x0F000000UL)
@@ -1150,7 +1149,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_ROM_DRIVER_BASE     (LPC_ROM_BASE + 0x1FF8)
 #define LPC_ROM_IAP_BASE        (LPC_ROM_BASE + 0x1FF1)
 
-// APB0 peripherals
+// APB peripherals
 #define LPC_WWDT_BASE           (LPC_APB_BASE + 0x00000)
 #define LPC_MRT_BASE            (LPC_APB_BASE + 0x04000)
 #define LPC_WKT_BASE            (LPC_APB_BASE + 0x08000)
@@ -1159,7 +1158,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_DAC1_BASE           (LPC_APB_BASE + 0x18000)
 #define LPC_ADC_BASE            (LPC_APB_BASE + 0x1C000)
 #define LPC_PMU_BASE            (LPC_APB_BASE + 0x20000)
-#define LPC_CMP_BASE            (LPC_APB_BASE + 0x24000)
+#define LPC_ACMP_BASE           (LPC_APB_BASE + 0x24000)
 // RESERVED                     (LPC_APB_BASE + 0x28000)
 #define LPC_INMUX_TRIGMUX_BASE  (LPC_APB_BASE + 0x2C000)
 #define LPC_I2C2_BASE           (LPC_APB_BASE + 0x30000)
@@ -1188,7 +1187,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_FAIM_BASE           (LPC_AHB_BASE + 0x10000)
 
 // GPIO interrupts
-#define LPC_PIN_INT_BASE        (LPC_GPIO_BASE + 0x4000)
+#define LPC_PININT_BASE  ,      (LPC_GPIO_BASE + 0x4000)
 
 
 
@@ -1213,7 +1212,7 @@ static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_B
 #define LPC_DAC1                ((LPC_DAC_T          *) LPC_DAC1_BASE)
 #define LPC_ADC                 ((LPC_ADC_T          *) LPC_ADC_BASE)
 #define LPC_PMU                 ((LPC_PMU_T          *) LPC_PMU_BASE)
-#define LPC_CMP                 ((LPC_CMP_T          *) LPC_CMP_BASE)
+#define LPC_ACMP                ((LPC_ACMP_T         *) LPC_ACMP_BASE)
 #define LPC_INMUX_TRIGMUX       ((LPC_INMUX_TRIGMUX_T*) LPC_INMUX_TRIGMUX_BASE)
 #define LPC_I2C2                ((LPC_I2C_T          *) LPC_I2C2_BASE)
 #define LPC_I2C3                ((LPC_I2C_T          *) LPC_I2C3_BASE)
@@ -1240,7 +1239,7 @@ static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_B
 
 // GPIO peripheral and interrupts
 #define LPC_GPIO                ((LPC_GPIO_T         *) LPC_GPIO_BASE)
-#define LPC_PIN_INT             ((LPC_PIN_INT_T      *) LPC_PIN_INT_BASE)
+#define LPC_PININT              ((LPC_PININT_T       *) LPC_PININT_BASE)
 
 
 

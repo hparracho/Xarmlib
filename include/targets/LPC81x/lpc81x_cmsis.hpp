@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC81x MCUs.
-// @date    13 June 2018
+// @date    8 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -58,46 +58,46 @@ extern "C" {
 typedef enum IRQn
 {
     // Cortex-M0+ Processor Exceptions Numbers
-    Reset_IRQn                    = -15,    // 1 Reset Vector, invoked on Power up and warm reset
-    NonMaskableInt_IRQn           = -14,    // 2 Non Maskable Interrupt
-    HardFault_IRQn                = -13,    // 3 Cortex-M0 Hard Fault Interrupt
-    SVCall_IRQn                   = -5,     // 11 Cortex-M0 SV Call Interrupt
-    PendSV_IRQn                   = -2,     // 14 Cortex-M0 Pend SV Interrupt
-    SysTick_IRQn                  = -1,     // 15 Cortex-M0 System Tick Interrupt
+    Reset_IRQn                  = -15,      // 1 Reset Vector, invoked on Power up and warm reset
+    NonMaskableInt_IRQn         = -14,      // 2 Non Maskable interrupt
+    HardFault_IRQn              = -13,      // 3 Cortex-M0 Hard Fault interrupt
+    SVCall_IRQn                 = -5,       // 11 Cortex-M0 SV Call interrupt
+    PendSV_IRQn                 = -2,       // 14 Cortex-M0 Pend SV interrupt
+    SysTick_IRQn                = -1,       // 15 Cortex-M0 System Tick interrupt
 
-    // LPC8xx Specific Interrupt Numbers
-    SPI0_IRQn                     = 0,      // SPI0
-    SPI1_IRQn                     = 1,      // SPI1
-    Reserved0_IRQn                = 2,      // Reserved Interrupt
-    USART0_IRQn                   = 3,      // USART0
-    USART1_IRQn                   = 4,      // USART1
-    USART2_IRQn                   = 5,      // USART2
-    Reserved1_IRQn                = 6,      // Reserved Interrupt
-    Reserved2_IRQn                = 7,      // Reserved Interrupt
-    I2C_IRQn                      = 8,      // I2C0
-    SCT_IRQn                      = 9,      // SCT
-    MRT_IRQn                      = 10,     // MRT
-    CMP_IRQn                      = 11,     // CMP
-    WDT_IRQn                      = 12,     // WDT
-    BOD_IRQn                      = 13,     // BOD
-    Reserved3_IRQn                = 14,     // Reserved Interrupt
-    WKT_IRQn                      = 15,     // WKT Interrupt
-    Reserved4_IRQn                = 16,     // Reserved Interrupt
-    Reserved5_IRQn                = 17,     // Reserved Interrupt
-    Reserved6_IRQn                = 18,     // Reserved Interrupt
-    Reserved7_IRQn                = 19,     // Reserved Interrupt
-    Reserved8_IRQn                = 20,     // Reserved Interrupt
-    Reserved9_IRQn                = 21,     // Reserved Interrupt
-    Reserved10_IRQn               = 22,     // Reserved Interrupt
-    Reserved11_IRQn               = 23,     // Reserved Interrupt
-    PININT0_IRQn                  = 24,     // External Interrupt 0
-    PININT1_IRQn                  = 25,     // External Interrupt 1
-    PININT2_IRQn                  = 26,     // External Interrupt 2
-    PININT3_IRQn                  = 27,     // External Interrupt 3
-    PININT4_IRQn                  = 28,     // External Interrupt 4
-    PININT5_IRQn                  = 29,     // External Interrupt 5
-    PININT6_IRQn                  = 30,     // External Interrupt 6
-    PININT7_IRQn                  = 31,     // External Interrupt 7
+    // LPC81x Specific Interrupt Numbers
+    SPI0_IRQn                   = 0,        // SPI0 interrupt
+    SPI1_IRQn                   = 1,        // SPI1 interrupt
+    Reserved0_IRQn              = 2,        // Reserved interrupt
+    USART0_IRQn                 = 3,        // USART0 interrupt
+    USART1_IRQn                 = 4,        // USART1 interrupt
+    USART2_IRQn                 = 5,        // USART2 interrupt
+    Reserved1_IRQn              = 6,        // Reserved interrupt
+    Reserved2_IRQn              = 7,        // Reserved interrupt
+    I2C_IRQn                    = 8,        // I2C interrupt
+    SCT_IRQn                    = 9,        // SCT interrupt
+    MRT_IRQn                    = 10,       // MRT interrupt
+    ACMP_IRQn                   = 11,       // Analog Comparator interrupt
+    WDT_IRQn                    = 12,       // WDT interrupt
+    BOD_IRQn                    = 13,       // BOD interrupt
+    Reserved3_IRQn              = 14,       // Reserved interrupt
+    WKT_IRQn                    = 15,       // WKT interrupt
+    Reserved4_IRQn              = 16,       // Reserved interrupt
+    Reserved5_IRQn              = 17,       // Reserved interrupt
+    Reserved6_IRQn              = 18,       // Reserved interrupt
+    Reserved7_IRQn              = 19,       // Reserved interrupt
+    Reserved8_IRQn              = 20,       // Reserved interrupt
+    Reserved9_IRQn              = 21,       // Reserved interrupt
+    Reserved10_IRQn             = 22,       // Reserved interrupt
+    Reserved11_IRQn             = 23,       // Reserved interrupt
+    PININT0_IRQn                = 24,       // Pin interrupt 0
+    PININT1_IRQn                = 25,       // Pin interrupt 1
+    PININT2_IRQn                = 26,       // Pin interrupt 2
+    PININT3_IRQn                = 27,       // Pin interrupt 3
+    PININT4_IRQn                = 28,       // Pin interrupt 4
+    PININT5_IRQn                = 29,       // Pin interrupt 5
+    PININT6_IRQn                = 30,       // Pin interrupt 6
+    PININT7_IRQn                = 31,       // Pin interrupt 7
 } IRQn_Type;
 
 
@@ -108,11 +108,11 @@ typedef enum IRQn
 // ----------------------------------------------------------------------------
 
 // Configuration of the Cortex-M0+ Processor and Core Peripherals
-#define __CM0PLUS_REV             0x0001    // Cortex-M0+ Core Revision
-#define __MPU_PRESENT             0         // MPU present or not
-#define __VTOR_PRESENT            1         // VTOR is present in this implementation
-#define __NVIC_PRIO_BITS          2         // Number of Bits used for Priority Levels
-#define __Vendor_SysTickConfig    0         // Set to 1 if different SysTick Config is used
+#define __CM0PLUS_REV           0x0001      // Core revision r0p1
+#define __MPU_PRESENT           0           // Defines if an MPU is present or not
+#define __VTOR_PRESENT          1           // Defines if VTOR is present or not
+#define __NVIC_PRIO_BITS        2           // Number of priority bits implemented in the NVIC
+#define __Vendor_SysTickConfig  0           // Vendor specific implementation of SysTickConfig is defined
 
 
 
@@ -136,60 +136,84 @@ void SystemCoreClockUpdate(void);
 // Device Specific Peripheral Registers structures
 // ----------------------------------------------------------------------------
 
-
-
 // ------------ System Control (SYSCON) ---------------------------------------
 typedef struct
 {
-    __IO uint32_t SYSMEMREMAP;              // (offset: 0x000) System memory remap (R/W)
-    __IO uint32_t PRESETCTRL;               // (offset: 0x004) Peripheral reset control (R/W)
-    __IO uint32_t SYSPLLCTRL;               // (offset: 0x008) System PLL control (R/W)
-    __IO uint32_t SYSPLLSTAT;               // (offset: 0x00C) System PLL status (R/W )
+    __IO uint32_t SYSMEMREMAP;              // (offset: 0x000) System memory remap
+    __IO uint32_t PRESETCTRL;               // (offset: 0x004) Peripheral reset control
+    __IO uint32_t SYSPLLCTRL;               // (offset: 0x008) System PLL control
+    __I  uint32_t SYSPLLSTAT;               // (offset: 0x00C) System PLL status
          uint32_t RESERVED0[4];
-    __IO uint32_t SYSOSCCTRL;               // (offset: 0x020) System oscillator control (R/W)
-    __IO uint32_t WDTOSCCTRL;               // (offset: 0x024) Watchdog oscillator control (R/W)
-    __IO uint32_t IRCCTRL;                  // (offset: 0x028) IRC Control Register (Available only in LPC82X)
-         uint32_t RESERVED1[1];
-    __IO uint32_t SYSRSTSTAT;               // (offset: 0x030) System reset status Register (R/W )
+    __IO uint32_t SYSOSCCTRL;               // (offset: 0x020) System oscillator control
+    __IO uint32_t WDTOSCCTRL;               // (offset: 0x024) Watchdog oscillator control
+         uint32_t RESERVED1[2];
+    __IO uint32_t SYSRSTSTAT;               // (offset: 0x030) System reset status register
          uint32_t RESERVED2[3];
-    __IO uint32_t SYSPLLCLKSEL;             // (offset: 0x040) System PLL clock source select (R/W)
-    __IO uint32_t SYSPLLCLKUEN;             // (offset: 0x044) System PLL clock source update enable (R/W)
+    __IO uint32_t SYSPLLCLKSEL;             // (offset: 0x040) System PLL clock source select
+    __IO uint32_t SYSPLLCLKUEN;             // (offset: 0x044) System PLL clock source update enable
          uint32_t RESERVED3[10];
-    __IO uint32_t MAINCLKSEL;               // (offset: 0x070) Main clock source select (R/W)
-    __IO uint32_t MAINCLKUEN;               // (offset: 0x074) Main clock source update enable (R/W)
-    __IO uint32_t SYSAHBCLKDIV;             // (offset: 0x078) System AHB clock divider (R/W)
-         uint32_t RESERVED4[1];
-    __IO uint32_t SYSAHBCLKCTRL;            // (offset: 0x080) System AHB clock control (R/W)
+    __IO uint32_t MAINCLKSEL;               // (offset: 0x070) Main clock source select
+    __IO uint32_t MAINCLKUEN;               // (offset: 0x074) Main clock source update enable
+    __IO uint32_t SYSAHBCLKDIV;             // (offset: 0x078) System AHB clock divider
+         uint32_t RESERVED4;
+    __IO uint32_t SYSAHBCLKCTRL;            // (offset: 0x080) System AHB clock control
          uint32_t RESERVED5[4];
-    __IO uint32_t UARTCLKDIV;               // (offset: 0x094) UART clock divider (R/W)
+    __IO uint32_t UARTCLKDIV;               // (offset: 0x094) USART clock divider
          uint32_t RESERVED6[18];
-    __IO uint32_t CLKOUTSEL;                // (offset: 0x0E0) CLKOUT clock source select (R/W)
-    __IO uint32_t CLKOUTUEN;                // (offset: 0x0E4) CLKOUT clock source update enable (R/W)
-    __IO uint32_t CLKOUTDIV;                // (offset: 0x0E8) CLKOUT clock divider (R/W)
+    __IO uint32_t CLKOUTSEL;                // (offset: 0x0E0) CLKOUT clock source select
+    __IO uint32_t CLKOUTUEN;                // (offset: 0x0E4) CLKOUT clock source update enable
+    __IO uint32_t CLKOUTDIV;                // (offset: 0x0E8) CLKOUT clock divider
          uint32_t RESERVED7;
-    __IO uint32_t UARTFRGDIV;               // (offset: 0x0F0) UART fractional divider SUB(R/W)
-    __IO uint32_t UARTFRGMULT;              // (offset: 0x0F4) UART fractional divider ADD(R/W)
-         uint32_t RESERVED8[1];
+    __IO uint32_t UARTFRGDIV;               // (offset: 0x0F0) UART fractional divider SUB
+    __IO uint32_t UARTFRGMULT;              // (offset: 0x0F4) UART fractional divider ADD
+         uint32_t RESERVED8;
     __IO uint32_t EXTTRACECMD;              // (offset: 0x0FC) External trace buffer command register
-    __IO uint32_t PIOPORCAP0;               // (offset: 0x100) POR captured PIO status 0 (R/ )
+    __IO uint32_t PIOPORCAP0;               // (offset: 0x100) POR captured PIO status 0
          uint32_t RESERVED9[12];
-    __IO uint32_t IOCONCLKDIV[7];           // (offset: 0x134) Peripheral clock x to the IOCON block for programmable glitch filter
-    __IO uint32_t BODCTRL;                  // (offset: 0x150) BOD control (R/W)
-    __IO uint32_t SYSTCKCAL;                // (offset: 0x154) System tick counter calibration (R/W)
-         uint32_t RESERVED10[6];
+    union
+    {
+        __IO uint32_t IOCONCLKDIV[7];
+        struct
+        {
+            __IO uint32_t IOCONCLKDIV6;     // (offset: 0x134) Peripheral clock 6 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV4;     // (offset: 0x13C) Peripheral clock 4 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV5;     // (offset: 0x138) Peripheral clock 5 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV3;     // (offset: 0x140) Peripheral clock 3 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV2;     // (offset: 0x144) Peripheral clock 2 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV1;     // (offset: 0x148) Peripheral clock 1 to the IOCON block for programmable glitch filter
+            __IO uint32_t IOCONCLKDIV0;     // (offset: 0x14C) Peripheral clock 0 to the IOCON block for programmable glitch filter
+        };
+    };
+    __IO uint32_t BODCTRL;                  // (offset: 0x150) Brown-Out Detect
+    __IO uint32_t SYSTCKCAL;                // (offset: 0x154) System tick counter calibration
+         uint32_t RESERVED10[6];            // (offset: 0x158) RESERVED
     __IO uint32_t IRQLATENCY;               // (offset: 0x170) IRQ delay
     __IO uint32_t NMISRC;                   // (offset: 0x174) NMI Source Control
-    __IO uint32_t PINTSEL[8];               // (offset: 0x178) GPIO Pin Interrupt Select register 0
-         uint32_t RESERVED11[27];
-    __IO uint32_t STARTERP0;                // (offset: 0x204) Start logic signal enable Register 0 (R/W)
-         uint32_t RESERVED12[3];
-    __IO uint32_t STARTERP1;                // (offset: 0x214) Start logic signal enable Register 0 (R/W)
-         uint32_t RESERVED13[6];
-    __IO uint32_t PDSLEEPCFG;               // (offset: 0x230) Power-down states in Deep-sleep mode (R/W)
-    __IO uint32_t PDAWAKECFG;               // (offset: 0x234) Power-down states after wake-up (R/W)
-    __IO uint32_t PDRUNCFG;                 // (offset: 0x238) Power-down configuration Register (R/W)
-         uint32_t RESERVED14[111];
-    __I  uint32_t DEVICEID;                 // (offset: 0x3F8) Device ID (R/ )
+    union
+    {
+        __IO uint32_t PINTSEL[8];
+        struct
+        {
+            __IO uint32_t PINTSEL0;         // (offset: 0x178) GPIO Pin Interrupt Select 0
+            __IO uint32_t PINTSEL1;         // (offset: 0x17C) GPIO Pin Interrupt Select 1
+            __IO uint32_t PINTSEL2;         // (offset: 0x180) GPIO Pin Interrupt Select 2
+            __IO uint32_t PINTSEL3;         // (offset: 0x184) GPIO Pin Interrupt Select 3
+            __IO uint32_t PINTSEL4;         // (offset: 0x188) GPIO Pin Interrupt Select 4
+            __IO uint32_t PINTSEL5;         // (offset: 0x18C) GPIO Pin Interrupt Select 5
+            __IO uint32_t PINTSEL6;         // (offset: 0x190) GPIO Pin Interrupt Select 6
+            __IO uint32_t PINTSEL7;         // (offset: 0x194) GPIO Pin Interrupt Select 7
+        };
+    };
+         uint32_t RESERVED11[27];           // (offset: 0x198) RESERVED
+    __IO uint32_t STARTERP0;                // (offset: 0x204) Start logic 0 pin wake-up enable
+         uint32_t RESERVED12[3];            // (offset: 0x208) RESERVED
+    __IO uint32_t STARTERP1;                // (offset: 0x214) Start logic 1 interrupt wake-up enable
+         uint32_t RESERVED13[6];            // (offset: 0x218) RESERVED
+    __IO uint32_t PDSLEEPCFG;               // (offset: 0x230) Power-down states in deep-sleep mode
+    __IO uint32_t PDAWAKECFG;               // (offset: 0x234) Power-down states for wake-up from deep-sleep
+    __IO uint32_t PDRUNCFG;                 // (offset: 0x238) Power configuration
+         uint32_t RESERVED14[111];          // (offset: 0x23C) RESERVED
+    __I  uint32_t DEVICEID;                 // (offset: 0x3F8) Device ID
 } LPC_SYSCON_T;
 
 
@@ -200,7 +224,7 @@ typedef struct
 {
     union
     {
-        __IO uint32_t PIO[19];
+        __IO uint32_t PIO[19];              // Digital I/O control for ports
         struct
         {
             __IO uint32_t PIO0_17;          // (offset: 0x00)
@@ -232,13 +256,13 @@ typedef struct
 // ------------ FLASH Memory Controller (FMC) ---------------------------------
 typedef struct
 {
-         uint32_t RESERVED0[4];             // (offset: 0x00-0x0C) RESERVED
-    __IO uint32_t FLASHCFG;                 // (offset: 0x10)      Flash configuration register
-         uint32_t RESERVED1[3];             // (offset: 0x14-0x1C) RESERVED
-    __IO uint32_t FMSSTART;                 // (offset: 0x20)      Signature start address register
-    __IO uint32_t FMSSTOP;                  // (offset: 0x24)      Signature stop-address register
-         uint32_t RESERVED2;                // (offset: 0x28)      RESERVED
-    __I  uint32_t FMSW0;                    // (offset: 0x2C)      Signature word
+         uint32_t RESERVED0[4];             // (offset: 0x00) RESERVED
+    __IO uint32_t FLASHCFG;                 // (offset: 0x10) Flash configuration register
+         uint32_t RESERVED1[3];             // (offset: 0x14) RESERVED
+    __IO uint32_t FMSSTART;                 // (offset: 0x20) Signature start address register
+    __IO uint32_t FMSSTOP;                  // (offset: 0x24) Signature stop-address register
+         uint32_t RESERVED2;                // (offset: 0x28) RESERVED
+    __I  uint32_t FMSW0;                    // (offset: 0x2C) Signature word
 } LPC_FMC_T;
 
 
@@ -247,12 +271,19 @@ typedef struct
 // ------------ Power Management Unit (PMU) -----------------------------------
 typedef struct
 {
-    __IO uint32_t PCON;                     // (offset: 0x000) Power control Register (R/W)
-    __IO uint32_t GPREG0;                   // (offset: 0x004) General purpose Register 0 (R/W)
-    __IO uint32_t GPREG1;                   // (offset: 0x008) General purpose Register 1 (R/W)
-    __IO uint32_t GPREG2;                   // (offset: 0x00C) General purpose Register 2 (R/W)
-    __IO uint32_t GPREG3;                   // (offset: 0x010) General purpose Register 3 (R/W)
-    __IO uint32_t DPDCTRL;                  // (offset: 0x014) Deep power-down control register (R/W)
+    __IO uint32_t PCON;                     // (offset: 0x00) Power control register
+    union
+    {
+        __IO uint32_t GPREG[4];
+        struct
+        {
+            __IO uint32_t GPREG0;           // (offset: 0x04) General purpose register 0
+            __IO uint32_t GPREG1;           // (offset: 0x08) General purpose register 1
+            __IO uint32_t GPREG2;           // (offset: 0x0C) General purpose register 2
+            __IO uint32_t GPREG3;           // (offset: 0x10) General purpose register 3
+        };
+    };
+    __IO uint32_t DPDCTRL;                  // (offset: 0x14) Deep power-down control register
 } LPC_PMU_T;
 
 
@@ -266,15 +297,15 @@ typedef struct
         __IO uint32_t PINASSIGN[9];         // Pin Assign register array
         struct
         {
-            __IO uint32_t PINASSIGN0;       // (offset: 0x000)
-            __IO uint32_t PINASSIGN1;       // (offset: 0x004)
-            __IO uint32_t PINASSIGN2;       // (offset: 0x008)
-            __IO uint32_t PINASSIGN3;       // (offset: 0x00C)
-            __IO uint32_t PINASSIGN4;       // (offset: 0x010)
-            __IO uint32_t PINASSIGN5;       // (offset: 0x014)
-            __IO uint32_t PINASSIGN6;       // (offset: 0x018)
-            __IO uint32_t PINASSIGN7;       // (offset: 0x01C)
-            __IO uint32_t PINASSIGN8;       // (offset: 0x020)
+            __IO uint32_t PINASSIGN0;       // (offset: 0x000) Pin assign register 0
+            __IO uint32_t PINASSIGN1;       // (offset: 0x004) Pin assign register 1
+            __IO uint32_t PINASSIGN2;       // (offset: 0x008) Pin assign register 2
+            __IO uint32_t PINASSIGN3;       // (offset: 0x00C) Pin assign register 3
+            __IO uint32_t PINASSIGN4;       // (offset: 0x010) Pin assign register 4
+            __IO uint32_t PINASSIGN5;       // (offset: 0x014) Pin assign register 5
+            __IO uint32_t PINASSIGN6;       // (offset: 0x018) Pin assign register 6
+            __IO uint32_t PINASSIGN7;       // (offset: 0x01C) Pin assign register 7
+            __IO uint32_t PINASSIGN8;       // (offset: 0x020) Pin assign register 8
         };
     };
          uint32_t RESERVED0[103];           // RESERVED
@@ -287,40 +318,45 @@ typedef struct
 // ------------ General Purpose I/O (GPIO) ------------------------------------
 typedef struct
 {
-    __IO uint8_t  B[128][32];               // (offset: 0x0000) Byte pin registers ports 0 to n; pins PIOn_0 to PIOn_31
-    __IO uint32_t W[32][32];                // (offset: 0x1000) Word pin registers port 0 to n
-    __IO uint32_t DIR[32];                  // (offset: 0x2000) Direction registers port n
-    __IO uint32_t MASK[32];                 // (offset: 0x2080) Mask register port n
-    __IO uint32_t PIN[32];                  // (offset: 0x2100) Port pin register port n
-    __IO uint32_t MPIN[32];                 // (offset: 0x2180) Masked port register port n
-    __IO uint32_t SET[32];                  // (offset: 0x2200) Write: Set register for port n Read: output bits for port n
-    __O  uint32_t CLR[32];                  // (offset: 0x2280) Clear port n
-    __O  uint32_t NOT[32];                  // (offset: 0x2300) Toggle port n
-    __O  uint32_t DIRSET[32];               // (offset: 0x2380) Set Direction
-    __O  uint32_t DIRCLR[32];               // (offset: 0x2400) Clear Direction
-    __O  uint32_t DIRNOT[32];               // (offset: 0x2480) Toggle Direction
+    __IO uint8_t  B0[18];                   // (offset: 0x0000) Byte pin registers P0.0 - P0.17
+         uint32_t RESERVED0[1019];          // (offset: 0x0012) RESERVED
+    __IO uint32_t W0[18];                   // (offset: 0x1000) Word pin registers P0.0 - P0.17
+         uint32_t RESERVED1[1006];          // (offset: 0x1060) RESERVED
+    __IO uint32_t DIR0;                     // (offset: 0x2000) Port 0 direction register
+         uint32_t RESERVED2[31];            // (offset: 0x2004) RESERVED
+    __IO uint32_t MASK0;                    // (offset: 0x2080) Port 0 mask register
+         uint32_t RESERVED3[31];            // (offset: 0x2084) RESERVED
+    __IO uint32_t PIN0;                     // (offset: 0x2100) Port 0 pin register
+         uint32_t RESERVED4[31];            // (offset: 0x2104) RESERVED
+    __IO uint32_t MPIN0;                    // (offset: 0x2180) Masked port 0 register
+         uint32_t RESERVED5[31];            // (offset: 0x2184) RESERVED
+    __IO uint32_t SET0;                     // (offset: 0x2200) Set port 0 register
+         uint32_t RESERVED6[31];            // (offset: 0x2204) RESERVED
+    __O  uint32_t CLR0;                     // (offset: 0x2280) Clear port 0 register
+         uint32_t RESERVED7[31];            // (offset: 0x2284) RESERVED
+    __O  uint32_t NOT0;                     // (offset: 0x2300) Toggle port 0 register
 } LPC_GPIO_T;
 
 
 
 
-// ------------ Pin Interrupts and Pattern Match (PIN_INT) --------------------
+// ------------ Pin Interrupts and Pattern Match (PININT) ---------------------
 typedef struct
 {
     __IO uint32_t ISEL;                     // (offset: 0x00) Pin Interrupt Mode register
     __IO uint32_t IENR;                     // (offset: 0x04) Pin Interrupt Enable (Rising) register
-    __IO uint32_t SIENR;                    // (offset: 0x08) Set Pin Interrupt Enable (Rising) register
-    __IO uint32_t CIENR;                    // (offset: 0x0C) Clear Pin Interrupt Enable (Rising) register
+    __O  uint32_t SIENR;                    // (offset: 0x08) Set Pin Interrupt Enable (Rising) register
+    __O  uint32_t CIENR;                    // (offset: 0x0C) Clear Pin Interrupt Enable (Rising) register
     __IO uint32_t IENF;                     // (offset: 0x10) Pin Interrupt Enable Falling Edge / Active Level register
-    __IO uint32_t SIENF;                    // (offset: 0x14) Set Pin Interrupt Enable Falling Edge / Active Level register
-    __IO uint32_t CIENF;                    // (offset: 0x18) Clear Pin Interrupt Enable Falling Edge / Active Level address
+    __O  uint32_t SIENF;                    // (offset: 0x14) Set Pin Interrupt Enable Falling Edge / Active Level register
+    __O  uint32_t CIENF;                    // (offset: 0x18) Clear Pin Interrupt Enable Falling Edge / Active Level address
     __IO uint32_t RISE;                     // (offset: 0x1C) Pin Interrupt Rising Edge register
     __IO uint32_t FALL;                     // (offset: 0x20) Pin Interrupt Falling Edge register
     __IO uint32_t IST;                      // (offset: 0x24) Pin Interrupt Status register
     __IO uint32_t PMCTRL;                   // (offset: 0x28) GPIO pattern match interrupt control register
     __IO uint32_t PMSRC;                    // (offset: 0x2C) GPIO pattern match interrupt bit-slice source register
     __IO uint32_t PMCFG;                    // (offset: 0x30) GPIO pattern match interrupt bit slice configuration register
-} LPC_PIN_INT_T;
+} LPC_PININT_T;
 
 
 
@@ -328,26 +364,24 @@ typedef struct
 // ------------ CRC Engine (CRC) ----------------------------------------------
 typedef struct
 {
-    __IO uint32_t MODE;                     // CRC Mode Register
-    __IO uint32_t SEED;                     // CRC SEED Register
+    __IO uint32_t MODE;                     // (offset: 0x00) CRC mode register
+    __IO uint32_t SEED;                     // (offset: 0x04) CRC seed register
     union
     {
-        __I uint32_t SUM;                   // CRC Checksum Register.
-        __O uint32_t WRDATA32;              // CRC Data Register: write size 32-bit
-        __O uint16_t WRDATA16;              // CRC Data Register: write size 16-bit
-        __O uint8_t  WRDATA8;               // CRC Data Register: write size 8-bit
+        __I  uint32_t SUM;                  // (offset: 0x08) CRC checksum register
+        __O  uint32_t WR_DATA;              // (offset: 0x08) CRC data register
     };
 } LPC_CRC_T;
 
 
 
 
-// ------------ Analog Comparator (CMP) ---------------------------------------
+// ------------ Analog Comparator (ACMP) --------------------------------------
 typedef struct
 {
     __IO uint32_t CTRL;                     // (offset: 0x00) Comparator control register
     __IO uint32_t LAD;                      // (offset: 0x04) Voltage ladder register
-} LPC_CMP_T;
+} LPC_ACMP_T;
 
 
 
@@ -357,9 +391,9 @@ typedef struct
 // ------------ Self Wakeup Timer (WKT) ---------------------------------------
 typedef struct
 {
-    __IO uint32_t CTRL;                     // (offset: 0x00)      Alarm / Wakeup Timer Control register
-         uint32_t RESERVED[2];              // (offset: 0x04-0x08) RESERVED
-    __IO uint32_t COUNT;                    // (offset: 0x0C)      Alarm / Wakeup TImer counter register
+    __IO uint32_t CTRL;                     // (offset: 0x00) Alarm / Wakeup Timer Control register
+         uint32_t RESERVED[2];              // (offset: 0x04) RESERVED
+    __IO uint32_t COUNT;                    // (offset: 0x0C) Alarm / Wakeup Timer counter register
 } LPC_WKT_T;
 
 
@@ -368,19 +402,19 @@ typedef struct
 // ------------ Multi-Rate Timer(MRT) -----------------------------------------
 typedef struct
 {
-    __IO uint32_t INTVAL;                   // Timer interval register
-    __O  uint32_t TIMER;                    // Timer register
-    __IO uint32_t CTRL;                     // Timer control register
-    __IO uint32_t STAT;                     // Timer status register
+    __IO uint32_t INTVAL;                   // MRT Time interval value register
+    __I  uint32_t TIMER;                    // MRT Timer register
+    __IO uint32_t CTRL;                     // MRT Control register
+    __IO uint32_t STAT;                     // MRT Status register
 } LPC_MRT_CHANNEL_T;
 
 typedef struct
 {
-    LPC_MRT_CHANNEL_T CHANNEL[4];           // (offset: 0x00-0x3C)
+    LPC_MRT_CHANNEL_T   CHANNEL[4];         // (offset: 0x00-0x3C) Channels
 
-         uint32_t     RESERVED[45];         // (offset: 0x40-0xF0) RESERVED
-    __O  uint32_t     IDLE_CH;              // (offset: 0xF4)
-    __IO uint32_t     IRQ_FLAG;             // (offset: 0xF8)
+         uint32_t       RESERVED[45];       // (offset: 0x40) RESERVED
+    __I  uint32_t       IDLE_CH;            // (offset: 0xF4) Idle channel register
+    __IO uint32_t       IRQ_FLAG;           // (offset: 0xF8) Global interrupt flag register
 } LPC_MRT_T;
 
 
@@ -389,16 +423,16 @@ typedef struct
 // ------ Universal Synchronous Asynchronous Receiver Transmitter (USART) -----
 typedef struct
 {
-    __IO uint32_t  CFG;                     // Configuration register
-    __IO uint32_t  CTL;                     // Control register
-    __IO uint32_t  STAT;                    // Status register
-    __IO uint32_t  INTENSET;                // Interrupt Enable read and set register
-    __O  uint32_t  INTENCLR;                // Interrupt Enable clear register
-    __I  uint32_t  RXDAT;                   // Receive Data register
-    __I  uint32_t  RXDATSTAT;               // Receive Data with status register
-    __IO uint32_t  TXDAT;                   // Transmit data register
-    __IO uint32_t  BRG;                     // Baud Rate Generator register
-    __IO uint32_t  INTSTAT;                 // Interrupt status register
+    __IO uint32_t CFG;                      // (offset: 0x00) USART Configuration register
+    __IO uint32_t CTL;                      // (offset: 0x04) USART Control register
+    __IO uint32_t STAT;                     // (offset: 0x08) USART Status register
+    __IO uint32_t INTENSET;                 // (offset: 0x0C) Interrupt Enable read and Set register
+    __O  uint32_t INTENCLR;                 // (offset: 0x10) Interrupt Enable Clear register
+    __I  uint32_t RXDAT;                    // (offset: 0x14) Receiver Data register
+    __I  uint32_t RXDATSTAT;                // (offset: 0x18) Receiver Data with Status register
+    __IO uint32_t TXDAT;                    // (offset: 0x1C) Transmit Data register
+    __IO uint32_t BRG;                      // (offset: 0x20) Baud Rate Generator register
+    __I  uint32_t INTSTAT;                  // (offset: 0x24) Interrupt status register
 } LPC_USART_T;
 
 
@@ -407,17 +441,17 @@ typedef struct
 // ------------ Serial Peripheral Interface (SPI) -----------------------------
 typedef struct
 {
-    __IO uint32_t  CFG;                     // Configuration register
-    __IO uint32_t  DLY;                     // Delay register
-    __IO uint32_t  STAT;                    // Status register
-    __IO uint32_t  INTENSET;                // Interrupt Enable Set register
-    __O  uint32_t  INTENCLR;                // Interrupt Enable Clear register
-    __I  uint32_t  RXDAT;                   // Receive Data register
-    __IO uint32_t  TXDATCTL;                // Transmit Data with Control register
-    __IO uint32_t  TXDAT;                   // Transmit Data register
-    __IO uint32_t  TXCTL;                   // Transmit Control register
-    __IO uint32_t  DIV;                     // clock Divider register
-    __I  uint32_t  INTSTAT;                 // Interrupt Status register
+    __IO uint32_t CFG;                      // (offset: 0x00) SPI Configuration register
+    __IO uint32_t DLY;                      // (offset: 0x04) SPI Delay register
+    __IO uint32_t STAT;                     // (offset: 0x08) SPI Status register
+    __IO uint32_t INTENSET;                 // (offset: 0x0C) SPI Interrupt Enable read and Set register
+    __O  uint32_t INTENCLR;                 // (offset: 0x10) SPI Interrupt Enable Clear register
+    __I  uint32_t RXDAT;                    // (offset: 0x14) SPI Receive Data register
+    __IO uint32_t TXDATCTL;                 // (offset: 0x18) SPI Transmit Data with Control register
+    __IO uint32_t TXDAT;                    // (offset: 0x1C) SPI Transmit Data register
+    __IO uint32_t TXCTL;                    // (offset: 0x20) SPI Transmit Control register
+    __IO uint32_t DIV;                      // (offset: 0x24) SPI Clock Divider register
+    __I  uint32_t INTSTAT;                  // (offset: 0x28) SPI Interrupt Status register
 } LPC_SPI_T;
 
 
@@ -426,193 +460,184 @@ typedef struct
 // ------------ Inter-Integrated Circuit (I2C) --------------------------------
 typedef struct
 {
-    __IO uint32_t CFG;                      // Configuration Register common for Master, Slave and Monitor
-    __IO uint32_t STAT;                     // Status Register common for Master, Slave and Monitor
-    __IO uint32_t INTENSET;                 // Interrupt Enable Set Register common for Master, Slave and Monitor
-    __O  uint32_t INTENCLR;                 // Interrupt Enable Clear Register common for Master, Slave and Monitor
-    __IO uint32_t TIMEOUT;                  // Timeout value Register
-    __IO uint32_t CLKDIV;                   // Clock Divider Register
-    __I  uint32_t INTSTAT;                  // Interrupt Status Register
-    __I  uint32_t RESERVED0;
-    __IO uint32_t MSTCTL;                   // Master Control Register
-    __IO uint32_t MSTTIME;                  // Master Time Register for SCL
-    __IO uint32_t MSTDAT;                   // Master Data Register
-    __I  uint32_t RESERVED1[5];
-    __IO uint32_t SLVCTL;                   // Slave Control Register
-    __IO uint32_t SLVDAT;                   // Slave Data Register
-    __IO uint32_t SLVADR[4];                // Slave Address Registers
-    __IO uint32_t SLVQUAL0;                 // Slave Address Qualifier 0 Register
-    __I  uint32_t RESERVED2[9];
-    __I  uint32_t MONRXDAT;                 // Monitor Data Register
+    __IO uint32_t CFG;                      // (offset: 0x00) Configuration for shared functions
+    __IO uint32_t STAT;                     // (offset: 0x04) Status register for Master, Slave, and Monitor functions
+    __IO uint32_t INTENSET;                 // (offset: 0x08) Interrupt Enable Set and read register
+    __O  uint32_t INTENCLR;                 // (offset: 0x0C) Interrupt Enable Clear register
+    __IO uint32_t TIMEOUT;                  // (offset: 0x10) Time-out value register
+    __IO uint32_t CLKDIV;                   // (offset: 0x14) Clock pre-divider for the entire I2C interface
+    __I  uint32_t INTSTAT;                  // (offset: 0x18) Interrupt Status register for Master, Slave, and Monitor functions
+         uint32_t RESERVED0;                // (offset: 0x1C) RESERVED
+    __IO uint32_t MSTCTL;                   // (offset: 0x20) Master control register
+    __IO uint32_t MSTTIME;                  // (offset: 0x24) Master timing configuration
+    __IO uint32_t MSTDAT;                   // (offset: 0x28) Combined Master receiver and transmitter data register
+         uint32_t RESERVED1[5];             // (offset: 0x2C) RESERVED
+    __IO uint32_t SLVCTL;                   // (offset: 0x40) Slave control register
+    __IO uint32_t SLVDAT;                   // (offset: 0x44) Combined Slave receiver and transmitter data register
+    union
+    {
+        __IO uint32_t SLVADR[4];
+        struct
+        {
+            __IO uint32_t SLVADR0;          // (offset: 0x48) Slave address 0 register
+            __IO uint32_t SLVADR1;          // (offset: 0x4C) Slave address 1 register
+            __IO uint32_t SLVADR2;          // (offset: 0x50) Slave address 2 register
+            __IO uint32_t SLVADR3;          // (offset: 0x54) Slave address 3 register
+        };
+    };
+    __IO uint32_t SLVQUAL0;                 // (offset: 0x58) Slave Qualification for address 0
+         uint32_t RESERVED2[9];             // (offset: 0x5C) RESERVED
+    __I  uint32_t MONRXDAT;                 // (offset: 0x80) Monitor receiver data register
 } LPC_I2C_T;
 
 
 
 
 // ------------ State Configurable Timer (SCT) --------------------------------
-#define SCT_NUM_EVENTS      (8)             // Number of events
-#define SCT_NUM_REGISTERS   (8)             // Number of match/compare registers
-#define SCT_NUM_OUTPUTS     (6)             // Number of outputs
+#define SCT_NUM_EVENTS      (6)             // Number of events
+#define SCT_NUM_REGISTERS   (5)             // Number of match/compare registers
+#define SCT_NUM_OUTPUTS     (4)             // Number of outputs
 
 typedef struct
 {
-    __IO  uint32_t CONFIG;                  // configuration Register (offset (0x000)
+    __IO uint32_t CONFIG;                   // (offset: 0x000) SCT configuration register
     union
     {
-        __IO uint32_t CTRL;                 // control Register
+        __IO uint32_t CTRL;                 // (offset: 0x004) SCT control register
         struct
         {
-            __IO uint16_t CTRL_L;           // low control register
-            __IO uint16_t CTRL_H;           // high control register
+            __IO uint16_t CTRL_L;
+            __IO uint16_t CTRL_H;
         };
     };
     union
     {
-        __IO uint32_t LIMIT;                // limit Register
+        __IO uint32_t LIMIT;                // (offset: 0x008) SCT limit event select register
         struct
         {
-            __IO uint16_t LIMIT_L;          // limit register for counter L
-            __IO uint16_t LIMIT_H;          // limit register for counter H
+            __IO uint16_t LIMIT_L;
+            __IO uint16_t LIMIT_H;
         };
     };
-
     union
     {
-        __IO uint32_t HALT;                 // halt Register
+        __IO uint32_t HALT;                 // (offset: 0x00C) SCT halt events elect register
         struct
         {
-            __IO uint16_t HALT_L;           // halt register for counter L
-            __IO uint16_t HALT_H;           // halt register for counter H
+            __IO uint16_t HALT_L;
+            __IO uint16_t HALT_H;
         };
     };
-
     union
     {
-        __IO uint32_t STOP;                 // stop Register
+        __IO uint32_t STOP;                 // (offset: 0x010) SCT stop event select register
         struct
         {
-            __IO uint16_t STOP_L;           // stop register for counter L
-            __IO uint16_t STOP_H;           // stop register for counter H
+            __IO uint16_t STOP_L;
+            __IO uint16_t STOP_H;
         };
     };
-
     union
     {
-        __IO uint32_t START;                // start Register
+        __IO uint32_t START;                // (offset: 0x014) SCT start event select register
         struct
         {
-            __IO uint16_t START_L;          // start register for counter L
-            __IO uint16_t START_H;          // start register for counter H
+            __IO uint16_t START_L;
+            __IO uint16_t START_H;
         };
     };
-
-    uint32_t RESERVED0[10];                 // 0x018 - 0x03C reserved
-
+    uint32_t RESERVED0[10];                 // (offset: 0x018) RESERVED
     union
     {
-        __IO uint32_t COUNT;                // counter register (offset 0x040)
+        __IO uint32_t COUNT;                // (offset: 0x040) SCT counter register
         struct
         {
-            __IO uint16_t COUNT_L;          // counter register for counter L
-            __IO uint16_t COUNT_H;          // counter register for counter H
+            __IO uint16_t COUNT_L;
+            __IO uint16_t COUNT_H;
         };
     };
-
     union
     {
-        __IO uint32_t STATE;                // State register
+        __IO uint32_t STATE;                // (offset: 0x044) SCT state register
         struct
         {
-            __IO uint16_t STATE_L;          // state register for counter L
-            __IO uint16_t STATE_H;          // state register for counter H
+            __IO uint16_t STATE_L;
+            __IO uint16_t STATE_H;
         };
     };
-
-    __I  uint32_t INPUT;                    // input register
+    __I  uint32_t INPUT;                    // (offset: 0x048) SCT input register
     union
     {
-        __IO uint32_t REGMODE;              // RegMode register
+        __IO uint32_t REGMODE;              // (offset: 0x04C) SCT match/capture mode register
         struct
         {
-            __IO uint16_t REGMODE_L;        // match - capture registers mode register L
-            __IO uint16_t REGMODE_H;        // match - capture registers mode register H
+            __IO uint16_t REGMODE_L;
+            __IO uint16_t REGMODE_H;
         };
     };
-
-    __IO uint32_t OUTPUT;                   // output register
-    __IO uint32_t OUTPUTDIRCTRL;            // output counter direction Control Register
-    __IO uint32_t RES;                      // conflict resolution register
-    __IO uint32_t DMAREQ0;                  // DMA0 Request Register
-    __IO uint32_t DMAREQ1;                  // DMA1 Request Register
-
-    uint32_t RESERVED1[35];                 // 0x064 - 0x0EC reserved
-
-    __IO uint32_t EVEN;                     // event enable register (offset 0x0F0)*/
-    __IO uint32_t EVFLAG;                   // event flag register
-    __IO uint32_t CONEN;                    // conflict enable register
-    __IO uint32_t CONFLAG;                  // conflict flag register
-    union
+    __IO uint32_t OUTPUT;                   // (offset: 0x050) SCT output register
+    __IO uint32_t OUTPUTDIRCTRL;            // (offset: 0x054) SCT output counter direction control register
+    __IO uint32_t RES;                      // (offset: 0x058) SCT conflict resolution register
+         uint32_t RESERVED1[37];            // (offset: 0x05C) RESERVED
+    __IO uint32_t EVEN;                     // (offset: 0x0F0) SCT event interrupt enable register
+    __IO uint32_t EVFLAG;                   // (offset: 0x0F4) SCT event flag register
+    __IO uint32_t CONEN;                    // (offset: 0x0F8) SCT conflict interrupt enable register
+    __IO uint32_t CONFLAG;                  // (offset: 0x0FC) SCT conflict flag register
+    union                                   // (offset: 0x100) Match / Capture channel
     {
         __IO union
         {
-            uint32_t U;                     //  MATCH[i].U  Unified 32-bit register
+            uint32_t U;                     // MATCH[n].U  Unified 32-bit register
             struct
             {
-                uint16_t L;                 //  MATCH[i].L  Access to L value
-                uint16_t H;                 //  MATCH[i].H  Access to H value
+                uint16_t L;                 // MATCH[n].L  Access to L value
+                uint16_t H;                 // MATCH[n].H  Access to H value
             };
         } MATCH[SCT_NUM_REGISTERS];
 
         __I union
         {
-            uint32_t U;                     //  CAP[i].U  Unified 32-bit register
+            uint32_t U;                     // CAP[n].U  Unified 32-bit register
             struct
             {
-                uint16_t L;                 //  CAP[i].L  Access to L value
-                uint16_t H;                 //  CAP[i].H  Access to H value
+                uint16_t L;                 // CAP[n].L  Access to L value
+                uint16_t H;                 // CAP[n].H  Access to H value
             };
         } CAP[SCT_NUM_REGISTERS];
     };
-
-    uint32_t RESERVED2[56];                 // 0x120 - 0x1FC reserved
-
-    union
+    uint32_t RESERVED2[0x100 - (4 * SCT_NUM_REGISTERS)];    // (offset: 0x114) RESERVED
+    union                                                   // (offset: 0x200) Match Reload / Capture Control value
     {
-        __IO union
+        union
         {
-            uint32_t U;                     //  MATCHREL[i].U  Unified 32-bit register
+            __IO uint32_t U;                // MATCHREL[n].U  Unified 32-bit register
             struct
             {
-                uint16_t L;                 //  MATCHREL[i].L  Access to L value
-                uint16_t H;                 //  MATCHREL[i].H  Access to H value
+                __IO uint16_t L;            // MATCHREL[n].L  Access to L value
+                __IO uint16_t H;            // MATCHREL[n].H  Access to H value
             };
         } MATCHREL[SCT_NUM_REGISTERS];
-
-        __IO union
+        union
         {
-            uint32_t U;                     //  CAPCTRL[i].U  Unified 32-bit register
+            __IO uint32_t U;                // CAPCTRL[n].U  Unified 32-bit register
             struct
             {
-                uint16_t L;                 //  CAPCTRL[i].L  Access to L value
-                uint16_t H;                 //  CAPCTRL[i].H  Access to H value
+                __IO uint16_t L;            // CAPCTRL[n].L     Access to L value
+                __IO uint16_t H;            // SCTCAPCTRL[n].H  Access to H value
             };
         } CAPCTRL[SCT_NUM_REGISTERS];
     };
-
-    uint32_t RESERVED3[56];                 // 0x220 - 0x2FC reserved
-
-    __IO struct
+    uint32_t RESERVED5[0x100 - (4 * SCT_NUM_REGISTERS)];    // (offset: 0x214) RESERVED
+    struct                                                  // (offset: 0x300) State / Control
     {
-        uint32_t STATE;                     // Event State Register
-        uint32_t CTRL;                      // Event Control Register
-    } EV[SCT_NUM_EVENTS];
-
-    uint32_t RESERVED4[112];                // 0x340 - 0x4FC reserved
-
-    __IO struct
+        __IO uint32_t STATE;                // EVENT[n].STATE  SCT Event n State register
+        __IO uint32_t CTRL;                 // EVENT[n].CTRL   SCT Event n Control register
+    } EVENT[SCT_NUM_EVENTS];
+    uint32_t RESERVED8[0x200 - (8 * SCT_NUM_EVENTS)];       // (offset: 0x330) RESERVED
+    struct                                                  // (offset: 0x500) Output Set / Clear
     {
-        uint32_t SET;                       // Output n Set Register
-        uint32_t CLR;                       // Output n Clear Register
+        __IO uint32_t SET;                  // OUT[n].SET  Output n Set Register
+        __IO uint32_t CLR;                  // OUT[n].CLR  Output n Clear Register
     } OUT[SCT_NUM_OUTPUTS];
 } LPC_SCT_T;
 
@@ -622,13 +647,13 @@ typedef struct
 // ------------ Windowed Watchdog Timer (WWDT) --------------------------------
 typedef struct
 {
-    __IO uint32_t MOD;                      // (offset: 0x000) Watchdog mode register
-    __IO uint32_t TC;                       // (offset: 0x004) Watchdog timer constant register
-    __O  uint32_t FEED;                     // (offset: 0x008) Watchdog feed sequence register
-    __I  uint32_t TV;                       // (offset: 0x00C) Watchdog timer value register
-         uint32_t RESERVED;                 // (offset: 0x010) RESERVED
-    __IO uint32_t WARNINT;                  // (offset: 0x014) Watchdog timer warning interrupt register
-    __IO uint32_t WINDOW;                   // (offset: 0x018) Watchdog timer window value register
+    __IO uint32_t MOD;                      // (offset: 0x00) Watchdog mode register
+    __IO uint32_t TC;                       // (offset: 0x04) Watchdog timer constant register
+    __O  uint32_t FEED;                     // (offset: 0x08) Watchdog feed sequence register
+    __I  uint32_t TV;                       // (offset: 0x0C) Watchdog timer value register
+         uint32_t RESERVED;                 // (offset: 0x10) RESERVED
+    __IO uint32_t WARNINT;                  // (offset: 0x14) Watchdog timer warning int. register
+    __IO uint32_t WINDOW;                   // (offset: 0x18) Watchdog timer window value register
 } LPC_WWDT_T;
 
 
@@ -642,8 +667,8 @@ typedef struct
 //       - The 16 LSB contains an error code number associated to that peripheral
 typedef enum
 {
-  /*0x00000000*/ LPC_OK = 0,                            // enum value returned on Successful completion
-  /*0x00000001*/ LPC_ERROR,                             // enum value returned on general error (I2C)
+  /*0x00000000*/ LPC_OK = 0,                            // Enum value returned on Successful completion
+  /*0x00000001*/ LPC_ERROR,                             // Enum value returned on general error (I2C)
 
   // ISP related errors
   ERR_ISP_BASE = 0x00000000,
@@ -887,35 +912,35 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_ROM_BASE            (0x1FFF0000UL)
 #define LPC_APB_BASE            (0x40000000UL)
 #define LPC_AHB_BASE            (0x50000000UL)
+#define LPC_GPIO_BASE           (0xA0000000UL)
 
 // ROM Driver table
-#define LPC_ROM_DRIVER_BASE     (0x1FFF1FF8UL)
-#define LPC_ROM_IAP_BASE        (0X1FFF1FF1UL)
+#define LPC_ROM_DRIVER_BASE     (LPC_ROM_BASE + 0x1FF8)
+#define LPC_ROM_IAP_BASE        (LPC_ROM_BASE + 0x1FF1)
 
 // APB peripherals
-#define LPC_WWDT_BASE           (0x40000000UL)
-#define LPC_MRT_BASE            (0x40004000UL)
-#define LPC_WKT_BASE            (0x40008000UL)
-#define LPC_SWM_BASE            (0x4000C000UL)
-#define LPC_PMU_BASE            (0x40020000UL)
-#define LPC_CMP_BASE            (0x40024000UL)
-
-#define LPC_FMC_BASE            (0x40040000UL)
-#define LPC_IOCON_BASE          (0x40044000UL)
-#define LPC_SYSCON_BASE         (0x40048000UL)
-#define LPC_I2C_BASE            (0x40050000UL)
-#define LPC_SPI0_BASE           (0x40058000UL)
-#define LPC_SPI1_BASE           (0x4005C000UL)
-#define LPC_USART0_BASE         (0x40064000UL)
-#define LPC_USART1_BASE         (0x40068000UL)
-#define LPC_USART2_BASE         (0x4006C000UL)
+#define LPC_WWDT_BASE           (LPC_APB_BASE + 0x00000)
+#define LPC_MRT_BASE            (LPC_APB_BASE + 0x04000)
+#define LPC_WKT_BASE            (LPC_APB_BASE + 0x08000)
+#define LPC_SWM_BASE            (LPC_APB_BASE + 0x0C000)
+#define LPC_PMU_BASE            (LPC_APB_BASE + 0x20000)
+#define LPC_ACMP_BASE           (LPC_APB_BASE + 0x24000)
+#define LPC_FMC_BASE            (LPC_APB_BASE + 0x40000)
+#define LPC_IOCON_BASE          (LPC_APB_BASE + 0x44000)
+#define LPC_SYSCON_BASE         (LPC_APB_BASE + 0x48000)
+#define LPC_I2C_BASE            (LPC_APB_BASE + 0x50000)
+#define LPC_SPI0_BASE           (LPC_APB_BASE + 0x58000)
+#define LPC_SPI1_BASE           (LPC_APB_BASE + 0x5C000)
+#define LPC_USART0_BASE         (LPC_APB_BASE + 0x64000)
+#define LPC_USART1_BASE         (LPC_APB_BASE + 0x68000)
+#define LPC_USART2_BASE         (LPC_APB_BASE + 0x6C000)
 
 // AHB peripherals
-#define LPC_CRC_BASE            (0x50000000UL)
-#define LPC_SCT_BASE            (0x50004000UL)
+#define LPC_CRC_BASE            (LPC_AHB_BASE + 0x00000)
+#define LPC_SCT_BASE            (LPC_AHB_BASE + 0x04000)
 
-#define LPC_GPIO_BASE           (0xA0000000UL)
-#define LPC_PIN_INT_BASE        (0xA0004000UL)
+// GPIO interrupts
+#define LPC_PININT_BASE         (LPC_GPIO_BASE + 0x4000)
 
 
 
@@ -930,33 +955,38 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_ROM_UART_API         ((LPC_ROM_UART_API_T *)(LPC_ROM_API->UART_BASE_PTR))
 
 // IAP entry function pointer
-const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
+static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 
+// APB0 peripherals
 #define LPC_WWDT                ((LPC_WWDT_T   *) LPC_WWDT_BASE)
+#define LPC_MRT                 ((LPC_MRT_T    *) LPC_MRT_BASE)
+#define LPC_WKT                 ((LPC_WKT_T    *) LPC_WKT_BASE)
+#define LPC_SWM                 ((LPC_SWM_T    *) LPC_SWM_BASE)
+#define LPC_PMU                 ((LPC_PMU_T    *) LPC_PMU_BASE)
+#define LPC_ACMP                ((LPC_ACMP_T   *) LPC_ACMP_BASE)
+#define LPC_FMC                 ((LPC_FMC_T    *) LPC_FMC_BASE)
+#define LPC_IOCON               ((LPC_IOCON_T  *) LPC_IOCON_BASE)
+#define LPC_SYSCON              ((LPC_SYSCON_T *) LPC_SYSCON_BASE)
+#define LPC_I2C                 ((LPC_I2C_T    *) LPC_I2C_BASE)
 #define LPC_SPI0                ((LPC_SPI_T    *) LPC_SPI0_BASE)
 #define LPC_SPI1                ((LPC_SPI_T    *) LPC_SPI1_BASE)
 #define LPC_USART0              ((LPC_USART_T  *) LPC_USART0_BASE)
 #define LPC_USART1              ((LPC_USART_T  *) LPC_USART1_BASE)
 #define LPC_USART2              ((LPC_USART_T  *) LPC_USART2_BASE)
-#define LPC_WKT                 ((LPC_WKT_T    *) LPC_WKT_BASE)
-#define LPC_PMU                 ((LPC_PMU_T    *) LPC_PMU_BASE)
+
+// AHB peripherals
 #define LPC_CRC                 ((LPC_CRC_T    *) LPC_CRC_BASE)
 #define LPC_SCT                 ((LPC_SCT_T    *) LPC_SCT_BASE)
+
+// GPIO peripheral and interrupts
 #define LPC_GPIO                ((LPC_GPIO_T   *) LPC_GPIO_BASE)
-#define LPC_PIN_INT             ((LPC_PIN_INT_T*) LPC_PIN_INT_BASE)
-#define LPC_IOCON               ((LPC_IOCON_T  *) LPC_IOCON_BASE)
-#define LPC_SWM                 ((LPC_SWM_T    *) LPC_SWM_BASE)
-#define LPC_SYSCON              ((LPC_SYSCON_T *) LPC_SYSCON_BASE)
-#define LPC_CMP                 ((LPC_CMP_T    *) LPC_CMP_BASE)
-#define LPC_FMC                 ((LPC_FMC_T    *) LPC_FMC_BASE)
-#define LPC_MRT                 ((LPC_MRT_T    *) LPC_MRT_BASE)
-#define LPC_I2C                 ((LPC_I2C_T    *) LPC_I2C_BASE)
+#define LPC_PININT              ((LPC_PININT_T *) LPC_PININT_BASE)
 
 
 
 
 #ifdef __cplusplus
-}
+} // extern "C"
 #endif
 
 #endif // __XARMLIB_TARGETS_LPC81X_CMSIS_HPP
