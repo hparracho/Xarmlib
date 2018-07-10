@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @file    bitmask
+// @brief   bitmask::bitmask header file to use in the library. This should
+//          be the only header file included when bitmask::bitmask
+//          functionality is required.
+// @date    11 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,62 +31,12 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_SYSTEM_BITMASK
+#define __XARMLIB_SYSTEM_BITMASK
 
-#include "system/target"
-
-namespace xarmlib
-{
-namespace hal
-{
+#include "bitmask/bitmask.hpp"
 
 
 
 
-template <class TargetPin>
-class Pin
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
-
-
-
-
-} // namespace hal
-} // namespace xarmlib
-
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __XARMLIB_SYSTEM_BITMASK

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    3 July 2018
+// @date    14 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,13 +45,20 @@ class DigitalOut : private Gpio
     public:
 
         // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        using OutputMode              = typename Gpio::OutputMode;
+        using OutputModeTrueOpenDrain = typename Gpio::OutputModeTrueOpenDrain;
+
+        // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputMode output_mode) : Gpio(pin_name, output_mode)
+        DigitalOut(const Pin::Name pin_name, const OutputMode output_mode) : Gpio(pin_name, output_mode)
         {}
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputModeTrueOpenDrain output_mode) : Gpio(pin_name, output_mode)
+        DigitalOut(const Pin::Name pin_name, const OutputModeTrueOpenDrain output_mode) : Gpio(pin_name, output_mode)
         {}
 
         // -------- READ ------------------------------------------------------

@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
+// @file    xarmlib_config.hpp.template
+// @brief   Xarmlib template configuration header file.
 // @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,62 +29,58 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_CONFIG_HPP
+#define __XARMLIB_CONFIG_HPP
 
-#include "system/target"
-
-namespace xarmlib
-{
-namespace hal
-{
-
-
-
-
-template <class TargetPin>
-class Pin
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
-
-
-
-
-} // namespace hal
-} // namespace xarmlib
-
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
+#include "xarmlib.hpp"
 
 namespace xarmlib
 {
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
 
-#elif defined __OHER_TARGET__
 
-// Other target include files
 
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
 
+// ----------------------------------------------------------------------------
+// SYSTEM DEFINITIONS
+// ----------------------------------------------------------------------------
+
+constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
+
+
+
+
+// CRP (Code Read Protect) word definition
+#define CONFIG_CRP_SETTING_NO_CRP       (1)
+
+// Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
+#ifdef NDEBUG
+#define __MTB_DISABLE
+#else
+#define __MTB_BUFFER_SIZE               (256)
 #endif
 
+// Uncomment the next line to disable Heap memory allocation functionality
+//#define CPP_NO_HEAP
 
 
 
-#endif // __XARMLIB_HAL_PIN_HPP
+
+// ----------------------------------------------------------------------------
+// DEFINITIONS
+// ----------------------------------------------------------------------------
+
+
+
+// Define FAIM custom configuration
+constexpr System::Swd XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
+constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
+constexpr Pin::Name   XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
+
+constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                     // Use all IOs with pull-up by default
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_CONFIG_HPP

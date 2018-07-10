@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @file    non_copyable
+// @brief   Non copyable helper class. Classes which are not value type should
+//          inherit privately from this class to avoid generation of invalid
+//          copy constructor or copy assignment operator.
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,62 +31,43 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
-
-#include "system/target"
+#ifndef __XARMLIB_SYSTEM_NON_COPYABLE
+#define __XARMLIB_SYSTEM_NON_COPYABLE
 
 namespace xarmlib
 {
-namespace hal
+
+
+
+
+template<typename Type>
+class NonCopyable
 {
+        // The template parameter 'Type' is the type that should be made non copyable.
+        // It prevent cases where the empty base optimization cannot be applied and
+        // therefore ensure zero cost while using this class.
+    
+    protected:
 
+        // Prevent the use of this class as a final one (without being derived)
+        NonCopyable()
+        {}
 
+        ~NonCopyable()
+        {}
 
+    private:
 
-template <class TargetPin>
-class Pin
-{
-    public:
+        // NonCopyable copy constructor
+        NonCopyable(const NonCopyable&) = delete;
 
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
+        // NonCopyable copy assignment operator
+        NonCopyable& operator = (const NonCopyable&) = delete;
 };
 
 
 
 
-} // namespace hal
 } // namespace xarmlib
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
-
-
-
-
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __XARMLIB_SYSTEM_NON_COPYABLE

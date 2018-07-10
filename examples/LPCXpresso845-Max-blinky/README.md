@@ -3,7 +3,7 @@ Small example for LPCXpresso845-MAX board showing basic Timer, DigitalIn and Dig
 
 ## Dependencies
 
-- [GNU Arm Embedded Toolchain "7-2017-q4-major"](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) or [NXP MCUXpresso IDE v10.2.0](https://www.nxp.com/support/developer-resources/software-development-tools/mcuxpresso-software-and-tools/mcuxpresso-integrated-development-environment-ide:MCUXpresso-IDE?tab=Design_Tools_Tab#nogo)
+- [GNU Arm Embedded Toolchain "7-2017-q4-major"](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm/downloads) or [NXP MCUXpresso IDE v10.1.1 - GNU ARM Embedded Toolchain "6-2017-q2-update"](https://www.nxp.com/support/developer-resources/software-development-tools/mcuxpresso-software-and-tools/mcuxpresso-integrated-development-environment-ide:MCUXpresso-IDE?tab=Design_Tools_Tab#nogo)
 - [CMake](https://cmake.org/download/)
 - [MinGW-w64](https://sourceforge.net/projects/mingw-w64)
 

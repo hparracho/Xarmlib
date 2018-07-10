@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    6 July 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,9 @@
 #ifndef __XARMLIB_HAL_USART_HPP
 #define __XARMLIB_HAL_USART_HPP
 
-#include "external/gsl.hpp"
+#include "system/cassert"
+#include "system/gsl"
+#include "system/target"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_us_ticker.hpp"
 
@@ -221,8 +223,6 @@ class Usart : private TargetUsart
 
 
 
-#include "core/target_specs.hpp"
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_usart.hpp"
@@ -230,15 +230,6 @@ class Usart : private TargetUsart
 namespace xarmlib
 {
 using Usart = hal::Usart<targets::lpc84x::Usart>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_usart.hpp"
-
-namespace xarmlib
-{
-using Usart = hal::Usart<targets::lpc81x::Usart>;
 }
 
 #elif defined __OHER_TARGET__

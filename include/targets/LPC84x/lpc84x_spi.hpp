@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    6 July 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,14 +32,14 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_SPI_HPP
 #define __XARMLIB_TARGETS_LPC84X_SPI_HPP
 
+#include "system/array"
+#include "system/delegate"
+#include "targets/peripheral_ref_counter.hpp"
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_swm.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
-#include "core/delegate.hpp"
-#include "core/peripheral_ref_counter.hpp"
-
-#include <array>
 
 
 

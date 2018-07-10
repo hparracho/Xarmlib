@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    6 July 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_HAL_GPIO_HPP
 #define __XARMLIB_HAL_GPIO_HPP
 
+#include "system/target"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
@@ -56,7 +57,7 @@ class Gpio : private TargetGpio
         using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
         using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
 
-        using InputFilterClockDivider = typename TargetGpio::InputFilterClockDivider;
+        using InputFilterClockDiv     = typename TargetGpio::InputFilterClockDiv;
         using InputFilter             = typename TargetGpio::InputFilter;
         using InputInvert             = typename TargetGpio::InputInvert;
         using InputHysteresis         = typename TargetGpio::InputHysteresis;
@@ -106,6 +107,7 @@ class Gpio : private TargetGpio
 
         // -------- CONFIGURATION ---------------------------------------------
 
+        using TargetGpio::set_pin;
         using TargetGpio::set_mode;
 
         // -------- READ / WRITE ----------------------------------------------
@@ -113,9 +115,9 @@ class Gpio : private TargetGpio
         using TargetGpio::read;
         using TargetGpio::write;
 
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
+        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
 
-        using TargetGpio::set_input_filter_clock_divider;
+        using TargetGpio::set_input_filter_clock_div;
 };
 
 
@@ -127,8 +129,6 @@ class Gpio : private TargetGpio
 
 
 
-#include "core/target_specs.hpp"
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_gpio.hpp"
@@ -136,15 +136,6 @@ class Gpio : private TargetGpio
 namespace xarmlib
 {
 using Gpio = hal::Gpio<targets::lpc84x::Gpio>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_gpio.hpp"
-
-namespace xarmlib
-{
-using Gpio = hal::Gpio<targets::lpc81x::Gpio>;
 }
 
 #elif defined __OHER_TARGET__
