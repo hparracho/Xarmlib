@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC84x MCU.
-// @date    4 July 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC84X__
 
@@ -108,9 +108,9 @@ static inline void mcu_startup_set_xtal_clock()
     // Power-up crystal oscillator
     Power::power_up(Power::Peripheral::SYSOSC);
 
-    // Wait 500 uSec for sysosc to stabilize (typical time from datasheet). The for
-    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 nSec),
-    // so worst case: i = (500 uSec) / (7 * 33.333 nSec) = 2142.9 => 2143
+    // Wait 500 us for system oscillator to stabilize (typical time from datasheet). The for
+    // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 ns),
+    // so worst case: i = (500 us) / (7 * 33.333 ns) = 2142.9 => 2143
     for(uint32_t i = 0; i < 2143; i++) __NOP();
 
     // Choose sys_osc_clk source for external clock select (EXTCLKSEL)
@@ -173,6 +173,7 @@ void mcu_startup_initialize_hardware_early()
 void mcu_startup_initialize_hardware()
 {
     // ------------------------------------------------------------------------
+    // https://community.nxp.com/thread/472132
     // Helder Parracho @ 20 March 2018
     // @REVIEW: Brown-Out Detector with bug? Disabled while pending for a solution...
     // Helder Parracho @ 28 April 2018
@@ -184,9 +185,9 @@ void mcu_startup_initialize_hardware()
     BrownOut::disable_reset();
     Power::power_up(Power::Peripheral::BOD);
 
-    // Wait 10 uSec. The for loop takes 7 clocks per iteration
-    // and executes at a maximum of 30 MHz (33.333 nSec), so
-    // worst case: i = (10 uSec) / (7 * 33.333 nSec) = 42.9 => 43
+    // Wait 10 us. The for loop takes 7 clocks per iteration
+    // and executes at a maximum of 30 MHz (33.333 ns), so
+    // worst case: i = (10 us) / (7 * 33.333 ns) = 42.9 => 43
     for(uint32_t i = 0; i < 43; i++) __NOP();
 
     // Enable brown-out detection with reset level 3 (2.63V ~ 2.76V)

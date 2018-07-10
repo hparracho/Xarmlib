@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.cpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    12 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,25 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC81X__
 
 #include "targets/LPC81x/lpc81x_timer.hpp"
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
 
 
 
+using namespace xarmlib::targets::lpc81x;
 
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // IRQ HANDLER
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 extern "C" void MRT_IRQHandler(void)
 {
@@ -62,9 +57,5 @@ extern "C" void MRT_IRQHandler(void)
 
 
 
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC81X__

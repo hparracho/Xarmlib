@@ -40,14 +40,6 @@
 #include <bits/stl_algobase.h>
 #include <bits/range_access.h>
 
-#ifndef _GLIBCXX17_CONSTEXPR
-# if __cplusplus >= 201402L
-#  define _GLIBCXX17_CONSTEXPR constexpr
-# else
-#  define _GLIBCXX17_CONSTEXPR
-# endif
-#endif
-
 namespace std _GLIBCXX_VISIBILITY(default)
 {
 _GLIBCXX_BEGIN_NAMESPACE_CONTAINER

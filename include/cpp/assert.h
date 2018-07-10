@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc81x_pin.cpp
-// @brief   NXP LPC81x pin class.
-// @date    29 May 2018
+// @file    assert.h
+// @brief   Custom 'assert.h' header file.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,30 +29,25 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
-
-#ifdef __LPC81X__
-
-#include "targets/LPC81x/lpc81x_pin.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
+// Do not add guards to this header file!
 
 
 
 
-// Static definition
-constexpr std::array<uint8_t, __LPC81X_GPIOS__> Pin::m_pin_number_to_iocon;
+#undef assert
 
 
 
 
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
+#ifdef NDEBUG
 
-#endif // __LPC81X__
+#define assert(__e) ((void)0)
+
+#else
+
+__attribute__ ((noreturn))
+void __xarmlib_assert_func(const bool expr);
+
+#define assert(__e) ((__e) ? (void)0 : __xarmlib_assert_func(__e))
+
+#endif // !NDEBUG

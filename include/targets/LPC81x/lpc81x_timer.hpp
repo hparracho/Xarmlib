@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.hpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    12 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,13 +32,23 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_TIMER_HPP
 #define __XARMLIB_TARGETS_LPC81X_TIMER_HPP
 
-#include "system/cassert"
-#include "system/chrono"
-#include "system/delegate"
-#include "targets/peripheral_ref_counter.hpp"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+#include "core/delegate.hpp"
+#include "core/peripheral_ref_counter.hpp"
+
+#include <cassert>
+#include <chrono>
+
+
+
+
+// Forward declaration of IRQ handler
+extern "C" void MRT_IRQHandler(void);
+
+
+
 
 namespace xarmlib
 {
@@ -50,17 +60,18 @@ namespace lpc81x
 
 
 
-// Forward declaration of IRQ handler
-extern "C" void MRT_IRQHandler(void);
-
-
-
-
 // Number of available timer channels
 static constexpr std::size_t TIMER_COUNT { 4 };
 
 class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C function to give access to private IRQ handler member function
+        friend void ::MRT_IRQHandler(void);
+
     protected:
 
         // --------------------------------------------------------------------
@@ -135,9 +146,12 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             set_interval(m_interval);
         }
 
-        // Reload previously set interval and start or re-start timer
+        // Reload previously set interval and re-start the timer
         void reload()
         {
+            // Ensure interval is set
+            assert(m_interval != 0);
+
             set_interval(m_interval);
         }
 
@@ -223,9 +237,6 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             STAT_INTFLAG        = (1 << 0),
             STAT_RUN            = (1 << 1)
         };
-
-        // Friend IRQ handler C function to give access to private IRQ handler member function
-        friend void MRT_IRQHandler(void);
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS

@@ -1,9 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    bitmask
-// @brief   bitmask::bitmask header file to use in the library. This should
-//          be the only header file included when bitmask::bitmask
-//          functionality is required.
-// @date    11 May 2018
+// @file    gsl.hpp
+// @brief   Guideline Support Library (GSL) configuration and main header file
+//          to use in the library. This should be the only header file included
+//          when GSL functionality is required.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,12 +31,11 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_BITMASK
-#define __XARMLIB_SYSTEM_BITMASK
+#ifndef __XARMLIB_EXTERNAL_GSL_HPP
+#define __XARMLIB_EXTERNAL_GSL_HPP
 
-#include "bitmask/bitmask.hpp"
+#define GSL_TERMINATE_ON_CONTRACT_VIOLATION
 
+#include "gsl/gsl"
 
-
-
-#endif // __XARMLIB_SYSTEM_BITMASK
+#endif // __XARMLIB_EXTERNAL_GSL_HPP

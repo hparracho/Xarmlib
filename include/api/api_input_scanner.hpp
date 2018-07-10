@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_scanner.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    4 July 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,8 @@
 #define __XARMLIB_API_INPUT_SCANNER_HPP
 
 #include "hal/hal_timer.hpp"
-#include "system/dynarray"
+
+#include <dynarray>
 
 namespace xarmlib
 {
@@ -170,9 +171,9 @@ class InputScanner
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static Timer                    m_timer;
-        static dynarray<InputHandler>   m_input_handlers;
-        static PinChangeHandler         m_pin_change_handler;
+        static Timer                       m_timer;
+        static std::dynarray<InputHandler> m_input_handlers;
+        static PinChangeHandler            m_pin_change_handler;
 };
 
 

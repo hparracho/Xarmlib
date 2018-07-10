@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_watchdog.hpp
 // @brief   NXP LPC81x Watchdog class.
-// @date    11 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,10 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_WATCHDOG_HPP
 #define __XARMLIB_TARGETS_LPC81X_WATCHDOG_HPP
 
-#include "system/chrono"
-#include "system/cassert"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+
+#include <chrono>
 
 namespace xarmlib
 {
@@ -118,7 +118,7 @@ class Watchdog
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static bool m_initialized;
+        inline static bool m_initialized { false };
 };
 
 

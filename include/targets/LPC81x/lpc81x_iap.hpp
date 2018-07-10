@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_iap.hpp
 // @brief   NXP LPC81x In-Application Programming (IAP) class.
-// @date    11 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,8 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_IAP_HPP
 #define __XARMLIB_TARGETS_LPC81X_IAP_HPP
 
-#include "system/gsl"
-#include "targets/LPC81x/lpc81x_cmsis.hpp"
+#include "external/gsl.hpp"
+#include "targets/LPC81x/lpc81x_pin.hpp"
 
 namespace xarmlib
 {
@@ -67,7 +67,15 @@ class Iap
             SECTOR_NOT_BLANK,                           // Sector is not blank
             SECTOR_NOT_PREPARED_FOR_WRITE_OPERATION,    // Command to prepare sector for write operation was not executed
             COMPARE_ERROR,                              // Source and destination data not equal
-            BUSY                                        // Flash programming hardware interface is busy
+            BUSY,                                       // Flash programming hardware interface is busy
+            PARAM_ERROR,                                // Insufficient number of parameters or invalid parameter
+            ADDR_ERROR,                                 // Address is not on word boundary
+            ADDR_NOT_MAPPED,                            // Address is not mapped in the memory map
+            CMD_LOCKED,                                 // Command is locked
+            INVALID_CODE,                               // Unlock code is invalid
+            INVALID_BAUD_RATE,                          // Invalid baud rate setting
+            INVALID_STOP_BIT,                           // Invalid stop bit setting
+            CODE_READ_PROTECTION_ENABLED                // Code read protection enabled
         };
 
         // --------------------------------------------------------------------

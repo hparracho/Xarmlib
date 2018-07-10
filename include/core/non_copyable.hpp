@@ -1,7 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    cmsis
-// @brief   CMSIS Core generic header include file.
-// @date    29 June 2018
+// @file    non_copyable.hpp
+// @brief   Non copyable helper class. Classes which are not value type should
+//          inherit privately from this class to avoid generation of invalid
+//          copy constructor or copy assignment operator.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,15 +31,43 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_CMSIS
-#define __XARMLIB_SYSTEM_CMSIS
+#ifndef __XARMLIB_CORE_NON_COPYABLE_HPP
+#define __XARMLIB_CORE_NON_COPYABLE_HPP
 
-#include "system/target"
+namespace xarmlib
+{
 
-#if defined __LPC84X__
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
-#elif defined __LPC81X__
-#include "targets/LPC81x/lpc81x_cmsis.hpp"
-#endif
 
-#endif // __XARMLIB_SYSTEM_CMSIS
+
+
+template<typename Type>
+class NonCopyable
+{
+        // The template parameter 'Type' is the type that should be made non copyable.
+        // It prevent cases where the empty base optimization cannot be applied and
+        // therefore ensure zero cost while using this class.
+    
+    protected:
+
+        // Prevent the use of this class as a final one (without being derived)
+        NonCopyable()
+        {}
+
+        ~NonCopyable()
+        {}
+
+    private:
+
+        // NonCopyable copy constructor
+        NonCopyable(const NonCopyable&) = delete;
+
+        // NonCopyable copy assignment operator
+        NonCopyable& operator = (const NonCopyable&) = delete;
+};
+
+
+
+
+} // namespace xarmlib
+
+#endif // __XARMLIB_CORE_NON_COPYABLE_HPP

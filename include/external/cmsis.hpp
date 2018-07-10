@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    lpc81x_watchdog.cpp
-// @brief   NXP LPC81x Watchdog class.
-// @date    11 June 2018
+// @file    cmsis.hpp
+// @brief   CMSIS Core generic header include file.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,29 +29,15 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#ifndef __XARMLIB_EXTERNAL_CMSIS_HPP
+#define __XARMLIB_EXTERNAL_CMSIS_HPP
 
-#ifdef __LPC81X__
+#include "core/target_specs.hpp"
 
-#include "targets/LPC81x/lpc81x_watchdog.hpp"
+#if defined __LPC84X__
+#include "targets/LPC84x/lpc84x_cmsis.hpp"
+#elif defined __LPC81X__
+#include "targets/LPC81x/lpc81x_cmsis.hpp"
+#endif
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
-
-
-
-// Static initialization
-bool Watchdog::m_initialized {false};
-
-
-
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
-
-#endif // __LPC81X__
+#endif // __XARMLIB_EXTERNAL_CMSIS_HPP

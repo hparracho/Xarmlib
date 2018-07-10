@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    13 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,23 +33,16 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_USART_HPP
 #define __XARMLIB_TARGETS_LPC81X_USART_HPP
 
-#include <cmath>
-
-#include "system/bitmask"
-#include "system/delegate"
-#include "targets/peripheral_ref_counter.hpp"
+#include "external/bitmask.hpp"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
 #include "targets/LPC81x/lpc81x_swm.hpp"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+#include "core/delegate.hpp"
+#include "core/peripheral_ref_counter.hpp"
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
+#include <cmath>
 
 
 
@@ -59,19 +52,19 @@ extern "C" void USART0_IRQHandler(void);
 extern "C" void USART1_IRQHandler(void);
 
 #if (__LPC81X_USARTS__ == 3)
-
 // Forward declaration of additional IRQ handlers
 extern "C" void USART2_IRQHandler(void);
+#endif
 
-// Number of available USART peripherals
-static constexpr std::size_t USART_COUNT { 3 };
 
-#else
 
-// Number of available USART peripherals
-static constexpr std::size_t USART_COUNT { 2 };
 
-#endif // (__LPC81X_USARTS__ == 3)
+namespace xarmlib
+{
+namespace targets
+{
+namespace lpc81x
+{
 
 
 
@@ -123,8 +116,21 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, 0xF965)   // 1111'1001'0110'0101
 
 
 
+static constexpr std::size_t USART_COUNT { __LPC81X_USARTS__ };
+
 class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C functions to give access to private IRQ handler member function
+        friend void ::USART0_IRQHandler(void);
+        friend void ::USART1_IRQHandler(void);
+#if (__LPC81X_USARTS__ == 3)
+        friend void ::USART2_IRQHandler(void);
+#endif
+
     protected:
 
         // --------------------------------------------------------------------
@@ -378,7 +384,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                 disable();
             }
 
-            const int32_t div = get_baudrate_generator_divider(baudrate);
+            const int32_t div = get_baudrate_generator_div(baudrate);
             assert(div >= 1 && div <= 65536);
 
             // Set baudrate generator register
@@ -532,13 +538,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
-        // Friend IRQ handler C functions to give access to private IRQ handler member function
-        friend void USART0_IRQHandler(void);
-        friend void USART1_IRQHandler(void);
-#if (__LPC81X_USARTS__ == 3)
-        friend void USART2_IRQHandler(void);
-#endif
-
         // USART Configuration Register (CFG) bits and masks
         enum CFG : uint32_t
         {
@@ -585,7 +584,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         }
 
         // Return the USART frequency divider (baudrate generator divider) to obtain the supplied baudrate frequency
-        static int32_t get_baudrate_generator_divider(const int32_t baudrate);
+        static int32_t get_baudrate_generator_div(const int32_t baudrate);
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 

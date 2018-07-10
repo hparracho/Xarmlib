@@ -1,10 +1,9 @@
 // ----------------------------------------------------------------------------
-// @file    chrono
-// @brief   std::chrono main header file to use in the library. Additional
-//          type traits helper structures and 'abs()' implementation. This
-//          should  be the only header file included when std::chrono
-//          functionality is required.
-// @date    18 June 2018
+// @file    array
+// @brief   array header file to use in the library. Additional array generator
+//          helper function 'make_array_n()' implementation. This should be the
+//          only header file included when std::array functionality is required.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,54 +31,59 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_CHRONO
-#define __XARMLIB_SYSTEM_CHRONO
+#ifndef __XARMLIB_CPP_ARRAY
+#define __XARMLIB_CPP_ARRAY
 
-#include <chrono>
+// Include a local copy of the 'array' header file provided by libstdc++-V3 / GCC 8.1
+#include "std/std_array"
+
+
+
 
 namespace std
 {
-namespace chrono
+
+
+
+
+namespace private_array
 {
 
-
-
-
-// Type traits helper
-template<typename T>
-struct is_duration
+template<std::size_t Size, typename T, std::size_t... indexes>
+constexpr auto make_array_n_impl(T&& value, std::index_sequence<indexes...>)
 {
-    static constexpr bool value = false;
-};
-
-template<typename Rep, typename Period>
-struct is_duration<duration<Rep, Period>>
-{
-    static constexpr bool value = true;
-};
-
-
-
-
-#if __cplusplus < 201703L
-
-// Provide 'abs()' function if not available
-template<class Rep, class Period,
-class = std::enable_if_t<duration<Rep, Period>::min() < duration<Rep, Period>::zero()>>
-constexpr duration<Rep, Period> abs(duration<Rep, Period> d)
-{
-    return d >= d.zero() ? d : -d;
+    // Use the comma operator to expand the variadic pack.
+    // Move the last element in if possible. Order of evaluation is well-defined
+    // for aggregate initialization, so there is no risk of copy-after-move.
+    return std::array<std::decay_t<T>, Size>{ (static_cast<void>(indexes), value)..., std::forward<T>(value) };
 }
 
-#endif // __cplusplus < 201703L
+} // namespace private_array
 
 
 
 
-} // namespace chrono
+template<typename T>
+constexpr auto make_array_n(std::integral_constant<std::size_t, 0>, T&&)
+{
+    return std::array<std::decay_t<T>, 0>{};
+}
+
+template<std::size_t Size, typename T>
+constexpr auto make_array_n(std::integral_constant<std::size_t, Size>, T&& value)
+{
+    return private_array::make_array_n_impl<Size>(std::forward<T>(value), std::make_index_sequence<Size - 1>{});
+}
+
+template<std::size_t Size, typename T>
+constexpr auto make_array_n(T&& value)
+{
+    return make_array_n(std::integral_constant<std::size_t, Size>{}, std::forward<T>(value));
+}
+
+
+
+
 } // namespace std
 
-
-
-
-#endif // __XARMLIB_SYSTEM_CHRONO
+#endif // __XARMLIB_CPP_ARRAY

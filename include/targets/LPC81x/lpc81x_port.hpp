@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    30 May 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,6 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_PORT_HPP
 #define __XARMLIB_TARGETS_LPC81X_PORT_HPP
 
-#include "system/target"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
 
@@ -95,7 +94,7 @@ class Port
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
             //       positions when reading.
-            LPC_GPIO->MASK[0] |= 1UL << static_cast<uint32_t>(pin);
+            LPC_GPIO->MASK0 |= 1UL << static_cast<uint32_t>(pin);
         }
 
         static void clear_mask(const Pin::Name pin)
@@ -105,7 +104,7 @@ class Port
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
             //       positions when reading.
-            LPC_GPIO->MASK[0] &= ~(1UL << static_cast<uint32_t>(pin));
+            LPC_GPIO->MASK0 &= ~(1UL << static_cast<uint32_t>(pin));
         }
 
         static uint32_t read(const Name port)

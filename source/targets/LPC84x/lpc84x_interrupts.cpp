@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    29 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC84X__
 
@@ -90,7 +90,7 @@ void I2C1_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHan
 void I2C0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void SCT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void MRT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void CMP_CAPT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ACMP_CAPT_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void WDT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void BOD_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void FLASH_IRQHandler         (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -157,7 +157,7 @@ const IRQ_HandlerPtr __vectors[] =
     I2C0_IRQHandler,                        // I2C0 handler
     SCT_IRQHandler,                         // SCT handler
     MRT_IRQHandler,                         // MRT handler
-    CMP_CAPT_IRQHandler,                    // Analog Comparator / Cap Touch shared handler
+    ACMP_CAPT_IRQHandler,                   // Analog Comparator / Cap Touch shared handler
     WDT_IRQHandler,                         // Watchdog handler
     BOD_IRQHandler,                         // BOD handler
     FLASH_IRQHandler,                       // Flash handler

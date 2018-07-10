@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    29 June 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,7 @@
 #ifndef __XARMLIB_HAL_SYSTEM_HPP
 #define __XARMLIB_HAL_SYSTEM_HPP
 
-#include "system/target"
-
-
-
+#include "core/target_specs.hpp"
 
 #if defined __LPC84X__
 

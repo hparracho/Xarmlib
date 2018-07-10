@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    29 June 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,7 @@
 #ifndef __XARMLIB_HAL_US_TICKER_HPP
 #define __XARMLIB_HAL_US_TICKER_HPP
 
-#include "system/chrono"
-#include "system/target"
+#include <chrono>
 
 namespace xarmlib
 {
@@ -81,6 +80,8 @@ class UsTicker : private TargetUsTicker
 
 
 
+
+#include "core/target_specs.hpp"
 
 #if defined __LPC84X__
 

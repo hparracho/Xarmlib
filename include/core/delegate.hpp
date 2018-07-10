@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    delegate
+// @file    delegate.hpp
 // @brief   Delegate template class.
-// @date    26 April 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -39,8 +39,8 @@
 // (https://nikitablack.github.io/2016/04/12/Generic-C-delegates.html)
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_SYSTEM_DELEGATE
-#define __XARMLIB_SYSTEM_DELEGATE
+#ifndef __XARMLIB_CORE_DELEGATE
+#define __XARMLIB_CORE_DELEGATE
 
 #include <cstddef>
 
@@ -176,4 +176,4 @@ private:
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_SYSTEM_DELEGATE
+#endif // __XARMLIB_CORE_DELEGATE

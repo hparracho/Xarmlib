@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_config.hpp.template_lpc84x
-// @brief   Xarmlib template configuration header file for NXP LPC84x targets.
-// @date    4 July 2018
+// @file    xarmlib_config.hpp
+// @brief   Xarmlib configuration file for LPC800-Mini-Kit-blinky example.
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,14 +53,11 @@ namespace xarmlib
 #define XARMLIB_CONFIG_MTB_BUFFER_SIZE                          (256)
 #endif
 
+// Disable heap memory allocation support if not needed
+#define CPP_NO_HEAP
+
 // -------- SYSTEM CLOCK ------------------------------------------------------
 constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
-
-// -------- FAIM --------------------------------------------------------------
-constexpr System::Swd             XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
-constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
 
 
 
@@ -70,10 +67,10 @@ constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                
 // ----------------------------------------------------------------------------
 
 // -------- INPUT SCANNER / DEBOUNCER -----------------------------------------
-#define XARMLIB_ENABLE_INPUT_DEBOUNCER                          (1)     // Enable / disable input debouncer functionality
+#define XARMLIB_ENABLE_INPUT_DEBOUNCER                          (0)     // Enable / disable input debouncer functionality
 
-constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT    { 3 }; // Maximum possible number of debounced pins
-constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 }; // Maximum possible number of input scanner sources
+constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT    { 0 }; // Maximum possible number of debounced pins
+constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 0 }; // Maximum possible number of input scanner sources
 
 
 

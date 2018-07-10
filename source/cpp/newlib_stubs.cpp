@@ -2,7 +2,7 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    21 June 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/cmsis"
+#include "external/cmsis.hpp"
 
 extern "C"
 {
@@ -40,8 +40,8 @@ extern "C"
 
 #if !defined (MCUXPRESSO_MANAGED_LINKER_SCRIPTS) && !defined (CPP_NO_HEAP)
 
-#include <sys/types.h>
 #include <errno.h>
+#include <sys/types.h>
 
 // ----------------------------------------------------------------------------
 // The function below is taken from the µOS++ IIIe project.

@@ -1,7 +1,10 @@
 // ----------------------------------------------------------------------------
-// @file    lpc81x_syscon_clock.cpp
-// @brief   NXP LPC81x SYSCON clock control class.
-// @date    29 May 2018
+// @file    chrono
+// @brief   std::chrono main header file to use in the library. Additional
+//          type traits helper structures and 'abs()' implementation. This
+//          should  be the only header file included when std::chrono
+//          functionality is required.
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,31 +32,58 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#ifndef __XARMLIB_CPP_CHRONO
+#define __XARMLIB_CPP_CHRONO
 
-#ifdef __LPC81X__
+// Include a local copy of the 'chrono' header file provided by libstdc++-V3 / GCC 8.1
+#include "std/std_chrono"
 
-#include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 
-namespace xarmlib
+
+
+namespace std
 {
-namespace targets
-{
-namespace lpc81x
+namespace chrono
 {
 
 
 
 
-// Static definition
-// Imprecise clock rates for the watchdog oscillator
-constexpr std::array<int32_t, 16> Clock::m_watchdog_osc_frequency;
+// Type traits helper
+template<typename T>
+struct is_duration
+{
+    static constexpr bool value = false;
+};
+
+template<typename Rep, typename Period>
+struct is_duration<duration<Rep, Period>>
+{
+    static constexpr bool value = true;
+};
 
 
 
 
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
+#if __cplusplus < 201703L
 
-#endif // __LPC81X__
+// Provide 'abs()' function if not available
+template<class Rep, class Period,
+class = std::enable_if_t<duration<Rep, Period>::min() < duration<Rep, Period>::zero()>>
+constexpr duration<Rep, Period> abs(duration<Rep, Period> d)
+{
+    return d >= d.zero() ? d : -d;
+}
+
+#endif // __cplusplus < 201703L
+
+
+
+
+} // namespace chrono
+} // namespace std
+
+
+
+
+#endif // __XARMLIB_CPP_CHRONO
