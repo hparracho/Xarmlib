@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc811.ld
 // @brief   Linker Script for NXP LPC811 MCU.
-// @date    8 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,14 +48,14 @@ MEMORY
 __flash_base    = 0x0;                  /* Flash */
 __flash_top     = 0x0 + 0x2000;         /* 8K bytes */
 __ram_base      = 0x10000000;           /* RAM */
-__ram_top       = 0x10000000 + 0x800;   /* 2K bytes */  
+__ram_top       = 0x10000000 + 0x800;   /* 2K bytes */
 
 
 
 
 /* Define the required Stack and Heap sizes */
-__stack_size    = 0x80;                 /* 128 bytes */
-__heap_size     = 0x400;                /* 1K bytes */
+__stack_size    = 0x200;                /* 512 bytes */
+__heap_size     = 0x100;                /* 256 bytes */
 
 /* IAP commands, which results in a flash write/erase operation, use 32 bytes
  * of space in the top portion of the on-chip RAM for execution. The user
@@ -67,4 +67,4 @@ __stack_offset  = 32;                   /* Stack offset : 0 or 32 */
 
 
 
-INCLUDE "lpc84x_common.ld"
+INCLUDE "lpc81x_common.ld"
