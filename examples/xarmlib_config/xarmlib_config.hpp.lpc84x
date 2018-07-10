@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_config_lpc81x.hpp
-// @brief   Xarmlib demo configuration header file for NXP LPC81x targets.
-// @date    6 July 2018
+// @file    xarmlib_config.hpp
+// @brief   Xarmlib demo configuration header file for NXP LPC84x targets.
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_CONFIG_LPC81X_HPP
-#define __XARMLIB_CONFIG_LPC81X_HPP
+#ifndef __XARMLIB_CONFIG_HPP
+#define __XARMLIB_CONFIG_HPP
 
 #include "xarmlib.hpp"
 
@@ -41,43 +41,43 @@ namespace xarmlib
 
 
 // ----------------------------------------------------------------------------
-// SYSTEM DEFINITIONS
+// SYSTEM AND MCU SPECIFIC DEFINITIONS
 // ----------------------------------------------------------------------------
-
-constexpr System::Clock XARMLIB_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
-
-
-
 
 // CRP (Code Read Protect) word definition
-#define CONFIG_CRP_SETTING_NO_CRP       (1)
+#define XARMLIB_CONFIG_CRP_SETTING_NO_CRP                       (1)
 
 // Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
-#ifdef NDEBUG
-#define __MTB_DISABLE
-#else
-#define __MTB_BUFFER_SIZE               (256)
+#ifndef NDEBUG
+#define XARMLIB_ENABLE_MTB                                      (1)
+#define XARMLIB_CONFIG_MTB_BUFFER_SIZE                          (256)
 #endif
 
-// Uncomment the next line to disable Heap memory allocation functionality
-//#define CPP_NO_HEAP
+// -------- SYSTEM CLOCK ------------------------------------------------------
+constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
+
+// -------- FAIM --------------------------------------------------------------
+constexpr System::Swd             XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
+constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
+constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
+constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
 
 
 
 
 // ----------------------------------------------------------------------------
-// DEFINITIONS
+//XARMLIB LIBRARY DEFINITIONS
 // ----------------------------------------------------------------------------
 
-// Define maximum number of input sources to be scanned
-constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 };
+// -------- INPUT SCANNER / DEBOUNCER -----------------------------------------
+#define XARMLIB_ENABLE_INPUT_DEBOUNCER                          (1)     // Enable / disable input debouncer functionality
 
-// Define maximum number of inputs from PortIn to be debounced
-constexpr std::size_t XARMLIB_CONFIG_PORT_IN_INPUTS_COUNT { __TARGET_GPIOS__ };
+constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT    { 3 }; // Maximum possible number of debounced pins
+constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 }; // Maximum possible number of input scanner sources
 
 
 
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_CONFIG_LPC81X_HPP
+#endif // __XARMLIB_CONFIG_HPP

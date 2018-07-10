@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib_config_lpc84x.hpp
-// @brief   Xarmlib demo configuration header file for NXP LPC84x targets.
+// @file    xarmlib_config.hpp
+// @brief   Xarmlib demo configuration header file for NXP LPC81x targets.
 // @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_CONFIG_LPC84X_HPP
-#define __XARMLIB_CONFIG_LPC84X_HPP
+#ifndef __XARMLIB_CONFIG_HPP
+#define __XARMLIB_CONFIG_HPP
 
 #include "xarmlib.hpp"
 
@@ -56,12 +56,6 @@ namespace xarmlib
 // -------- SYSTEM CLOCK ------------------------------------------------------
 constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
 
-// -------- FAIM --------------------------------------------------------------
-constexpr System::Swd             XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
-constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
-
 
 
 
@@ -80,4 +74,4 @@ constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 }; // Maximu
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_CONFIG_LPC84X_HPP
+#endif // __XARMLIB_CONFIG_HPP
