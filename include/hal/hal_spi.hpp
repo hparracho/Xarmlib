@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    6 July 2018
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -77,7 +77,7 @@ class SpiMaster : private TargetSpi
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -85,7 +85,7 @@ class SpiMaster : private TargetSpi
 
         ~SpiMaster()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
@@ -138,14 +138,14 @@ class SpiMaster : private TargetSpi
 
         void mutex_take()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
         void mutex_give()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -178,7 +178,7 @@ class SpiMaster : private TargetSpi
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_USE_FREERTOS
+        #ifdef XARMLIB_ENABLE_FREERTOS
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif
@@ -228,7 +228,7 @@ class SpiSlave : private TargetSpi
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -236,7 +236,7 @@ class SpiSlave : private TargetSpi
 
         ~SpiSlave()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
@@ -334,14 +334,14 @@ class SpiSlave : private TargetSpi
 
         void mutex_take()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
         void mutex_give()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -352,7 +352,7 @@ class SpiSlave : private TargetSpi
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_USE_FREERTOS
+        #ifdef XARMLIB_ENABLE_FREERTOS
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif

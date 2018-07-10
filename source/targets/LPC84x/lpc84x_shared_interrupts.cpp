@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_shared_interrupts.cpp
 // @brief   NXP LPC84x IRQ handlers that are shared by different peripherals.
-// @date    6 July 2018
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -67,7 +67,7 @@ extern "C" void PININT6_USART3_IRQHandler(void)
     yield = Usart::irq_handler(Usart::Name::USART3);
 #endif
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -86,7 +86,7 @@ extern "C" void PININT7_USART4_IRQHandler(void)
     yield = Usart::irq_handler(Usart::Name::USART4);
 #endif
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;

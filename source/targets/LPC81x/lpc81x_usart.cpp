@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    9 July 2018
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -94,7 +94,7 @@ extern "C" void USART0_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART0);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -108,7 +108,7 @@ extern "C" void USART1_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART1);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -124,7 +124,7 @@ extern "C" void USART2_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART2);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
