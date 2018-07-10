@@ -1,17 +1,10 @@
 # Xarmlib External Dependencies
 
 ---
-## bitmask class v1.1.2
-Date: 6 July 2018  
-Branch: development  
-Commit: 5905df1b82968c7c9d3f3b19bcf11f3115a15ced..
-### https://github.com/oliora/bitmask
-
----
 ## CMSIS-Core(M) Version 5
-Date: 6 July 2018  
+Date: 18 June 2018  
 Branch: development  
-Commit: da10f2e1d74c39fbc068d228c495da199d4b0651  
+Commit: f7d6092e0947ab71cd53399707aa385db1d01e3a  
 ### https://github.com/ARM-software/CMSIS_5
 
 ---

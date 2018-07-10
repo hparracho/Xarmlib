@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    9 July 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,11 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 #define __XARMLIB_TARGETS_LPC84X_GPIO_HPP
 
+#include <cstdint>
+
 #include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_syscon_clock.hpp"
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
-
-#include <cassert>
 
 namespace xarmlib
 {
@@ -87,10 +87,10 @@ class Gpio
             HIZ
         };
 
-        using InputFilterClockDivider = Clock::IoconClockDividerSelect;
-        using InputFilter             = Pin::InputFilter;
-        using InputInvert             = Pin::InputInvert;
-        using InputHysteresis         = Pin::InputHysteresis;
+        using InputFilterClockDiv = Clock::IoconClockDivSelect;
+        using InputFilter         = Pin::InputFilter;
+        using InputInvert         = Pin::InputInvert;
+        using InputHysteresis     = Pin::InputHysteresis;
 
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
@@ -99,8 +99,7 @@ class Gpio
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Default constructor (assign a NC pin)
-        Gpio() : m_pin_name { Pin::Name::NC }
-        {}
+        Gpio() = default;
 
         // Normal input pin constructor
         Gpio(const Pin::Name       pin_name,
@@ -152,6 +151,14 @@ class Gpio
         }
 
         // -------- CONFIGURATION ---------------------------------------------
+
+        // Assign a new pin
+        void set_pin(const Pin::Name pin_name)
+        {
+        	m_pin_name = pin_name;
+
+        	config_port();
+        }
 
         // Set normal input pin mode
         void set_mode(const InputMode       input_mode,
@@ -259,13 +266,13 @@ class Gpio
             }
         }
 
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
+        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
 
         // Set the value of the supplied IOCON clock divider (used by input filters)
         // NOTE: The input filter source (where the divider is applied) is the MAIN clock
-        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
+        static void set_input_filter_clock_div(const InputFilterClockDiv clock_div, const uint8_t div)
         {
-            Clock::set_iocon_clock_divider(clock_div, div);
+            Clock::set_iocon_clock_div(clock_div, div);
         }
 
     private:
@@ -287,7 +294,13 @@ class Gpio
 
         void config_port()
         {
-        	if(static_cast<uint32_t>(m_pin_name) < 32)
+        	if(m_pin_name == Pin::Name::NC)
+        	{
+        		m_pin_mask = 0;
+        		reg_w      = nullptr;
+        		reg_dir    = nullptr;
+        	}
+        	else if(static_cast<uint32_t>(m_pin_name) < 32)
             {
                 m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 
@@ -334,7 +347,7 @@ class Gpio
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        const Pin::Name     m_pin_name;
+        Pin::Name     		m_pin_name { Pin::Name::NC };
              uint32_t       m_pin_mask { 0 };
         __IO uint32_t*      reg_w      { nullptr };
         __IO uint32_t*      reg_dir    { nullptr };

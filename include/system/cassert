@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @file    cassert
+// @brief   Custom assert header file.
+// @date    10 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,62 +29,34 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_SYSTEM_CASSERT
+#define __XARMLIB_SYSTEM_CASSERT
 
-#include "system/target"
+#undef assert
 
-namespace xarmlib
+
+
+
+// Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
+extern "C" __attribute__ ((weak, noreturn))
+void abort(void);
+
+
+
+
+constexpr void assert(const bool expr)
 {
-namespace hal
-{
-
-
-
-
-template <class TargetPin>
-class Pin
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
-
-
-
-
-} // namespace hal
-} // namespace xarmlib
-
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
+#ifdef NDEBUG
+    (void)expr;
+#else
+    if(expr == false)
+    {
+        abort();
+    }
 #endif
+}
 
 
 
 
-#endif // __XARMLIB_HAL_PIN_HPP
+#endif // __XARMLIB_SYSTEM_CASSERT

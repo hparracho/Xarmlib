@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    6 July 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,8 @@
 #ifndef __XARMLIB_HAL_WATCHDOG_HPP
 #define __XARMLIB_HAL_WATCHDOG_HPP
 
-#include <chrono>
+#include "system/chrono"
+#include "system/target"
 
 namespace xarmlib
 {
@@ -56,7 +57,7 @@ class Watchdog
         static void start()
         {
             static_assert(std::chrono::is_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
-#ifdef NDEBUG
+#ifndef DEBUG
             TargetWatchdog::template start<duration_value, Duration>();
 #endif
         }
@@ -64,7 +65,7 @@ class Watchdog
         // Reset the watchdog timeout duration
         static void reset()
         {
-#ifdef NDEBUG
+#ifndef DEBUG
             TargetWatchdog::reset();
 #endif
         }
@@ -79,8 +80,6 @@ class Watchdog
 
 
 
-#include "core/target_specs.hpp"
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_watchdog.hpp"
@@ -88,15 +87,6 @@ class Watchdog
 namespace xarmlib
 {
 using Watchdog = hal::Watchdog<targets::lpc84x::Watchdog>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_watchdog.hpp"
-
-namespace xarmlib
-{
-using Watchdog = hal::Watchdog<targets::lpc81x::Watchdog>;
 }
 
 #elif defined __OHER_TARGET__

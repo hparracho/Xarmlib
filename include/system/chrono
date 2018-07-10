@@ -1,7 +1,10 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @file    chrono
+// @brief   std::chrono main header file to use in the library. Additional
+//          type traits helper structures and 'abs()' implementation. This
+//          should  be the only header file included when std::chrono
+//          functionality is required.
+// @date    18 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,62 +32,54 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
+#ifndef __XARMLIB_SYSTEM_CHRONO
+#define __XARMLIB_SYSTEM_CHRONO
 
-#include "system/target"
+#include <chrono>
 
-namespace xarmlib
+namespace std
 {
-namespace hal
+namespace chrono
 {
 
 
 
 
-template <class TargetPin>
-class Pin
+// Type traits helper
+template<typename T>
+struct is_duration
 {
-    public:
+    static constexpr bool value = false;
+};
 
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
+template<typename Rep, typename Period>
+struct is_duration<duration<Rep, Period>>
+{
+    static constexpr bool value = true;
 };
 
 
 
 
-} // namespace hal
-} // namespace xarmlib
+#if __cplusplus < 201703L
 
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
+// Provide 'abs()' function if not available
+template<class Rep, class Period,
+class = std::enable_if_t<duration<Rep, Period>::min() < duration<Rep, Period>::zero()>>
+constexpr duration<Rep, Period> abs(duration<Rep, Period> d)
 {
-using Pin = hal::Pin<targets::lpc84x::Pin>;
+    return d >= d.zero() ? d : -d;
 }
 
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
-#endif
+#endif // __cplusplus < 201703L
 
 
 
 
-#endif // __XARMLIB_HAL_PIN_HPP
+} // namespace chrono
+} // namespace std
+
+
+
+
+#endif // __XARMLIB_SYSTEM_CHRONO

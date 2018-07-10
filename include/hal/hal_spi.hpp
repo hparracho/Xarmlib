@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    6 July 2018
+// @date    18 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,9 @@
 #ifndef __XARMLIB_HAL_SPI_HPP
 #define __XARMLIB_HAL_SPI_HPP
 
-#include "external/gsl.hpp"
+#include "system/cassert"
+#include "system/gsl"
+#include "system/target"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
@@ -95,31 +97,19 @@ class SpiMaster : private TargetSpi
 
         // Transfer a frame (simultaneous write and read)
         // NOTE: Return the read value
-        uint32_t transfer(const uint32_t frame)
+        uint32_t transfer(const uint32_t value)
         {
-            write(frame);
+            write(value);
             return read();
         }
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const gsl::span<uint8_t> buffer)
+        void transfer(gsl::span<uint8_t> buffer)
         {
-            for(auto& frame : buffer)
+            for(auto& elem : buffer)
             {
-                frame = transfer(frame);
-            }
-        }
-
-        // Transfer a buffer (simultaneous write and read)
-        // NOTE: The read values will be placed on the 'rx_buffer', keeping the original 'tx_buffer' intact.
-        void transfer(const gsl::span<const uint8_t> tx_buffer, const gsl::span<uint8_t> rx_buffer)
-        {
-            assert(tx_buffer.size() == rx_buffer.size());
-
-            for(std::size_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
-            {
-                rx_buffer[frame_index] = transfer(tx_buffer[frame_index]);
+                elem = transfer(elem);
             }
         }
 
@@ -136,14 +126,14 @@ class SpiMaster : private TargetSpi
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void mutex_take()
+        void MutexTake()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void mutex_give()
+        void MutexGive()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
@@ -167,11 +157,11 @@ class SpiMaster : private TargetSpi
         }
 
         // Write a frame as soon as possible
-        void write(const uint32_t frame)
+        void write(const uint32_t value)
         {
             while(TargetSpi::is_writable() == false);
 
-            TargetSpi::write_data(frame);
+            TargetSpi::write_data(value);
         }
 
         // --------------------------------------------------------------------
@@ -253,11 +243,11 @@ class SpiSlave : private TargetSpi
         }
 
         // Write a frame as soon as possible
-        void write(const uint32_t frame)
+        void write(const uint32_t value)
         {
             while(TargetSpi::is_writable() == false);
 
-            TargetSpi::write_data(frame);
+            TargetSpi::write_data(value);
         }
 
         // -------- ENABLE / DISABLE ------------------------------------------
@@ -332,14 +322,14 @@ class SpiSlave : private TargetSpi
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void mutex_take()
+        void MutexTake()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void mutex_give()
+        void MutexGive()
         {
             #ifdef XARMLIB_USE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
@@ -367,8 +357,6 @@ class SpiSlave : private TargetSpi
 
 
 
-#include "core/target_specs.hpp"
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_spi.hpp"
@@ -377,16 +365,6 @@ namespace xarmlib
 {
 using SpiMaster = hal::SpiMaster<targets::lpc84x::Spi>;
 using SpiSlave  = hal::SpiSlave <targets::lpc84x::Spi>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_spi.hpp"
-
-namespace xarmlib
-{
-using SpiMaster = hal::SpiMaster<targets::lpc81x::Spi>;
-using SpiSlave  = hal::SpiSlave <targets::lpc81x::Spi>;
 }
 
 #elif defined __OHER_TARGET__

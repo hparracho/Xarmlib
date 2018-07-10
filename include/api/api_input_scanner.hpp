@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scanner.hpp
+// @file    api_input_scannerr.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    6 July 2018
+// @date    27 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,12 +32,17 @@
 #ifndef __XARMLIB_API_INPUT_SCANNER_HPP
 #define __XARMLIB_API_INPUT_SCANNER_HPP
 
+#include "system/delegate"
+#include "system/dynarray"
 #include "hal/hal_timer.hpp"
 
-#include <dynarray>
+#include "api/api_digital_out.hpp" /* TEMP*/
 
 namespace xarmlib
 {
+
+/* TEMP */
+static DigitalOut led_blue(Pin::Name::P1_15, DigitalOut::OutputMode::PUSH_PULL_HIGH);
 
 
 
@@ -147,9 +152,12 @@ class InputScanner
 
         static int32_t timer_irq_handler()
         {
+            // @DEBUG
+            led_blue.write(0);
+
             bool new_input = false;
 
-            for(const auto& handler : m_input_handlers)
+            for(auto handler : m_input_handlers)
             {
                 if(handler != nullptr && handler() == true)
                 {
@@ -164,6 +172,9 @@ class InputScanner
                 yield = m_pin_change_handler();
             }
 
+            // @DEBUG
+            led_blue.write(1);
+
             return yield;
         }
 
@@ -171,9 +182,9 @@ class InputScanner
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static Timer                       m_timer;
-        static std::dynarray<InputHandler> m_input_handlers;
-        static PinChangeHandler            m_pin_change_handler;
+        static Timer                    m_timer;
+        static dynarray<InputHandler>   m_input_handlers;
+        static PinChangeHandler         m_pin_change_handler;
 };
 
 

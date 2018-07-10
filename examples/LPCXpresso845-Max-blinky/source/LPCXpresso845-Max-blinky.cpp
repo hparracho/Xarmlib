@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    LPCXpresso845-Max-blinky.cpp
 // @brief   LPCXpresso845-Max board Blinky example application.
-// @date    7 July 2018
+// @date    14 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,9 +41,10 @@ class Blinker : public Timer
 {
     public:
 
-        explicit Blinker(const Pin::Name pin_name) : m_output(pin_name, Gpio::OutputMode::PUSH_PULL_HIGH)
+        Blinker(const Pin::Name pin_name) : m_output(pin_name, DigitalOut::OutputMode::PUSH_PULL_HIGH)
         {
-            // Create and assign the timer IRQ handler to the Blinker::toggle() member function
+            // Create and assign the timer IRQ handler to
+            // the Blinker::toggle() member function.
             auto handler = Timer::IrqHandler::create<Blinker, &Blinker::toggle>(this);
             assign_irq_handler(handler);
 
@@ -88,15 +89,15 @@ class Blinker : public Timer
 
 int main(void)
 {
-    // Configure SW2 WAKE button with glitch filter. Filter set to reject
+    // Config SW2 WAKE button with glitch filter. Filter set to reject
     // pulses smaller than  3 clocks using Input filter clock divider 0.
     DigitalIn button(Pin::Name::P0_4,
-                     Gpio::InputMode::PULL_UP,
-                     Gpio::InputFilter::CLOCKS_3_CLKDIV0);
+                     DigitalIn::InputMode::PULL_UP,
+                     DigitalIn::InputFilter::CLOCKS_3_CLKDIV0);
 
     // Button glitch filter divider set to maximum interval.
     // Input filter clock divider 0 set to 255 (main clock rate / 255).
-    DigitalIn::set_input_filter_clock_divider(Gpio::InputFilterClockDivider::CLKDIV0, 255);
+    DigitalIn::set_input_filter_clock_div(DigitalIn::InputFilterClockDiv::CLKDIV0, 255);
 
     // Configure LED blinkers
     Blinker led_red  (Pin::Name::P0_12);

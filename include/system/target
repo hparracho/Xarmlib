@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
-// @date    18 May 2018
+// @file    target
+// @brief   System level target configuration header file.
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,62 +29,55 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_PIN_HPP
-#define __XARMLIB_HAL_PIN_HPP
-
-#include "system/target"
-
-namespace xarmlib
-{
-namespace hal
-{
+#ifndef __XARMLIB_SYSTEM_TARGET
+#define __XARMLIB_SYSTEM_TARGET
 
 
 
 
-template <class TargetPin>
-class Pin
-{
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using Name         = typename TargetPin::Name;
-        using FunctionMode = typename TargetPin::FunctionMode;
-};
-
-
-
-
-} // namespace hal
-} // namespace xarmlib
-
-
-
-
-#if defined __LPC84X__
-
-#include "targets/LPC84x/lpc84x_pin.hpp"
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::lpc84x::Pin>;
-}
-
-#elif defined __OHER_TARGET__
-
-// Other target include files
-
-namespace xarmlib
-{
-using Pin = hal::Pin<targets::other_target::Pin>;
-}
-
+#if defined (LPC845M301JBD64)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
+#elif defined (LPC845M301JBD48) || defined (LPC845M301JHI48)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
+#elif defined (LPC845M301JHI33)
+#   define __LPC845__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
+#elif defined (LPC844M201JBD64)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (64)
+#   define __LPC84X_GPIOS__                 (54)
+#elif defined (LPC844M201JBD48) || defined (LPC844M201JHI48)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (48)
+#   define __LPC84X_GPIOS__                 (42)
+#elif defined (LPC844M201JHI33)
+#   define __LPC844__
+#   define __LPC84X__
+#   define __LPC84X_PINS__                  (33)
+#   define __LPC84X_GPIOS__                 (29)
+#else
+#   error "Target MCU not defined!"
 #endif
 
 
 
 
-#endif // __XARMLIB_HAL_PIN_HPP
+#if defined __LPC84X__
+#   define __TARGET_TIMER_TYPE_IS_MRT__
+#   define __TARGET_GPIOS__                 (__LPC84X_GPIOS__)
+#endif
+
+
+
+
+#endif // __XARMLIB_SYSTEM_TARGET

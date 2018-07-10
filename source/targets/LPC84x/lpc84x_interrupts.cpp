@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC84x MCU.
-// @date    9 July 2018
+// @date    28 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "core/target_specs.hpp"
+#include "system/target"
 
 #ifdef __LPC84X__
 
@@ -86,11 +86,12 @@ void DAC0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHan
 void USART0_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void USART1_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void USART2_IRQHandler        (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void FAIM_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C1_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void I2C0_IRQHandler          (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void SCT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void MRT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void ACMP_CAPT_IRQHandler     (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void CMP_CAPT_IRQHandler      (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void WDT_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void BOD_IRQHandler           (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void FLASH_IRQHandler         (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -125,23 +126,23 @@ extern void __valid_user_code_checksum(void) __attribute__ ((weak));
 using IRQ_HandlerPtr = void (*)(void);
 
 __attribute__ ((used, section(".isr_vector")))
-const IRQ_HandlerPtr __vectors[] =
+const IRQ_HandlerPtr __interrupts[] =
 {
     // Core level (CM0+) exception handlers
     (IRQ_HandlerPtr)(&__STACK_TOP),         // Initial stack pointer
     Reset_Handler,                          // Reset handler (application entry)
     NMI_Handler,                            // NMI handler
     HardFault_Handler,                      // Hard Fault handler
-    nullptr,                                // RESERVED
-    nullptr,                                // RESERVED
-    nullptr,                                // RESERVED
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
     __valid_user_code_checksum,             // LPC MCU Checksum
-    nullptr,                                // RESERVED
-    nullptr,                                // RESERVED
-    nullptr,                                // RESERVED
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
     SVC_Handler,                            // SVCall handler
-    nullptr,                                // RESERVED
-    nullptr,                                // RESERVED
+    nullptr,                                // Reserved
+    nullptr,                                // Reserved
     PendSV_Handler,                         // PendSV handler
     SysTick_Handler,                        // SysTick handler
 
@@ -152,12 +153,12 @@ const IRQ_HandlerPtr __vectors[] =
     USART0_IRQHandler,                      // USART0 handler
     USART1_IRQHandler,                      // USART1 handler
     USART2_IRQHandler,                      // USART2 handler
-    nullptr,                                // RESERVED
+    FAIM_IRQHandler,                        // FAIM handler
     I2C1_IRQHandler,                        // I2C1 handler
     I2C0_IRQHandler,                        // I2C0 handler
     SCT_IRQHandler,                         // SCT handler
     MRT_IRQHandler,                         // MRT handler
-    ACMP_CAPT_IRQHandler,                   // Analog Comparator / Cap Touch shared handler
+    CMP_CAPT_IRQHandler,                    // Analog Comparator / Cap Touch shared handler
     WDT_IRQHandler,                         // Watchdog handler
     BOD_IRQHandler,                         // BOD handler
     FLASH_IRQHandler,                       // Flash handler

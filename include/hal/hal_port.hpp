@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    6 July 2018
+// @date    23 May 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,6 +31,8 @@
 
 #ifndef __XARMLIB_HAL_PORT_HPP
 #define __XARMLIB_HAL_PORT_HPP
+
+#include "system/target"
 
 namespace xarmlib
 {
@@ -76,8 +78,6 @@ class Port : private TargetPort
 
 
 
-#include "core/target_specs.hpp"
-
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_port.hpp"
@@ -85,15 +85,6 @@ class Port : private TargetPort
 namespace xarmlib
 {
 using Port = hal::Port<targets::lpc84x::Port>;
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_port.hpp"
-
-namespace xarmlib
-{
-using Port = hal::Port<targets::lpc81x::Port>;
 }
 
 #elif defined __OHER_TARGET__

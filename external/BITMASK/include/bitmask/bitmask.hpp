@@ -33,9 +33,16 @@
  */
 
 #include <type_traits>
-#include <functional>  // for std::hash
-#include <limits>  // for std::numeric_limits
+#include <functional>   // for std::hash
+#include <limits>       // for std::numeric_limits
+
+#if 0
 #include <cassert>
+#endif
+
+// Helder Parracho @ 11 May 2018
+// @NOTE: Replaced standard assert file with own system implementation
+#include "system/cassert"
 
 
 namespace bitmask {

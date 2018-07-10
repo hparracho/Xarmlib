@@ -7,10 +7,18 @@
 *.o
 *.obj
 
+# Precompiled Headers
+*.gch
+*.pch
+
 # Compiled Dynamic libraries
 *.so
 *.dylib
 *.dll
+
+# Fortran module files
+*.mod
+*.smod
 
 # Compiled Static libraries
 *.lai
@@ -27,8 +35,5 @@
 *.hex
 *.bin
 
-# Ignore everything inside these directories
+# Ignore everything inside build directories
 /**/build/**
-/**/deprecated/**
-/**/backup/**
-/**/temp/**

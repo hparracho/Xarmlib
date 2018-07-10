@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    6 July 2018
+// @date    21 June 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,12 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 #define __XARMLIB_TARGETS_LPC84X_SYSCON_CLOCK_HPP
 
+#include "system/array"
+#include "system/chrono"
 #include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_iap.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
-
-#include <array>
-#include <chrono>
 
 namespace xarmlib
 {
@@ -253,7 +252,7 @@ class Clock
 
         // IOCON glitch filter clock divider selection
         // NOTE: The clock selection is actually reversed. This is not a bug!
-        enum class IoconClockDividerSelect
+        enum class IoconClockDivSelect
         {
             CLKDIV6 = 0,            // IOCONCLKDIV6
             CLKDIV5,                // IOCONCLKDIV5
@@ -819,10 +818,10 @@ class Clock
             }
         }
 
-        // -------- IOCON CLOCK DIVIDER SELECTION -----------------------------
+        // -------- IOCON CLOCK DIV SELECTION --------------------------
 
         // Set the value of the supplied IOCON clock divider
-        static void set_iocon_clock_divider(const IoconClockDividerSelect clock_div, const uint8_t div)
+        static void set_iocon_clock_div(const IoconClockDivSelect clock_div, const uint8_t div)
         {
             LPC_SYSCON->IOCONCLKDIV[static_cast<int32_t>(clock_div)] = div;
         }
