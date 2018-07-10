@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC81x MCUs.
-// @date    8 July 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -318,23 +318,59 @@ typedef struct
 // ------------ General Purpose I/O (GPIO) ------------------------------------
 typedef struct
 {
-    __IO uint8_t  B0[18];                   // (offset: 0x0000) Byte pin registers P0.0 - P0.17
-         uint32_t RESERVED0[1019];          // (offset: 0x0012) RESERVED
-    __IO uint32_t W0[18];                   // (offset: 0x1000) Word pin registers P0.0 - P0.17
-         uint32_t RESERVED1[1006];          // (offset: 0x1060) RESERVED
-    __IO uint32_t DIR0;                     // (offset: 0x2000) Port 0 direction register
-         uint32_t RESERVED2[31];            // (offset: 0x2004) RESERVED
-    __IO uint32_t MASK0;                    // (offset: 0x2080) Port 0 mask register
-         uint32_t RESERVED3[31];            // (offset: 0x2084) RESERVED
-    __IO uint32_t PIN0;                     // (offset: 0x2100) Port 0 pin register
-         uint32_t RESERVED4[31];            // (offset: 0x2104) RESERVED
-    __IO uint32_t MPIN0;                    // (offset: 0x2180) Masked port 0 register
-         uint32_t RESERVED5[31];            // (offset: 0x2184) RESERVED
-    __IO uint32_t SET0;                     // (offset: 0x2200) Set port 0 register
-         uint32_t RESERVED6[31];            // (offset: 0x2204) RESERVED
-    __O  uint32_t CLR0;                     // (offset: 0x2280) Clear port 0 register
-         uint32_t RESERVED7[31];            // (offset: 0x2284) RESERVED
-    __O  uint32_t NOT0;                     // (offset: 0x2300) Toggle port 0 register
+    union
+    {
+        __IO uint8_t B[1][18];              // (offset: 0x0000) Byte pin registers P0.0 - P0.17
+        __IO uint8_t B0[18];
+    };
+    uint32_t RESERVED0[1019];               // (offset: 0x0012) RESERVED
+    union
+    {
+        __IO uint32_t W[1][18];             // (offset: 0x1000) Word pin registers P0.0 - P0.17
+        __IO uint32_t W0[18];
+    };
+    uint32_t RESERVED1[1006];               // (offset: 0x1060) RESERVED
+    union
+    {
+        __IO uint32_t DIR[1];               // (offset: 0x2000) Port 0 direction register
+        __IO uint32_t DIR0;
+    };
+    uint32_t RESERVED2[31];                 // (offset: 0x2004) RESERVED
+    union
+    {
+        __IO uint32_t MASK[1];              // (offset: 0x2080) Port 0 mask register
+        __IO uint32_t MASK0;
+    };
+    uint32_t RESERVED3[31];                 // (offset: 0x2084) RESERVED
+    union
+    {
+        __IO uint32_t PIN[1];               // (offset: 0x2100) Port 0 pin register
+        __IO uint32_t PIN0;
+    };
+    uint32_t RESERVED4[31];                 // (offset: 0x2104) RESERVED
+    union
+    {
+        __IO uint32_t MPIN[1];              // (offset: 0x2180) Masked port 0 register
+        __IO uint32_t MPIN0;
+    };
+    uint32_t RESERVED5[31];                 // (offset: 0x2184) RESERVED
+    union
+    {
+        __IO uint32_t SET[1];               // (offset: 0x2200) Set port 0 register
+        __IO uint32_t SET0;
+    };
+    uint32_t RESERVED6[31];                 // (offset: 0x2204) RESERVED
+    union
+    {
+        __O  uint32_t CLR[1];               // (offset: 0x2280) Clear port 0 register
+        __O  uint32_t CLR0;
+    };
+    uint32_t RESERVED7[31];                 // (offset: 0x2284) RESERVED
+    union
+    {
+        __O  uint32_t NOT[1];               // (offset: 0x2300) Toggle port 0 register
+        __O  uint32_t NOT0;
+    };
 } LPC_GPIO_T;
 
 

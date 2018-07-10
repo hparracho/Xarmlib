@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_clock.hpp
 // @brief   NXP LPC81x SYSCON clock control class.
-// @date    13 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_SYSCON_CLOCK_HPP
 #define __XARMLIB_TARGETS_LPC81X_SYSCON_CLOCK_HPP
 
-#include "system/array"
-#include "system/chrono"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_system.hpp"
+
+#include <array>
+#include <chrono>
 
 namespace xarmlib
 {

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    11 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,11 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_GPIO_HPP
 #define __XARMLIB_TARGETS_LPC81X_GPIO_HPP
 
-#include <cstdint>
-
 #include "targets/LPC81x/lpc81x_pin.hpp"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+
+#include <cassert>
 
 namespace xarmlib
 {
@@ -48,26 +48,14 @@ namespace lpc81x
 
 
 
+// Forward declaration
+extern "C" void mcu_startup_initialize_hardware();
+
+
+
+
 class Gpio
 {
-    public:
-
-        // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
-
-#if (__LPC81X_GPIOS__ < 14)
-        static void set_open_drain_pins_as_low_output()
-        {
-            const uint32_t open_drain_pins_mask = (1 << 10) | (1 << 11);
-
-            // Set bits 10 and 11 in the GPIO DIR0 register to 1 to enable the output driver
-            // and write 1 to bits 10 and 11 in the GPIO CLR0 register to drive the outputs LOW internally.
-            LPC_GPIO->DIR[0] |= open_drain_pins_mask;
-            LPC_GPIO->CLR[0] |= open_drain_pins_mask;
-        }
-#endif
-
     protected:
 
         // --------------------------------------------------------------------
@@ -116,6 +104,10 @@ class Gpio
 
         // -------- CONSTRUCTORS ----------------------------------------------
 
+        // Default constructor (assign a NC pin)
+        Gpio() : m_pin_name { Pin::Name::NC }
+        {}
+
         // Normal input pin constructor
         Gpio(const Pin::Name       pin_name,
              const InputMode       input_mode,
@@ -141,31 +133,41 @@ class Gpio
             }
         }
 
-#if (__LPC81X_GPIOS__ >= 14)
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name              pin_name,
              const InputModeTrueOpenDrain input_mode,
              const InputFilter            input_filter,
              const InputInvert            input_invert) : m_pin_name {pin_name}
         {
+#if (__LPC81X_GPIOS__ < 14)
+            (void)input_mode;
+            (void)input_filter;
+            (void)input_invert;
+            assert(__LPC81X_GPIOS__ < 14 /* Invalid function on packages without true open-drain pins */);
+#else
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
                 set_mode(input_mode, input_filter, input_invert);
             }
+#endif
         }
 
         // True open-drain output pin constructor (only available on P0_10 and P0_11)
         Gpio(const Pin::Name               pin_name,
              const OutputModeTrueOpenDrain output_mode) : m_pin_name {pin_name}
         {
+#if (__LPC81X_GPIOS__ < 14)
+            (void)output_mode;
+            assert(__LPC81X_GPIOS__ < 14 /* Invalid function on packages without true open-drain pins */);
+#else
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
                 set_mode(output_mode);
             }
-        }
 #endif
+        }
 
         // -------- CONFIGURATION ---------------------------------------------
 
@@ -175,6 +177,7 @@ class Gpio
                       const InputInvert     input_invert     = InputInvert::NORMAL,
                       const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
+            // Exclude NC
             assert(m_pin_name != Pin::Name::NC);
 
 #if (__LPC81X_GPIOS__ >= 14)
@@ -206,6 +209,7 @@ class Gpio
         // Set normal output pin mode
         void set_mode(const OutputMode output_mode)
         {
+            // Exclude NC
             assert(m_pin_name != Pin::Name::NC);
 
 #if (__LPC81X_GPIOS__ >= 14)
@@ -315,8 +319,8 @@ class Gpio
         {
             m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 
-            reg_w   = &LPC_GPIO->W[0][static_cast<uint32_t>(m_pin_name)];
-            reg_dir = &LPC_GPIO->DIR[0];
+            reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin_name)];
+            reg_dir = &LPC_GPIO->DIR0;
 
             if(Clock::is_enabled(Clock::Peripheral::GPIO) == false)
             {
@@ -338,6 +342,23 @@ class Gpio
                 }
             }
         }
+
+#if (__LPC81X_GPIOS__ < 14)
+
+        // Friend 'mcu_startup_initialize_hardware()' C function to give access
+        // to private 'set_open_drain_pins_as_output_low()' member function.
+        friend void mcu_startup_initialize_hardware();
+
+        static void set_open_drain_pins_as_output_low()
+        {
+            const uint32_t open_drain_pins_mask = (1UL << 10) | (1UL << 11);
+
+            // Set bits 10 and 11 in the GPIO DIR0 register to 1 to enable the output driver
+            // and write 1 to bits 10 and 11 in the GPIO CLR0 register to drive the outputs LOW internally.
+            LPC_GPIO->DIR0 |= open_drain_pins_mask;
+            LPC_GPIO->CLR0 |= open_drain_pins_mask;
+        }
+#endif
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES

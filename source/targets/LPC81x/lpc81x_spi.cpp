@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.cpp
 // @brief   NXP LPC81x SPI class.
-// @date    12 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,19 +35,14 @@
 
 #include "targets/LPC81x/lpc81x_spi.hpp"
 
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
 
 
 
+using namespace xarmlib::targets::lpc81x;
 
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 // IRQ HANDLERS
-// --------------------------------------------------------------------
+// ----------------------------------------------------------------------------
 
 extern "C" void SPI0_IRQHandler(void)
 {
@@ -80,9 +75,5 @@ extern "C" void SPI1_IRQHandler(void)
 
 
 
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC81X__

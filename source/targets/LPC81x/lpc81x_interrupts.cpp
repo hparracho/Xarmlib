@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC81x MCU.
-// @date    25 May 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,13 +32,6 @@
 #include "core/target_specs.hpp"
 
 #ifdef __LPC81X__
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
 
 extern "C"
 {
@@ -95,7 +88,7 @@ void UART2_IRQHandler  (void) __attribute__ ((weak, alias("IRQ_DefaultHandler"))
 void I2C_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void SCT_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void MRT_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
-void CMP_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
+void ACMP_IRQHandler   (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void WDT_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void BOD_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
 void WKT_IRQHandler    (void) __attribute__ ((weak, alias("IRQ_DefaultHandler")));
@@ -121,59 +114,59 @@ extern void __valid_user_code_checksum(void) __attribute__ ((weak));
 using IRQ_HandlerPtr = void (*)(void);
 
 __attribute__ ((used, section(".isr_vector")))
-const IRQ_HandlerPtr __interrupts[] =
+const IRQ_HandlerPtr __vectors[] =
 {
     // Core level (CM0+) exception handlers
-    (IRQ_HandlerPtr)(&__STACK_TOP),         // The initial stack pointer
-    Reset_Handler,                          // The reset handler (application entry)
-    NMI_Handler,                            // The NMI handler
-    HardFault_Handler,                      // The hard fault handler
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
+    (IRQ_HandlerPtr)(&__STACK_TOP),         // Initial stack pointer
+    Reset_Handler,                          // Reset handler (application entry)
+    NMI_Handler,                            // NMI handler
+    HardFault_Handler,                      // Hard Fault handler
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
     __valid_user_code_checksum,             // LPC MCU Checksum
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
     SVC_Handler,                            // SVCall handler
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    PendSV_Handler,                         // The PendSV handler
-    SysTick_Handler,                        // The SysTick handler
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    PendSV_Handler,                         // PendSV handler
+    SysTick_Handler,                        // SysTick handler
 
     // Chip level (LPC81x) peripheral handlers
-    SPI0_IRQHandler,                        // SPI0 controller
-    SPI1_IRQHandler,                        // SPI1 controller
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    UART0_IRQHandler,                       // UART0
-    UART1_IRQHandler,                       // UART1
-    UART2_IRQHandler,                       // UART2
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    I2C_IRQHandler,                         // I2C controller
-    SCT_IRQHandler,                         // Smart Counter Timer
-    MRT_IRQHandler,                         // Multi-Rate Timer
-    CMP_IRQHandler,                         // Comparator
-    WDT_IRQHandler,                         // Watchdog
-    BOD_IRQHandler,                         // Brown Out Detect
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    WKT_IRQHandler,                         // Wakeup timer
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    (IRQ_HandlerPtr)(0UL),                  // Reserved
-    PININT0_IRQHandler,                     // PIO INT0
-    PININT1_IRQHandler,                     // PIO INT1
-    PININT2_IRQHandler,                     // PIO INT2
-    PININT3_IRQHandler,                     // PIO INT3
-    PININT4_IRQHandler,                     // PIO INT4
-    PININT5_IRQHandler,                     // PIO INT5
-    PININT6_IRQHandler,                     // PIO INT6
-    PININT7_IRQHandler,                     // PIO INT7
+    SPI0_IRQHandler,                        // SPI0 handler
+    SPI1_IRQHandler,                        // SPI1 handler
+    nullptr,                                // RESERVED
+    UART0_IRQHandler,                       // UART0 handler
+    UART1_IRQHandler,                       // UART1 handler
+    UART2_IRQHandler,                       // UART2 handler
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    I2C_IRQHandler,                         // I2C handler
+    SCT_IRQHandler,                         // SCT handler
+    MRT_IRQHandler,                         // MRT handler
+    ACMP_IRQHandler,                        // Analog Comparator handler
+    WDT_IRQHandler,                         // Watchdog handler
+    BOD_IRQHandler,                         // BOD handler
+    nullptr,                                // RESERVED
+    WKT_IRQHandler,                         // WKT handler
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    nullptr,                                // RESERVED
+    PININT0_IRQHandler,                     // Pin Interrupt 0 handler
+    PININT1_IRQHandler,                     // Pin Interrupt 1 handler
+    PININT2_IRQHandler,                     // Pin Interrupt 2 handler
+    PININT3_IRQHandler,                     // Pin Interrupt 3 handler
+    PININT4_IRQHandler,                     // Pin Interrupt 4 handler
+    PININT5_IRQHandler,                     // Pin Interrupt 5 handler
+    PININT6_IRQHandler,                     // Pin Interrupt 6 handler
+    PININT7_IRQHandler,                     // Pin Interrupt 7 handler
 };
 
 
@@ -213,10 +206,20 @@ void IRQ_DefaultHandler(void)
 // defining your own handler routines in your application code.
 // ----------------------------------------------------------------------------
 
-// Forward declaration of MCU startup function.
-void mcu_startup(void);
+// Forward declaration of MCU startup function
+__attribute__ ((section(".after_vectors"), noreturn))
+void mcu_startup();
 
-__attribute__ ((section(".after_vectors")))
+#ifndef NDEBUG
+// If both CRP word placement and LTO are enabled the 'Reset_Handler()'
+// function cannot be placed after vectors because it's size overlaps the CRP
+// word location. In debug this doesn't happen since you are not supposed to
+// enable LTO in debug mode. The attribute effectively reduces the debug build
+// size a few bytes.
+__attribute__ ((section(".after_vectors"), noreturn))
+#else
+__attribute__ ((noreturn))
+#endif
 void Reset_Handler(void)
 {
     mcu_startup();
@@ -271,9 +274,5 @@ void SysTick_Handler(void)
 
 
 } // extern "C"
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC81X__

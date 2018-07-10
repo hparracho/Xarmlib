@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    13 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,8 +34,8 @@
 
 #ifdef __LPC81X__
 
-#include "targets/LPC81x/lpc81x_usart.hpp"
 #include "xarmlib_config.hpp"
+#include "targets/LPC81x/lpc81x_usart.hpp"
 
 namespace xarmlib
 {
@@ -53,7 +53,7 @@ namespace lpc81x
 
 void Usart::initialize_usart_frg()
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
@@ -66,9 +66,9 @@ void Usart::initialize_usart_frg()
 
 
 
-int32_t Usart::get_baudrate_generator_divider(const int32_t baudrate)
+int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     return usart_freq / 16 / baudrate;
@@ -76,6 +76,15 @@ int32_t Usart::get_baudrate_generator_divider(const int32_t baudrate)
 
 
 
+
+} // namespace lpc81x
+} // namespace targets
+} // namespace xarmlib
+
+
+
+
+using namespace xarmlib::targets::lpc81x;
 
 // --------------------------------------------------------------------
 // IRQ HANDLERS
@@ -126,9 +135,5 @@ extern "C" void USART2_IRQHandler(void)
 
 
 
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 #endif // __LPC81X__

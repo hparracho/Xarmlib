@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_us_ticker.hpp
 // @brief   NXP LPC81x SysTick timer class (microsecond resolution).
-// @date    11 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,9 +32,10 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_US_TICKER_HPP
 #define __XARMLIB_TARGETS_LPC81X_US_TICKER_HPP
 
-#include "system/chrono"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+
+#include <chrono>
 
 namespace xarmlib
 {
@@ -95,7 +96,7 @@ class UsTicker
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static bool m_initialized;
+        inline static bool m_initialized { false };
 };
 
 

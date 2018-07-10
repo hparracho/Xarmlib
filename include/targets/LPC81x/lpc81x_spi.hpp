@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    13 June 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,14 +32,28 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_SPI_HPP
 #define __XARMLIB_TARGETS_LPC81X_SPI_HPP
 
-#include "system/array"
-#include "system/delegate"
-#include "targets/peripheral_ref_counter.hpp"
-#include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
 #include "targets/LPC81x/lpc81x_swm.hpp"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
+#include "core/delegate.hpp"
+#include "core/peripheral_ref_counter.hpp"
+
+#include <array>
+
+
+
+
+// Forward declaration of IRQ handler for all LPC81x packages
+extern "C" void SPI0_IRQHandler(void);
+
+#if (__LPC81X_SPIS__ == 2)
+// Forward declaration of additional IRQ handlers
+extern "C" void SPI1_IRQHandler(void);
+#endif
+
+
+
 
 namespace xarmlib
 {
@@ -51,29 +65,21 @@ namespace lpc81x
 
 
 
-// Forward declaration of IRQ handler for all LPC81x packages
-extern "C" void SPI0_IRQHandler(void);
-
-#if (__LPC81X_SPIS__ == 2)
-
-// Forward declaration of additional IRQ handlers
-extern "C" void SPI1_IRQHandler(void);
-
 // Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { 2 };
-
-#else
-
-// Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { 1 };
-
-#endif // (__LPC81X_SPIS__ == 2)
-
-
-
+static constexpr std::size_t SPI_COUNT { __LPC81X_SPIS__ };
 
 class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 {
+        // --------------------------------------------------------------------
+        // FRIEND FUNCTIONS DECLARATIONS
+        // --------------------------------------------------------------------
+
+        // Friend IRQ handler C function to give access to private IRQ handler member function
+        friend void ::SPI0_IRQHandler(void);
+#if (__LPC81X_SPIS__ == 2)
+        friend void ::SPI1_IRQHandler(void);
+#endif
+
     protected:
 
         // --------------------------------------------------------------------
@@ -447,12 +453,6 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
-
-        // Friend IRQ handler C function to give access to private IRQ handler member function
-        friend void SPI0_IRQHandler(void);
-#if (__LPC81X_SPIS__ == 2)
-        friend void SPI1_IRQHandler(void);
-#endif
 
         // SPI Configuration Register (CFG) bits
         enum CFG : uint32_t

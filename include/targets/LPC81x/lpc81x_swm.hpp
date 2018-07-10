@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_swm.hpp
 // @brief   NXP LPC81x Switch Matrix (SWM) class.
-// @date    30 May 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -78,19 +78,19 @@ class Swm
             SPI1_MOSI_IO    = 0x50, // PINASSIGN5 - SPI1 MOSI I/O
             SPI1_MISO_IO    = 0x51, // PINASSIGN5 - SPI1 MISO I/O
             SPI1_SSEL_IO    = 0x52, // PINASSIGN5 - SPI1 SSEL I/O
-            CTIN_0_I        = 0x53, // PINASSIGN5 - CTIN0 Input
-            CTIN_1_I        = 0x60, // PINASSIGN6 - CTIN1 Input
-            CTIN_2_I        = 0x61, // PINASSIGN6 - CTIN2 Input
-            CTIN_3_I        = 0x62, // PINASSIGN6 - CTIN3 Input
-            CTOUT_0_O       = 0x63, // PINASSIGN6 - CTOUT0 Output
-            CTOUT_1_O       = 0x70, // PINASSIGN7 - CTOUT1 Output
-            CTOUT_2_O       = 0x71, // PINASSIGN7 - CTOUT2 Output
-            CTOUT_3_O       = 0x72, // PINASSIGN7 - CTOUT3 Output
+            SCT_PIN0_I      = 0x53, // PINASSIGN5 - SCT PIN0 Input
+            SCT_PIN1_I      = 0x60, // PINASSIGN6 - SCT PIN1 Input
+            SCT_PIN2_I      = 0x61, // PINASSIGN6 - SCT PIN2 Input
+            SCT_PIN3_I      = 0x62, // PINASSIGN6 - SCT PIN3 Input
+            SCT_OUT0_O      = 0x63, // PINASSIGN6 - SCT OUT0 Output
+            SCT_OUT1_O      = 0x70, // PINASSIGN7 - SCT OUT1 Output
+            SCT_OUT2_O      = 0x71, // PINASSIGN7 - SCT OUT2 Output
+            SCT_OUT3_O      = 0x72, // PINASSIGN7 - SCT OUT3 Output
             I2C_SDA_IO      = 0x73, // PINASSIGN7 - I2C SDA I/O
             I2C_SCL_IO      = 0x80, // PINASSIGN8 - I2C SCL I/O
-            ACMP_O_O        = 0x81, // PINASSIGN8 - I2C ACMP Output
-            CLKOUT_O        = 0x82, // PINASSIGN8 - I2C CLKOUT Output
-            GPIO_INT_BMAT_O = 0x83  // PINASSIGN8 - I2C GPIO INT BMAT Output
+            ACMP_O_O        = 0x81, // PINASSIGN8 - Analog comparator Output
+            CLKOUT_O        = 0x82, // PINASSIGN8 - CLKOUT Output
+            GPIO_INT_BMAT_O = 0x83  // PINASSIGN8 - GPIO INT BMAT Output
         };
 
         // Switch Matrix fixed pins

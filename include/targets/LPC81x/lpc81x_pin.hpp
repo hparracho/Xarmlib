@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_pin.hpp
 // @brief   NXP LPC81x pin class.
-// @date    29 May 2018
+// @date    9 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,11 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_PIN_HPP
 #define __XARMLIB_TARGETS_LPC81X_PIN_HPP
 
-#include "system/array"
-#include "system/cassert"
-#include "system/target"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
+#include "core/target_specs.hpp"
+
+#include <array>
+#include <cassert>
 
 namespace xarmlib
 {
@@ -168,9 +169,10 @@ class Pin
                                                   const InputInvert     input_invert     = InputInvert::NORMAL,
                                                   const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
+            // Exclude NC
             assert(pin_name != Pin::Name::NC);
 #if (__LPC81X_GPIOS__ >= 14)
-            // True open-drain pins
+            // Exclude true open-drain pins
             assert(pin_name != Name::P0_10 && pin_name != Name::P0_11);
 #endif
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
@@ -189,7 +191,7 @@ class Pin
                                                   const InputFilter input_filter,
                                                   const InputInvert input_invert)
         {
-            // True open-drain pins
+            // Available only on true open-drain pins
             assert(pin_name == Name::P0_10 || pin_name == Name::P0_11);
 
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
