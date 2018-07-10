@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    23 May 2018
+// @date    6 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,8 +31,6 @@
 
 #ifndef __XARMLIB_HAL_TIMER_HPP
 #define __XARMLIB_HAL_TIMER_HPP
-
-#include "system/target"
 
 namespace xarmlib
 {
@@ -98,6 +96,8 @@ class Timer : private TargetTimer
 
 
 
+#include "core/target_specs.hpp"
+
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_timer.hpp"
@@ -105,6 +105,15 @@ class Timer : private TargetTimer
 namespace xarmlib
 {
 using Timer = hal::Timer<targets::lpc84x::Timer>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_timer.hpp"
+
+namespace xarmlib
+{
+using Timer = hal::Timer<targets::lpc81x::Timer>;
 }
 
 #elif defined __OHER_TARGET__

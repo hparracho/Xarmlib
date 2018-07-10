@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    14 June 2018
+// @date    1 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,39 +45,27 @@ class DigitalIn : private Gpio
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
-        // --------------------------------------------------------------------
-
-        using InputMode               = typename Gpio::InputMode;
-        using InputModeTrueOpenDrain  = typename Gpio::InputModeTrueOpenDrain;
-
-        using InputFilterClockDiv     = typename Gpio::InputFilterClockDiv;
-        using InputFilter             = typename Gpio::InputFilter;
-        using InputInvert             = typename Gpio::InputInvert;
-        using InputHysteresis         = typename Gpio::InputHysteresis;
-
-        // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalIn(const Pin::Name       pin_name,
-                  const InputMode       input_mode,
-                  const InputFilter     input_filter     = InputFilter::BYPASS,
-                  const InputInvert     input_invert     = InputInvert::NORMAL,
-                  const InputHysteresis input_hysteresis = InputHysteresis::ENABLE) : Gpio(pin_name,
-                                                                                           input_mode,
-                                                                                           input_filter,
-                                                                                           input_invert,
-                                                                                           input_hysteresis)
+        DigitalIn(const Pin::Name             pin_name,
+                  const Gpio::InputMode       input_mode,
+                  const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
+                  const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
+                  const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : Gpio(pin_name,
+                                                                                                       input_mode,
+                                                                                                       input_filter,
+                                                                                                       input_invert,
+                                                                                                       input_hysteresis)
         {}
 
-        DigitalIn(const Pin::Name              pin_name,
-                  const InputModeTrueOpenDrain input_mode,
-                  const InputFilter            input_filter = InputFilter::BYPASS,
-                  const InputInvert            input_invert = InputInvert::NORMAL) : Gpio(pin_name,
-                                                                                          input_mode,
-                                                                                          input_filter,
-                                                                                          input_invert)
+        DigitalIn(const Pin::Name                    pin_name,
+                  const Gpio::InputModeTrueOpenDrain input_mode,
+                  const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
+                  const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : Gpio(pin_name,
+                                                                                                      input_mode,
+                                                                                                      input_filter,
+                                                                                                      input_invert)
         {}
 
         // -------- READ ------------------------------------------------------
@@ -95,9 +83,9 @@ class DigitalIn : private Gpio
             return !Gpio::read();
         }
 
-        // -------- INPUT FILTER CLOCK DIV SELECTION --------------------------
+        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
 
-        using Gpio::set_input_filter_clock_div;
+        using Gpio::set_input_filter_clock_divider;
 };
 
 
