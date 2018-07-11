@@ -45,7 +45,7 @@ using namespace xarmlib::targets::lpc84x;
 // ----------------------------------------------------------------------------
 
 // Analog Comparator / Cap Touch shared handler
-extern "C" void CMP_CAPT_IRQHandler(void)
+extern "C" void ACMP_CAPT_IRQHandler(void)
 {}
 
 
