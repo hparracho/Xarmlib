@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_port_debouncer.hpp
 // @brief   SPI I/O port debouncer class (based on SpiIoPort class).
-// @date    10 July 2018
+// @date    11 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -62,8 +62,6 @@ class SpiIoPortDebouncer
                                                                                    m_is_first_debounce { true }
         {
            assert(port_count > 0);
-
-           m_input_handler = InputScanner::InputHandler::create<SpiIoPortDebouncer, &SpiIoPortDebouncer::debounce_handler>(this);
         }
 
         void assign_input_pins(const PinIndexBus&              pin_index_bus,
@@ -85,9 +83,9 @@ class SpiIoPortDebouncer
         }
 
         // Get the handler that is intended to be used as an input handler of the InputScanner class
-        InputScanner::InputHandler& get_input_handler()
+        InputScanner::InputHandler get_input_handler()
         {
-            return m_input_handler;
+            return InputScanner::InputHandler::create<SpiIoPortDebouncer, &SpiIoPortDebouncer::debounce_handler>(this);
         }
 
         uint32_t get_filtered(const PinIndexBus& pin_index_bus)
@@ -151,6 +149,18 @@ class SpiIoPortDebouncer
                 const bool value_bit = (value & (1UL << value_shift_index++)) != 0;
 
                 m_outputs[port_index] = (m_outputs[port_index] & (~pin_mask)) | (static_cast<uint32_t>(value_bit) << pin_bit);
+
+                m_ports[port_index].sampling |= pin_mask;
+
+                for(std::size_t assigned_pin = 0; assigned_pin < m_assigned_pin_count; ++assigned_pin)
+                {
+                    if(m_pins[assigned_pin].port_index == port_index && m_pins[assigned_pin].pin_bit == pin_bit)
+                    {
+                        m_pins[assigned_pin].counter_ms = m_pins[assigned_pin].filter_high_ms;
+
+                        break;
+                    }
+                }
             }
         }
 
@@ -234,16 +244,13 @@ class SpiIoPortDebouncer
 
             const bool result = InputDebouncer::debounce((gsl::span<InputDebouncer::Input>{ m_pins }).first(m_assigned_pin_count), m_ports);
 
-            /* WIP
             for(std::size_t port_index = 0; port_index < m_ports.size(); ++port_index)
             {
-                auto port = m_ports[port_index];
+                const auto port = m_ports[port_index];
 
                 // If sampling == 0 && filtered != outputs => unable to set output (over-current?) -> clear output
-                const uint32_t over_current = (port.filtered & (~port.sampling)) ^ m_outputs[port_index];
-
-                m_outputs[port_index] |= over_current;
-            }*/
+                m_outputs[port_index] |= (port.filtered & (~port.sampling)) ^ m_outputs[port_index];
+            }
 
             return result;
         }
@@ -273,8 +280,6 @@ class SpiIoPortDebouncer
         std::dynarray<uint32_t>                 m_outputs;
 
         bool                                    m_is_first_debounce;
-
-        InputScanner::InputHandler              m_input_handler;
 };
 
 
