@@ -2,7 +2,7 @@
 // @file    heap_operators.cpp
 // @brief   Minimal implementations of the new/delete operators. Optional null
 //          stubs for malloc/free (only used if symbol CPP_NO_HEAP is defined).
-// @date    28 March 2018
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include <cstdlib>
+#include "xarmlib_config.hpp"
 
 
 
@@ -66,31 +66,6 @@ void operator delete[](void* ptr, std::size_t size __attribute__((unused))) noex
 {
     free(ptr);
 }
-
-
-
-
-// Default placement versions of operator new.
-inline void* operator new(std::size_t size __attribute__((unused)),
-                          void* ptr) noexcept
-{
-    return ptr;
-}
-
-inline void* operator new[](std::size_t size __attribute__((unused)),
-                            void* ptr) noexcept
-{
-    return ptr;
-}
-
-// Default placement versions of operator delete.
-inline void operator delete(void* ptr __attribute__((unused)),
-                            void* place __attribute__((unused))) noexcept
-{}
-
-inline void operator delete[](void* ptr __attribute__((unused)),
-                              void* place __attribute__((unused))) noexcept
-{}
 
 #else // CPP_NO_HEAP
 
