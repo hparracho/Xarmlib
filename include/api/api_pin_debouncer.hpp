@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.hpp
 // @brief   API MCU pin debouncer class.
-// @date    6 July 2018
+// @date    11 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -81,15 +81,10 @@ class PinDebouncer
             config_pins(pin_name_bus, filter_ms_low, filter_ms_high);
         }
 
-        // Debounce handler that is intended to be used as an input handler of the InputScanner class
-        static bool debounce_handler()
+        // Get the handler that is intended to be used as an input handler of the InputScanner class
+        static InputScanner::InputHandler get_input_handler()
         {
-            for(std::size_t port_index = 0; port_index < Port::COUNT; ++port_index)
-            {
-                m_ports[port_index].current_read = Port::read(static_cast<Port::Name>(port_index));
-            }
-
-            return InputDebouncer::debounce((gsl::span<InputDebouncer::Input>{ m_pins }).first(m_assigned_pin_count), m_ports);
+            return InputScanner::InputHandler::create<&debounce_handler>();
         }
 
         static uint32_t get_filtered(const PinNameBus& pin_name_bus)
@@ -194,6 +189,17 @@ class PinDebouncer
             }
 
             m_pins[assigned_pin] = {port_index, pin_bit, filter_low_ms, filter_high_ms, 0 };
+        }
+
+        // Debounce handler that is intended to be used as an input handler of the InputScanner class
+        static bool debounce_handler()
+        {
+            for(std::size_t port_index = 0; port_index < Port::COUNT; ++port_index)
+            {
+                m_ports[port_index].current_read = Port::read(static_cast<Port::Name>(port_index));
+            }
+
+            return InputDebouncer::debounce((gsl::span<InputDebouncer::Input>{ m_pins }).first(m_assigned_pin_count), m_ports);
         }
 
         static constexpr int8_t get_port_index(const Pin::Name pin_name)
