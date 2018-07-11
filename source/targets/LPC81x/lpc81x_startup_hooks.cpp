@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC81x MCU.
-// @date    9 July 2018
+// @date    11 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -215,7 +215,7 @@ void mcu_startup_initialize_hardware()
 
     mcu_startup_set_irc_clock();
 #else
-    if(XARMLIB_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
     {
         mcu_startup_set_irc_clock();
     }
