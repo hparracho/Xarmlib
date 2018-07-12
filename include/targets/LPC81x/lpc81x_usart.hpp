@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    9 July 2018
+// @date    12 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -89,7 +89,7 @@ enum class Status
     FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
     PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
     RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
-    CLEAR_ALL        = 0xF920       // 1111'1001'0010'0000
+    ALL              = 0xF920       // 1111'1001'0010'0000
 };
 
 // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
@@ -108,8 +108,8 @@ enum class Interrupt
     ALL              = 0xF965       // 1111'1001'0110'0101
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    0xFD7F)   // 1111'1101'0111'1111
-BITMASK_DEFINE_VALUE_MASK(Interrupt, 0xF965)   // 1111'1001'0110'0101
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::ALL))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
 
 } // namespace private_usart
 
@@ -243,7 +243,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             m_usart->CTL = 0;
 
             // Clear all status bits
-            clear_status(Status::CLEAR_ALL);
+            clear_status(Status::ALL);
 
             set_format(data_bits, stop_bits, parity);
             set_baudrate(baudrate);
@@ -425,6 +425,23 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             m_usart->STAT = bitmask.bits();
         }
 
+        // -------- INTERRUPTS ------------------------------------------------
+
+        void enable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_usart->INTENSET = bitmask.bits();
+        }
+
+        void disable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_usart->INTENCLR = bitmask.bits();
+        }
+
+        InterruptBitmask get_interrupts_enabled() const
+        {
+            return static_cast<Interrupt>(m_usart->INTSTAT);
+        }
+
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
         void enable_irq()
@@ -457,7 +474,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             }
         }
 
-        bool is_enabled_irq()
+        bool is_irq_enabled()
         {
             const Name name = static_cast<Name>(get_index());
 
@@ -499,23 +516,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             m_irq_handler = nullptr;
         }
 
-        // -------- INTERRUPTS ------------------------------------------------
-
-        void enable_interrupts(const InterruptBitmask bitmask)
-        {
-            m_usart->INTENSET = bitmask.bits();
-        }
-
-        void disable_interrupts(const InterruptBitmask bitmask)
-        {
-            m_usart->INTENCLR = bitmask.bits();
-        }
-
-        InterruptBitmask get_enabled_interrupts() const
-        {
-            return static_cast<Interrupt>(m_usart->INTSTAT);
-        }
-
         // -------- READ / WRITE ----------------------------------------------
 
         // Read data that has been received
@@ -553,7 +553,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
 
         // -------- USART FRG CONFIGURATION -----------------------------------
 
-        // NOTE: USART FRG clock in is equal to the main clock due to the USART clock divider was previously set to 1.
+        // NOTE: USART FRG clock-in is equal to the main clock due to the USART clock divider was previously set to 1.
 
         // Configure the USART FRG that is shared by all USART peripherals.
         // NOTE: implemented on the CPP file because it uses parameters from
