@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    9 July 2018
+// @date    13 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_SPI_HPP
 #define __XARMLIB_TARGETS_LPC81X_SPI_HPP
 
+#include "external/bitmask.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
 #include "targets/LPC81x/lpc81x_swm.hpp"
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
@@ -61,6 +62,44 @@ namespace targets
 {
 namespace lpc81x
 {
+
+
+
+
+namespace private_spi
+{
+
+// SPI Status Register (STAT) bits
+enum class Status
+{
+    RX_READY      = (1 << 0), // Receiver Ready flag
+    TX_READY      = (1 << 1), // Transmitter Ready flag
+    RX_OVERRUN    = (1 << 2), // Receiver Overrun interrupt flag (applies only to slave mode)
+    TX_UNDERRUN   = (1 << 3), // Transmitter Underrun interrupt flag (applies only to slave mode)
+    SSEL_ASSERT   = (1 << 4), // Slave Select Assert flag
+    SSEL_DEASSERT = (1 << 5), // Slave Select Deassert flag
+    STALLED       = (1 << 6), // Stalled status flag
+    END_TRANSFER  = (1 << 7), // End Transfer control bit
+    MASTER_IDLE   = (1 << 8), // Master idle status flag
+    ALL           = 0x1FF     // 1'1111'1111
+};
+
+// SPI Interrupt Register (INTENSET and INTENCLR) bits
+enum class Interrupt
+{
+    RX_READY      = (1 << 0), // Receiver data is available
+    TX_READY      = (1 << 1), // Transmitter holding register is available
+    RX_OVERRUN    = (1 << 2), // Receiver overrun occurs (applies only to slave mode)
+    TX_UNDERRUN   = (1 << 3), // Transmitter underrun occurs (applies only to slave mode)
+    SSEL_ASSERT   = (1 << 4), // Slave Select is asserted
+    SSEL_DEASSERT = (1 << 5), // Slave Select is deasserted
+    ALL           = 0x3F      // 11'1111
+};
+
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::ALL))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
+
+} // namespace private_spi
 
 
 
@@ -157,27 +196,16 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             ENABLED  = (1 << 7)
         };
 
-        class IrqFlags
-        {
-            public:
+        // Type safe accessor to STAT register
+        using Status        = private_spi::Status;
+        using StatusBitmask = bitmask::bitmask<Status>;
 
-                IrqFlags(const uint32_t intstat) : m_intstat { intstat }
-                {}
-
-                bool is_rx_ready     () const { return (m_intstat & STAT_RXRDY) != 0; }
-                bool is_tx_ready     () const { return (m_intstat & STAT_TXRDY) != 0; }
-                bool is_rx_overrun   () const { return (m_intstat & STAT_RXOV ) != 0; }
-                bool is_tx_underrun  () const { return (m_intstat & STAT_TXUR ) != 0; }
-                bool is_ssel_assert  () const { return (m_intstat & STAT_SSA  ) != 0; }
-                bool is_ssel_deassert() const { return (m_intstat & STAT_SSD  ) != 0; }
-
-            private:
-
-                uint32_t m_intstat;
-        };
+        // Type safe accessor to INTENSET / INTENCLR registers
+        using Interrupt        = private_spi::Interrupt;
+        using InterruptBitmask = bitmask::bitmask<Interrupt>;
 
         // IRQ handler definition
-        using IrqHandlerType = int32_t(const IrqFlags& irq_flags);
+        using IrqHandlerType = int32_t();
         using IrqHandler     = Delegate<IrqHandlerType>;
 
         // --------------------------------------------------------------------
@@ -331,27 +359,46 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // Gets the enable state
         bool is_enabled() const { return (m_spi->CFG & CFG_ENABLE) != 0; }
 
-        // -------- GET STATUS FLAGS ------------------------------------------
+        // -------- STATUS FLAGS ----------------------------------------------
 
-        bool is_writable     () const { return (m_spi->STAT & STAT_TXRDY      ) != 0; }
-        bool is_readable     () const { return (m_spi->STAT & STAT_RXRDY      ) != 0; }
-        bool is_rx_overrun   () const { return (m_spi->STAT & STAT_RXOV       ) != 0; }
-        bool is_tx_underrun  () const { return (m_spi->STAT & STAT_TXUR       ) != 0; }
-        bool is_ssel_assert  () const { return (m_spi->STAT & STAT_SSA        ) != 0; }
-        bool is_ssel_deassert() const { return (m_spi->STAT & STAT_SSD        ) != 0; }
-        bool is_stalled      () const { return (m_spi->STAT & STAT_STALLED    ) != 0; }
-        bool is_end_transfer () const { return (m_spi->STAT & STAT_ENDTRANSFER) != 0; }
-        bool is_master_idle  () const { return (m_spi->STAT & STAT_MSTIDLE    ) != 0; }
+        bool is_writable() const { return (m_spi->STAT & Status::TX_READY) != 0; }
+        bool is_readable() const { return (m_spi->STAT & Status::RX_READY) != 0; }
 
-        // -------- CLEAR STATUS FLAGS ----------------------------------------
+        StatusBitmask get_status() const
+        {
+            return static_cast<Status>(m_spi->STAT);
+        }
 
-        void clear_rx_overrun   () { m_spi->STAT |= STAT_RXOV;        }
-        void clear_tx_underrun  () { m_spi->STAT |= STAT_TXUR;        }
-        void clear_ssel_assert  () { m_spi->STAT |= STAT_SSA;         }
-        void clear_ssel_deassert() { m_spi->STAT |= STAT_SSD;         }
-        void clear_end_transfer () { m_spi->STAT |= STAT_ENDTRANSFER; }
+        void clear_status(const StatusBitmask bitmask)
+        {
+            // Only the following bits can be cleared
+            const uint32_t clear_all_mask = Status::RX_OVERRUN
+                                          | Status::TX_UNDERRUN
+                                          | Status::SSEL_ASSERT
+                                          | Status::SSEL_DEASSERT
+                                          | Status::END_TRANSFER;
 
-        // -------- ENABLE INTERRUPTS -----------------------------------------
+            m_spi->STAT = bitmask.bits() & clear_all_mask;
+        }
+
+        // -------- INTERRUPTS ------------------------------------------------
+
+        void enable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_spi->INTENSET = bitmask.bits();
+        }
+
+        void disable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_spi->INTENCLR = bitmask.bits();
+        }
+
+        InterruptBitmask get_interrupts_enabled() const
+        {
+            return static_cast<Interrupt>(m_spi->INTSTAT);
+        }
+
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
 
         void enable_irq()
         {
@@ -367,15 +414,6 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             }
         }
 
-        void enable_irq_rx_ready     () { m_spi->INTENSET |= INTEN_RXRDY; }
-        void enable_irq_tx_ready     () { m_spi->INTENSET |= INTEN_TXRDY; }
-        void enable_irq_rx_overrun   () { m_spi->INTENSET |= INTEN_RXOV;  }
-        void enable_irq_tx_underrun  () { m_spi->INTENSET |= INTEN_TXUR;  }
-        void enable_irq_ssel_assert  () { m_spi->INTENSET |= INTEN_SSA;   }
-        void enable_irq_ssel_deassert() { m_spi->INTENSET |= INTEN_SSD;   }
-
-        // -------- DISABLE INTERRUPTS ----------------------------------------
-
         void disable_irq()
         {
             const Name name = static_cast<Name>(get_index());
@@ -390,16 +428,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             }
         }
 
-        void disable_irq_rx_ready     () { m_spi->INTENCLR |= INTEN_RXRDY; }
-        void disable_irq_tx_ready     () { m_spi->INTENCLR |= INTEN_TXRDY; }
-        void disable_irq_rx_overrun   () { m_spi->INTENCLR |= INTEN_RXOV;  }
-        void disable_irq_tx_underrun  () { m_spi->INTENCLR |= INTEN_TXUR;  }
-        void disable_irq_ssel_assert  () { m_spi->INTENCLR |= INTEN_SSA;   }
-        void disable_irq_ssel_deassert() { m_spi->INTENCLR |= INTEN_SSD;   }
-
-        // -------- GET ENABLED INTERRUPTS ------------------------------------
-
-        bool is_enabled_irq()
+        bool is_irq_enabled()
         {
             const Name name = static_cast<Name>(get_index());
 
@@ -412,15 +441,6 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
                 default:         return false;                                 break;
             }
         }
-
-        bool is_enabled_irq_rx_ready     () const { return (m_spi->INTENSET & INTEN_RXRDY) != 0; }
-        bool is_enabled_irq_tx_ready     () const { return (m_spi->INTENSET & INTEN_TXRDY) != 0; }
-        bool is_enabled_irq_rx_overrun   () const { return (m_spi->INTENSET & INTEN_RXOV ) != 0; }
-        bool is_enabled_irq_tx_underrun  () const { return (m_spi->INTENSET & INTEN_TXUR ) != 0; }
-        bool is_enabled_irq_ssel_assert  () const { return (m_spi->INTENSET & INTEN_SSA  ) != 0; }
-        bool is_enabled_irq_ssel_deassert() const { return (m_spi->INTENSET & INTEN_SSD  ) != 0; }
-
-        // -------- IRQ HANDLER ASSIGNMENT ------------------------------------
 
         void set_irq_priority(const int32_t irq_priority)
         {
