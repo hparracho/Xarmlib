@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    spi_io_port.hpp
-// @brief   SPI I/O port class (based on module FPIO8SM).
-// @date    12 July 2018
+// @file    spi_io_source.hpp
+// @brief   SPI I/O source class (based on module FPIO8SM).
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,10 +29,11 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_DEVICES_SPI_IO_PORT_HPP
-#define __XARMLIB_DEVICES_SPI_IO_PORT_HPP
+#ifndef __XARMLIB_DEVICES_SPI_IO_SOURCE_HPP
+#define __XARMLIB_DEVICES_SPI_IO_SOURCE_HPP
 
 #include "api/api_digital_out.hpp"
+#include "api/api_pin_source.hpp"
 #include "hal/hal_spi.hpp"
 
 namespace xarmlib
@@ -41,7 +42,7 @@ namespace xarmlib
 
 
 
-class SpiIoPort
+class SpiIoSource : public PinSource
 {
     public:
 
@@ -49,13 +50,43 @@ class SpiIoPort
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiIoPort(      SpiMaster&  spi_master,
-                  const Pin::Name   latch,
-                  const Pin::Name   enable) : m_spi_master { spi_master },
-                                              m_latch(latch, Gpio::OutputMode::PUSH_PULL_HIGH),
-                                              m_enable(enable, Gpio::OutputMode::PUSH_PULL_HIGH)
+        SpiIoSource(      SpiMaster&  spi_master,
+                    const Pin::Name   latch,
+                    const Pin::Name   enable,
+                    const std::size_t port_count) : m_spi_master { spi_master },
+                                                    m_latch(latch, Gpio::OutputMode::PUSH_PULL_HIGH),
+                                                    m_enable(enable, Gpio::OutputMode::PUSH_PULL_HIGH),
+                                                    m_outputs(port_count, static_cast<uint8_t>(0xFF)),
+                                                    m_current_reads(port_count, static_cast<uint8_t>(0))
         {
             assert(spi_master.is_enabled() == true);
+            assert(port_count > 0);
+        }
+
+        // Get the handler that is intended to be used as a pin source reader handler of the PinScanner class
+        PinScanner::PinSourceHandler get_pin_source_handler() override
+        {
+            return PinScanner::PinSourceHandler::create<SpiIoSource, &SpiIoSource::pin_source_handler>(this);
+        }
+
+        std::size_t get_port_count() const override
+        {
+            return m_current_reads.size();
+        }
+
+        uint32_t get_current_read(const std::size_t port_index) const override
+        {
+            assert(port_index < m_current_reads.size());
+
+            return m_current_reads[port_index];
+        }
+
+        uint32_t get_current_read_bit(const std::size_t port_index, const std::size_t pin_bit) const override
+        {
+            assert(port_index < m_current_reads.size());
+            assert(pin_bit < 8);
+
+            return m_current_reads[port_index] & (1UL << pin_bit);
         }
 
         // Transfer a buffer (simultaneous write and read)
@@ -92,12 +123,24 @@ class SpiIoPort
     private:
 
         // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        void pin_source_handler()
+        {
+            transfer(m_outputs, m_current_reads);
+        }
+
+        // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        SpiMaster&  m_spi_master;
-        DigitalOut  m_latch;
-        DigitalOut  m_enable;
+        SpiMaster&             m_spi_master;
+        DigitalOut             m_latch;
+        DigitalOut             m_enable;
+
+        std::dynarray<uint8_t> m_outputs;
+        std::dynarray<uint8_t> m_current_reads;
 };
 
 
@@ -105,4 +148,4 @@ class SpiIoPort
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_DEVICES_SPI_IO_PORT_HPP
+#endif // __XARMLIB_DEVICES_SPI_IO_SOURCE_HPP

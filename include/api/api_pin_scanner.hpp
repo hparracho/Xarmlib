@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scanner.hpp
-// @brief   API input scanner class (takes control of one available Timer).
-// @date    6 July 2018
+// @file    api_pin_scanner.hpp
+// @brief   API pin scanner class (takes control of one available Timer).
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_API_INPUT_SCANNER_HPP
-#define __XARMLIB_API_INPUT_SCANNER_HPP
+#ifndef __XARMLIB_API_PIN_SCANNER_HPP
+#define __XARMLIB_API_PIN_SCANNER_HPP
 
 #include "hal/hal_timer.hpp"
 
@@ -42,7 +42,7 @@ namespace xarmlib
 
 
 
-class InputScanner
+class PinScanner
 {
     public:
 
@@ -50,9 +50,13 @@ class InputScanner
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        // Input reader handler definition
-        using InputHandlerType = bool();
-        using InputHandler     = Delegate<InputHandlerType>;
+        // Pin source reader/transfer handler definition
+        using PinSourceHandlerType = void();
+        using PinSourceHandler     = Delegate<PinSourceHandlerType>;
+
+        // Debouncer handler definition
+        using DebouncerHandlerType = bool(const bool);
+        using DebouncerHandler     = Delegate<DebouncerHandlerType>;
 
         // Pin change (new input debounced) handler definition
         using PinChangeHandlerType = int32_t();
@@ -62,18 +66,32 @@ class InputScanner
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static void add_input_handler(const InputHandler& input_handler)
+        static void add_pin_source_handler(const PinSourceHandler& pin_source_handler)
         {
-            assert(input_handler != nullptr);
+            assert(pin_source_handler != nullptr);
 
-            // Find an empty slot to store the input handler
-            auto result = std::find(m_input_handlers.begin(), m_input_handlers.end(), nullptr);
+            // Find an empty slot to store the pin source handler
+            auto result = std::find(m_pin_source_handlers.begin(), m_pin_source_handlers.end(), nullptr);
 
             // Assert if empty slot not found
-            assert(result != m_input_handlers.end());
+            assert(result != m_pin_source_handlers.end());
 
-            // Assign input handler
-            *result = input_handler;
+            // Assign pin source handler
+            *result = pin_source_handler;
+        }
+
+        static void add_debouncer_handler(const DebouncerHandler& debouncer_handler)
+        {
+            assert(debouncer_handler != nullptr);
+
+            // Find an empty slot to store the debouncer handler
+            auto result = std::find(m_debouncer_handlers.begin(), m_debouncer_handlers.end(), nullptr);
+
+            // Assert if empty slot not found
+            assert(result != m_debouncer_handlers.end());
+
+            // Assign debouncer handler
+            *result = debouncer_handler;
         }
 
         static void assign_pin_change_handler(const PinChangeHandler& pin_change_handler)
@@ -109,6 +127,8 @@ class InputScanner
 
             m_timer.disable_irq();
             m_timer.remove_irq_handler();
+
+            m_is_starting = true;
         }
 
         static void resume()
@@ -147,11 +167,19 @@ class InputScanner
 
         static int32_t timer_irq_handler()
         {
-            bool new_input = false;
-
-            for(const auto& handler : m_input_handlers)
+            for(const auto& handler : m_pin_source_handlers)
             {
-                if(handler != nullptr && handler() == true)
+                if(handler != nullptr)
+                {
+                    handler();
+                }
+            }
+
+            bool new_input = m_is_starting;
+
+            for(const auto& handler : m_debouncer_handlers)
+            {
+                if(handler != nullptr && handler(m_is_starting) == true)
                 {
                     new_input = true;
                 }
@@ -164,6 +192,8 @@ class InputScanner
                 yield = m_pin_change_handler();
             }
 
+            m_is_starting = false;
+
             return yield;
         }
 
@@ -171,9 +201,11 @@ class InputScanner
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static Timer                       m_timer;
-        static std::dynarray<InputHandler> m_input_handlers;
-        static PinChangeHandler            m_pin_change_handler;
+        static Timer                           m_timer;
+        static std::dynarray<PinSourceHandler> m_pin_source_handlers;
+        static std::dynarray<DebouncerHandler> m_debouncer_handlers;
+        static PinChangeHandler                m_pin_change_handler;
+        static bool                            m_is_starting;
 };
 
 
@@ -181,4 +213,4 @@ class InputScanner
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_API_INPUT_SCANNER_HPP
+#endif // __XARMLIB_API_PIN_SCANNER_HPP
