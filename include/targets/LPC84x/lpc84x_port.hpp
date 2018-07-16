@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    6 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,12 +45,6 @@ namespace lpc84x
 
 
 
-// HVQFN48 and LQFP48 packages have 2 ports
-// HVQFN33 package only has 1 port
-
-
-
-
 class Port
 {
     public:
@@ -63,17 +57,10 @@ class Port
         enum class Name
         {
             PORT0 = 0,
-#if (__LPC84X_PINS__ > 33)
+#if (TARGET_PORT_COUNT  == 2)
             PORT1
 #endif
         };
-
-        // Number of ports available according to the target package
-#if (__LPC84X_PINS__ == 33)
-        static const std::size_t COUNT = 1;
-#else
-        static const std::size_t COUNT = 2;
-#endif
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS

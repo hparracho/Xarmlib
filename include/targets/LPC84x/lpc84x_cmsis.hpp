@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC84x MCUs.
-// @date    8 July 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -1111,10 +1111,10 @@ typedef struct
 // The master structure that defines the table of all ROM APIs on the device - ROM Driver table
 typedef struct
 {
-  const uint32_t            RESERVED0[3];   // (offset: 0x000) RESERVED
-  const LPC_ROM_PWR_API_T*  PWR_BASE_PTR;   // (offset: 0x00C) Power APIs function table base address
-  const LPC_ROM_DIV_API_T*  DIV_BASE_PTR;   // (offset: 0x010) Integer division routines function table base address
-  const uint32_t            RESERVED1[7];   // (Offsets 0x014) RESERVED
+  const uint32_t            RESERVED0[3];   // (offset: 0x00) RESERVED
+  const LPC_ROM_PWR_API_T*  PWR_BASE_PTR;   // (offset: 0x0C) Power APIs function table base address
+  const LPC_ROM_DIV_API_T*  DIV_BASE_PTR;   // (offset: 0x10) Integer division routines function table base address
+  const uint32_t            RESERVED1[7];   // (Offsets 0x14) RESERVED
 } LPC_ROM_API_T;
 
 
@@ -1187,7 +1187,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_FAIM_BASE           (LPC_AHB_BASE + 0x10000)
 
 // GPIO interrupts
-#define LPC_PININT_BASE  ,      (LPC_GPIO_BASE + 0x4000)
+#define LPC_PININT_BASE         (LPC_GPIO_BASE + 0x4000)
 
 
 

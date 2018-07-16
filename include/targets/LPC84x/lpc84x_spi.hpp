@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    13 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -100,10 +100,7 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
 
 
 
-// Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { 2 };
-
-class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
+class Spi : private PeripheralRefCounter<Spi, TARGET_SPI_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -120,7 +117,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralSpi = PeripheralRefCounter<Spi, SPI_COUNT>;
+        using PeripheralSpi = PeripheralRefCounter<Spi, TARGET_SPI_COUNT>;
 
         // SPI peripheral names selection
         enum class Name

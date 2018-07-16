@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    9 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -287,7 +287,7 @@ class Gpio
 
         void config_port()
         {
-        	if(static_cast<uint32_t>(m_pin_name) < 32)
+            if(static_cast<uint32_t>(m_pin_name) < 32)
             {
                 m_pin_mask = 1 << static_cast<uint32_t>(m_pin_name);
 

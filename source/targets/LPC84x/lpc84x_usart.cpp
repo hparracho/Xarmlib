@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    10 July 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -121,7 +121,7 @@ extern "C" void USART1_IRQHandler(void)
 
 
 
-#ifdef __LPC845__
+#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
 
 extern "C" void USART2_IRQHandler(void)
 {
@@ -140,6 +140,6 @@ extern "C" void USART2_IRQHandler(void)
 // NOTE: USART3 and USART4 interrupts that are shared with PININT6 and
 //       PININT7 are implemented in 'lpc84x_shared_interrupts.cpp' file.
 
-#endif // __LPC845__
+#endif // (TARGET_USART_COUNT == 5) /* __LPC845__ */
 
 #endif // __LPC84X__

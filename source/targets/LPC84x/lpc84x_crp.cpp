@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_crp.cpp
 // @brief   CRP (Code Read Protect) word definition.
-// @date    6 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -69,23 +69,15 @@ extern "C"
 #define CRP_CRP3_CONSUME_PART   0x43218765
 /************************************************************/
 
-#if (XARMLIB_CONFIG_CRP_SETTING_NO_CRP == 1)
+#if (XARMLIB_CONFIG_CRP_SETTING == CRP_NO_CRP)
 #define CURRENT_CRP_SETTING     CRP_NO_CRP
-#endif
-
-#if (XARMLIB_CONFIG_CRP_SETTING_NOISP == 1)
+#elif (XARMLIB_CONFIG_CRP_SETTING == CRP_NO_ISP)
 #define CURRENT_CRP_SETTING     CRP_NO_ISP
-#endif
-
-#if (XARMLIB_CONFIG_CRP_SETTING_CRP1 == 1)
+#elif (XARMLIB_CONFIG_CRP_SETTING == CRP_CRP1)
 #define CURRENT_CRP_SETTING     CRP_CRP1
-#endif
-
-#if (XARMLIB_CONFIG_CRP_SETTING_CRP2 == 1)
+#elif (XARMLIB_CONFIG_CRP_SETTING == CRP_CRP2)
 #define CURRENT_CRP_SETTING     CRP_CRP2
-#endif
-
-#if (XARMLIB_CONFIG_CRP_SETTING_CRP3_CONSUME_PART == 1)
+#elif (XARMLIB_CONFIG_CRP_SETTING == CRP_CRP3_CONSUME_PART)
 #define CURRENT_CRP_SETTING     CRP_CRP3_CONSUME_PART
 #endif
 

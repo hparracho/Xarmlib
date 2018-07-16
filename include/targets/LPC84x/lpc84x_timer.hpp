@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    6 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -60,10 +60,7 @@ namespace lpc84x
 
 
 
-// Number of available timer channels
-static constexpr std::size_t TIMER_COUNT { 4 };
-
-class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
+class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -79,7 +76,7 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralTimer = PeripheralRefCounter<Timer, TIMER_COUNT>;
+        using PeripheralTimer = PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>;
 
         // Timer running mode selection (defined to map the CTRL register directly)
         enum class Mode
@@ -115,13 +112,13 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             m_channel = &LPC_MRT->CHANNEL[channel_index];
 
             set_interval(0);
-            clear_pending_irq();
+            clear_irq_pending();
         }
 
         ~Timer()
         {
             set_interval(0);
-            clear_pending_irq();
+            clear_irq_pending();
 
             // Disable MRT if this the last timer deleted
             if(get_used() == 1)
@@ -178,17 +175,17 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
             m_channel->CTRL &= ~CTRL_INTEN;
         }
 
-        bool is_enabled_irq() const
+        bool is_irq_enabled() const
         {
             return ((m_channel->CTRL & CTRL_INTEN) != 0);
         }
 
-        bool is_pending_irq() const
+        bool is_irq_pending() const
         {
             return ((m_channel->STAT & STAT_INTFLAG) != 0);
         }
 
-        void clear_pending_irq()
+        void clear_irq_pending()
         {
             m_channel->STAT |= STAT_INTFLAG;
         }
@@ -285,15 +282,15 @@ class Timer : private PeripheralRefCounter<Timer, TIMER_COUNT>
         {
             int32_t yield = 0;  // Used by FreeRTOS
 
-            for(std::size_t ch_index = 0; ch_index < TIMER_COUNT; ++ch_index)
+            for(std::size_t ch_index = 0; ch_index < TARGET_TIMER_COUNT; ++ch_index)
             {
                 auto* const channel = get_pointer(ch_index);
 
                 if(channel != nullptr)
                 {
-                    if(channel->is_enabled_irq() && channel->is_pending_irq())
+                    if(channel->is_irq_enabled() && channel->is_irq_pending())
                     {
-                        channel->clear_pending_irq();
+                        channel->clear_irq_pending();
 
                         if(channel->m_irq_handler != nullptr)
                         {
