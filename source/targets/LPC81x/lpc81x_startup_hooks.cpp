@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC81x MCU.
-// @date    11 July 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -99,8 +99,9 @@ static inline void mcu_startup_set_irc_clock()
 
 
 
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT > 8)
 
+// The use of an external crystal is not possible in DIP8 packages
 static inline void mcu_startup_set_xtal_clock()
 {
     // Disable pull-up and pull-down for XTALIN and XTALOUT pin
@@ -127,7 +128,7 @@ static inline void mcu_startup_set_xtal_clock()
     // Set system oscillator source for system PLL clock select
     Clock::set_system_pll_source(Clock::SystemPllSource::SYS_OSC_CLK);
 
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::XTAL_12MHZ_NO_OSC)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::XTAL_12MHZ)
     {
         // Set the main clock divide by 1
         Clock::set_system_clock_divider(1);
@@ -140,15 +141,13 @@ static inline void mcu_startup_set_xtal_clock()
         // Configure the PLL subsystem according to the system configuration
         switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
         {
-            case System::Clock::XTAL_30MHZ:
-            case System::Clock::XTAL_30MHZ_NO_OSC: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
-                                                   Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
-                                                   break;
+            case System::Clock::XTAL_30MHZ: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
+                                            Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
+                                            break;
             case System::Clock::XTAL_24MHZ:
-            case System::Clock::XTAL_24MHZ_NO_OSC:
-            default:                               Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
-                                                   Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
-                                                   break;
+            default:                        Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
+                                            Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
+                                            break;
         }
 
         // Power-up system PLL *ONLY* after setting the dividers
@@ -161,17 +160,26 @@ static inline void mcu_startup_set_xtal_clock()
         Clock::set_main_clock_source(Clock::MainClockSource::SYS_PLL_OUT_CLK);
     }
 
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::XTAL_12MHZ_NO_OSC ||
-       XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::XTAL_24MHZ_NO_OSC ||
-       XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::XTAL_30MHZ_NO_OSC)
-    {
-        // Disable the unused IRC oscillator
-        Power::power_down(Power::Peripheral::IRC);
-        Power::power_down(Power::Peripheral::IRCOUT);
-    }
+#if defined (NDEBUG) && defined (XARMLIB_CONFIG_CRP_SETTING) && (XARMLIB_CONFIG_CRP_SETTING != CRP_NO_CRP)
+    // Disable the unused IRC oscillator when compiling a final application
+    Power::power_down(Power::Peripheral::IRC);
+    Power::power_down(Power::Peripheral::IRCOUT);
+#endif
 }
 
-#endif
+#else // !(TARGET_PACKAGE_PIN_COUNT > 8)
+
+static inline void mcu_startup_set_open_drain_pins_as_output_low()
+{
+    const uint32_t open_drain_pins_mask = (1UL << 10) | (1UL << 11);
+
+    // Set bits 10 and 11 in the GPIO DIR0 register to 1 to enable the output driver
+    // and write 1 to bits 10 and 11 in the GPIO CLR0 register to drive the outputs LOW internally.
+    LPC_GPIO->DIR0 |= open_drain_pins_mask;
+    LPC_GPIO->CLR0 |= open_drain_pins_mask;
+}
+
+#endif // !(TARGET_PACKAGE_PIN_COUNT > 8)
 
 
 
@@ -207,27 +215,6 @@ void mcu_startup_initialize_hardware()
     // Enable IOCON clock
     Clock::enable(Clock::Peripheral::IOCON);
 
-#if (__LPC81X_GPIOS__ < 14)
-    // NOTE from manual:
-    // If the open-drain pins PIO0_10 and PIO0_11 are not available on the package,
-    // prevent the pins from internally floating
-    Gpio::set_open_drain_pins_as_output_low();
-
-    mcu_startup_set_irc_clock();
-#else
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
-    {
-        mcu_startup_set_irc_clock();
-    }
-    else
-    {
-        mcu_startup_set_xtal_clock();
-    }
-#endif
-    // Call the CSMSIS system clock routine to store the clock
-    // frequency in the SystemCoreClock global RAM location.
-    SystemCoreClockUpdate();
-
 #ifdef NDEBUG
     // DISABLE SWD WHEN COMPILING IN RELEASE!!!
     // NOTE: The boot loader assigns the SWD functions to pins PIO0_2 and PIO0_3.
@@ -236,6 +223,28 @@ void mcu_startup_initialize_hardware()
     Swm::disable(Swm::PinFixed::SWCLK);
     Swm::disable(Swm::PinFixed::SWDIO);
 #endif
+
+#if (TARGET_PACKAGE_PIN_COUNT > 8)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
+    {
+        mcu_startup_set_irc_clock();
+    }
+    else
+    {
+        mcu_startup_set_xtal_clock();
+    }
+#else // !(TARGET_PACKAGE_PIN_COUNT > 8)
+    // The use of an external crystal is not possible in DIP8 packages
+    mcu_startup_set_irc_clock();
+
+    // NOTE from manual: If the open-drain pins PIO0_10 and PIO0_11 are not
+    // available on the package, prevent the pins from internally floating.
+    mcu_startup_set_open_drain_pins_as_output_low();
+#endif // !(TARGET_PACKAGE_PIN_COUNT > 8)
+
+    // Call the CSMSIS system clock routine to store the clock
+    // frequency in the SystemCoreClock global RAM location.
+    SystemCoreClockUpdate();
 }
 
 

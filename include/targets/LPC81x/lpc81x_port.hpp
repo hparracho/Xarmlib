@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    9 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,11 +45,6 @@ namespace lpc81x
 
 
 
-// All packages only have 1 port
-
-
-
-
 class Port
 {
     public:
@@ -58,14 +53,11 @@ class Port
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        // Port names
+        // Port names (all packages have 1 port)
         enum class Name
         {
-            PORT0 = 0,
+            PORT0 = 0
         };
-
-        // Number of ports available
-        static const std::size_t COUNT = 1;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS

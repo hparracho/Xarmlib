@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    10 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -118,7 +118,7 @@ extern "C" void USART1_IRQHandler(void)
 
 
 
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
 
 extern "C" void USART2_IRQHandler(void)
 {
@@ -131,7 +131,7 @@ extern "C" void USART2_IRQHandler(void)
 #endif
 }
 
-#endif // (__LPC81X_USARTS__ == 3)
+#endif // (TARGET_USART_COUNT == 3)
 
 
 

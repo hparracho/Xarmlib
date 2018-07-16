@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.cpp
 // @brief   NXP LPC81x SPI class.
-// @date    10 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -58,7 +58,7 @@ extern "C" void SPI0_IRQHandler(void)
 
 
 
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
 
 extern "C" void SPI1_IRQHandler(void)
 {
@@ -71,7 +71,7 @@ extern "C" void SPI1_IRQHandler(void)
 #endif
 }
 
-#endif // (__LPC81X_SPIS__ == 2)
+#endif // (TARGET_SPI_COUNT == 2)
 
 
 

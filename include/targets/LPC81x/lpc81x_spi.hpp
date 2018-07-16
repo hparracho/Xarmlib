@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    13 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,7 +48,7 @@
 // Forward declaration of IRQ handler for all LPC81x packages
 extern "C" void SPI0_IRQHandler(void);
 
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
 // Forward declaration of additional IRQ handlers
 extern "C" void SPI1_IRQHandler(void);
 #endif
@@ -105,7 +105,7 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
 
 
 // Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { __LPC81X_SPIS__ };
+static constexpr std::size_t SPI_COUNT { TARGET_SPI_COUNT };
 
 class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 {
@@ -115,7 +115,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // Friend IRQ handler C function to give access to private IRQ handler member function
         friend void ::SPI0_IRQHandler(void);
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
         friend void ::SPI1_IRQHandler(void);
 #endif
 
@@ -132,7 +132,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         enum class Name
         {
             SPI0 = 0,
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
             SPI1
 #endif
         };
@@ -228,7 +228,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: Clock::disable(Clock::Peripheral::SPI0); NVIC_DisableIRQ(SPI0_IRQn); break;
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1: Clock::disable(Clock::Peripheral::SPI1); NVIC_DisableIRQ(SPI1_IRQn); break;
 #endif
                 default:                                                                              break;
@@ -265,7 +265,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
                     }
                 }   break;
 
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1:
                 {
                     // Set pointer to the available SPI structure
@@ -361,8 +361,8 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        bool is_writable() const { return (m_spi->STAT & Status::TX_READY) != 0; }
-        bool is_readable() const { return (m_spi->STAT & Status::RX_READY) != 0; }
+        bool is_writable() const { return (get_status() & Status::TX_READY) != 0; }
+        bool is_readable() const { return (get_status() & Status::RX_READY) != 0; }
 
         StatusBitmask get_status() const
         {
@@ -372,13 +372,13 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         void clear_status(const StatusBitmask bitmask)
         {
             // Only the following bits can be cleared
-            const uint32_t clear_all_mask = Status::RX_OVERRUN
-                                          | Status::TX_UNDERRUN
-                                          | Status::SSEL_ASSERT
-                                          | Status::SSEL_DEASSERT
-                                          | Status::END_TRANSFER;
+            const StatusBitmask clear_all_mask = Status::RX_OVERRUN
+                                               | Status::TX_UNDERRUN
+                                               | Status::SSEL_ASSERT
+                                               | Status::SSEL_DEASSERT
+                                               | Status::END_TRANSFER;
 
-            m_spi->STAT = bitmask.bits() & clear_all_mask;
+            m_spi->STAT = bitmask.bits() & clear_all_mask.bits();
         }
 
         // -------- INTERRUPTS ------------------------------------------------
@@ -407,7 +407,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_EnableIRQ(SPI0_IRQn); break;
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1: NVIC_EnableIRQ(SPI1_IRQn); break;
 #endif
                 default:                                    break;
@@ -421,7 +421,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_DisableIRQ(SPI0_IRQn); break;
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1: NVIC_DisableIRQ(SPI1_IRQn); break;
 #endif
                 default:                                     break;
@@ -435,7 +435,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: return (__NVIC_GetEnableIRQ(SPI0_IRQn) != 0); break;
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1: return (__NVIC_GetEnableIRQ(SPI1_IRQn) != 0); break;
 #endif
                 default:         return false;                                 break;
@@ -449,7 +449,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             switch(name)
             {
                 case Name::SPI0: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
-#if (__LPC81X_SPIS__ == 2)
+#if (TARGET_SPI_COUNT == 2)
                 case Name::SPI1: NVIC_SetPriority(SPI1_IRQn, irq_priority); break;
 #endif
                 default:                                                    break;
@@ -520,11 +520,9 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // IRQ handler private implementation (manage interrupt flags and call user IRQ handlers)
         int32_t irq_handler()
         {
-            const IrqFlags irq_flags { m_spi->INTSTAT };
-
             if(m_irq_handler != nullptr)
             {
-                return m_irq_handler(irq_flags);
+                return m_irq_handler();
             }
 
             return 0;
