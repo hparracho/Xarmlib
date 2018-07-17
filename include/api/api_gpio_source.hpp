@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_gpio_source.hpp
 // @brief   API GPIO source class.
-// @date    16 July 2018
+// @date    17 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -68,7 +68,7 @@ class GpioSource : public PinSource
 
         std::size_t get_port_count() const override
         {
-            return Port::COUNT;
+            return TARGET_PORT_COUNT;
         }
 
         uint32_t get_current_read(const std::size_t port_index) const override
@@ -94,7 +94,7 @@ class GpioSource : public PinSource
 
         void pin_source_handler()
         {
-            for(std::size_t port_index = 0; port_index < Port::COUNT; ++port_index)
+            for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
                 m_current_reads[port_index] = Port::read(static_cast<Port::Name>(port_index));
             }
@@ -104,7 +104,7 @@ class GpioSource : public PinSource
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        std::array<uint32_t, Port::COUNT> m_current_reads { 0 };
+        std::array<uint32_t, TARGET_PORT_COUNT> m_current_reads { 0 };
 };
 
 
