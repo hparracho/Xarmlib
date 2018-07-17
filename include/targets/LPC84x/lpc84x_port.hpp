@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    14 July 2018
+// @date    17 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -65,6 +65,50 @@ class Port
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        static void set_direction(const Name port)
+        {
+            // NOTE: Ones configure as outputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0xFFFFFFFF;
+        }
+
+        static void clear_direction(const Name port)
+        {
+            // NOTE: Zeros configure as inputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0;
+        }
+
+        static void set_direction(const Pin::Name pin)
+        {
+            assert(pin >= Pin::Name::NC);
+
+            // NOTE: Ones configure as outputs
+
+            if(static_cast<uint32_t>(pin) < 32)
+            {
+                LPC_GPIO->DIR0 |= 1UL << static_cast<uint32_t>(pin);
+            }
+            else
+            {
+                LPC_GPIO->DIR1 |= 1UL << (static_cast<uint32_t>(pin) - 32);
+            }
+        }
+
+        static void clear_direction(const Pin::Name pin)
+        {
+            assert(pin >= Pin::Name::NC);
+
+            // NOTE: Zeros configure as inputs
+
+            if(static_cast<uint32_t>(pin) < 32)
+            {
+                LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
+            }
+            else
+            {
+                LPC_GPIO->DIR1 &= ~(1UL << (static_cast<uint32_t>(pin) - 32));
+            }
+        }
 
         static void set_mask(const Name port)
         {
