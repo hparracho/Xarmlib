@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_source.hpp
 // @brief   API pin source base class.
-// @date    16 July 2018
+// @date    17 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,9 +52,13 @@ class PinSource
 
         virtual std::size_t get_port_count() const = 0;
 
-        virtual uint32_t get_current_read(const std::size_t port_index) const = 0;
+        virtual uint32_t get_read(const std::size_t port_index) const = 0;
 
-        virtual uint32_t get_current_read_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
+        virtual uint32_t get_read_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
+
+        virtual uint32_t get_output_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
+
+        virtual void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t value) = 0;
 };
 
 

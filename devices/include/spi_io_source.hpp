@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    16 July 2018
+// @date    17 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -57,7 +57,7 @@ class SpiIoSource : public PinSource
                                                     m_latch(latch, Gpio::OutputMode::PUSH_PULL_HIGH),
                                                     m_enable(enable, Gpio::OutputMode::PUSH_PULL_HIGH),
                                                     m_outputs(port_count, static_cast<uint8_t>(0xFF)),
-                                                    m_current_reads(port_count, static_cast<uint8_t>(0))
+                                                    m_reads(port_count, static_cast<uint8_t>(0))
         {
             assert(spi_master.is_enabled() == true);
             assert(port_count > 0);
@@ -71,22 +71,54 @@ class SpiIoSource : public PinSource
 
         std::size_t get_port_count() const override
         {
-            return m_current_reads.size();
+            return m_reads.size();
         }
 
-        uint32_t get_current_read(const std::size_t port_index) const override
+        uint32_t get_read(const std::size_t port_index) const override
         {
-            assert(port_index < m_current_reads.size());
+            assert(port_index < m_reads.size());
 
-            return m_current_reads[port_index];
+            return m_reads[port_index];
         }
 
-        uint32_t get_current_read_bit(const std::size_t port_index, const std::size_t pin_bit) const override
+        uint32_t get_read_bit(const std::size_t port_index, const std::size_t pin_bit) const override
         {
-            assert(port_index < m_current_reads.size());
+            assert(port_index < m_reads.size());
             assert(pin_bit < 8);
 
-            return m_current_reads[port_index] & (1UL << pin_bit);
+            return m_reads[port_index] & (1UL << pin_bit);
+        }
+
+        uint32_t get_output_bit(const std::size_t port_index, const std::size_t pin_bit) const override
+        {
+            assert(port_index < m_outputs.size());
+            assert(pin_bit < 8);
+
+            return m_outputs[port_index] & (1UL << pin_bit);
+        }
+
+        void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t value) override
+        {
+            assert(port_index < m_outputs.size());
+            assert(pin_bit < 8);
+
+            const uint32_t pin_mask = (1UL << pin_bit);
+
+            m_outputs[port_index] = (m_outputs[port_index] & (~pin_mask)) | (value & pin_mask);
+        }
+
+        static constexpr int8_t get_port_index(const int8_t pin_index)
+        {
+            assert(pin_index >= 0);
+
+            return static_cast<int8_t>(static_cast<std::size_t>(pin_index) >> 3);    // (pin_index / 8)
+        }
+
+        static constexpr int8_t get_pin_bit(const int8_t pin_index)
+        {
+            assert(pin_index >= 0);
+
+            return static_cast<int8_t>(static_cast<std::size_t>(pin_index) & 0x07);  // (pin_index % 8)
         }
 
         // Transfer a buffer (simultaneous write and read)
@@ -128,7 +160,7 @@ class SpiIoSource : public PinSource
 
         void pin_source_handler()
         {
-            transfer(m_outputs, m_current_reads);
+            transfer(m_outputs, m_reads);
         }
 
         // --------------------------------------------------------------------
@@ -140,7 +172,7 @@ class SpiIoSource : public PinSource
         DigitalOut             m_enable;
 
         std::dynarray<uint8_t> m_outputs;
-        std::dynarray<uint8_t> m_current_reads;
+        std::dynarray<uint8_t> m_reads;
 };
 
 

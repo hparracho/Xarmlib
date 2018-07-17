@@ -71,19 +71,49 @@ class GpioSource : public PinSource
             return TARGET_PORT_COUNT;
         }
 
-        uint32_t get_current_read(const std::size_t port_index) const override
+        uint32_t get_read(const std::size_t port_index) const override
         {
-            assert(port_index < m_current_reads.size());
+            assert(port_index < m_reads.size());
 
-            return m_current_reads[port_index];
+            return m_reads[port_index];
         }
 
-        uint32_t get_current_read_bit(const std::size_t port_index, const std::size_t pin_bit) const override
+        uint32_t get_read_bit(const std::size_t port_index, const std::size_t pin_bit) const override
         {
-            assert(port_index < m_current_reads.size());
+            assert(port_index < m_reads.size());
             assert(pin_bit < 32);
 
-            return m_current_reads[port_index] & (1UL << pin_bit);
+            return m_reads[port_index] & (1UL << pin_bit);
+        }
+
+        uint32_t get_output_bit(const std::size_t port_index, const std::size_t pin_bit) const override
+        {
+            assert(port_index < m_outputs.size());
+            assert(pin_bit < 32);
+
+            return m_outputs[port_index] & (1UL << pin_bit);
+        }
+
+        void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t value) override
+        {
+            assert(port_index < m_outputs.size());
+            assert(pin_bit < 32);
+
+            const uint32_t pin_mask = (1UL << pin_bit);
+
+            m_outputs[port_index] = (m_outputs[port_index] & (~pin_mask)) | (value & pin_mask);
+
+            m_outputs_mask[port_index] |= pin_mask;
+        }
+
+        static constexpr int8_t get_port_index(const Pin::Name pin_name)
+        {
+            return static_cast<int8_t>(static_cast<std::size_t>(pin_name) >> 5);    // (pin_name / 32)
+        }
+
+        static constexpr int8_t get_pin_bit(const Pin::Name pin_name)
+        {
+            return static_cast<int8_t>(static_cast<std::size_t>(pin_name) & 0x1F);  // (pin_name % 32)
         }
 
      private:
@@ -96,7 +126,20 @@ class GpioSource : public PinSource
         {
             for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
-                m_current_reads[port_index] = Port::read(static_cast<Port::Name>(port_index));
+                const Port::Name port_name = static_cast<Port::Name>(port_index);
+
+                // Set output direction for the specified mask
+                Port::set_direction(port_name, m_outputs_mask[port_index]);
+
+                Port::write(port_name, m_outputs[port_index]);
+
+                // Back to input direction
+                Port::clear_direction(port_name, m_outputs_mask[port_index]);
+
+                // Clear mask
+                m_outputs_mask[port_index] = 0;
+
+                m_reads[port_index] = Port::read(port_name);
             }
         }
 
@@ -104,7 +147,9 @@ class GpioSource : public PinSource
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        std::array<uint32_t, TARGET_PORT_COUNT> m_current_reads { 0 };
+        std::array<uint32_t, TARGET_PORT_COUNT> m_outputs { 0xFFFFFFFF };
+        std::array<uint32_t, TARGET_PORT_COUNT> m_outputs_mask { 0 };
+        std::array<uint32_t, TARGET_PORT_COUNT> m_reads { 0 };
 };
 
 
