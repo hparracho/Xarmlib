@@ -78,6 +78,18 @@ class Port
             LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0;
         }
 
+        static void set_direction(const Name port, const uint32_t mask)
+        {
+            // NOTE: Ones configure as outputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] |= mask;
+        }
+
+        static void clear_direction(const Name port, const uint32_t mask)
+        {
+            // NOTE: Zeros configure as inputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] &= ~mask;
+        }
+
         static void set_direction(const Pin::Name pin)
         {
             assert(pin >= Pin::Name::NC);
