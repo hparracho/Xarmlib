@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    6 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,7 +48,7 @@ class Gpio : private TargetGpio
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
         using InputMode               = typename TargetGpio::InputMode;

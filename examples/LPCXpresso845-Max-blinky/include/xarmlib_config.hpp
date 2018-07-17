@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib configuration file for LPCXpresso845-Max-blinky example.
-// @date    4 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace xarmlib
 // ----------------------------------------------------------------------------
 
 // CRP (Code Read Protect) word definition
-#define XARMLIB_CONFIG_CRP_SETTING_NO_CRP                       (1)
+#define XARMLIB_CONFIG_CRP_SETTING                              (CRP_NO_CRP)
 
 // Buffer for Micro Trace Buffer (MTB) instruction trace on Cortex-M0+ parts
 #ifndef NDEBUG

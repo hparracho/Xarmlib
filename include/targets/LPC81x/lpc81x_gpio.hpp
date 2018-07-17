@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    9 July 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,12 +44,6 @@ namespace targets
 {
 namespace lpc81x
 {
-
-
-
-
-// Forward declaration
-extern "C" void mcu_startup_initialize_hardware();
 
 
 
@@ -139,17 +133,17 @@ class Gpio
              const InputFilter            input_filter,
              const InputInvert            input_invert) : m_pin_name {pin_name}
         {
-#if (__LPC81X_GPIOS__ < 14)
-            (void)input_mode;
-            (void)input_filter;
-            (void)input_invert;
-            assert(__LPC81X_GPIOS__ < 14 /* Invalid function on packages without true open-drain pins */);
-#else
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
                 set_mode(input_mode, input_filter, input_invert);
             }
+#else
+            (void)input_mode;
+            (void)input_filter;
+            (void)input_invert;
+            assert(TARGET_PACKAGE_PIN_COUNT >= 16 /* Invalid function on packages without true open-drain pins */);
 #endif
         }
 
@@ -157,15 +151,15 @@ class Gpio
         Gpio(const Pin::Name               pin_name,
              const OutputModeTrueOpenDrain output_mode) : m_pin_name {pin_name}
         {
-#if (__LPC81X_GPIOS__ < 14)
-            (void)output_mode;
-            assert(__LPC81X_GPIOS__ < 14 /* Invalid function on packages without true open-drain pins */);
-#else
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
                 set_mode(output_mode);
             }
+#else
+            (void)output_mode;
+            assert(TARGET_PACKAGE_PIN_COUNT >= 16 /* Invalid function on packages without true open-drain pins */);
 #endif
         }
 
@@ -180,7 +174,7 @@ class Gpio
             // Exclude NC
             assert(m_pin_name != Pin::Name::NC);
 
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
             // Exclude true open-drain pins
             assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
@@ -212,7 +206,7 @@ class Gpio
             // Exclude NC
             assert(m_pin_name != Pin::Name::NC);
 
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
             // Exclude true open-drain pins
             assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 #endif
@@ -239,7 +233,7 @@ class Gpio
                                       Pin::InputHysteresis::ENABLE);
         }
 
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
         void set_mode(const InputModeTrueOpenDrain input_mode,
                       const InputFilter            input_filter = InputFilter::BYPASS,
@@ -342,23 +336,6 @@ class Gpio
                 }
             }
         }
-
-#if (__LPC81X_GPIOS__ < 14)
-
-        // Friend 'mcu_startup_initialize_hardware()' C function to give access
-        // to private 'set_open_drain_pins_as_output_low()' member function.
-        friend void mcu_startup_initialize_hardware();
-
-        static void set_open_drain_pins_as_output_low()
-        {
-            const uint32_t open_drain_pins_mask = (1UL << 10) | (1UL << 11);
-
-            // Set bits 10 and 11 in the GPIO DIR0 register to 1 to enable the output driver
-            // and write 1 to bits 10 and 11 in the GPIO CLR0 register to drive the outputs LOW internally.
-            LPC_GPIO->DIR0 |= open_drain_pins_mask;
-            LPC_GPIO->CLR0 |= open_drain_pins_mask;
-        }
-#endif
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES

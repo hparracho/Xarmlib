@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_pin.hpp
 // @brief   NXP LPC81x pin class.
-// @date    9 July 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -59,7 +59,7 @@ class Pin
         // Pin names according to the target package
         enum class Name
         {
-            // LPC81x Pin Names
+            // The following pins are present in all packages
             P0_0 = 0,
             P0_1,
             P0_2,
@@ -67,9 +67,9 @@ class Pin
             P0_4,
             P0_5,
 
-            // The following pins are not present
-            // in DIP8 packages
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
+            // The following pins are only present in
+            // TSSOP16 / XSON16 / SO20 / TSSOP20 packages
             P0_6,
             P0_7,
             P0_8,
@@ -78,16 +78,17 @@ class Pin
             P0_11,
             P0_12,
             P0_13,
+#endif // (TARGET_PACKAGE_PIN_COUNT >= 16)
 
-            // The following pins are not present
-            // in DIP8, TSSOP16 or XSON16 packages
-#if (__LPC81X_GPIOS__ == 18)
+#if (TARGET_PACKAGE_PIN_COUNT == 20)
+            // The following pins are only present in
+            // SO20 / TSSOP20 packages
             P0_14,
             P0_15,
             P0_16,
             P0_17,
-#endif // (__LPC81X_GPIOS__ == 18)
-#endif // (__LPC81X_GPIOS__ >= 14)
+#endif // (TARGET_PACKAGE_PIN_COUNT == 20)
+
 
             // Not connected
             NC
@@ -171,7 +172,7 @@ class Pin
         {
             // Exclude NC
             assert(pin_name != Pin::Name::NC);
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
             // Exclude true open-drain pins
             assert(pin_name != Name::P0_10 && pin_name != Name::P0_11);
 #endif
@@ -185,7 +186,7 @@ class Pin
                                       | static_cast<uint32_t>(input_filter);
         }
 
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
         // Set mode of true open-drain pins (only available on P0_10 and P0_11)
         static void set_mode(const Name pin_name, const I2cMode     i2c_mode,
                                                   const InputFilter input_filter,
@@ -210,8 +211,11 @@ class Pin
         // --------------------------------------------------------------------
 
         // IOCON pin values
-        static constexpr std::array<uint8_t, __LPC81X_GPIOS__> m_pin_number_to_iocon
+        static constexpr std::array<uint8_t, TARGET_GPIO_COUNT> m_pin_number_to_iocon
         {
+            // The following pins are present in all packages
+
+            // PORT0
             0x11,   // P0.0
             0x0B,   // P0.1
             0x06,   // P0.2
@@ -219,9 +223,9 @@ class Pin
             0x04,   // P0.4
             0x03,   // P0.5
 
-            // The following pins are not present
-            // in DIP8 packages
-#if (__LPC81X_GPIOS__ >= 14)
+#if (TARGET_PACKAGE_PIN_COUNT >= 16)
+            // The following pins are only present in
+            // TSSOP16 / XSON16 / SO20 / TSSOP20 packages
             0x10,   // P0.6
             0x0F,   // P0.7
             0x0E,   // P0.8
@@ -230,16 +234,16 @@ class Pin
             0x07,   // P0.11
             0x02,   // P0.12
             0x01,   // P0.13
+#endif // (TARGET_PACKAGE_PIN_COUNT >= 16)
 
-            // The following pins are not present
-            // in DIP8, TSSOP16 or XSON16 packages
-#if (__LPC81X_GPIOS__ == 18)
+#if (TARGET_PACKAGE_PIN_COUNT == 20)
+            // The following pins are only present in
+            // SO20 / TSSOP20 packages
             0x12,   // P0.14
             0x0A,   // P0.15
             0x09,   // P0.16
-            0x00,   // P0.17
-#endif // (__LPC81X_GPIOS__ == 18)
-#endif // (__LPC81X_GPIOS__ >= 14)
+            0x00    // P0.17
+#endif // (TARGET_PACKAGE_PIN_COUNT == 20)
         };
 };
 

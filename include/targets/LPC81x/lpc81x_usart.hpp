@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    12 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,7 +51,7 @@
 extern "C" void USART0_IRQHandler(void);
 extern "C" void USART1_IRQHandler(void);
 
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
 // Forward declaration of additional IRQ handlers
 extern "C" void USART2_IRQHandler(void);
 #endif
@@ -75,37 +75,37 @@ namespace private_usart
 // USART Status register (STAT) bits
 enum class Status
 {
-    RX_READY         = (1 << 0),    // Receiver ready
-    RX_IDLE          = (1 << 1),    // Receiver idle
-    TX_READY         = (1 << 2),    // Transmitter ready for data
-    TX_IDLE          = (1 << 3),    // Transmitter idle
-    CTS              = (1 << 4),    // Status of CTS signal
-    CTS_DELTA        = (1 << 5),    // Change in CTS state
-    TX_DISABLED_INT  = (1 << 6),    // Transmitter disabled
-    RX_OVERRUN_INT   = (1 << 8),    // Overrun Error interrupt flag
-    RX_BREAK         = (1 << 10),   // Received break
-    RX_BREAK_DELTA   = (1 << 11),   // Change in receive break detection
-    START            = (1 << 12),   // Start detected
-    FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
-    PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
-    RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
-    ALL              = 0xF920       // 1111'1001'0010'0000
+    RX_READY       = (1 << 0),  // Receiver ready
+    RX_IDLE        = (1 << 1),  // Receiver idle
+    TX_READY       = (1 << 2),  // Transmitter ready for data
+    TX_IDLE        = (1 << 3),  // Transmitter idle
+    CTS            = (1 << 4),  // Status of CTS signal
+    CTS_DELTA      = (1 << 5),  // Change in CTS state
+    TX_DISABLED    = (1 << 6),  // Transmitter disabled
+    RX_OVERRUN     = (1 << 8),  // Overrun Error interrupt flag
+    RX_BREAK       = (1 << 10), // Received break
+    RX_BREAK_DELTA = (1 << 11), // Change in receive break detection
+    START          = (1 << 12), // Start detected
+    FRAME_ERROR    = (1 << 13), // Framing Error interrupt flag
+    PARITY_ERROR   = (1 << 14), // Parity Error interrupt flag
+    RX_NOISE_INT   = (1 << 15), // Received Noise interrupt flag
+    ALL            = 0xF920     // 1111'1001'0010'0000
 };
 
 // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
 enum class Interrupt
 {
-    RX_READY         = (1 << 0),    // Receiver ready
-    TX_READY         = (1 << 2),    // Transmitter ready for data
-    CTS_DELTA        = (1 << 5),    // Change in CTS state
-    TX_DISABLED_INT  = (1 << 6),    // Transmitter disabled
-    RX_OVERRUN_INT   = (1 << 8),    // Overrun Error interrupt flag
-    RX_BREAK_DELTA   = (1 << 11),   // Change in receive break detection
-    START            = (1 << 12),   // Start detected
-    FRAME_ERROR_INT  = (1 << 13),   // Framing Error interrupt flag
-    PARITY_ERROR_INT = (1 << 14),   // Parity Error interrupt flag
-    RX_NOISE_INT     = (1 << 15),   // Received Noise interrupt flag
-    ALL              = 0xF965       // 1111'1001'0110'0101
+    RX_READY       = (1 << 0),  // Receiver ready
+    TX_READY       = (1 << 2),  // Transmitter ready for data
+    CTS_DELTA      = (1 << 5),  // Change in CTS state
+    TX_DISABLED    = (1 << 6),  // Transmitter disabled
+    RX_OVERRUN     = (1 << 8),  // Overrun Error interrupt flag
+    RX_BREAK_DELTA = (1 << 11), // Change in receive break detection
+    START          = (1 << 12), // Start detected
+    FRAME_ERROR    = (1 << 13), // Framing Error interrupt flag
+    PARITY_ERRORT  = (1 << 14), // Parity Error interrupt flag
+    RX_NOISE_INT   = (1 << 15), // Received Noise interrupt flag
+    ALL            = 0xF965     // 1111'1001'0110'0101
 };
 
 BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::ALL))
@@ -116,9 +116,7 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
 
 
 
-static constexpr std::size_t USART_COUNT { __LPC81X_USARTS__ };
-
-class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
+class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -127,7 +125,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // Friend IRQ handler C functions to give access to private IRQ handler member function
         friend void ::USART0_IRQHandler(void);
         friend void ::USART1_IRQHandler(void);
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
         friend void ::USART2_IRQHandler(void);
 #endif
 
@@ -138,14 +136,14 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralUsart = PeripheralRefCounter<Usart, USART_COUNT>;
+        using PeripheralUsart = PeripheralRefCounter<Usart, TARGET_USART_COUNT>;
 
         // USART peripheral names selection
         enum class Name
         {
             USART0 = 0,
             USART1,
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
             USART2
 #endif
         };
@@ -224,7 +222,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                                    Swm::assign(Swm::PinMovable::U1_RXD_I, rxd);
                                    Swm::assign(Swm::PinMovable::U1_TXD_O, txd);
                                    break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: m_usart = LPC_USART2;
                                    Clock::enable(Clock::Peripheral::USART2);
                                    Power::reset(Power::ResetPeripheral::USART2);
@@ -265,7 +263,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
                 case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
                                    NVIC_DisableIRQ(USART1_IRQn);
                                    break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
                                    NVIC_DisableIRQ(USART2_IRQn);
                                    break;
@@ -397,6 +395,22 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             }
         }
 
+        // -------- READ / WRITE ----------------------------------------------
+
+        // Read data that has been received
+        uint32_t read_data() const
+        {
+            // Strip off undefined reserved bits, keep 9 lower bits.
+            return m_usart->RXDAT & 0x000001FF;
+        }
+
+        // Write data to be transmitted
+        void write_data(const uint32_t value)
+        {
+            // Strip off undefined reserved bits, keep 9 lower bits.
+            m_usart->TXDAT = value & 0x000001FF;
+        }
+
         // -------- ENABLE / DISABLE ------------------------------------------
 
         // Enable peripheral
@@ -452,7 +466,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_EnableIRQ(USART0_IRQn); break;
                 case Name::USART1: NVIC_EnableIRQ(USART1_IRQn); break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: NVIC_EnableIRQ(USART2_IRQn); break;
 #endif
                 default:                                        break;
@@ -467,7 +481,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_DisableIRQ(USART0_IRQn);          break;
                 case Name::USART1: NVIC_DisableIRQ(USART1_IRQn);          break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: NVIC_DisableIRQ(USART2_IRQn);          break;
 #endif
                 default:                                                  break;
@@ -482,7 +496,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0); break;
                 case Name::USART1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0); break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0); break;
 #endif
                 default:           return false;                                 break;
@@ -497,7 +511,7 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
             {
                 case Name::USART0: NVIC_SetPriority(USART0_IRQn, irq_priority); break;
                 case Name::USART1: NVIC_SetPriority(USART1_IRQn, irq_priority); break;
-#if (__LPC81X_USARTS__ == 3)
+#if (TARGET_USART_COUNT == 3)
                 case Name::USART2: NVIC_SetPriority(USART2_IRQn, irq_priority); break;
 #endif
                 default:                                                        break;
@@ -514,22 +528,6 @@ class Usart : private PeripheralRefCounter<Usart, USART_COUNT>
         void remove_irq_handler()
         {
             m_irq_handler = nullptr;
-        }
-
-        // -------- READ / WRITE ----------------------------------------------
-
-        // Read data that has been received
-        uint32_t read_data() const
-        {
-            // Strip off undefined reserved bits, keep 9 lower bits.
-            return m_usart->RXDAT & 0x000001FF;
-        }
-
-        // Write data to be transmitted
-        void write_data(const uint32_t value)
-        {
-            // Strip off undefined reserved bits, keep 9 lower bits.
-            m_usart->TXDAT = value & 0x000001FF;
         }
 
     private:

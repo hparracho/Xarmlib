@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    6 July 2018
+// @date    13 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -128,4 +128,4 @@ class Watchdog
 } // namespace targets
 } // namespace xarmlib
 
-#endif  // __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
+#endif // __XARMLIB_TARGETS_LPC84X_WATCHDOG_HPP
