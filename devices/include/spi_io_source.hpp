@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    17 July 2018
+// @date    18 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -97,14 +97,14 @@ class SpiIoSource : public PinSource
             return m_outputs[port_index] & (1UL << pin_bit);
         }
 
-        void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t value) override
+        void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t output_bit) override
         {
             assert(port_index < m_outputs.size());
             assert(pin_bit < 8);
 
             const uint32_t pin_mask = (1UL << pin_bit);
 
-            m_outputs[port_index] = (m_outputs[port_index] & (~pin_mask)) | (value & pin_mask);
+            m_outputs[port_index] = (m_outputs[port_index] & (~pin_mask)) | (output_bit & pin_mask);
         }
 
         static constexpr int8_t get_port_index(const int8_t pin_index)
