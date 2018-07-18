@@ -90,8 +90,6 @@ class IoDebouncer
             config_pins<GpioSource>(pin_name_bus, low_filter, high_filter, over_current_filter);
         }
 
-
-
         IoDebouncer(      SpiIoSource&              spi_io_source,
                     const PinIndexBus&              pin_index_bus,
                     const std::chrono::milliseconds low_filter,
@@ -144,8 +142,8 @@ class IoDebouncer
             return sampling;
         }
 
-        // Set output value to be written in the next transfer
-        void set_output(const uint32_t value)
+        // Write output value to be written in the next transfer
+        void write_output(const uint32_t value)
         {
             std::size_t value_shift_index = 0;
 
@@ -154,7 +152,7 @@ class IoDebouncer
                 const bool value_bit = (value & (1UL << value_shift_index++)) != 0;
                 const uint32_t output_bit = static_cast<uint32_t>(value_bit) << input.pin_bit;
 
-                m_pin_source.set_output_bit(input.port_index, input.pin_bit, output_bit);
+                m_pin_source.write_output_bit(input.port_index, input.pin_bit, output_bit);
 
                 if(output_bit == 0)
                 {
@@ -297,7 +295,7 @@ class IoDebouncer
                         if(current_read_bit != 0 && output_bit == 0)
                         {
                             // Unable to set output (over-current?) -> clear output
-                            m_pin_source.set_output_bit(input.port_index, input.pin_bit, pin_mask);
+                            m_pin_source.write_output_bit(input.port_index, input.pin_bit, pin_mask);
                         }
                     }
                 }
