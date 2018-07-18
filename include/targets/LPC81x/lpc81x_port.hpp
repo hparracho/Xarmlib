@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    17 July 2018
+// @date    18 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -144,6 +144,11 @@ class Port
             return LPC_GPIO->PIN[static_cast<std::size_t>(port)];
         }
 
+        static uint32_t read(const Name port, const uint32_t mask)
+        {
+            return LPC_GPIO->PIN[static_cast<std::size_t>(port)] & mask;
+        }
+
         static uint32_t read_masked(const Name port)
         {
             return LPC_GPIO->MPIN[static_cast<std::size_t>(port)];
@@ -152,6 +157,11 @@ class Port
         static void write(const Name port, const uint32_t value)
         {
             LPC_GPIO->PIN[static_cast<std::size_t>(port)] = value;
+        }
+
+        static void write(const Name port, const uint32_t mask, const uint32_t value)
+        {
+            LPC_GPIO->PIN[static_cast<std::size_t>(port)] &= (~mask) | (value & mask);
         }
 
         static void write_masked(const Name port, const uint32_t value)
