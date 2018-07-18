@@ -103,6 +103,11 @@ class Port
             LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
         }
 
+        static void write_direction(const Name port, const uint32_t mask, const uint32_t value)
+        {
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = (LPC_GPIO->DIR[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
+        }
+
         static void set_mask(const Name port)
         {
             // NOTE: Zeroes in these registers enable reading and writing.
@@ -161,7 +166,7 @@ class Port
 
         static void write(const Name port, const uint32_t mask, const uint32_t value)
         {
-            LPC_GPIO->PIN[static_cast<std::size_t>(port)] &= (~mask) | (value & mask);
+            LPC_GPIO->PIN[static_cast<std::size_t>(port)] = (LPC_GPIO->PIN[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
         }
 
         static void write_masked(const Name port, const uint32_t value)
