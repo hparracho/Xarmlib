@@ -131,7 +131,7 @@ class GpioSource : public PinSource
                 // Set output direction for the specified mask
                 Port::set_direction(port_name, m_outputs_mask[port_index]);
 
-                Port::write(port_name, m_outputs[port_index]);
+                Port::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
 
                 // Back to input direction
                 Port::clear_direction(port_name, m_outputs_mask[port_index]);
