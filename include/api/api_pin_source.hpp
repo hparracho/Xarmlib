@@ -58,7 +58,7 @@ class PinSource
 
         virtual uint32_t get_output_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
 
-        virtual void write_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t output_bit) = 0;
+        virtual void set_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t output_bit) = 0;
 };
 
 
