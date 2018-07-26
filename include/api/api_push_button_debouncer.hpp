@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_push_button_debouncer.hpp
 // @brief   API push-button debouncer class.
-// @date    25 July 2018
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,58 +51,58 @@ class PushButtonDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        PushButtonDebouncer(      GpioSource&               gpio_source,
-                            const PinNameBus&               pin_name_bus,
-                            const std::chrono::milliseconds stage1_filter,
-                            const std::chrono::milliseconds stage2_filter,
-                            const std::chrono::milliseconds timeout_filter,
-                            const Gpio::InputMode           input_mode,
-                            const Gpio::InputInvert         input_invert     = Gpio::InputInvert::NORMAL,
-                            const Gpio::InputHysteresis     input_hysteresis = Gpio::InputHysteresis::ENABLE,
-                            const std::chrono::milliseconds over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { gpio_source },
-                                                                                                                   m_ports(gpio_source.get_port_count()),
-                                                                                                                   m_inputs(pin_name_bus.get_size()),
-                                                                                                                   m_over_current_filter { 0 }
+        PushButtonDebouncer(      GpioSource&           gpio_source,
+                            const PinNameBus&           pin_name_bus,
+                            const int16_t               scan_time_stage1_samples,
+                            const int16_t               scan_time_stage2_samples,
+                            const int16_t               scan_time_timeout_samples,
+                            const int16_t               scan_time_over_current_samples,
+                            const Gpio::InputMode       input_mode,
+                            const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
+                            const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
+                                                                                                            m_ports(gpio_source.get_port_count()),
+                                                                                                            m_inputs(pin_name_bus.get_size()),
+                                                                                                            m_over_current_samples { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins<GpioSource>(pin_name_bus, stage1_filter, stage2_filter, timeout_filter, over_current_filter);
+            config_pins<GpioSource>(pin_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
         PushButtonDebouncer(      GpioSource&                  gpio_source,
                             const PinNameBus&                  pin_name_bus,
-                            const std::chrono::milliseconds    stage1_filter,
-                            const std::chrono::milliseconds    stage2_filter,
-                            const std::chrono::milliseconds    timeout_filter,
+                            const int16_t                      scan_time_stage1_samples,
+                            const int16_t                      scan_time_stage2_samples,
+                            const int16_t                      scan_time_timeout_samples,
+                            const int16_t                      scan_time_over_current_samples,
                             const Gpio::InputModeTrueOpenDrain input_mode,
-                            const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL,
-                            const std::chrono::milliseconds    over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { gpio_source },
-                                                                                                                      m_ports(gpio_source.get_port_count()),
-                                                                                                                      m_inputs(pin_name_bus.get_size()),
-                                                                                                                      m_over_current_filter { 0 }
+                            const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
+                                                                                                           m_ports(gpio_source.get_port_count()),
+                                                                                                           m_inputs(pin_name_bus.get_size()),
+                                                                                                           m_over_current_samples { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins<GpioSource>(pin_name_bus, stage1_filter, stage2_filter, timeout_filter, over_current_filter);
+            config_pins<GpioSource>(pin_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
-        PushButtonDebouncer(      SpiIoSource&              spi_io_source,
-                            const PinIndexBus&              pin_index_bus,
-                            const std::chrono::milliseconds stage1_filter,
-                            const std::chrono::milliseconds stage2_filter,
-                            const std::chrono::milliseconds timeout_filter,
-                            const std::chrono::milliseconds over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { spi_io_source },
-                                                                                                                   m_ports(spi_io_source.get_port_count()),
-                                                                                                                   m_inputs(pin_index_bus.get_size()),
-                                                                                                                   m_over_current_filter { 0 }
+        PushButtonDebouncer(      SpiIoSource& spi_io_source,
+                            const PinIndexBus& pin_index_bus,
+                            const int16_t      scan_time_stage1_samples,
+                            const int16_t      scan_time_stage2_samples,
+                            const int16_t      scan_time_timeout_samples,
+                            const int16_t      scan_time_over_current_samples) : m_pin_source { spi_io_source },
+                                                                                 m_ports(spi_io_source.get_port_count()),
+                                                                                 m_inputs(pin_index_bus.get_size()),
+                                                                                 m_over_current_samples { 0 }
         {
-            config_pins<SpiIoSource>(pin_index_bus, stage1_filter, stage2_filter, timeout_filter, over_current_filter);
+            config_pins<SpiIoSource>(pin_index_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -202,7 +202,7 @@ class PushButtonDebouncer
                 port.stage2_reached  &= ~pin_mask;
                 port.timed_out       &= ~pin_mask;
 
-                input.counter_ms = (output_bit == 0) ? m_over_current_filter : 0;
+                input.counter = (output_bit == 0) ? m_over_current_samples : 0;
             }
         }
 
@@ -214,21 +214,21 @@ class PushButtonDebouncer
 
         struct Input
         {
-            int8_t      port_index        { -1 };   // Input's port index
-            int8_t      pin_bit           { -1 };   // Input's bit within a port
-            int16_t     stage1_filter_ms  { 0 };    // Milliseconds that a pin must be steady at low level to be accepted as filtered (debounced) at stage 1
-            int16_t     stage2_filter_ms  { 0 };    // Milliseconds that a pin must be steady at low level to be accepted as filtered (debounced) at stage 2
-            int16_t     timeout_filter_ms { 0 };    // Milliseconds that a pin must be steady at low level to be considered timeout
-            int16_t     counter_ms        { 0 };    // Filter time counter
+            int8_t      port_index      { -1 }; // Input's port index
+            int8_t      pin_bit         { -1 }; // Input's bit within a port
+            int16_t     stage1_samples  { 0 };  // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced) at stage 1
+            int16_t     stage2_samples  { 0 };  // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced) at stage 2
+            int16_t     timeout_samples { 0 };  // Number of samples of scan time that a pin must be steady at low level to be considered timeout
+            int16_t     counter         { 0 };  // Samples counter
         };
 
         struct PortMask
         {
-            uint32_t    last_read       { 0 };      // Previous iteration inputs
-            uint32_t    stage1_filtered { 0 };      // Filtered inputs at stage 1
-            uint32_t    stage1_sampling { 0 };      // Inputs that are being sampled and not yet filtered at stage 1
-            uint32_t    stage2_reached  { 0 };      // Stage 2 reached inputs
-            uint32_t    timed_out       { 0 };      // Timed out inputs
+            uint32_t    last_read       { 0 };  // Previous iteration inputs
+            uint32_t    stage1_filtered { 0 };  // Filtered inputs at stage 1
+            uint32_t    stage1_sampling { 0 };  // Inputs that are being sampled and not yet filtered at stage 1
+            uint32_t    stage2_reached  { 0 };  // Stage 2 reached inputs
+            uint32_t    timed_out       { 0 };  // Timed out inputs
         };
 
         // --------------------------------------------------------------------
@@ -236,24 +236,20 @@ class PushButtonDebouncer
         // --------------------------------------------------------------------
 
         template <typename PinBusSource, class PinBusType>
-        void config_pins(const PinBus<PinBusType>&        pin_bus,
-                         const std::chrono::milliseconds& stage1_filter,
-                         const std::chrono::milliseconds& stage2_filter,
-                         const std::chrono::milliseconds& timeout_filter,
-                         const std::chrono::milliseconds& over_current_filter)
+        void config_pins(const PinBus<PinBusType>& pin_bus,
+                         const int16_t stage1_samples,
+                         const int16_t stage2_samples,
+                         const int16_t timeout_samples,
+                         const int16_t over_current_samples)
         {
-            assert(timeout_filter > stage2_filter && stage2_filter > stage1_filter);
+            assert(stage1_samples  >  0);
+            assert(stage2_samples  >= 0);
+            assert(timeout_samples >  0);
+            assert(over_current_samples > 0);
 
-            assert(stage1_filter.count()       > 0 && stage1_filter.count()       <= std::numeric_limits<int16_t>::max());
-            assert(stage2_filter.count()       > 0 && stage2_filter.count()       <= std::numeric_limits<int16_t>::max());
-            assert(timeout_filter.count()      > 0 && timeout_filter.count()      <= std::numeric_limits<int16_t>::max());
-            assert(over_current_filter.count() > 0 && over_current_filter.count() <= std::numeric_limits<int16_t>::max());
+            assert(timeout_samples > stage1_samples);
 
-            const int16_t stage1_filter_ms  = static_cast<int16_t>(stage1_filter.count());
-            const int16_t stage2_filter_ms  = static_cast<int16_t>(stage2_filter.count());
-            const int16_t timeout_filter_ms = static_cast<int16_t>(timeout_filter.count());
-
-            m_over_current_filter = static_cast<int16_t>(over_current_filter.count());
+            m_over_current_samples = over_current_samples;
 
             std::size_t assigned_input = 0;
 
@@ -266,7 +262,7 @@ class PushButtonDebouncer
                 const int8_t port_index = PinBusSource::get_port_index(pin);
                 const int8_t pin_bit = PinBusSource::get_pin_bit(pin);
 
-                m_inputs[assigned_input++] = {port_index, pin_bit, stage1_filter_ms, stage2_filter_ms, timeout_filter_ms, 0 };
+                m_inputs[assigned_input++] = {port_index, pin_bit, stage1_samples, stage2_samples, timeout_samples, 0 };
             }
 
             if(resume == true)
@@ -287,7 +283,7 @@ class PushButtonDebouncer
                      m_ports[port_index].stage2_reached = m_ports[port_index].timed_out |= ~m_ports[port_index].last_read;
                 }
 
-                return true;
+                return false;
             }
 
             bool new_input = false;
@@ -311,7 +307,7 @@ class PushButtonDebouncer
                     {
                         if(current_read_bit != 0)
                         {
-                            input.counter_ms = m_over_current_filter;
+                            input.counter = m_over_current_samples;
                         }
                     }
                     else
@@ -320,8 +316,8 @@ class PushButtonDebouncer
                         {
                             // Push-button was pressed
 
-                            // Reload counter with the timeout filter time (maximum time)
-                            input.counter_ms = input.timeout_filter_ms;
+                            // Reload counter with the timeout samples (maximum time)
+                            input.counter = input.timeout_samples;
 
                             // Set sampling flag
                             port.stage1_sampling |= pin_mask;
@@ -342,10 +338,13 @@ class PushButtonDebouncer
                                 {
                                     // Timeout not reached yet
 
+                                    /*
                                     // Hold push-button (clear output bit)
                                     m_pin_source.write_output_bit(input.port_index, input.pin_bit, 0);
 
-                                    input.counter_ms = m_over_current_filter;
+                                    input.counter = m_over_current_samples;
+                                    */
+                                    input.counter = 0;
 
                                     // Set new input flag
                                     new_input = true;
@@ -356,7 +355,7 @@ class PushButtonDebouncer
                                 // Clear flag
                                 port.stage1_sampling &= ~pin_mask;
 
-                                input.counter_ms = 0;
+                                input.counter = 0;
                             }
                         }
                     }
@@ -366,15 +365,15 @@ class PushButtonDebouncer
                 }
                 else
                 {
-                    if(input.counter_ms > 0)
+                    if(input.counter > 0)
                     {
-                        input.counter_ms--;
+                        input.counter--;
 
                         const uint32_t output_bit = m_pin_source.get_output_bit(input.port_index, input.pin_bit);
 
                         if(output_bit != 0)
                         {
-                            if(input.counter_ms == input.timeout_filter_ms - input.stage1_filter_ms)
+                            if(input.counter == input.timeout_samples - input.stage1_samples)
                             {
                                 // Stage 1 filter time reached
 
@@ -382,14 +381,14 @@ class PushButtonDebouncer
                                 port.stage1_filtered &= ~pin_mask;
                                 port.stage1_sampling &= ~pin_mask;
                             }
-                            else if(input.counter_ms == input.timeout_filter_ms - input.stage2_filter_ms)
+                            else if(input.counter == input.timeout_samples - input.stage2_samples)
                             {
                                 // Stage 2 filter time reached
 
                                 // Set stage 2 reached flag
                                 port.stage2_reached |= pin_mask;
                             }
-                            else if(input.counter_ms == 0)
+                            else if(input.counter == 0)
                             {
                                 // Timeout filter time reached
 
@@ -397,7 +396,7 @@ class PushButtonDebouncer
                                 port.timed_out |= pin_mask;
                             }
                         }
-                        else if(input.counter_ms == 0 && current_read_bit != 0)
+                        else if(input.counter == 0 && current_read_bit != 0)
                         {
                             // Unable to set output (over-current?) -> clear output
                             m_pin_source.write_output_bit(input.port_index, input.pin_bit, pin_mask);
@@ -419,7 +418,7 @@ class PushButtonDebouncer
         PinSource&              m_pin_source;
         std::dynarray<PortMask> m_ports;
         std::dynarray<Input>    m_inputs;
-        int16_t                 m_over_current_filter;
+        int16_t                 m_over_current_samples;
 
 };
 
