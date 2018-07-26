@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    18 July 2018
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,55 +51,55 @@ class IoDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        IoDebouncer(      GpioSource&               gpio_source,
-                    const PinNameBus&               pin_name_bus,
-                    const std::chrono::milliseconds low_filter,
-                    const std::chrono::milliseconds high_filter,
-                    const Gpio::InputMode           input_mode,
-                    const Gpio::InputInvert         input_invert     = Gpio::InputInvert::NORMAL,
-                    const Gpio::InputHysteresis     input_hysteresis = Gpio::InputHysteresis::ENABLE,
-                    const std::chrono::milliseconds over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { gpio_source },
-                                                                                                           m_ports(gpio_source.get_port_count()),
-                                                                                                           m_inputs(pin_name_bus.get_size()),
-                                                                                                           m_over_current_filter { 0 }
+        IoDebouncer(      GpioSource&           gpio_source,
+                    const PinNameBus&           pin_name_bus,
+                    const int16_t               scan_time_low_samples,
+                    const int16_t               scan_time_high_samples,
+                    const int16_t               scan_time_over_current_samples,
+                    const Gpio::InputMode       input_mode,
+                    const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
+                    const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
+                                                                                                    m_ports(gpio_source.get_port_count()),
+                                                                                                    m_inputs(pin_name_bus.get_size()),
+                                                                                                    m_over_current_samples { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins<GpioSource>(pin_name_bus, low_filter, high_filter, over_current_filter);
+            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
         }
 
         IoDebouncer(      GpioSource&                  gpio_source,
                     const PinNameBus&                  pin_name_bus,
-                    const std::chrono::milliseconds    low_filter,
-                    const std::chrono::milliseconds    high_filter,
+                    const int16_t                      scan_time_low_samples,
+                    const int16_t                      scan_time_high_samples,
+                    const int16_t                      scan_time_over_current_samples,
                     const Gpio::InputModeTrueOpenDrain input_mode,
-                    const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL,
-                    const std::chrono::milliseconds    over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { gpio_source },
-                                                                                                              m_ports(gpio_source.get_port_count()),
-                                                                                                              m_inputs(pin_name_bus.get_size()),
-                                                                                                              m_over_current_filter { 0 }
+                    const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
+                                                                                                   m_ports(gpio_source.get_port_count()),
+                                                                                                   m_inputs(pin_name_bus.get_size()),
+                                                                                                   m_over_current_samples { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins<GpioSource>(pin_name_bus, low_filter, high_filter, over_current_filter);
+            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
         }
 
-        IoDebouncer(      SpiIoSource&              spi_io_source,
-                    const PinIndexBus&              pin_index_bus,
-                    const std::chrono::milliseconds low_filter,
-                    const std::chrono::milliseconds high_filter,
-                    const std::chrono::milliseconds over_current_filter = std::chrono::milliseconds(20)) : m_pin_source { spi_io_source },
-                                                                                                           m_ports(spi_io_source.get_port_count()),
-                                                                                                           m_inputs(pin_index_bus.get_size()),
-                                                                                                           m_over_current_filter { 0 }
+        IoDebouncer(      SpiIoSource& spi_io_source,
+                    const PinIndexBus& pin_index_bus,
+                    const int16_t      scan_time_low_samples,
+                    const int16_t      scan_time_high_samples,
+                    const int16_t      scan_time_over_current_samples) : m_pin_source { spi_io_source },
+                                                                         m_ports(spi_io_source.get_port_count()),
+                                                                         m_inputs(pin_index_bus.get_size()),
+                                                                         m_over_current_samples { 0 }
         {
-            config_pins<SpiIoSource>(pin_index_bus, low_filter, high_filter, over_current_filter);
+            config_pins<SpiIoSource>(pin_index_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -156,8 +156,8 @@ class IoDebouncer
 
                 if(output_bit == 0)
                 {
-                    // Reload counter with over-current filter time
-                    input.counter_ms = m_over_current_filter;
+                    // Reload counter with over-current samples
+                    input.counter = m_over_current_samples;
                 }
             }
         }
@@ -170,11 +170,11 @@ class IoDebouncer
 
         struct Input
         {
-            int8_t      port_index     { -1 };  // Input's port index
-            int8_t      pin_bit        { -1 };  // Input's bit within a port
-            int16_t     low_filter_ms  { 0 };   // Milliseconds that a pin must be steady at low level to be accepted as filtered (debounced)
-            int16_t     high_filter_ms { 0 };   // Milliseconds that a pin must be steady at high level to be accepted as filtered (debounced)
-            int16_t     counter_ms     { 0 };   // Filter time counter
+            int8_t      port_index   { -1 };    // Input's port index
+            int8_t      pin_bit      { -1 };    // Input's bit within a port
+            int16_t     low_samples  { 0 };     // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
+            int16_t     high_samples { 0 };     // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
+            int16_t     counter      { 0 };     // Samples counter
         };
 
         struct PortMask
@@ -189,19 +189,13 @@ class IoDebouncer
         // --------------------------------------------------------------------
 
         template <typename PinBusSource, class PinBusType>
-        void config_pins(const PinBus<PinBusType>&        pin_bus,
-                         const std::chrono::milliseconds& low_filter,
-                         const std::chrono::milliseconds& high_filter,
-                         const std::chrono::milliseconds& over_current_filter)
+        void config_pins(const PinBus<PinBusType>& pin_bus, const int16_t low_samples, const int16_t high_samples, const int16_t over_current_samples)
         {
-            assert(low_filter.count()          > 0 && low_filter.count()          <= std::numeric_limits<int16_t>::max());
-            assert(high_filter.count()         > 0 && high_filter.count()         <= std::numeric_limits<int16_t>::max());
-            assert(over_current_filter.count() > 0 && over_current_filter.count() <= std::numeric_limits<int16_t>::max());
+            assert(low_samples  > 0);
+            assert(high_samples > 0);
+            assert(over_current_samples > 0);
 
-            const int16_t low_filter_ms  = static_cast<int16_t>(low_filter.count());
-            const int16_t high_filter_ms = static_cast<int16_t>(high_filter.count());
-
-            m_over_current_filter = static_cast<int16_t>(over_current_filter.count());
+            m_over_current_samples = over_current_samples;
 
             std::size_t assigned_input = 0;
 
@@ -214,7 +208,7 @@ class IoDebouncer
                 const int8_t port_index = PinBusSource::get_port_index(pin);
                 const int8_t pin_bit = PinBusSource::get_pin_bit(pin);
 
-                m_inputs[assigned_input++] = {port_index, pin_bit, low_filter_ms, high_filter_ms, 0 };
+                m_inputs[assigned_input++] = {port_index, pin_bit, low_samples, high_samples, 0 };
             }
 
             if(resume == true)
@@ -251,14 +245,14 @@ class IoDebouncer
                 {
                     const uint32_t output_bit = m_pin_source.get_output_bit(input.port_index, input.pin_bit);
 
-                    // Inputs are different. Reload counter with respective filter time.
+                    // Inputs are different. Reload counter with number of samples.
                     if(output_bit == 0 && current_read_bit != 0)
                     {
-                        input.counter_ms = m_over_current_filter;
+                        input.counter = m_over_current_samples;
                     }
-                    else if(output_bit != 0 || input.counter_ms == 0)
+                    else if(output_bit != 0 || input.counter == 0)
                     {
-                        input.counter_ms = (current_read_bit == 0) ? input.low_filter_ms : input.high_filter_ms;
+                        input.counter = (current_read_bit == 0) ? input.low_samples : input.high_samples;
 
                         // Set sampling flag
                         port.sampling |= pin_mask;
@@ -269,12 +263,12 @@ class IoDebouncer
                 }
                 else
                 {
-                    if(input.counter_ms > 0)
+                    if(input.counter > 0)
                     {
-                        input.counter_ms--;
+                        input.counter--;
                     }
 
-                    if(input.counter_ms == 0)
+                    if(input.counter == 0)
                     {
                         const uint32_t filtered_bit = port.filtered & pin_mask;
 
@@ -311,7 +305,7 @@ class IoDebouncer
         PinSource&              m_pin_source;
         std::dynarray<PortMask> m_ports;
         std::dynarray<Input>    m_inputs;
-        int16_t                 m_over_current_filter;
+        int16_t                 m_over_current_samples;
 
 };
 
