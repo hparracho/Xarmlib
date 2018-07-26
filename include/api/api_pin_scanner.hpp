@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer).
-// @date    17 July 2018
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -94,16 +94,37 @@ class PinScanner
             *result = debouncer_handler;
         }
 
-        static void assign_pin_change_handler(const PinChangeHandler& pin_change_handler)
+        static void add_debouncer_handler(const DebouncerHandler& debouncer_handler, const PinChangeHandler& pin_change_handler)
         {
+            assert(debouncer_handler  != nullptr);
             assert(pin_change_handler != nullptr);
 
-            m_pin_change_handler = pin_change_handler;
+            // Find an empty slot to store the debouncer handler
+            auto result = std::find(m_debouncer_handlers.begin(), m_debouncer_handlers.end(), nullptr);
+
+            // Assert if empty slot not found
+            assert(result != m_debouncer_handlers.end());
+
+            // Assign debouncer handler
+            *result = debouncer_handler;
+
+            // Get the index slot to store the pin change handler
+            auto index = std::distance(m_debouncer_handlers.begin(), result);
+
+            // Assign pin change handler
+            m_pin_change_handlers[index] = pin_change_handler;
         }
 
-        static void remove_pin_change_handler()
+        static void assign_grouped_pin_change_handler(const PinChangeHandler& grouped_pin_change_handler)
         {
-            m_pin_change_handler = nullptr;
+            assert(grouped_pin_change_handler != nullptr);
+
+            m_grouped_pin_change_handler = grouped_pin_change_handler;
+        }
+
+        static void remove_grouped_pin_change_handler()
+        {
+            m_grouped_pin_change_handler = nullptr;
         }
 
         static void start(const std::chrono::milliseconds scan_time)
@@ -175,21 +196,23 @@ class PinScanner
                 }
             }
 
-            bool new_input = m_is_starting;
+            bool new_input = false;
 
-            for(const auto& handler : m_debouncer_handlers)
+            int32_t yield = 0;  // Used in FreeRTOS
+
+            for(std::size_t index = 0; index < m_debouncer_handlers.size(); ++index)
             {
-                if(handler != nullptr && handler(m_is_starting) == true)
+                if(m_debouncer_handlers[index] != nullptr && m_debouncer_handlers[index](m_is_starting) == true)
                 {
+                    yield |= m_pin_change_handlers[index]();
+
                     new_input = true;
                 }
             }
 
-            int32_t yield = 0;  // Used in FreeRTOS
-
-            if(new_input == true && m_pin_change_handler != nullptr)
+            if(new_input == true && m_grouped_pin_change_handler != nullptr)
             {
-                yield = m_pin_change_handler();
+                yield |= m_grouped_pin_change_handler();
             }
 
             m_is_starting = false;
@@ -204,7 +227,8 @@ class PinScanner
         static Timer                           m_timer;
         static std::dynarray<PinSourceHandler> m_pin_source_handlers;
         static std::dynarray<DebouncerHandler> m_debouncer_handlers;
-        static PinChangeHandler                m_pin_change_handler;
+        static std::dynarray<PinChangeHandler> m_pin_change_handlers;
+        static PinChangeHandler                m_grouped_pin_change_handler;
         static bool                            m_is_starting;
 };
 
