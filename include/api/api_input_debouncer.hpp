@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer class.
-// @date    26 July 2018
+// @date    30 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -106,7 +106,7 @@ class InputDebouncer
 
         uint32_t get_filtered()
         {
-            uint32_t filtered = 0;
+            uint32_t filtered = 0xFFFFFFFF;
             std::size_t filtered_shift_index = 0;
 
             for(auto input : m_inputs)
@@ -115,7 +115,9 @@ class InputDebouncer
 
                 const bool filtered_bit = (m_ports[input.port_index].filtered & pin_mask) != 0;
 
-                filtered |= static_cast<uint32_t>(filtered_bit) << filtered_shift_index++;
+                filtered = (filtered & ~(1UL << filtered_shift_index)) | static_cast<uint32_t>(filtered_bit) << filtered_shift_index;
+
+                filtered_shift_index++;
             }
 
             return filtered;

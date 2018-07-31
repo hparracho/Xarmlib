@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_push_button_debouncer.hpp
 // @brief   API push-button debouncer class.
-// @date    26 July 2018
+// @date    31 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -113,7 +113,7 @@ class PushButtonDebouncer
 
         uint32_t get_stage1_filtered()
         {
-            uint32_t filtered = 0;
+            uint32_t filtered = 0xFFFFFFFF;
             std::size_t filtered_shift_index = 0;
 
             for(auto input : m_inputs)
@@ -122,7 +122,9 @@ class PushButtonDebouncer
 
                 const bool filtered_bit = (m_ports[input.port_index].stage1_filtered & pin_mask) != 0;
 
-                filtered |= static_cast<uint32_t>(filtered_bit) << filtered_shift_index++;
+                filtered = (filtered & ~(1UL << filtered_shift_index)) | static_cast<uint32_t>(filtered_bit) << filtered_shift_index;
+
+                filtered_shift_index++;
             }
 
             return filtered;
@@ -195,7 +197,7 @@ class PushButtonDebouncer
                 auto& port = m_ports[input.port_index];
 
                 // Update stage 1 filtered flag
-                port.stage1_filtered |= (port.stage1_filtered & ~pin_mask) | output_bit;
+                port.stage1_filtered = (port.stage1_filtered & ~pin_mask) | output_bit;
 
                 // Clear flags
                 port.stage1_sampling &= ~pin_mask;
