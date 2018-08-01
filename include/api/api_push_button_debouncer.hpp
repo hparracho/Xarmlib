@@ -34,7 +34,7 @@
 
 #include "spi_io_source.hpp"
 #include "api/api_gpio_source.hpp"
-#include "api/api_pin_bus.hpp"
+#include "api/api_push_button_bus.hpp"
 #include "hal/hal_gpio.hpp"
 
 namespace xarmlib
@@ -52,7 +52,7 @@ class PushButtonDebouncer
         // --------------------------------------------------------------------
 
         PushButtonDebouncer(      GpioSource&           gpio_source,
-                            const PinNameBus&           pin_name_bus,
+                            const PushButtonNameBus&    push_button_name_bus,
                             const int16_t               scan_time_stage1_samples,
                             const int16_t               scan_time_stage2_samples,
                             const int16_t               scan_time_timeout_samples,
@@ -61,19 +61,19 @@ class PushButtonDebouncer
                             const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
                             const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
                                                                                                             m_ports(gpio_source.get_port_count()),
-                                                                                                            m_inputs(pin_name_bus.get_size()),
+                                                                                                            m_inputs(push_button_name_bus.get_size()),
                                                                                                             m_over_current_samples { 0 }
         {
-            for(const auto pin_name : pin_name_bus)
+            for(const auto push_button_name : push_button_name_bus)
             {
-                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
+                Gpio gpio(push_button_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
+            config_pins<GpioSource>(push_button_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
         PushButtonDebouncer(      GpioSource&                  gpio_source,
-                            const PinNameBus&                  pin_name_bus,
+                            const PushButtonNameBus&           push_button_name_bus,
                             const int16_t                      scan_time_stage1_samples,
                             const int16_t                      scan_time_stage2_samples,
                             const int16_t                      scan_time_timeout_samples,
@@ -81,28 +81,28 @@ class PushButtonDebouncer
                             const Gpio::InputModeTrueOpenDrain input_mode,
                             const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
                                                                                                            m_ports(gpio_source.get_port_count()),
-                                                                                                           m_inputs(pin_name_bus.get_size()),
+                                                                                                           m_inputs(push_button_name_bus.get_size()),
                                                                                                            m_over_current_samples { 0 }
         {
-            for(const auto pin_name : pin_name_bus)
+            for(const auto push_button_name : push_button_name_bus)
             {
-                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
+                Gpio gpio(push_button_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
+            config_pins<GpioSource>(push_button_name_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
-        PushButtonDebouncer(      SpiIoSource& spi_io_source,
-                            const PinIndexBus& pin_index_bus,
-                            const int16_t      scan_time_stage1_samples,
-                            const int16_t      scan_time_stage2_samples,
-                            const int16_t      scan_time_timeout_samples,
-                            const int16_t      scan_time_over_current_samples) : m_pin_source { spi_io_source },
-                                                                                 m_ports(spi_io_source.get_port_count()),
-                                                                                 m_inputs(pin_index_bus.get_size()),
-                                                                                 m_over_current_samples { 0 }
+        PushButtonDebouncer(      SpiIoSource&        spi_io_source,
+                            const PushButtonIndexBus& push_button_index_bus,
+                            const int16_t             scan_time_stage1_samples,
+                            const int16_t             scan_time_stage2_samples,
+                            const int16_t             scan_time_timeout_samples,
+                            const int16_t             scan_time_over_current_samples) : m_pin_source { spi_io_source },
+                                                                                        m_ports(spi_io_source.get_port_count()),
+                                                                                        m_inputs(push_button_index_bus.get_size()),
+                                                                                        m_over_current_samples { 0 }
         {
-            config_pins<SpiIoSource>(pin_index_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
+            config_pins<SpiIoSource>(push_button_index_bus, scan_time_stage1_samples, scan_time_stage2_samples, scan_time_timeout_samples, scan_time_over_current_samples);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -237,8 +237,8 @@ class PushButtonDebouncer
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        template <typename PinBusSource, class PinBusType>
-        void config_pins(const PinBus<PinBusType>& pin_bus,
+        template <typename PushButtonBusSource, class PushButtonBusType>
+        void config_pins(const PushButtonBus<PushButtonBusType>& push_button_bus,
                          const int16_t stage1_samples,
                          const int16_t stage2_samples,
                          const int16_t timeout_samples,
@@ -259,10 +259,10 @@ class PushButtonDebouncer
 
             PinScanner::stop();
 
-            for(auto pin : pin_bus)
+            for(auto push_button : push_button_bus)
             {
-                const int8_t port_index = PinBusSource::get_port_index(pin);
-                const int8_t pin_bit = PinBusSource::get_pin_bit(pin);
+                const int8_t port_index = PushButtonBusSource::get_port_index(push_button);
+                const int8_t pin_bit = PushButtonBusSource::get_pin_bit(push_button);
 
                 m_inputs[assigned_input++] = {port_index, pin_bit, stage1_samples, stage2_samples, timeout_samples, 0 };
             }

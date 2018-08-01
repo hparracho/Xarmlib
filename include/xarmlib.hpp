@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    19 July 2018
+// @date    31 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,6 +44,7 @@
 #include "api/api_io_debouncer.hpp"
 #include "api/api_pin_bus.hpp"
 #include "api/api_pin_scanner.hpp"
+#include "api/api_push_button_bus.hpp"
 #include "api/api_push_button_debouncer.hpp"
 
 // Targets HAL interface
