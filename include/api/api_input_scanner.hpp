@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_scanner.hpp
 // @brief   API input scanner class (takes control of one available Timer).
-// @date    6 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -105,7 +105,7 @@ class InputScanner
         {
             m_timer.stop();
 
-            while(m_timer.is_pending_irq() == true);
+            while(m_timer.is_irq_pending() == true);
 
             m_timer.disable_irq();
             m_timer.remove_irq_handler();
@@ -127,7 +127,7 @@ class InputScanner
             return m_timer.is_running();
         }
 
-#ifdef __TARGET_TIMER_TYPE_IS_MRT__
+#ifdef TARGET_TIMER_TYPE_MRT
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
         static void set_mrt_irq_priority(const int32_t irq_priority)

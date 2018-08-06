@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_debouncer.hpp
 // @brief   API MCU pin debouncer class.
-// @date    12 July 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -215,7 +215,7 @@ class PinDebouncer
         // Handler that is intended to be used as an input handler of the InputScanner class
         static bool input_handler()
         {
-            for(std::size_t port_index = 0; port_index < Port::COUNT; ++port_index)
+            for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
                 m_ports[port_index].current_read = Port::read(static_cast<Port::Name>(port_index));
             }
@@ -300,10 +300,10 @@ class PinDebouncer
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static std::array<PortMask, Port::COUNT> m_ports;
-        static std::dynarray<Input>              m_pins;
-        static std::size_t                       m_assigned_pin_count;
-        static bool                              m_is_first_debounce;
+        static std::array<PortMask, TARGET_PORT_COUNT> m_ports;
+        static std::dynarray<Input>                    m_pins;
+        static std::size_t                             m_assigned_pin_count;
+        static bool                                    m_is_first_debounce;
 };
 
 
