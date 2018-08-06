@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib demo configuration header file for NXP LPC81x targets.
-// @date    14 July 2018
+// @date    17 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,11 +63,11 @@ constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ }
 //XARMLIB LIBRARY DEFINITIONS
 // ----------------------------------------------------------------------------
 
-// -------- INPUT SCANNER / DEBOUNCER -----------------------------------------
-#define XARMLIB_ENABLE_INPUT_DEBOUNCER                          (1)     // Enable / disable input debouncer functionality
+// -------- PIN SCANNER -------------------------------------------------------
+#define XARMLIB_ENABLE_PIN_SCANNER                               (1)    // Enable / disable pin scanner functionality
 
-constexpr std::size_t XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT    { 3 }; // Maximum possible number of debounced pins
-constexpr std::size_t XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT { 2 }; // Maximum possible number of input scanner sources
+constexpr std::size_t XARMLIB_CONFIG_PIN_SCANNER_SOURCE_COUNT    { 2 }; // Maximum possible number of pin scanner sources
+constexpr std::size_t XARMLIB_CONFIG_PIN_SCANNER_DEBOUNCER_COUNT { 3 }; // Maximum possible number of pin scanner debouncers
 
 
 
