@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer class.
-// @date    30 July 2018
+// @date    2 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,8 +37,6 @@
 #include "api/api_pin_bus.hpp"
 #include "hal/hal_gpio.hpp"
 
-#include <dynarray>
-
 namespace xarmlib
 {
 
@@ -60,15 +58,19 @@ class InputDebouncer
                        const Gpio::InputMode       input_mode,
                        const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
                        const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
-                                                                                                       m_ports(gpio_source.get_port_count()),
-                                                                                                       m_inputs(pin_name_bus.get_size())
+                                                                                                       m_inputs(pin_name_bus.get_size()),
+                                                                                                       m_low_samples { scan_time_low_samples },
+                                                                                                       m_high_samples { scan_time_high_samples },
+                                                                                                       m_last_read_bus { 0 },
+                                                                                                       m_filtered_bus { 0 },
+                                                                                                       m_sampling_bus { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples);
+            config_pins<GpioSource>(pin_name_bus);
         }
 
         InputDebouncer(      GpioSource&                  gpio_source,
@@ -77,25 +79,33 @@ class InputDebouncer
                        const int16_t                      scan_time_high_samples,
                        const Gpio::InputModeTrueOpenDrain input_mode,
                        const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
-                                                                                                      m_ports(gpio_source.get_port_count()),
-                                                                                                      m_inputs(pin_name_bus.get_size())
+                                                                                                      m_inputs(pin_name_bus.get_size()),
+                                                                                                      m_low_samples { scan_time_low_samples },
+                                                                                                      m_high_samples { scan_time_high_samples },
+                                                                                                      m_last_read_bus { 0 },
+                                                                                                      m_filtered_bus { 0 },
+                                                                                                      m_sampling_bus { 0 }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples);
+            config_pins<GpioSource>(pin_name_bus);
         }
 
         InputDebouncer(      SpiIoSource& spi_io_source,
                        const PinIndexBus& pin_index_bus,
                        const int16_t      scan_time_low_samples,
                        const int16_t      scan_time_high_samples) : m_pin_source { spi_io_source },
-                                                                    m_ports(spi_io_source.get_port_count()),
-                                                                    m_inputs(pin_index_bus.get_size())
+                                                                    m_inputs(pin_index_bus.get_size()),
+                                                                    m_low_samples { scan_time_low_samples },
+                                                                    m_high_samples { scan_time_high_samples },
+                                                                    m_last_read_bus { 0 },
+                                                                    m_filtered_bus { 0 },
+                                                                    m_sampling_bus { 0 }
         {
-            config_pins<SpiIoSource>(pin_index_bus, scan_time_low_samples, scan_time_high_samples);
+            config_pins<SpiIoSource>(pin_index_bus);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -104,40 +114,14 @@ class InputDebouncer
             return PinScanner::DebouncerHandler::create<InputDebouncer, &InputDebouncer::debouncer_handler>(this);
         }
 
-        uint32_t get_filtered()
+        uint32_t get_filtered_bus() const
         {
-            uint32_t filtered = 0xFFFFFFFF;
-            std::size_t filtered_shift_index = 0;
-
-            for(auto input : m_inputs)
-            {
-                const uint32_t pin_mask = (1UL << input.pin_bit);
-
-                const bool filtered_bit = (m_ports[input.port_index].filtered & pin_mask) != 0;
-
-                filtered = (filtered & ~(1UL << filtered_shift_index)) | static_cast<uint32_t>(filtered_bit) << filtered_shift_index;
-
-                filtered_shift_index++;
-            }
-
-            return filtered;
+            return m_filtered_bus;
         }
 
-        uint32_t get_sampling()
+        uint32_t get_sampling_bus() const
         {
-            uint32_t sampling = 0;
-            std::size_t sampling_shift_index = 0;
-
-            for(auto input : m_inputs)
-            {
-                const uint32_t pin_mask = (1UL << input.pin_bit);
-
-                const bool sampling_bit = (m_ports[input.port_index].sampling & pin_mask) != 0;
-
-                sampling |= static_cast<uint32_t>(sampling_bit) << sampling_shift_index++;
-            }
-
-            return sampling;
+            return m_sampling_bus;
         }
 
      private:
@@ -148,18 +132,9 @@ class InputDebouncer
 
         struct Input
         {
-            int8_t      port_index   { -1 };    // Input's port index
-            int8_t      pin_bit      { -1 };    // Input's bit within a port
-            int16_t     low_samples  { 0 };     // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
-            int16_t     high_samples { 0 };     // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
-            int16_t     counter      { 0 };     // Samples counter
-        };
-
-        struct PortMask
-        {
-            uint32_t    last_read { 0 };        // Previous iteration inputs
-            uint32_t    filtered  { 0 };        // Filtered inputs
-            uint32_t    sampling  { 0 };        // Inputs that are being sampled and not yet filtered
+            int8_t      port_index { -1 };  // Input's port index
+            int8_t      pin_bit    { -1 };  // Input's bit within a port
+            int16_t     counter    {  0 };  // Samples counter
         };
 
         // --------------------------------------------------------------------
@@ -167,10 +142,10 @@ class InputDebouncer
         // --------------------------------------------------------------------
 
         template <typename PinBusSource, class PinBusType>
-        void config_pins(const PinBus<PinBusType>& pin_bus, const int16_t low_samples, const int16_t high_samples)
+        void config_pins(const PinBus<PinBusType>& pin_bus)
         {
-            assert(low_samples  > 0);
-            assert(high_samples > 0);
+            assert(m_low_samples  > 1);
+            assert(m_high_samples > 1);
 
             std::size_t assigned_input = 0;
 
@@ -183,7 +158,7 @@ class InputDebouncer
                 const int8_t port_index = PinBusSource::get_port_index(pin);
                 const int8_t pin_bit = PinBusSource::get_pin_bit(pin);
 
-                m_inputs[assigned_input++] = {port_index, pin_bit, low_samples, high_samples, 0 };
+                m_inputs[assigned_input++] = { port_index, pin_bit, 0 };
             }
 
             if(resume == true)
@@ -197,57 +172,63 @@ class InputDebouncer
         {
             if(is_starting == true)
             {
-                for(std::size_t port_index = 0; port_index < m_ports.size(); ++port_index)
+                for(std::size_t input_index = 0; input_index < m_inputs.size(); ++input_index)
                 {
-                    m_ports[port_index].last_read = m_ports[port_index].filtered = m_pin_source.get_read(port_index);
+                    const auto input = m_inputs[input_index];
+
+                    const bool read_bit = m_pin_source.get_read_bit(input.port_index, input.pin_bit) != 0;
+
+                    m_last_read_bus |= static_cast<uint32_t>(read_bit) << input_index;
                 }
+
+                m_filtered_bus = m_last_read_bus;
 
                 return true;
             }
 
             bool new_input = false;
 
-            for(auto& input : m_inputs)
+            for(std::size_t input_index = 0; input_index < m_inputs.size(); ++input_index)
             {
-                auto& port = m_ports[input.port_index];
+                auto& input = m_inputs[input_index];
 
-                const uint32_t pin_mask = (1UL << input.pin_bit);
+                const uint32_t input_mask = 1UL << input_index;
 
-                const uint32_t current_read_bit = m_pin_source.get_read_bit(input.port_index, input.pin_bit);
-                const uint32_t last_read_bit    = port.last_read & pin_mask;
+                const bool current_read_bit = m_pin_source.get_read_bit(input.port_index, input.pin_bit) != 0;
+                const bool last_read_bit    = (m_last_read_bus & input_mask) != 0;
 
                 if(current_read_bit != last_read_bit)
                 {
                     // Inputs are different. Reload counter with number of samples.
-                    input.counter = (current_read_bit == 0) ? input.low_samples : input.high_samples;
+                    input.counter = (current_read_bit == 0) ? m_low_samples : m_high_samples;
 
                     // Set sampling flag
-                    port.sampling |= pin_mask;
+                     m_sampling_bus |= input_mask;
 
                     // Update last read input
-                    port.last_read = (port.last_read & (~pin_mask)) | current_read_bit;
+                    m_last_read_bus = (m_last_read_bus & (~input_mask)) | static_cast<uint32_t>(current_read_bit) << input_index;
                 }
                 else
                 {
                     if(input.counter > 0)
                     {
                         input.counter--;
-                    }
 
-                    if(input.counter == 0)
-                    {
-                        const uint32_t filtered_bit = port.filtered & pin_mask;
-
-                        if(current_read_bit != filtered_bit)
+                        if(input.counter == 0)
                         {
-                            // Update filtered input
-                            port.filtered = (port.filtered & (~pin_mask)) | current_read_bit;
+                            const bool filtered_bit = (m_filtered_bus & input_mask) != 0;
+
+                            if(current_read_bit != filtered_bit)
+                            {
+                                // Update filtered input
+                                m_filtered_bus = (m_filtered_bus & (~input_mask)) | static_cast<uint32_t>(current_read_bit) << input_index;
+
+                                // Set new input flag
+                                new_input = true;
+                            }
 
                             // Clear sampling flag
-                            port.sampling &= ~pin_mask;
-
-                            // Set new input flag
-                            new_input = true;
+                            m_sampling_bus &= ~input_mask;
                         }
                     }
                 }
@@ -260,9 +241,16 @@ class InputDebouncer
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        PinSource&              m_pin_source;
-        std::dynarray<PortMask> m_ports;
-        std::dynarray<Input>    m_inputs;
+        PinSource&           m_pin_source;
+        std::dynarray<Input> m_inputs;
+
+        const int16_t        m_low_samples;     // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
+        const int16_t        m_high_samples;    // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
+
+        // Bitmasks aligned with PinBus
+        uint32_t             m_last_read_bus;   // Previous iteration inputs
+        uint32_t             m_filtered_bus;    // Filtered inputs
+        uint32_t             m_sampling_bus;    // Inputs that are being sampled and not yet filtered
 };
 
 
