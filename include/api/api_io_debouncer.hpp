@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    30 July 2018
+// @date    8 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,51 +55,78 @@ class IoDebouncer
                     const PinNameBus&           pin_name_bus,
                     const int16_t               scan_time_low_samples,
                     const int16_t               scan_time_high_samples,
-                    const int16_t               scan_time_over_current_samples,
+                    const int16_t               scan_time_input_error_samples,
+                    const int16_t               scan_time_output_error_samples,
                     const Gpio::InputMode       input_mode,
                     const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
                     const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
-                                                                                                    m_ports(gpio_source.get_port_count()),
-                                                                                                    m_inputs(pin_name_bus.get_size()),
-                                                                                                    m_over_current_samples { 0 }
+                                                                                                    m_ios(pin_name_bus.get_size()),
+                                                                                                    m_low_samples { scan_time_low_samples },
+                                                                                                    m_high_samples { scan_time_high_samples },
+                                                                                                    m_input_error_samples { scan_time_input_error_samples },
+                                                                                                    m_output_error_samples { scan_time_output_error_samples },
+                                                                                                    m_last_read_bus { 0 },
+                                                                                                    m_filtered_bus { 0 },
+                                                                                                    m_sampling_bus { 0 },
+                                                                                                    m_input_error_bus { 0 },
+                                                                                                    m_output_error_bus { 0 },
+                                                                                                    m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
+            config_pins<GpioSource>(pin_name_bus);
         }
 
         IoDebouncer(      GpioSource&                  gpio_source,
                     const PinNameBus&                  pin_name_bus,
                     const int16_t                      scan_time_low_samples,
                     const int16_t                      scan_time_high_samples,
-                    const int16_t                      scan_time_over_current_samples,
+                    const int16_t                      scan_time_input_error_samples,
+                    const int16_t                      scan_time_output_error_samples,
                     const Gpio::InputModeTrueOpenDrain input_mode,
                     const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
-                                                                                                   m_ports(gpio_source.get_port_count()),
-                                                                                                   m_inputs(pin_name_bus.get_size()),
-                                                                                                   m_over_current_samples { 0 }
+                                                                                                   m_ios(pin_name_bus.get_size()),
+                                                                                                   m_low_samples { scan_time_low_samples },
+                                                                                                   m_high_samples { scan_time_high_samples },
+                                                                                                   m_input_error_samples { scan_time_input_error_samples },
+                                                                                                   m_output_error_samples { scan_time_output_error_samples },
+                                                                                                   m_last_read_bus { 0 },
+                                                                                                   m_filtered_bus { 0 },
+                                                                                                   m_sampling_bus { 0 },
+                                                                                                   m_input_error_bus { 0 },
+                                                                                                   m_output_error_bus { 0 },
+                                                                                                   m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
             }
 
-            config_pins<GpioSource>(pin_name_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
+            config_pins<GpioSource>(pin_name_bus);
         }
 
         IoDebouncer(      SpiIoSource& spi_io_source,
                     const PinIndexBus& pin_index_bus,
                     const int16_t      scan_time_low_samples,
                     const int16_t      scan_time_high_samples,
-                    const int16_t      scan_time_over_current_samples) : m_pin_source { spi_io_source },
-                                                                         m_ports(spi_io_source.get_port_count()),
-                                                                         m_inputs(pin_index_bus.get_size()),
-                                                                         m_over_current_samples { 0 }
+                    const int16_t      scan_time_input_error_samples,
+                    const int16_t      scan_time_output_error_samples) : m_pin_source { spi_io_source },
+                                                                         m_ios(pin_index_bus.get_size()),
+                                                                         m_low_samples { scan_time_low_samples },
+                                                                         m_high_samples { scan_time_high_samples },
+                                                                         m_input_error_samples { scan_time_input_error_samples },
+                                                                         m_output_error_samples { scan_time_output_error_samples },
+                                                                         m_last_read_bus { 0 },
+                                                                         m_filtered_bus { 0 },
+                                                                         m_sampling_bus { 0 },
+                                                                         m_input_error_bus { 0 },
+                                                                         m_output_error_bus { 0 },
+                                                                         m_output_bus { pin_index_bus.get_mask() }
         {
-            config_pins<SpiIoSource>(pin_index_bus, scan_time_low_samples, scan_time_high_samples, scan_time_over_current_samples);
+            config_pins<SpiIoSource>(pin_index_bus);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -108,58 +135,81 @@ class IoDebouncer
             return PinScanner::DebouncerHandler::create<IoDebouncer, &IoDebouncer::debouncer_handler>(this);
         }
 
-        uint32_t get_filtered()
+        uint32_t get_filtered_bus() const
         {
-            uint32_t filtered = 0xFFFFFFFF;
-            std::size_t filtered_shift_index = 0;
-
-            for(auto input : m_inputs)
-            {
-                const uint32_t pin_mask = (1UL << input.pin_bit);
-
-                const bool filtered_bit = (m_ports[input.port_index].filtered & pin_mask) != 0;
-
-                filtered = (filtered & ~(1UL << filtered_shift_index)) | static_cast<uint32_t>(filtered_bit) << filtered_shift_index;
-
-                filtered_shift_index++;
-            }
-
-            return filtered;
+            return m_filtered_bus;
         }
 
-        uint32_t get_sampling()
+        uint32_t get_sampling_bus() const
         {
-            uint32_t sampling = 0;
-            std::size_t sampling_shift_index = 0;
-
-            for(auto input : m_inputs)
-            {
-                const uint32_t pin_mask = (1UL << input.pin_bit);
-
-                const bool sampling_bit = (m_ports[input.port_index].sampling & pin_mask) != 0;
-
-                sampling |= static_cast<uint32_t>(sampling_bit) << sampling_shift_index++;
-            }
-
-            return sampling;
+            return m_sampling_bus;
         }
 
-        // Write output value to be written in the next transfer
-        void write_output(const uint32_t value)
+        // NOTE: these flags are active errors
+        uint32_t get_input_error_bus() const
         {
-            std::size_t value_shift_index = 0;
+            return m_input_error_bus;
+        }
 
-            for(auto& input : m_inputs)
+        uint32_t get_output_error_bus() const
+        {
+            return m_output_error_bus;
+        }
+
+        void clear_output_error_bus(const uint32_t mask)
+        {
+            m_output_error_bus &= ~mask;
+        }
+
+        uint32_t get_output_bus() const
+        {
+            return m_output_bus;
+        }
+
+        // NOTES: - the value will be written in the next transfer
+        //        - the maskable pins behaves as input
+        void set_output_bus(const uint32_t mask)
+        {
+            for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
             {
-                const bool value_bit = (value & (1UL << value_shift_index++)) != 0;
-                const uint32_t output_bit = static_cast<uint32_t>(value_bit) << input.pin_bit;
+                const uint32_t io_mask = 1UL << io_index;
 
-                m_pin_source.write_output_bit(input.port_index, input.pin_bit, output_bit);
-
-                if(output_bit == 0)
+                if((mask & io_mask) != 0)
                 {
-                    // Reload counter with over-current samples
-                    input.counter = m_over_current_samples;
+                    auto& io = m_ios[io_index];
+
+                    const uint32_t output_bit = 1UL << io.pin_bit;
+
+                    m_pin_source.write_output_bit(io.port_index, io.pin_bit, output_bit);
+
+                    m_output_bus   |=  io_mask;
+                    m_filtered_bus |=  io_mask;;
+                    m_sampling_bus &= ~io_mask;
+
+                    io.counter = m_input_error_samples;
+                }
+            }
+        }
+
+        // NOTES: - the value will be written in the next transfer
+        //        - the maskable pins behaves as output
+        void clear_output_bus(const uint32_t mask)
+        {
+            for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
+            {
+                const uint32_t io_mask = 1UL << io_index;
+
+                if((mask & io_mask) != 0)
+                {
+                    auto& io = m_ios[io_index];
+
+                    m_pin_source.write_output_bit(io.port_index, io.pin_bit, 0);
+
+                    m_output_bus   &= ~io_mask;
+                    m_filtered_bus &= ~io_mask;;
+                    m_sampling_bus &= ~io_mask;
+
+                    io.counter = m_output_error_samples;
                 }
             }
         }
@@ -170,20 +220,11 @@ class IoDebouncer
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
-        struct Input
+        struct Io
         {
-            int8_t      port_index   { -1 };    // Input's port index
-            int8_t      pin_bit      { -1 };    // Input's bit within a port
-            int16_t     low_samples  { 0 };     // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
-            int16_t     high_samples { 0 };     // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
-            int16_t     counter      { 0 };     // Samples counter
-        };
-
-        struct PortMask
-        {
-            uint32_t     last_read { 0 };       // Previous iteration inputs
-            uint32_t     filtered  { 0 };       // Filtered inputs
-            uint32_t     sampling  { 0 };       // Inputs that are being sampled and not yet filtered
+            int8_t      port_index { -1 };  // Input's port index
+            int8_t      pin_bit    { -1 };  // Input's bit within a port
+            int16_t     counter    {  0 };  // Samples counter
         };
 
         // --------------------------------------------------------------------
@@ -191,15 +232,19 @@ class IoDebouncer
         // --------------------------------------------------------------------
 
         template <typename PinBusSource, class PinBusType>
-        void config_pins(const PinBus<PinBusType>& pin_bus, const int16_t low_samples, const int16_t high_samples, const int16_t over_current_samples)
+        void config_pins(const PinBus<PinBusType>& pin_bus)
         {
-            assert(low_samples  > 0);
-            assert(high_samples > 0);
-            assert(over_current_samples > 0);
+            assert(m_low_samples          > 1);
+            assert(m_high_samples         > 1);
+            assert(m_input_error_samples  > 1);
+            assert(m_output_error_samples > 1);
 
-            m_over_current_samples = over_current_samples;
+            assert(m_low_samples         > m_output_error_samples);
+            assert(m_high_samples        > m_output_error_samples);
+            assert(m_input_error_samples > m_low_samples);
+            assert(m_input_error_samples > m_high_samples);
 
-            std::size_t assigned_input = 0;
+            std::size_t assigned_io = 0;
 
             const bool resume = PinScanner::is_running();
 
@@ -210,7 +255,7 @@ class IoDebouncer
                 const int8_t port_index = PinBusSource::get_port_index(pin);
                 const int8_t pin_bit = PinBusSource::get_pin_bit(pin);
 
-                m_inputs[assigned_input++] = {port_index, pin_bit, low_samples, high_samples, 0 };
+                m_ios[assigned_io++] = { port_index, pin_bit, 0 };
             }
 
             if(resume == true)
@@ -224,74 +269,119 @@ class IoDebouncer
         {
             if(is_starting == true)
             {
-                for(std::size_t port_index = 0; port_index < m_ports.size(); ++port_index)
+                for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
                 {
-                    m_ports[port_index].last_read = m_ports[port_index].filtered = m_pin_source.get_read(port_index);
+                    const auto io = m_ios[io_index];
+
+                    const bool read_bit = m_pin_source.get_read_bit(io.port_index, io.pin_bit) != 0;
+
+                    m_last_read_bus |= static_cast<uint32_t>(read_bit) << io_index;
                 }
+
+                m_filtered_bus = m_last_read_bus;
+
+                m_input_error_bus = ~m_last_read_bus & static_cast<uint32_t>((1UL << m_ios.size()) - 1);
 
                 return true;
             }
 
             bool new_input = false;
 
-            for(auto& input : m_inputs)
+            for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
             {
-                auto& port = m_ports[input.port_index];
+                auto& io = m_ios[io_index];
 
-                const uint32_t pin_mask = (1UL << input.pin_bit);
+                const uint32_t io_mask = 1UL << io_index;
 
-                const uint32_t current_read_bit = m_pin_source.get_read_bit(input.port_index, input.pin_bit);
-                const uint32_t last_read_bit    = port.last_read & pin_mask;
+                const bool current_read_bit = m_pin_source.get_read_bit(io.port_index, io.pin_bit) != 0;
+                const bool last_read_bit    = (m_last_read_bus & io_mask) != 0;
 
                 if(current_read_bit != last_read_bit)
                 {
-                    const uint32_t output_bit = m_pin_source.get_output_bit(input.port_index, input.pin_bit);
+                    // Inputs are different
 
-                    // Inputs are different. Reload counter with number of samples.
-                    if(output_bit == 0 && current_read_bit != 0)
+                    const bool output_bit = (m_output_bus & io_mask) != 0;
+
+                    if(output_bit != 0)
                     {
-                        input.counter = m_over_current_samples;
-                    }
-                    else if(output_bit != 0 || input.counter == 0)
-                    {
-                        input.counter = (current_read_bit == 0) ? input.low_samples : input.high_samples;
+                        // Input mode
+
+                        if(current_read_bit == 0)
+                        {
+                            // Reload counter with low samples
+                            io.counter = m_low_samples;
+                        }
+                        else
+                        {
+                            // Reload counter with high samples
+                            io.counter = m_high_samples;
+
+                            // Clear input error flag
+                            m_input_error_bus &= ~io_mask;
+                        }
 
                         // Set sampling flag
-                        port.sampling |= pin_mask;
+                        m_sampling_bus |= io_mask;
+                    }
+                    else
+                    {
+                        // Output mode
+
+                        // Sampling possible over-current or stop
+                        io.counter = (current_read_bit != 0) ? m_output_error_samples : 0;
                     }
 
-                    // Update last read input
-                    port.last_read = (port.last_read & (~pin_mask)) | current_read_bit;
+                    // Update last read io
+                    m_last_read_bus = (m_last_read_bus & (~io_mask)) | static_cast<uint32_t>(current_read_bit) << io_index;
                 }
                 else
                 {
-                    if(input.counter > 0)
+                    if(io.counter > 0)
                     {
-                        input.counter--;
-                    }
+                        io.counter--;
 
-                    if(input.counter == 0)
-                    {
-                        const uint32_t filtered_bit = port.filtered & pin_mask;
-
-                        if(current_read_bit != filtered_bit)
+                        if(io.counter == 0)
                         {
-                            // Update filtered input
-                            port.filtered = (port.filtered & (~pin_mask)) | current_read_bit;
+                            if((m_sampling_bus & io_mask) != 0)
+                            {
+                                const bool filtered_bit = m_filtered_bus & io_mask;
 
-                            // Clear sampling flag
-                            port.sampling &= ~pin_mask;
+                                if(current_read_bit != filtered_bit)
+                                {
+                                    // Update filtered input
+                                    m_filtered_bus = (m_filtered_bus & (~io_mask)) | static_cast<uint32_t>(current_read_bit) << io_index;
 
-                            // Set new input flag
-                            new_input = true;
-                        }
+                                    // Set new input flag
+                                    new_input = true;
+                                }
 
-                        const uint32_t output_bit = m_pin_source.get_output_bit(input.port_index, input.pin_bit);
+                                // Clear sampling flag
+                                m_sampling_bus &= ~io_mask;
+                            }
+                            else
+                            {
+                                const bool output_bit = (m_output_bus & io_mask) != 0;
 
-                        if(current_read_bit != 0 && output_bit == 0)
-                        {
-                            // Unable to set output (over-current?) -> clear output
-                            m_pin_source.write_output_bit(input.port_index, input.pin_bit, pin_mask);
+                                if(output_bit != current_read_bit)
+                                {
+                                    if(current_read_bit == 0)
+                                    {
+                                        // Set input error flag
+                                        m_input_error_bus |= io_mask;
+                                    }
+                                    else
+                                    {
+                                        // Set output error flag
+                                        m_output_error_bus |= io_mask;
+
+                                        // Unable to clear output (over-current?) -> set output
+                                        m_pin_source.write_output_bit(io.port_index, io.pin_bit, 1UL << io.pin_bit);
+
+                                        m_output_bus   |= io_mask;
+                                        m_filtered_bus |= io_mask;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -304,11 +394,23 @@ class IoDebouncer
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        PinSource&              m_pin_source;
-        std::dynarray<PortMask> m_ports;
-        std::dynarray<Input>    m_inputs;
-        int16_t                 m_over_current_samples;
+        PinSource&        m_pin_source;
+        std::dynarray<Io> m_ios;
 
+        const int16_t     m_low_samples;            // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
+        const int16_t     m_high_samples;           // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
+        const int16_t     m_input_error_samples;    // Number of samples of scan time to be considered timeout
+        const int16_t     m_output_error_samples;   // Number of samples of scan time to be considered over-current
+
+        // Bitmasks aligned with PinBus
+        uint32_t          m_last_read_bus;          // Previous iteration inputs
+        uint32_t          m_filtered_bus;           // Filtered inputs
+        uint32_t          m_sampling_bus;           // Inputs that are being sampled and not yet filtered
+
+        uint32_t          m_input_error_bus;
+        uint32_t          m_output_error_bus;
+
+        uint32_t          m_output_bus;             // Outputs written
 };
 
 
