@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    8 October 2018
+// @date    9 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,7 +55,6 @@ class IoDebouncer
                     const PinNameBus&           pin_name_bus,
                     const int16_t               scan_time_low_samples,
                     const int16_t               scan_time_high_samples,
-                    const int16_t               scan_time_input_error_samples,
                     const int16_t               scan_time_output_error_samples,
                     const Gpio::InputMode       input_mode,
                     const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
@@ -63,7 +62,6 @@ class IoDebouncer
                                                                                                     m_ios(pin_name_bus.get_size()),
                                                                                                     m_low_samples { scan_time_low_samples },
                                                                                                     m_high_samples { scan_time_high_samples },
-                                                                                                    m_input_error_samples { scan_time_input_error_samples },
                                                                                                     m_output_error_samples { scan_time_output_error_samples },
                                                                                                     m_last_read_bus { 0 },
                                                                                                     m_filtered_bus { 0 },
@@ -84,14 +82,12 @@ class IoDebouncer
                     const PinNameBus&                  pin_name_bus,
                     const int16_t                      scan_time_low_samples,
                     const int16_t                      scan_time_high_samples,
-                    const int16_t                      scan_time_input_error_samples,
                     const int16_t                      scan_time_output_error_samples,
                     const Gpio::InputModeTrueOpenDrain input_mode,
                     const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
                                                                                                    m_ios(pin_name_bus.get_size()),
                                                                                                    m_low_samples { scan_time_low_samples },
                                                                                                    m_high_samples { scan_time_high_samples },
-                                                                                                   m_input_error_samples { scan_time_input_error_samples },
                                                                                                    m_output_error_samples { scan_time_output_error_samples },
                                                                                                    m_last_read_bus { 0 },
                                                                                                    m_filtered_bus { 0 },
@@ -112,12 +108,10 @@ class IoDebouncer
                     const PinIndexBus& pin_index_bus,
                     const int16_t      scan_time_low_samples,
                     const int16_t      scan_time_high_samples,
-                    const int16_t      scan_time_input_error_samples,
                     const int16_t      scan_time_output_error_samples) : m_pin_source { spi_io_source },
                                                                          m_ios(pin_index_bus.get_size()),
                                                                          m_low_samples { scan_time_low_samples },
                                                                          m_high_samples { scan_time_high_samples },
-                                                                         m_input_error_samples { scan_time_input_error_samples },
                                                                          m_output_error_samples { scan_time_output_error_samples },
                                                                          m_last_read_bus { 0 },
                                                                          m_filtered_bus { 0 },
@@ -186,7 +180,7 @@ class IoDebouncer
                     m_filtered_bus |=  io_mask;;
                     m_sampling_bus &= ~io_mask;
 
-                    io.counter = m_input_error_samples;
+                    io.counter = m_output_error_samples;
                 }
             }
         }
@@ -236,13 +230,10 @@ class IoDebouncer
         {
             assert(m_low_samples          > 1);
             assert(m_high_samples         > 1);
-            assert(m_input_error_samples  > 1);
             assert(m_output_error_samples > 1);
 
-            assert(m_low_samples         > m_output_error_samples);
-            assert(m_high_samples        > m_output_error_samples);
-            assert(m_input_error_samples > m_low_samples);
-            assert(m_input_error_samples > m_high_samples);
+            assert(m_low_samples  > m_output_error_samples);
+            assert(m_high_samples > m_output_error_samples);
 
             std::size_t assigned_io = 0;
 
@@ -399,8 +390,7 @@ class IoDebouncer
 
         const int16_t     m_low_samples;            // Number of samples of scan time that a pin must be steady at low level to be accepted as filtered (debounced)
         const int16_t     m_high_samples;           // Number of samples of scan time that a pin must be steady at high level to be accepted as filtered (debounced)
-        const int16_t     m_input_error_samples;    // Number of samples of scan time to be considered timeout
-        const int16_t     m_output_error_samples;   // Number of samples of scan time to be considered over-current
+        const int16_t     m_output_error_samples;   // Number of samples of scan time that a output must be equal to the input to valid the output written
 
         // Bitmasks aligned with PinBus
         uint32_t          m_last_read_bus;          // Previous iteration inputs
