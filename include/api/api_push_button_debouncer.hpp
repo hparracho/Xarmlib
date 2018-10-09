@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_push_button_debouncer.hpp
 // @brief   API push-button debouncer class.
-// @date    8 October 2018
+// @date    9 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,7 +56,7 @@ class PushButtonDebouncer
                                   PushButtonBus<Type>&  push_button_bus,
                             const int16_t               scan_time_stage1_samples,
                             const int16_t               scan_time_stage2_samples,
-                            const int16_t               scan_time_input_error_samples,
+                            const int16_t               scan_time_timeout_samples,
                             const int16_t               scan_time_output_error_samples,
                             const Gpio::InputMode       input_mode,
                             const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
@@ -64,8 +64,8 @@ class PushButtonDebouncer
             m_push_button_bus { push_button_bus },
             m_pin_source { gpio_source },
             m_push_buttons(push_button_bus.get_size()),
-            m_stages_samples { scan_time_stage1_samples, scan_time_stage2_samples },
-            m_input_error_samples { scan_time_input_error_samples },
+            m_stage_samples { scan_time_stage1_samples, scan_time_stage2_samples },
+            m_timeout_samples { scan_time_timeout_samples },
             m_output_error_samples { scan_time_output_error_samples },
             m_last_read_bus { 0 },
             m_sampling_bus { 0 },
@@ -90,13 +90,13 @@ class PushButtonDebouncer
                                   PushButtonBus<Type>& push_button_bus,
                             const int16_t              scan_time_stage1_samples,
                             const int16_t              scan_time_stage2_samples,
-                            const int16_t              scan_time_input_error_samples,
+                            const int16_t              scan_time_timeout_samples,
                             const int16_t              scan_time_output_error_samples) :
             m_push_button_bus { push_button_bus },
             m_pin_source { spi_io_source },
             m_push_buttons(push_button_bus.get_size()),
-            m_stages_samples { scan_time_stage1_samples, scan_time_stage2_samples },
-            m_input_error_samples { scan_time_input_error_samples },
+            m_stage_samples { scan_time_stage1_samples, scan_time_stage2_samples },
+            m_timeout_samples { scan_time_timeout_samples },
             m_output_error_samples { scan_time_output_error_samples },
             m_last_read_bus { 0 },
             m_sampling_bus { 0 },
@@ -179,7 +179,7 @@ class PushButtonDebouncer
                     m_sampling_bus     &= ~push_button_mask;
                     m_output_waved_bus &= ~push_button_mask;
 
-                    push_button.counter = m_input_error_samples;
+                    push_button.counter = m_timeout_samples;
                 }
             }
         }
@@ -281,14 +281,14 @@ class PushButtonDebouncer
         template <typename Source>
         void config_pins()
         {
-            assert(m_stages_samples[0]    > 1);
-            assert(m_stages_samples[1]    > 1);
-            assert(m_input_error_samples  > 1);
+            assert(m_stage_samples[0]     > 1);
+            assert(m_stage_samples[1]     > 1);
+            assert(m_timeout_samples      > 1);
             assert(m_output_error_samples > 1);
 
-            assert(m_stages_samples[0]   > m_output_error_samples);
-            assert(m_stages_samples[1]   > m_stages_samples[0]);
-            assert(m_input_error_samples > m_stages_samples[1]);
+            assert(m_stage_samples[0] > m_output_error_samples);
+            assert(m_stage_samples[1] > m_stage_samples[0]);
+            assert(m_timeout_samples  > m_stage_samples[1]);
 
             std::size_t assigned_push_button = 0;
 
@@ -327,7 +327,7 @@ class PushButtonDebouncer
                 else
                 {
                     m_continuous_wave_value = 0;
-                    m_continuous_wave_counter = m_stages_samples[0] - m_continuous_wave_high_samples;
+                    m_continuous_wave_counter = m_stage_samples[0] - m_continuous_wave_high_samples;
                 }
 
                 continuous_wave_value_changed = true;
@@ -380,7 +380,7 @@ class PushButtonDebouncer
                             const std::size_t stage_index = m_push_button_bus.get_stage2_selected(push_button_index);
 
                             // Reload counter with state1 or stage2 samples
-                            push_button.counter = m_stages_samples[stage_index];
+                            push_button.counter = m_stage_samples[stage_index];
 
                             // Set sampling flag
                             m_sampling_bus |= push_button_mask;
@@ -395,7 +395,7 @@ class PushButtonDebouncer
 
                             if((m_sampling_bus & push_button_mask) != 0
                              && m_push_button_bus.get_stage2_selected(push_button_index) == true
-                             && push_button.counter <= (m_stages_samples[1] - m_stages_samples[0]))
+                             && push_button.counter <= (m_stage_samples[1] - m_stage_samples[0]))
                             {
                                 // Set stage 1 reached flag
                                 m_stage1_reached_bus |= push_button_mask;
@@ -442,7 +442,7 @@ class PushButtonDebouncer
                                     m_stage1_reached_bus |= push_button_mask;
 
                                     // Reload counter with the relative timeout time
-                                    push_button.counter = m_input_error_samples - m_stages_samples[0];
+                                    push_button.counter = m_timeout_samples - m_stage_samples[0];
                                 }
                                 else
                                 {
@@ -452,7 +452,7 @@ class PushButtonDebouncer
                                     m_stage2_reached_bus |= push_button_mask;
 
                                     // Reload counter with the relative timeout time
-                                    push_button.counter = m_input_error_samples - m_stages_samples[1];
+                                    push_button.counter = m_timeout_samples - m_stage_samples[1];
                                 }
 
                                 // Clear sampling flag
@@ -506,9 +506,10 @@ class PushButtonDebouncer
         PinSource&                   m_pin_source;
         std::dynarray<PushButton>    m_push_buttons;
 
-        const std::array<int16_t, 2> m_stages_samples;       // Number of samples of scan time that a pin must be steady at low level to be accepted at stage1[0] or stage2[1]
-        const int16_t                m_input_error_samples;  // Number of samples of scan time to be considered timeout
-        const int16_t                m_output_error_samples; // Number of samples of scan time to be considered over-current
+        const std::array<int16_t, 2> m_stage_samples;        // Number of samples of scan time that a pin must be steady at low level to be accepted at stage1/stage2
+                                                             // NOTE: index 0 -> stage1; index 1 -> stage2
+        const int16_t                m_timeout_samples;      // Number of samples of scan time that a pin must be steady at low level to be considered timeout
+        const int16_t                m_output_error_samples; // Number of samples of scan time that a output must be equal to the input to valid the output written
 
         // Bitmasks aligned with PushButtonBus
         uint32_t                     m_last_read_bus;        // Previous iteration inputs
