@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_shared_interrupts.cpp
 // @brief   NXP LPC84x IRQ handlers that are shared by different peripherals.
-// @date    28 June 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC84X__
 
@@ -45,29 +45,29 @@ using namespace xarmlib::targets::lpc84x;
 // ----------------------------------------------------------------------------
 
 // Analog Comparator / Cap Touch shared handler
-extern "C" void CMP_CAPT_IRQHandler(void)
+extern "C" void ACMP_CAPT_IRQHandler(void)
 {}
 
 
 
 
-// Pin Interrupt 5 / DAC1 shared handler
+// PININT5 / DAC1 shared handler
 extern "C" void PININT5_DAC1_IRQHandler(void)
 {}
 
 
 
 
-// Pin Interrupt 6 / USART3 shared handler
+// PININT6 / USART3 shared handler
 extern "C" void PININT6_USART3_IRQHandler(void)
 {
     int32_t yield = 0;
 
-#ifdef __LPC845__
+#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
     yield = Usart::irq_handler(Usart::Name::USART3);
 #endif
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -77,16 +77,16 @@ extern "C" void PININT6_USART3_IRQHandler(void)
 
 
 
-// Pin Interrupt 7 / USART4 shared handler
+// PININT7 / USART4 shared handler
 extern "C" void PININT7_USART4_IRQHandler(void)
 {
     int32_t yield = 0;
 
-#ifdef __LPC845__
+#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
     yield = Usart::irq_handler(Usart::Name::USART4);
 #endif
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;

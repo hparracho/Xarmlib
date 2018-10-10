@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    21 June 2018
+// @date    18 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,6 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_PORT_HPP
 #define __XARMLIB_TARGETS_LPC84X_PORT_HPP
 
-#include "system/target"
 #include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
@@ -42,12 +41,6 @@ namespace targets
 {
 namespace lpc84x
 {
-
-
-
-
-// HVQFN48 and LQFP48 packages have 2 ports
-// HVQFN33 package only has 1 port
 
 
 
@@ -64,21 +57,75 @@ class Port
         enum class Name
         {
             PORT0 = 0,
-#if (__LPC84X_PINS__ > 33)
+#if (TARGET_PORT_COUNT  == 2)
             PORT1
 #endif
         };
 
-        // Number of ports available according to the target package
-#if (__LPC84X_PINS__ == 33)
-        static const std::size_t COUNT = 1;
-#else
-        static const std::size_t COUNT = 2;
-#endif
-
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        static void set_direction(const Name port)
+        {
+            // NOTE: Ones configure as outputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0xFFFFFFFF;
+        }
+
+        static void clear_direction(const Name port)
+        {
+            // NOTE: Zeros configure as inputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0;
+        }
+
+        static void set_direction(const Name port, const uint32_t mask)
+        {
+            // NOTE: Ones configure as outputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] |= mask;
+        }
+
+        static void clear_direction(const Name port, const uint32_t mask)
+        {
+            // NOTE: Zeros configure as inputs
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] &= ~mask;
+        }
+
+        static void set_direction(const Pin::Name pin)
+        {
+            assert(pin >= Pin::Name::NC);
+
+            // NOTE: Ones configure as outputs
+
+            if(static_cast<uint32_t>(pin) < 32)
+            {
+                LPC_GPIO->DIR0 |= 1UL << static_cast<uint32_t>(pin);
+            }
+            else
+            {
+                LPC_GPIO->DIR1 |= 1UL << (static_cast<uint32_t>(pin) - 32);
+            }
+        }
+
+        static void clear_direction(const Pin::Name pin)
+        {
+            assert(pin >= Pin::Name::NC);
+
+            // NOTE: Zeros configure as inputs
+
+            if(static_cast<uint32_t>(pin) < 32)
+            {
+                LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
+            }
+            else
+            {
+                LPC_GPIO->DIR1 &= ~(1UL << (static_cast<uint32_t>(pin) - 32));
+            }
+        }
+
+        static void write_direction(const Name port, const uint32_t mask, const uint32_t value)
+        {
+            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = (LPC_GPIO->DIR[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
+        }
 
         static void set_mask(const Name port)
         {
@@ -137,6 +184,11 @@ class Port
             return LPC_GPIO->PIN[static_cast<std::size_t>(port)];
         }
 
+        static uint32_t read(const Name port, const uint32_t mask)
+        {
+            return LPC_GPIO->PIN[static_cast<std::size_t>(port)] & mask;
+        }
+
         static uint32_t read_masked(const Name port)
         {
             return LPC_GPIO->MPIN[static_cast<std::size_t>(port)];
@@ -145,6 +197,11 @@ class Port
         static void write(const Name port, const uint32_t value)
         {
             LPC_GPIO->PIN[static_cast<std::size_t>(port)] = value;
+        }
+
+        static void write(const Name port, const uint32_t mask, const uint32_t value)
+        {
+            LPC_GPIO->PIN[static_cast<std::size_t>(port)] = (LPC_GPIO->PIN[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
         }
 
         static void write_masked(const Name port, const uint32_t value)

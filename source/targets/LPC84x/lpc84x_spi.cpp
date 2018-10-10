@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.cpp
 // @brief   NXP LPC84x SPI class.
-// @date    28 June 2018
+// @date    10 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC84X__
 
@@ -48,7 +48,7 @@ extern "C" void SPI0_IRQHandler(void)
 {
     const int32_t yield = Spi::irq_handler(Spi::Name::SPI0);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -62,7 +62,7 @@ extern "C" void SPI1_IRQHandler(void)
 {
     const int32_t yield = Spi::irq_handler(Spi::Name::SPI1);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;

@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    28 June 2018
+// @date    16 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "system/target"
+#include "core/target_specs.hpp"
 
 #ifdef __LPC84X__
 
@@ -53,7 +53,7 @@ namespace lpc84x
 
 void Usart::initialize_frg0()
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
@@ -71,7 +71,7 @@ void Usart::initialize_frg0()
 
 int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     return usart_freq / 16 / baudrate;
@@ -97,7 +97,7 @@ extern "C" void USART0_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART0);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -111,7 +111,7 @@ extern "C" void USART1_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART1);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -121,13 +121,13 @@ extern "C" void USART1_IRQHandler(void)
 
 
 
-#ifdef __LPC845__
+#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
 
 extern "C" void USART2_IRQHandler(void)
 {
     const int32_t yield = Usart::irq_handler(Usart::Name::USART2);
 
-#ifdef XARMLIB_USE_FREERTOS
+#ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
 #else
     (void)yield;
@@ -140,6 +140,6 @@ extern "C" void USART2_IRQHandler(void)
 // NOTE: USART3 and USART4 interrupts that are shared with PININT6 and
 //       PININT7 are implemented in 'lpc84x_shared_interrupts.cpp' file.
 
-#endif // __LPC845__
+#endif // (TARGET_USART_COUNT == 5) /* __LPC845__ */
 
 #endif // __LPC84X__

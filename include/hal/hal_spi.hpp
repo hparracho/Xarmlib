@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    18 May 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,9 +32,7 @@
 #ifndef __XARMLIB_HAL_SPI_HPP
 #define __XARMLIB_HAL_SPI_HPP
 
-#include "system/cassert"
-#include "system/gsl"
-#include "system/target"
+#include "external/gsl.hpp"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
@@ -51,7 +49,7 @@ class SpiMaster : private TargetSpi
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
         using SpiMode      = typename TargetSpi::SpiMode;
@@ -79,7 +77,7 @@ class SpiMaster : private TargetSpi
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -87,30 +85,10 @@ class SpiMaster : private TargetSpi
 
         ~SpiMaster()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
-        }
-
-        // -------- TRANSFER --------------------------------------------------
-
-        // Transfer a frame (simultaneous write and read)
-        // NOTE: Return the read value
-        uint32_t transfer(const uint32_t value)
-        {
-            write(value);
-            return read();
-        }
-
-        // Transfer a buffer (simultaneous write and read)
-        // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(gsl::span<uint8_t> buffer)
-        {
-            for(auto& elem : buffer)
-            {
-                elem = transfer(elem);
-            }
         }
 
         // -------- ENABLE / DISABLE ------------------------------------------
@@ -124,18 +102,49 @@ class SpiMaster : private TargetSpi
         // Gets the enable state
         using TargetSpi::is_enabled;
 
+        // -------- TRANSFER --------------------------------------------------
+
+        // Transfer a frame (simultaneous write and read)
+        // NOTE: Return the read value
+        uint32_t transfer(const uint32_t frame)
+        {
+            write(frame);
+            return read();
+        }
+
+        // Transfer a buffer (simultaneous write and read)
+        // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
+        void transfer(const gsl::span<uint8_t> buffer)
+        {
+            for(auto& frame : buffer)
+            {
+                frame = transfer(frame);
+            }
+        }
+
+        // Transfer a buffer (simultaneous write and read)
+        void transfer(const gsl::span<const uint8_t> tx_buffer, const gsl::span<uint8_t> rx_buffer)
+        {
+            assert(tx_buffer.size() == rx_buffer.size());
+
+            for(std::ptrdiff_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
+            {
+                rx_buffer[frame_index] = transfer(tx_buffer[frame_index]);
+            }
+        }
+
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void MutexTake()
+        void mutex_take()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void MutexGive()
+        void mutex_give()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -157,18 +166,18 @@ class SpiMaster : private TargetSpi
         }
 
         // Write a frame as soon as possible
-        void write(const uint32_t value)
+        void write(const uint32_t frame)
         {
             while(TargetSpi::is_writable() == false);
 
-            TargetSpi::write_data(value);
+            TargetSpi::write_data(frame);
         }
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_USE_FREERTOS
+        #ifdef XARMLIB_ENABLE_FREERTOS
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif
@@ -218,7 +227,7 @@ class SpiSlave : private TargetSpi
             // Set supplied maximum frequency
             TargetSpi::set_frequency(max_frequency);
 
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -226,28 +235,10 @@ class SpiSlave : private TargetSpi
 
         ~SpiSlave()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
-        }
-
-        // -------- READ / WRITE ----------------------------------------------
-
-        // Read a frame as soon as possible
-        uint32_t read() const
-        {
-            while(TargetSpi::is_readable() == false);
-
-            return TargetSpi::read_data();
-        }
-
-        // Write a frame as soon as possible
-        void write(const uint32_t value)
-        {
-            while(TargetSpi::is_writable() == false);
-
-            TargetSpi::write_data(value);
         }
 
         // -------- ENABLE / DISABLE ------------------------------------------
@@ -261,77 +252,61 @@ class SpiSlave : private TargetSpi
         // Gets the enable state
         using TargetSpi::is_enabled;
 
-        // -------- GET STATUS FLAGS ------------------------------------------
+        // -------- STATUS FLAGS ----------------------------------------------
 
         using TargetSpi::is_writable;
         using TargetSpi::is_readable;
-        using TargetSpi::is_rx_overrun;
-        using TargetSpi::is_tx_underrun;
-        using TargetSpi::is_ssel_assert;
-        using TargetSpi::is_ssel_deassert;
 
-        // -------- CLEAR STATUS FLAGS ----------------------------------------
+        using TargetSpi::get_status;
+        using TargetSpi::clear_status;
 
-        using TargetSpi::clear_rx_overrun;
-        using TargetSpi::clear_tx_underrun;
-        using TargetSpi::clear_ssel_assert;
-        using TargetSpi::clear_ssel_deassert;
+        // -------- INTERRUPTS ------------------------------------------------
 
-        // -------- ENABLE INTERRUPTS -----------------------------------------
+        using TargetSpi::enable_interrupts;
+        using TargetSpi::disable_interrupts;
+        using TargetSpi::get_interrupts_enabled;
 
-        using TargetSpi::enable_irq_rx_ready;
-        using TargetSpi::enable_irq_tx_ready;
-        using TargetSpi::enable_irq_rx_overrun;
-        using TargetSpi::enable_irq_tx_underrun;
-        using TargetSpi::enable_irq_ssel_assert;
-        using TargetSpi::enable_irq_ssel_deassert;
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        // -------- DISABLE INTERRUPTS ----------------------------------------
+        using TargetSpi::enable_irq;
+        using TargetSpi:: disable_irq;
+        using TargetSpi::is_irq_enabled;
 
-        using TargetSpi::disable_irq_rx_ready;
-        using TargetSpi::disable_irq_tx_ready;
-        using TargetSpi::disable_irq_rx_overrun;
-        using TargetSpi::disable_irq_tx_underrun;
-        using TargetSpi::disable_irq_ssel_assert;
-        using TargetSpi::disable_irq_ssel_deassert;
+        using TargetSpi::set_irq_priority;
 
-        // -------- GET ENABLED INTERRUPTS ------------------------------------
+        using TargetSpi::assign_irq_handler;
+        using TargetSpi::remove_irq_handler;
 
-        using TargetSpi::is_enabled_irq;
-        using TargetSpi::is_enabled_irq_rx_ready;
-        using TargetSpi::is_enabled_irq_tx_ready;
-        using TargetSpi::is_enabled_irq_rx_overrun;
-        using TargetSpi::is_enabled_irq_tx_underrun;
-        using TargetSpi::is_enabled_irq_ssel_assert;
-        using TargetSpi::is_enabled_irq_ssel_deassert;
+        // -------- READ / WRITE ----------------------------------------------
 
-        // -------- IRQ HANDLER ASSIGNMENT ------------------------------------
-
-        void assign_irq_handler(const IrqHandler& irq_handler, const int32_t irq_priority)
+        // Read a frame as soon as possible
+        uint32_t read() const
         {
-            TargetSpi::assign_irq_handler(irq_handler);
-            TargetSpi::set_irq_priority(irq_priority);
-            TargetSpi::enable_irq();
+            while(TargetSpi::is_readable() == false);
+
+            return TargetSpi::read_data();
         }
 
-        void remove_irq_handler()
+        // Write a frame as soon as possible
+        void write(const uint32_t frame)
         {
-            TargetSpi::disable_irq();
-            TargetSpi::remove_irq_handler();
+            while(TargetSpi::is_writable() == false);
+
+            TargetSpi::write_data(frame);
         }
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
-        void MutexTake()
+        void mutex_take()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
-        void MutexGive()
+        void mutex_give()
         {
-            #ifdef XARMLIB_USE_FREERTOS
+            #ifdef XARMLIB_ENABLE_FREERTOS
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -342,7 +317,7 @@ class SpiSlave : private TargetSpi
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_USE_FREERTOS
+        #ifdef XARMLIB_ENABLE_FREERTOS
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif
@@ -357,6 +332,8 @@ class SpiSlave : private TargetSpi
 
 
 
+#include "core/target_specs.hpp"
+
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_spi.hpp"
@@ -365,6 +342,16 @@ namespace xarmlib
 {
 using SpiMaster = hal::SpiMaster<targets::lpc84x::Spi>;
 using SpiSlave  = hal::SpiSlave <targets::lpc84x::Spi>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_spi.hpp"
+
+namespace xarmlib
+{
+using SpiMaster = hal::SpiMaster<targets::lpc81x::Spi>;
+using SpiSlave  = hal::SpiSlave <targets::lpc81x::Spi>;
 }
 
 #elif defined __OHER_TARGET__

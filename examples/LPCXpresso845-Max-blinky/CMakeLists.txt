@@ -22,6 +22,7 @@ project(${project_name} CXX C ASM)
 include_directories("../../external/BITMASK/include")
 include_directories("../../external/CMSIS/Core/include")
 include_directories("../../external/GSL/include")
+include_directories("../../include/cpp")
 include_directories("../../include")
 include_directories("include")
 

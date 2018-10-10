@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    21 June 2018
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 #define __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 
-#include "system/array"
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
 #include "targets/LPC84x/lpc84x_iap.hpp"
-#include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
@@ -135,12 +132,7 @@ class Faim
                                                const Pin::Name             isp_uart0_rx,
                                                const PinConfigArray<SIZE>& pin_config)
         {
-            // Helder Parracho @ 27 March 2018
-            // @REVIEW: Need GCC 7 to make the following 'static_assert()' work.
-            //          Leave it commented for now.
-            //static_assert(isp_uart0_tx != isp_uart0_rx);
-
-            std::array<uint32_t, 8>faim_data    // FAIM 8 words
+            std::array<uint32_t, 8> faim_data   // FAIM 8 words
             {
                 /* WORD0 */ (static_cast<uint32_t>(swd_config)  << WORD0_SWD_BIT)  |
                             (static_cast<uint32_t>(boot_config) << WORD0_BOOT_BIT) | WORD0_CONTENT_VALID | WORD0_ISP_UART0,
@@ -190,6 +182,8 @@ class Faim
             {
                 pin_rx = static_cast<uint32_t>(isp_uart0_rx);
             }
+
+            assert(pin_tx != pin_rx);
 
             uint32_t word1 {};
 

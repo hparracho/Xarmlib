@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_iap.hpp
 // @brief   NXP LPC84x In-Application Programming (IAP) class.
-// @date    21 June 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_IAP_HPP
 #define __XARMLIB_TARGETS_LPC84X_IAP_HPP
 
-#include "system/gsl"
-#include "targets/LPC84x/lpc84x_cmsis.hpp"
+#include "external/gsl.hpp"
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
 namespace xarmlib
@@ -101,18 +100,18 @@ class Iap
         // NOTE:        Buffer size must be 64 bytes (page size).
         static bool write_flash_page(const int32_t flash_page, const gsl::span<const uint8_t> buffer)
         {
-            if(buffer.size() != m_page_size)
+            if(buffer.size() != TARGET_FLASH_PAGE_SIZE)
             {
                 return false;
             }
 
-            if(flash_page < 0 || flash_page >= m_page_count)
+            if(flash_page < 0 || flash_page >= TARGET_FLASH_PAGE_COUNT)
             {
                 return false;
             }
 
             // Get flash page address
-            const int32_t flash_address = flash_page * m_page_size;
+            const int32_t flash_address = flash_page * TARGET_FLASH_PAGE_SIZE;
             // Get the sector of the flash page
             const uint32_t flash_sector = get_sector(flash_address);
 
@@ -146,14 +145,14 @@ class Iap
         static bool write_flash(const int32_t flash_address, const gsl::span<const uint8_t> buffer)
         {
             // Check for valid buffer size (multiple of page size)
-            if(buffer.size() <= 0 || (buffer.size() % m_page_size) != 0)
+            if(buffer.size() <= 0 || (buffer.size() % TARGET_FLASH_PAGE_SIZE) != 0)
             {
                 return false;
             }
 
             // Check for valid address boundary
-            if(flash_address < 0 || (flash_address % m_page_size) != 0 ||
-              (flash_address + buffer.size()) > (m_page_count * m_page_size))
+            if(flash_address < 0 || (flash_address % TARGET_FLASH_PAGE_SIZE) != 0 ||
+              (flash_address + buffer.size()) > (TARGET_FLASH_SIZE))
             {
                 return false;
             }
@@ -161,10 +160,10 @@ class Iap
             // Get the page of the flash address
             int32_t flash_page = get_page(flash_address);
 
-            for(int32_t p = 0; p < buffer.size(); p += m_page_size)
+            for(int32_t p = 0; p < buffer.size(); p += TARGET_FLASH_PAGE_SIZE)
             {
                 // Write buffer one page at a time -> {0,63}, {64,127}, ...
-                if(write_flash_page(flash_page++, buffer.subspan(p, m_page_size)) == false)
+                if(write_flash_page(flash_page++, buffer.subspan(p, TARGET_FLASH_PAGE_SIZE)) == false)
                 {
                     return false;
                 }
@@ -313,13 +312,6 @@ class Iap
         // --------------------------------------------------------------------
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
-
-        // Number of flash pages
-        // Helder Parracho @ 23 March 2018
-        // NOTE: The manual and datasheet states that all MCUs have 64Kb of flash
-        static constexpr int32_t m_page_count = 1024; //1024 pages * 64 bytes
-        // Flash page size is 64 bytes
-        static constexpr int32_t m_page_size = 64;
 
         // Command codes for IAP
         enum class CommandCode

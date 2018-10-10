@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL interface class.
-// @date    23 May 2018
+// @date    14 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,6 @@
 #ifndef __XARMLIB_HAL_TIMER_HPP
 #define __XARMLIB_HAL_TIMER_HPP
 
-#include "system/target"
-
 namespace xarmlib
 {
 namespace hal
@@ -48,7 +46,7 @@ class Timer : private TargetTimer
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
         using Mode       = typename TargetTimer::Mode;
@@ -69,12 +67,12 @@ class Timer : private TargetTimer
 
         using TargetTimer::enable_irq;
         using TargetTimer::disable_irq;
+        using TargetTimer::is_irq_enabled;
 
-        using TargetTimer::is_enabled_irq;
-        using TargetTimer::is_pending_irq;
-        using TargetTimer::clear_pending_irq;
+        using TargetTimer::is_irq_pending;
+        using TargetTimer::clear_irq_pending;
 
-        #ifdef __TARGET_TIMER_TYPE_IS_MRT__
+#ifdef TARGET_TIMER_TYPE_MRT
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
         using TargetTimer::set_mrt_irq_priority;
@@ -98,6 +96,8 @@ class Timer : private TargetTimer
 
 
 
+#include "core/target_specs.hpp"
+
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_timer.hpp"
@@ -105,6 +105,15 @@ class Timer : private TargetTimer
 namespace xarmlib
 {
 using Timer = hal::Timer<targets::lpc84x::Timer>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_timer.hpp"
+
+namespace xarmlib
+{
+using Timer = hal::Timer<targets::lpc81x::Timer>;
 }
 
 #elif defined __OHER_TARGET__

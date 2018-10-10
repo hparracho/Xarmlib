@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    18 May 2018
+// @date    12 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,9 +33,7 @@
 #ifndef __XARMLIB_HAL_USART_HPP
 #define __XARMLIB_HAL_USART_HPP
 
-#include "system/cassert"
-#include "system/gsl"
-#include "system/target"
+#include "external/gsl.hpp"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_us_ticker.hpp"
 
@@ -53,20 +51,20 @@ class Usart : private TargetUsart
     public:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits = typename TargetUsart::DataBits;
-        using StopBits = typename TargetUsart::StopBits;
-        using Parity   = typename TargetUsart::Parity;
+        using DataBits         = typename TargetUsart::DataBits;
+        using StopBits         = typename TargetUsart::StopBits;
+        using Parity           = typename TargetUsart::Parity;
 
-        using Status        = typename TargetUsart::Status;
-        using StatusBitmask = typename TargetUsart::StatusBitmask;
+        using Status           = typename TargetUsart::Status;
+        using StatusBitmask    = typename TargetUsart::StatusBitmask;
 
         using Interrupt        = typename TargetUsart::Interrupt;
         using InterruptBitmask = typename TargetUsart::InterruptBitmask;
 
-        using IrqHandler = typename TargetUsart::IrqHandler;
+        using IrqHandler       = typename TargetUsart::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -77,12 +75,8 @@ class Usart : private TargetUsart
               const int32_t            baudrate,
               const DataBits           data_bits = DataBits::BITS_8,
               const StopBits           stop_bits = StopBits::BITS_1,
-              const Parity             parity    = Parity::NONE) : TargetUsart(txd,
-                                                                               rxd,
-                                                                               baudrate,
-                                                                               data_bits,
-                                                                               stop_bits,
-                                                                               parity)
+              const Parity             parity    = Parity::NONE)
+            : TargetUsart(txd, rxd, baudrate, data_bits, stop_bits, parity)
         {}
 
         // -------- FORMAT / BAUDRATE -----------------------------------------
@@ -113,22 +107,18 @@ class Usart : private TargetUsart
 
         using TargetUsart::enable_interrupts;
         using TargetUsart::disable_interrupts;
-        using TargetUsart::get_enabled_interrupts;
+        using TargetUsart::get_interrupts_enabled;
 
-        // -------- IRQ HANDLER -----------------------------------------------
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        void assign_irq_handler(const IrqHandler& irq_handler, const int32_t irq_priority)
-        {
-            TargetUsart::assign_irq_handler(irq_handler);
-            TargetUsart::set_irq_priority(irq_priority);
-            TargetUsart::enable_irq();
-        }
+        using TargetUsart::enable_irq;
+        using TargetUsart::disable_irq;
+        using TargetUsart::is_irq_enabled;
 
-        void remove_irq_handler()
-        {
-            TargetUsart::disable_irq();
-            TargetUsart::remove_irq_handler();
-        }
+        using TargetUsart::set_irq_priority;
+
+        using TargetUsart::assign_irq_handler;
+        using TargetUsart::remove_irq_handler;
 
         // -------- READ / WRITE ----------------------------------------------
 
@@ -209,7 +199,7 @@ class Usart : private TargetUsart
     private:
 
         // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
+        // PRIVATE TYPE ALIASES
         // --------------------------------------------------------------------
 
         using UsTicker = xarmlib::UsTicker;
@@ -223,6 +213,8 @@ class Usart : private TargetUsart
 
 
 
+#include "core/target_specs.hpp"
+
 #if defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_usart.hpp"
@@ -230,6 +222,15 @@ class Usart : private TargetUsart
 namespace xarmlib
 {
 using Usart = hal::Usart<targets::lpc84x::Usart>;
+}
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_usart.hpp"
+
+namespace xarmlib
+{
+using Usart = hal::Usart<targets::lpc81x::Usart>;
 }
 
 #elif defined __OHER_TARGET__
