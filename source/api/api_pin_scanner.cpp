@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_input_scannerr.hpp
-// @brief   API input scanner class (takes control of one available Timer).
-// @date    6 July 2018
+// @file    api_pin_scanner.cpp
+// @brief   API pin scanner class (takes control of one available Timer).
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,7 +31,7 @@
 
 #include "xarmlib_config.hpp"
 
-#if (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+#if (XARMLIB_ENABLE_PIN_SCANNER == 1)
 
 namespace xarmlib
 {
@@ -40,13 +40,16 @@ namespace xarmlib
 
 
 // Static initialization
-Timer                                     InputScanner::m_timer;
-std::dynarray<InputScanner::InputHandler> InputScanner::m_input_handlers(XARMLIB_CONFIG_INPUT_SCANNER_SOURCE_COUNT);
-InputScanner::PinChangeHandler            InputScanner::m_pin_change_handler;
+Timer                                       PinScanner::m_timer;
+std::dynarray<PinScanner::PinSourceHandler> PinScanner::m_pin_source_handlers(XARMLIB_CONFIG_PIN_SCANNER_SOURCE_COUNT);
+std::dynarray<PinScanner::DebouncerHandler> PinScanner::m_debouncer_handlers(XARMLIB_CONFIG_PIN_SCANNER_DEBOUNCER_COUNT);
+std::dynarray<PinScanner::PinChangeHandler> PinScanner::m_pin_change_handlers(XARMLIB_CONFIG_PIN_SCANNER_DEBOUNCER_COUNT);
+PinScanner::PinChangeHandler                PinScanner::m_grouped_pin_change_handler;
+bool                                        PinScanner::m_is_starting { true };
 
 
 
 
 } // namespace xarmlib
 
-#endif // (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+#endif // (XARMLIB_ENABLE_PIN_SCANNER == 1)

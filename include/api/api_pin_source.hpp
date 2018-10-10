@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_pin_debouncer.cpp
-// @brief   API pin debouncer class.
-// @date    14 July 2018
+// @file    api_pin_source.hpp
+// @brief   API pin source base class.
+// @date    18 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,9 +29,10 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "xarmlib_config.hpp"
+#ifndef __XARMLIB_API_PIN_SOURCE_HPP
+#define __XARMLIB_API_PIN_SOURCE_HPP
 
-#if (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+#include "api/api_pin_scanner.hpp"
 
 namespace xarmlib
 {
@@ -39,14 +40,30 @@ namespace xarmlib
 
 
 
-std::array<PinDebouncer::PortMask, TARGET_PORT_COUNT> PinDebouncer::m_ports {};
-std::dynarray<PinDebouncer::Input>                    PinDebouncer::m_pins(XARMLIB_CONFIG_PIN_DEBOUNCER_PIN_COUNT);
-std::size_t                                           PinDebouncer::m_assigned_pin_count { 0 };
-bool                                                  PinDebouncer::m_is_first_debounce { true };
+class PinSource
+{
+    public:
+
+        virtual ~PinSource()
+        {}
+
+        // Get the handler that is intended to be used as a pin source reader handler of the PinScanner class
+        virtual PinScanner::PinSourceHandler get_pin_source_handler() = 0;
+
+        virtual std::size_t get_port_count() const = 0;
+
+        virtual uint32_t get_read(const std::size_t port_index) const = 0;
+
+        virtual uint32_t get_read_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
+
+        virtual uint32_t get_output_bit(const std::size_t port_index, const std::size_t pin_bit) const = 0;
+
+        virtual void write_output_bit(const std::size_t port_index, const std::size_t pin_bit, const uint32_t output_bit) = 0;
+};
 
 
 
 
 } // namespace xarmlib
 
-#endif // (XARMLIB_ENABLE_INPUT_DEBOUNCER == 1)
+#endif // __XARMLIB_API_PIN_SOURCE_HPP

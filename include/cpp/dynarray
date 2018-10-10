@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    dynarray
 // @brief   Fixed size dynamic allocated (heap) array class.
-// @date    6 July 2018
+// @date    28 August 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -72,16 +72,22 @@ class dynarray
 
         explicit dynarray(const size_type count) : m_data { new T[count] },
                                                    m_size { count }
-        {}
+        {
+            assert(m_data != nullptr);
+        }
 
         template <class Allocator>
         dynarray(const size_type count, const Allocator& allocator) : m_data{ allocator.allocate(count) },
                                                                       m_size{ count }
-        {}
+        {
+            assert(m_data != nullptr);
+        }
 
         dynarray(const size_type count, const T& value) : m_data { new T[count] },
                                                           m_size { count }
         {
+            assert(m_data != nullptr);
+        
             std::fill(begin(), end(), value);
         }
 
@@ -89,12 +95,16 @@ class dynarray
         dynarray(const size_type count, const T& value, const Allocator& allocator) : m_data{ allocator.allocate(count) },
                                                                                       m_size{ count }
         {
+            assert(m_data != nullptr);
+        
             std::fill(begin(), end(), value);
         }
 
         dynarray(const dynarray& other) : m_data{ new T[other.size()] },
                                           m_size{ other.size() }
         {
+            assert(m_data != nullptr);
+        
             std::copy(other.begin(), other.end(), begin());
         }
 
@@ -102,16 +112,22 @@ class dynarray
         dynarray(const dynarray& other, const Allocator& allocator) : m_data{ allocator.allocate(other.size()) },
                                                                       m_size{ other.size() }
         {
+            assert(m_data != nullptr);
+        
             std::copy(other.begin(), other.end(), begin());
         }
 
         dynarray(dynarray&& other) : m_data{ std::move(other.m_data) },
                                      m_size{ other.size() }
-        {}
+        {
+            assert(m_data != nullptr);
+        }
 
         dynarray(std::initializer_list<T> list) : m_data{ new T[list.size()] },
                                                   m_size{ list.size() }
         {
+            assert(m_data != nullptr);
+        
             std::copy(list.begin(), list.end(), begin());
         }
 
@@ -119,6 +135,8 @@ class dynarray
         dynarray(std::initializer_list<T> list, const Allocator& allocator) : m_data{ allocator.allocate(list.size()) },
                                                                               m_size{ list.size() }
         {
+            assert(m_data != nullptr);
+        
             std::copy(list.begin(), list.end(), begin());
         }
 
