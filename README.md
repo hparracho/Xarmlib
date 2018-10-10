@@ -1,4 +1,4 @@
-# Xarmlib - (It will) work like a charm!
+# Xarmlib - Works like a charm!
 Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ## Warning:
@@ -6,11 +6,13 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ---
 ## Supported Targets:
-- NXP LPC81x *(work in progress...)*
-- NXP LPC84x *(under testing...)*
+- NXP LPC81x
+- NXP LPC84x
+- NXP LPC408x/7x *(work in progress...)*
 
 ## Supported Toolchains:
-- [GNU Arm Embedded Toolchain 7-2017q4-major](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm)
+- [GNU Arm Embedded Toolchain 7-2017q4-major or greater](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm)
+- [	MCUXpresso IDE v10.1.0 or greater](https://www.nxp.com/support/developer-resources/software-development-tools/mcuxpresso-software-and-tools/mcuxpresso-integrated-development-environment-ide:MCUXpresso-IDE)
 
 ## External Dependencies:
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
@@ -26,6 +28,5 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 - The Delegate class is based on the [Delegate](https://github.com/nikitablack/cpp-tests/blob/master/Delegate/Delegate.h) implementation from [Nikita Chernyi](https://github.com/nikitablack). A detailed description of the original implementation can be found [here](https://nikitablack.github.io/2016/04/12/Generic-C-delegates.html).
 - The low level peripheral drivers for the LPC81x family of MCUs are based on the [NXP LPCOpen LPC8xx](https://www.nxp.com/downloads/en/libraries/lpcopen_3_02_lpcxpresso_nxp_lpcxpresso_812.zip) supplied by NXP. All rights reserved. (c) 2017 NXP B.V.
 - The low level peripheral drivers for the LPC84x family of MCUs are based on the [LPC845 Example Code Bundle MCUXpresso](https://www.nxp.com/downloads/en/software/LPC845-Example-Code-Bundle-MCUXpresso.zip) supplied by NXP. All rights reserved. (c) 2017 NXP B.V.
+- The low level peripheral drivers for the LPC408x/7x family of MCUs are based on the [NXP LPCOpen LPC40xx](https://www.nxp.com/downloads/en/libraries/lpcopen_2_10_lpcxpresso_ea_devkit_4088.zip) supplied by NXP. All rights reserved. (c) 2014 NXP B.V.
 
-## Additional Contributors:
-- [Emanuel Pinto](https://github.com/emanuelpinto) is an official contributor to this library and some of the code is based on his original work.  
