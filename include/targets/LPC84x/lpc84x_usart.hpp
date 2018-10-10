@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    14 July 2018
+// @date    29 August 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -77,22 +77,23 @@ namespace private_usart
 // USART Status register (STAT) bits
 enum class Status
 {
-    RX_READY       = (1 << 0),  // Receiver ready
-    RX_IDLE        = (1 << 1),  // Receiver idle
-    TX_READY       = (1 << 2),  // Transmitter ready for data
-    TX_IDLE        = (1 << 3),  // Transmitter idle
-    CTS            = (1 << 4),  // Status of CTS signal
-    CTS_DELTA      = (1 << 5),  // Change in CTS state
-    TX_DISABLED    = (1 << 6),  // Transmitter disabled
-    RX_OVERRUN     = (1 << 8),  // Overrun Error interrupt flag
-    RX_BREAK       = (1 << 10), // Received break
-    RX_BREAK_DELTA = (1 << 11), // Change in receive break detection
-    START          = (1 << 12), // Start detected
-    FRAME_ERROR    = (1 << 13), // Framing Error interrupt flag
-    PARITY_ERROR   = (1 << 14), // Parity Error interrupt flag
-    RX_NOISE       = (1 << 15), // Received Noise interrupt flag
-    AUTOBAUD_ERROR = (1 << 16), // Auto-baud Error
-    ALL            = 0x1F920    // 1'1111'1001'0010'0000
+    RX_READY           = (1 << 0),  // Receiver ready
+    RX_IDLE            = (1 << 1),  // Receiver idle
+    TX_READY           = (1 << 2),  // Transmitter ready for data
+    TX_IDLE            = (1 << 3),  // Transmitter idle
+    CTS                = (1 << 4),  // Status of CTS signal
+    CTS_DELTA          = (1 << 5),  // Change in CTS state
+    TX_DISABLED        = (1 << 6),  // Transmitter disabled
+    RX_OVERRUN         = (1 << 8),  // Overrun Error interrupt flag
+    RX_BREAK           = (1 << 10), // Received break
+    RX_BREAK_DELTA     = (1 << 11), // Change in receive break detection
+    START              = (1 << 12), // Start detected
+    FRAME_ERROR        = (1 << 13), // Framing Error interrupt flag
+    PARITY_ERROR       = (1 << 14), // Parity Error interrupt flag
+    RX_NOISE           = (1 << 15), // Received Noise interrupt flag
+    AUTOBAUD_ERROR     = (1 << 16), // Auto-baud Error
+    CLEAR_ALL_BITMASK  = 0x1F920,   // Clear all bitmask (1'1111'1001'0010'0000)
+    BITMASK            = 0x1FD7F    // Full bitmask (1'1111'1101'0111'1111)
 };
 
 // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
@@ -110,11 +111,11 @@ enum class Interrupt
     PARITY_ERROR   = (1 << 14), // Parity Error interrupt flag
     RX_NOISE       = (1 << 15), // Received Noise interrupt flag
     AUTOBAUD_ERROR = (1 << 16), // Auto-baud Error
-    ALL            = 0x1F96D    // 1'1111'1001'0110'1101
+    BITMASK        = 0x1F96D    // Full bitmask (1'1111'1001'0110'1101)
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::ALL))
-BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::BITMASK))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
 
 } // namespace private_usart
 
@@ -271,7 +272,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             m_usart->CTL = 0;
 
             // Clear all status bits
-            clear_status(Status::ALL);
+            clear_status(Status::CLEAR_ALL_BITMASK);
 
             set_format(data_bits, stop_bits, parity);
             set_baudrate(baudrate);
@@ -466,7 +467,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
 
         void clear_status(const StatusBitmask bitmask)
         {
-            m_usart->STAT = bitmask.bits();
+            m_usart->STAT = (bitmask & Status::CLEAR_ALL_BITMASK).bits();
         }
 
         // -------- INTERRUPTS ------------------------------------------------

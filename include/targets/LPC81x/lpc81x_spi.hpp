@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    14 July 2018
+// @date    29 August 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -72,16 +72,17 @@ namespace private_spi
 // SPI Status Register (STAT) bits
 enum class Status
 {
-    RX_READY      = (1 << 0), // Receiver Ready flag
-    TX_READY      = (1 << 1), // Transmitter Ready flag
-    RX_OVERRUN    = (1 << 2), // Receiver Overrun interrupt flag (applies only to slave mode)
-    TX_UNDERRUN   = (1 << 3), // Transmitter Underrun interrupt flag (applies only to slave mode)
-    SSEL_ASSERT   = (1 << 4), // Slave Select Assert flag
-    SSEL_DEASSERT = (1 << 5), // Slave Select Deassert flag
-    STALLED       = (1 << 6), // Stalled status flag
-    END_TRANSFER  = (1 << 7), // End Transfer control bit
-    MASTER_IDLE   = (1 << 8), // Master idle status flag
-    ALL           = 0x1FF     // 1'1111'1111
+    RX_READY          = (1 << 0), // Receiver Ready flag
+    TX_READY          = (1 << 1), // Transmitter Ready flag
+    RX_OVERRUN        = (1 << 2), // Receiver Overrun interrupt flag (applies only to slave mode)
+    TX_UNDERRUN       = (1 << 3), // Transmitter Underrun interrupt flag (applies only to slave mode)
+    SSEL_ASSERT       = (1 << 4), // Slave Select Assert flag
+    SSEL_DEASSERT     = (1 << 5), // Slave Select Deassert flag
+    STALLED           = (1 << 6), // Stalled status flag
+    END_TRANSFER      = (1 << 7), // End Transfer control bit
+    MASTER_IDLE       = (1 << 8), // Master idle status flag
+    CLEAR_ALL_BITMASK = 0x0BC,    // Clear all bitmask (0'1011'1100)
+    BITMASK           = 0x1FF     // Full bitmask (1'1111'1111)
 };
 
 // SPI Interrupt Register (INTENSET and INTENCLR) bits
@@ -93,11 +94,11 @@ enum class Interrupt
     TX_UNDERRUN   = (1 << 3), // Transmitter underrun occurs (applies only to slave mode)
     SSEL_ASSERT   = (1 << 4), // Slave Select is asserted
     SSEL_DEASSERT = (1 << 5), // Slave Select is deasserted
-    ALL           = 0x3F      // 11'1111
+    BITMASK       = 0x3F      // Full bitmask (11'1111)
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::ALL))
-BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::ALL))
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::BITMASK))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
 
 } // namespace private_spi
 
@@ -371,14 +372,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         void clear_status(const StatusBitmask bitmask)
         {
-            // Only the following bits can be cleared
-            const StatusBitmask clear_all_mask = Status::RX_OVERRUN
-                                               | Status::TX_UNDERRUN
-                                               | Status::SSEL_ASSERT
-                                               | Status::SSEL_DEASSERT
-                                               | Status::END_TRANSFER;
-
-            m_spi->STAT = bitmask.bits() & clear_all_mask.bits();
+            m_spi->STAT = (bitmask & Status::CLEAR_ALL_BITMASK).bits();
         }
 
         // -------- INTERRUPTS ------------------------------------------------

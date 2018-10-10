@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    4 July 2018
+// @date    26 July 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -132,8 +132,6 @@ class Faim
                                                const Pin::Name             isp_uart0_rx,
                                                const PinConfigArray<SIZE>& pin_config)
         {
-            assert(isp_uart0_tx != isp_uart0_rx);
-
             std::array<uint32_t, 8> faim_data   // FAIM 8 words
             {
                 /* WORD0 */ (static_cast<uint32_t>(swd_config)  << WORD0_SWD_BIT)  |
@@ -184,6 +182,8 @@ class Faim
             {
                 pin_rx = static_cast<uint32_t>(isp_uart0_rx);
             }
+
+            assert(pin_tx != pin_rx);
 
             uint32_t word1 {};
 
