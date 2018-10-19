@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_crp.cpp
 // @brief   CRP (Code Read Protect) word definition.
-// @date    14 July 2018
+// @date    15 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,7 +52,7 @@ extern "C"
 // enabled. You will need UART connectivity and FlashMagic (flashmagictool.com)
 // to reverse this. Don't even try this without these tools; most likely the
 // SWD flash programming will not even complete.
-// Allows reads and writes only to RAM above 0x10000300 and flash other than
+// Allows reads and writes only to RAM above 0x10000600 and flash other than
 // sector 0 (the first 4 kB). Full erase also allowed- again only through UART
 // and FlashMagic (NO JTAG/SWD)
 #define CRP_CRP1                0x12345678
