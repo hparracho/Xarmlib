@@ -1,8 +1,8 @@
 /*
 // ----------------------------------------------------------------------------
-// @file    lpc407x_8x_common.ld
-// @brief   Linker Script common part for NXP LPC407x_8x MCUs.
-// @date    12 October 2018
+// @file    lpc408x_7x_common.ld
+// @brief   Linker Script common part for NXP LPC408x_7x MCUs.
+// @date    19 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib

@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc4076.ld
 // @brief   Linker Script for NXP LPC4076 MCU.
-// @date    12 October 2018
+// @date    19 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,4 +70,4 @@ __stack_offset  = 32;                   /* Stack offset : 0 or 32 */
 
 
 
-INCLUDE "lpc407x_8x_common.ld"
+INCLUDE "lpc408x_7x_common.ld"
