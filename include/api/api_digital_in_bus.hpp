@@ -53,6 +53,30 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+#if defined __KV4X__
+        DigitalInBus(const PinNameBus&         pin_name_bus,
+                     const Gpio::InputMode     input_mode,
+                     const Gpio::PassiveFilter passive_filter = Gpio::PassiveFilter::kPORT_PassiveFilterDisable,
+                     const Gpio::LockRegister  lock_register  = Gpio::LockRegister::kPORT_UnlockRegister) : m_bus(pin_name_bus.get_size())
+        {
+            std::size_t index = 0;
+            for(auto pin_name : pin_name_bus)
+            {
+                m_bus[index++] = std::make_unique<Gpio>(pin_name, input_mode, passive_filter, lock_register);
+            }
+        }
+
+        DigitalInBus(const PinNameBus&                  pin_name_bus,
+                     const Gpio::InputModeTrueOpenDrain input_mode,
+                     const Gpio::LockRegister           lock_register = Gpio::LockRegister::kPORT_UnlockRegister) : m_bus(pin_name_bus.get_size())
+        {
+            std::size_t index = 0;
+            for(auto pin_name : pin_name_bus)
+            {
+                m_bus[index++] = std::make_unique<Gpio>(pin_name, input_mode, lock_register);
+            }
+        }
+#elif defined __LPC84X__ || __LPC81X__
         DigitalInBus(const PinNameBus&           pin_name_bus,
                      const Gpio::InputMode       input_mode,
                      const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
@@ -77,6 +101,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
                 m_bus[index++] = std::make_unique<Gpio>(pin_name, input_mode, input_filter, input_invert);
             }
         }
+#endif
 
         // -------- READ ------------------------------------------------------
 

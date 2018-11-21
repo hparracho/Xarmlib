@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    6 July 2018
+// @date    29 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,7 +34,16 @@
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_system.hpp"
+
+namespace xarmlib
+{
+using System = targets::kv4x::System;
+}
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_system.hpp"
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    assert.h
 // @brief   Custom 'assert.h' header file.
-// @date    6 July 2018
+// @date    12 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,6 +36,10 @@
 
 #undef assert
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 
 
 
@@ -46,8 +50,15 @@
 #else
 
 __attribute__ ((noreturn))
-void __xarmlib_assert_func(const bool expr);
+void __xarmlib_assert_func();
 
-#define assert(__e) ((__e) ? (void)0 : __xarmlib_assert_func(__e))
+#define assert(__e) ((__e) ? (void)0 : __xarmlib_assert_func())
 
 #endif // !NDEBUG
+
+
+
+
+#ifdef __cplusplus
+} // extern "C"
+#endif

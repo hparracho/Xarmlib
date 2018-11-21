@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    assert.cpp
-// @brief   Custom 'assert_func()' implementation.
-// @date    6 July 2018
+// @file    fsl_mkv4xf16_cmsis.cpp
+// @brief   CMSIS Core Peripheral Access Layer header file for Kinetis MKV4xF16 MCUs.
+// @date    31 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,21 +29,31 @@
 //
 // ----------------------------------------------------------------------------
 
+#ifndef __XARMLIB_EXTERNAL_FSL_MKV4XF16_CMSIS_H
+#define __XARMLIB_EXTERNAL_FSL_MKV4XF16_CMSIS_H
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#include <stdint.h>
 
 
 
-#ifndef NDEBUG
 
-// Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
-extern "C" __attribute__ ((weak, noreturn))
-void abort(void);
+// CMSIS system core clock variable definition
+extern uint32_t SystemCoreClock;
 
-__attribute__ ((noreturn))
-void __xarmlib_assert_func(const bool expr)
-{
-    (void)expr;
+// Update system core clock frequency
+// NOTE: This function is called in startup functions but should be
+//       called every time the system has a clock frequency change.
+void SystemCoreClockUpdate(void);
 
-    abort();
-}
 
-#endif // !NDEBUG
+
+
+#ifdef __cplusplus
+} // extern "C"
+#endif
+
+#endif // __XARMLIB_EXTERNAL_FSL_MKV4XF16_CMSIS_H

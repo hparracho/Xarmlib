@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    3 July 2018
+// @date    21 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,11 +48,35 @@ class DigitalOut : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+#if defined __KV4X__
+        DigitalOut(const Pin::Name           pin_name,
+                   const Gpio::OutputMode    output_mode,
+                   const Gpio::SlewRate      slew_rate      = Gpio::SlewRate::kPORT_FastSlewRate,
+                   const Gpio::DriveStrength drive_strength = Gpio::DriveStrength::kPORT_LowDriveStrength,
+                   const Gpio::LockRegister  lock_register  = Gpio::LockRegister::kPORT_UnlockRegister) : Gpio(pin_name,
+                                                                                                               output_mode,
+                                                                                                               slew_rate,
+                                                                                                               drive_strength,
+                                                                                                               lock_register)
+        {}
+
+        DigitalOut(const Pin::Name                     pin_name,
+                   const Gpio::OutputModeTrueOpenDrain output_mode,
+                   const Gpio::SlewRate                slew_rate      = Gpio::SlewRate::kPORT_FastSlewRate,
+                   const Gpio::DriveStrength           drive_strength = Gpio::DriveStrength::kPORT_LowDriveStrength,
+                   const Gpio::LockRegister            lock_register  = Gpio::LockRegister::kPORT_UnlockRegister) : Gpio(pin_name,
+                                                                                                                         output_mode,
+                                                                                                                         slew_rate,
+                                                                                                                         drive_strength,
+                                                                                                                         lock_register)
+        {}
+#elif defined __LPC84X__ || __LPC81X__
         DigitalOut(const Pin::Name pin_name, const Gpio::OutputMode output_mode) : Gpio(pin_name, output_mode)
         {}
 
         DigitalOut(const Pin::Name pin_name, const Gpio::OutputModeTrueOpenDrain output_mode) : Gpio(pin_name, output_mode)
         {}
+#endif
 
         // -------- READ ------------------------------------------------------
 

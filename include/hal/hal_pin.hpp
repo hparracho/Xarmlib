@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin.hpp
 // @brief   Pin HAL interface class.
-// @date    14 July 2018
+// @date    20 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,6 +51,34 @@ class Pin
 
         using Name         = typename TargetPin::Name;
         using FunctionMode = typename TargetPin::FunctionMode;
+
+        //TMP
+        using SlewRate        = typename TargetPin::SlewRate;
+        using PassiveFilter   = typename TargetPin::PassiveFilter;
+        using OpenDrain       = typename TargetPin::OpenDrain;
+        using DriveStrength   = typename TargetPin::DriveStrength;
+        using PinMuxControl   = typename TargetPin::PinMuxControl;
+        using LockRegister    = typename TargetPin::LockRegister;
+
+        static void set_mode(const Name pin_name, const FunctionMode    function_mode,
+                                                  const PinMuxControl   pin_mux_control,
+                                                  const SlewRate        slew_rate      = SlewRate::kPORT_FastSlewRate,
+                                                  const PassiveFilter   passive_filter = PassiveFilter::kPORT_PassiveFilterDisable,
+                                                  const OpenDrain       open_drain     = OpenDrain::kPORT_OpenDrainDisable,
+                                                  const DriveStrength   drive_strength = DriveStrength::kPORT_LowDriveStrength,
+                                                  const LockRegister    lock_register  = LockRegister::kPORT_UnlockRegister)
+        {
+            TargetPin::set_mode(pin_name, function_mode, pin_mux_control, slew_rate, passive_filter, open_drain, drive_strength, lock_register);
+        }
+
+        static void set_mode(const Name pin_name, const PinMuxControl   pin_mux_control = PinMuxControl::kPORT_MuxAlt7, // I2C0 configuration
+                                                  const SlewRate        slew_rate       = SlewRate::kPORT_FastSlewRate,
+                                                  const PassiveFilter   passive_filter  = PassiveFilter::kPORT_PassiveFilterDisable,
+                                                  const DriveStrength   drive_strength  = DriveStrength::kPORT_LowDriveStrength,
+                                                  const LockRegister    lock_register   = LockRegister::kPORT_UnlockRegister)
+        {
+            TargetPin::set_mode(pin_name, pin_mux_control, slew_rate, passive_filter, drive_strength, lock_register);
+        }
 };
 
 
@@ -64,7 +92,16 @@ class Pin
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_pin.hpp"
+
+namespace xarmlib
+{
+using Pin = hal::Pin<targets::kv4x::Pin>;
+}
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_pin.hpp"
 
