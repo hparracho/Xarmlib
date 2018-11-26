@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    14 July 2018
+// @date    23 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -50,10 +50,10 @@ namespace lpc84x
 
 class Gpio
 {
-    protected:
+    public:
 
         // --------------------------------------------------------------------
-        // PROTECTED DEFINITIONS
+        // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
         // Input pin modes
@@ -74,12 +74,6 @@ class Gpio
             OPEN_DRAIN_HIZ
         };
 
-        // True open-drain input pin modes
-        enum class InputModeTrueOpenDrain
-        {
-            HIZ = 0
-        };
-
         // True open-drain output pin modes
         enum class OutputModeTrueOpenDrain
         {
@@ -92,6 +86,51 @@ class Gpio
         using InputInvert             = Pin::InputInvert;
         using InputHysteresis         = Pin::InputHysteresis;
 
+    protected:
+
+        // --------------------------------------------------------------------
+        // PROTECTED DEFINITIONS
+        // --------------------------------------------------------------------
+
+        struct InputModeConfig
+        {
+            InputMode       input_mode       = InputMode::PULL_UP;
+            InputFilter     input_filter     = InputFilter::BYPASS;
+            InputInvert     input_invert     = InputInvert::NORMAL;
+            InputHysteresis input_hysteresis = InputHysteresis::ENABLE;
+
+            // Set the value of the supplied IOCON clock divider (used by input filters)
+            // NOTE: The input filter source (where the divider is applied) is the MAIN clock
+            static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
+            {
+                Clock::set_iocon_clock_divider(clock_div, div);
+            }
+        };
+
+        struct OutputModeConfig
+        {
+            OutputMode output_mode = OutputMode::PUSH_PULL_LOW;
+        };
+
+        struct InputModeTrueOpenDrainConfig
+        {
+            // input mode: HIZ
+            InputFilter input_filter = InputFilter::BYPASS;
+            InputInvert input_invert = InputInvert::NORMAL;
+
+            // Set the value of the supplied IOCON clock divider (used by input filters)
+            // NOTE: The input filter source (where the divider is applied) is the MAIN clock
+            static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
+            {
+                Clock::set_iocon_clock_divider(clock_div, div);
+            }
+        };
+
+        struct OutputModeTrueOpenDrainConfig
+        {
+            OutputModeTrueOpenDrain output_mode = OutputModeTrueOpenDrain::LOW;
+        };
+
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -103,68 +142,56 @@ class Gpio
         {}
 
         // Normal input pin constructor
-        Gpio(const Pin::Name       pin_name,
-             const InputMode       input_mode,
-             const InputFilter     input_filter,
-             const InputInvert     input_invert,
-             const InputHysteresis input_hysteresis) : m_pin_name {pin_name}
+        Gpio(const Pin::Name pin_name, const InputModeConfig config) : m_pin_name { pin_name }
         {
             if(pin_name != Pin::Name::NC)
             {
                 config_port();
-                set_mode(input_mode, input_filter, input_invert, input_hysteresis);
+                set_mode(config);
             }
         }
 
         // Normal output pin constructor
-        Gpio(const Pin::Name  pin_name,
-             const OutputMode output_mode) : m_pin_name {pin_name}
+        Gpio(const Pin::Name pin_name, const OutputModeConfig config) : m_pin_name { pin_name }
         {
             if(pin_name != Pin::Name::NC)
             {
                 config_port();
-                set_mode(output_mode);
+                set_mode(config);
             }
         }
 
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name              pin_name,
-             const InputModeTrueOpenDrain input_mode,
-             const InputFilter            input_filter,
-             const InputInvert            input_invert) : m_pin_name {pin_name}
+        Gpio(const Pin::Name pin_name, const InputModeTrueOpenDrainConfig config) : m_pin_name { pin_name }
         {
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
-                set_mode(input_mode, input_filter, input_invert);
+                set_mode(config);
             }
         }
 
         // True open-drain output pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name               pin_name,
-             const OutputModeTrueOpenDrain output_mode) : m_pin_name {pin_name}
+        Gpio(const Pin::Name pin_name, const OutputModeTrueOpenDrainConfig config) : m_pin_name { pin_name }
         {
             if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
             {
                 config_port();
-                set_mode(output_mode);
+                set_mode(config);
             }
         }
 
         // -------- CONFIGURATION ---------------------------------------------
 
         // Set normal input pin mode
-        void set_mode(const InputMode       input_mode,
-                      const InputFilter     input_filter     = InputFilter::BYPASS,
-                      const InputInvert     input_invert     = InputInvert::NORMAL,
-                      const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        void set_mode(const InputModeConfig config)
         {
             // Exclude NC and true open-drain pins
             assert(m_pin_name != Pin::Name::NC && m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
 
             Pin::FunctionMode function_mode;
 
-            switch(input_mode)
+            switch(config.input_mode)
             {
                 case InputMode::HIZ:       function_mode = Pin::FunctionMode::HIZ;       break;
                 case InputMode::PULL_DOWN: function_mode = Pin::FunctionMode::PULL_DOWN; break;
@@ -178,13 +205,13 @@ class Gpio
 
             Pin::set_mode(m_pin_name, function_mode,
                                       Pin::OpenDrain::DISABLE,
-                                      input_filter,
-                                      input_invert,
-                                      input_hysteresis);
+                                      config.input_filter,
+                                      config.input_invert,
+                                      config.input_hysteresis);
         }
 
         // Set normal output pin mode
-        void set_mode(const OutputMode output_mode)
+        void set_mode(const OutputModeConfig config)
         {
             // Exclude NC and true open-drain pins
             assert(m_pin_name != Pin::Name::NC && m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
@@ -192,7 +219,7 @@ class Gpio
             uint32_t       pin_value;
             Pin::OpenDrain open_drain;
 
-            switch(output_mode)
+            switch(config.output_mode)
             {
                 case OutputMode::PUSH_PULL_LOW:  pin_value = 0; open_drain = Pin::OpenDrain::DISABLE; break;
                 case OutputMode::OPEN_DRAIN_LOW: pin_value = 0; open_drain = Pin::OpenDrain::ENABLE;  break;
@@ -212,28 +239,24 @@ class Gpio
         }
 
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
-        void set_mode(const InputModeTrueOpenDrain input_mode,
-                      const InputFilter            input_filter = InputFilter::BYPASS,
-                      const InputInvert            input_invert = InputInvert::NORMAL)
+        void set_mode(const InputModeTrueOpenDrainConfig config)
         {
-            (void)input_mode; // Input mode only used to identify the type of pin
-
             // Available only on true open-drain pins
             assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
 
             write(0);
             set_direction(Direction::INPUT);
 
-            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
+            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, config.input_filter, config.input_invert);
         }
 
         // Set true open-drain output pin mode (only available on P0_10 and P0_11)
-        void set_mode(const OutputModeTrueOpenDrain output_mode)
+        void set_mode(const OutputModeTrueOpenDrainConfig config)
         {
             // Available only on true open-drain pins
             assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
 
-            write((output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
+            write((config.output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
             set_direction(Direction::OUTPUT);
 
             Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
@@ -257,15 +280,6 @@ class Gpio
             {
                 *reg_w = value;
             }
-        }
-
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
-
-        // Set the value of the supplied IOCON clock divider (used by input filters)
-        // NOTE: The input filter source (where the divider is applied) is the MAIN clock
-        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
-        {
-            Clock::set_iocon_clock_divider(clock_div, div);
         }
 
     private:

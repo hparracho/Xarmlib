@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    21 November 2018
+// @date    23 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,7 +43,7 @@ namespace hal
 
 
 template <class TargetGpio>
-class Gpio : private TargetGpio
+class Gpio : public TargetGpio
 {
     public:
 
@@ -51,22 +51,10 @@ class Gpio : private TargetGpio
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using InputMode               = typename TargetGpio::InputMode;
-        using OutputMode              = typename TargetGpio::OutputMode;
-        using InputModeTrueOpenDrain  = typename TargetGpio::InputModeTrueOpenDrain;
-        using OutputModeTrueOpenDrain = typename TargetGpio::OutputModeTrueOpenDrain;
-
-#if defined __KV4X__
-        using SlewRate                = typename TargetGpio::SlewRate;
-        using PassiveFilter           = typename TargetGpio::PassiveFilter;
-        using DriveStrength           = typename TargetGpio::DriveStrength;
-        using LockRegister            = typename TargetGpio::LockRegister;
-#elif defined __LPC84X__ || __LPC81X__
-        using InputFilterClockDivider = typename TargetGpio::InputFilterClockDivider;
-        using InputFilter             = typename TargetGpio::InputFilter;
-        using InputInvert             = typename TargetGpio::InputInvert;
-        using InputHysteresis         = typename TargetGpio::InputHysteresis;
-#endif
+        using InputModeConfig               = typename TargetGpio::InputModeConfig;
+        using OutputModeConfig              = typename TargetGpio::OutputModeConfig;
+        using InputModeTrueOpenDrainConfig  = typename TargetGpio::InputModeTrueOpenDrainConfig;
+        using OutputModeTrueOpenDrainConfig = typename TargetGpio::OutputModeTrueOpenDrainConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -77,84 +65,21 @@ class Gpio : private TargetGpio
         // Default constructor (assign a NC pin)
         Gpio() = default;
 
-#if defined __KV4X__
         // Normal input pin constructor
-        Gpio(const xarmlib::Pin::Name pin_name,
-             const InputMode          input_mode,
-             const PassiveFilter      passive_filter = PassiveFilter::kPORT_PassiveFilterDisable,
-             const LockRegister       lock_register  = LockRegister::kPORT_UnlockRegister) : TargetGpio(pin_name,
-                                                                                                        input_mode,
-                                                                                                        passive_filter,
-                                                                                                        lock_register)
+        Gpio(const xarmlib::Pin::Name pin_name, const InputModeConfig config) : TargetGpio(pin_name, config)
         {}
 
         // Normal output pin constructor
-        Gpio(const xarmlib::Pin::Name pin_name,
-             const OutputMode         output_mode,
-             const SlewRate           slew_rate      = SlewRate::kPORT_FastSlewRate,
-             const DriveStrength      drive_strength = DriveStrength::kPORT_LowDriveStrength,
-             const LockRegister       lock_register  = LockRegister::kPORT_UnlockRegister) : TargetGpio(pin_name,
-                                                                                                        output_mode,
-                                                                                                        slew_rate,
-                                                                                                        drive_strength,
-                                                                                                        lock_register)
+        Gpio(const xarmlib::Pin::Name pin_name, const OutputModeConfig config) : TargetGpio(pin_name, config)
         {}
 
         // True open-drain input pin constructor
-        Gpio(const xarmlib::Pin::Name     pin_name,
-             const InputModeTrueOpenDrain input_mode,
-             const LockRegister           lock_register = LockRegister::kPORT_UnlockRegister) : TargetGpio(pin_name,
-                                                                                                           input_mode,
-                                                                                                           lock_register)
+        Gpio(const xarmlib::Pin::Name pin_name, const InputModeTrueOpenDrainConfig config) : TargetGpio(pin_name, config)
         {}
 
         // True open-drain output pin constructor
-        Gpio(const xarmlib::Pin::Name      pin_name,
-             const OutputModeTrueOpenDrain output_mode,
-             const SlewRate                slew_rate      = SlewRate::kPORT_FastSlewRate,
-             const DriveStrength           drive_strength = DriveStrength::kPORT_LowDriveStrength,
-             const LockRegister            lock_register  = LockRegister::kPORT_UnlockRegister) : TargetGpio(pin_name,
-                                                                                                             output_mode,
-                                                                                                             slew_rate,
-                                                                                                             drive_strength,
-                                                                                                             lock_register)
+        Gpio(const xarmlib::Pin::Name pin_name, const OutputModeTrueOpenDrainConfig config) : TargetGpio(pin_name, config)
         {}
-#elif defined __LPC84X__ || __LPC81X__
-
-        // Normal input pin constructor
-        Gpio(const xarmlib::Pin::Name pin_name,
-             const InputMode          input_mode,
-             const InputFilter        input_filter     = InputFilter::BYPASS,
-             const InputInvert        input_invert     = InputInvert::NORMAL,
-             const InputHysteresis    input_hysteresis = InputHysteresis::ENABLE) : TargetGpio(pin_name,
-                                                                                               input_mode,
-                                                                                               input_filter,
-                                                                                               input_invert,
-                                                                                               input_hysteresis)
-        {}
-
-        // Normal output pin constructor
-        Gpio(const xarmlib::Pin::Name pin_name,
-             const OutputMode         output_mode) : TargetGpio(pin_name,
-                                                                output_mode)
-        {}
-
-        // True open-drain input pin constructor
-        Gpio(const xarmlib::Pin::Name     pin_name,
-             const InputModeTrueOpenDrain input_mode,
-             const InputFilter            input_filter = InputFilter::BYPASS,
-             const InputInvert            input_invert = InputInvert::NORMAL) : TargetGpio(pin_name,
-                                                                                           input_mode,
-                                                                                           input_filter,
-                                                                                           input_invert)
-        {}
-
-        // True open-drain output pin constructor
-        Gpio(const xarmlib::Pin::Name      pin_name,
-             const OutputModeTrueOpenDrain output_mode) : TargetGpio(pin_name,
-                                                                     output_mode)
-        {}
-#endif
 
         // -------- CONFIGURATION ---------------------------------------------
 
@@ -164,12 +89,6 @@ class Gpio : private TargetGpio
 
         using TargetGpio::read;
         using TargetGpio::write;
-
-#if defined __LPC84X__ || __LPC81X__
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
-
-        using TargetGpio::set_input_filter_clock_divider;
-#endif
 };
 
 
