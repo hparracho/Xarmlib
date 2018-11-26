@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    18 July 2018
+// @date    23 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,8 +54,8 @@ class SpiIoSource : public PinSource
                     const Pin::Name   latch,
                     const Pin::Name   enable,
                     const std::size_t port_count) : m_spi_master { spi_master },
-                                                    m_latch(latch, Gpio::OutputMode::PUSH_PULL_HIGH),
-                                                    m_enable(enable, Gpio::OutputMode::PUSH_PULL_HIGH),
+                                                    m_latch(latch, { Gpio::OutputMode::PUSH_PULL_HIGH }),
+                                                    m_enable(enable, { Gpio::OutputMode::PUSH_PULL_HIGH }),
                                                     m_outputs(port_count, static_cast<uint8_t>(0xFF)),
                                                     m_reads(port_count, static_cast<uint8_t>(0))
         {

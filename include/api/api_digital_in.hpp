@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    21 November 2018
+// @date    23 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,43 +48,11 @@ class DigitalIn : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-#if defined __KV4X__
-        DigitalIn(const Pin::Name           pin_name,
-                  const Gpio::InputMode     input_mode,
-                  const Gpio::PassiveFilter passive_filter = Gpio::PassiveFilter::kPORT_PassiveFilterDisable,
-                  const Gpio::LockRegister  lock_register  = Gpio::LockRegister::kPORT_UnlockRegister) : Gpio(pin_name,
-                                                                                                              input_mode,
-                                                                                                              passive_filter,
-                                                                                                              lock_register)
+        DigitalIn(const Pin::Name pin_name, const Gpio::InputModeConfig config) : Gpio(pin_name, config)
         {}
 
-        DigitalIn(const Pin::Name                    pin_name,
-                  const Gpio::InputModeTrueOpenDrain input_mode,
-                  const Gpio::LockRegister           lock_register = Gpio::LockRegister::kPORT_UnlockRegister) : Gpio(pin_name,
-                                                                                                                      input_mode,
-                                                                                                                      lock_register)
+        DigitalIn(const Pin::Name pin_name, const Gpio::InputModeTrueOpenDrainConfig config) : Gpio(pin_name, config)
         {}
-#elif defined __LPC84X__ || __LPC81X__
-        DigitalIn(const Pin::Name             pin_name,
-                  const Gpio::InputMode       input_mode,
-                  const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
-                  const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
-                  const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : Gpio(pin_name,
-                                                                                                       input_mode,
-                                                                                                       input_filter,
-                                                                                                       input_invert,
-                                                                                                       input_hysteresis)
-        {}
-
-        DigitalIn(const Pin::Name                    pin_name,
-                  const Gpio::InputModeTrueOpenDrain input_mode,
-                  const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
-                  const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : Gpio(pin_name,
-                                                                                                      input_mode,
-                                                                                                      input_filter,
-                                                                                                      input_invert)
-        {}
-#endif
 
         // -------- READ ------------------------------------------------------
 
@@ -100,12 +68,6 @@ class DigitalIn : private Gpio
         {
             return !Gpio::read();
         }
-
-#if defined __LPC84X__ || __LPC81X__
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
-
-        using Gpio::set_input_filter_clock_divider;
-#endif
 };
 
 
