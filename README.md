@@ -18,7 +18,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
 - [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using development commit as of 6 July 2018
 - [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 15 June 2018
-- [FSL: Freescale drivers from Kinetis SDK Version 2.4.1](https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html)
+- [FSL: Freescale drivers from Kinetis SDK Version 2.4.1](https://www.nxp.com/support/developer-resources/evaluation-and-development-boards/freedom-development-boards/mcu-boards/software-development-kit-for-kinetis-mcus:KINETIS-SDK)
 
 ---
 ## Credit where it is due:
