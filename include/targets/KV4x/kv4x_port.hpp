@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_port.hpp
 // @brief   Kinetis KV4x port class.
-// @date    20 November 2018
+// @date    26 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,11 +55,11 @@ class Port
         // Port names (all packages have 5 ports)
         enum class Name
         {
-            PORT_A = 0,
-            PORT_B,
-            PORT_C,
-            PORT_D,
-            PORT_E,
+            A = 0,
+            B,
+            C,
+            D,
+            E,
         };
 
         // --------------------------------------------------------------------
@@ -68,113 +68,118 @@ class Port
 
         static void set_direction(const Name port)
         {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
             // NOTE: Ones configure as outputs
-//            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0xFFFFFFFF;
+            gpio_base->PDDR = 0xFFFFFFFF;
         }
 
         static void clear_direction(const Name port)
         {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
             // NOTE: Zeros configure as inputs
-//            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = 0;
+            gpio_base->PDDR = 0;
         }
 
         static void set_direction(const Name port, const uint32_t mask)
         {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
             // NOTE: Ones configure as outputs
-//            LPC_GPIO->DIR[static_cast<std::size_t>(port)] |= mask;
+            gpio_base->PDDR |= mask;
         }
 
         static void clear_direction(const Name port, const uint32_t mask)
         {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
             // NOTE: Zeros configure as inputs
-//            LPC_GPIO->DIR[static_cast<std::size_t>(port)] &= ~mask;
+            gpio_base->PDDR &= ~mask;
         }
 
         static void set_direction(const Pin::Name pin)
         {
             assert(pin >= Pin::Name::NC);
 
+            GPIO_Type* gpio_base = get_gpio_base(pin);
+
             // NOTE: Ones configure as outputs
-//            LPC_GPIO->DIR0 |= 1UL << static_cast<uint32_t>(pin);
+            gpio_base->PDDR |= 1UL << Pin::get_pin_bit(pin);
         }
 
         static void clear_direction(const Pin::Name pin)
         {
             assert(pin >= Pin::Name::NC);
 
+            GPIO_Type* gpio_base = get_gpio_base(pin);
+
             // NOTE: Zeros configure as inputs
-//            LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
+            gpio_base->PDDR &= ~(1UL << Pin::get_pin_bit(pin));
         }
 
         static void write_direction(const Name port, const uint32_t mask, const uint32_t value)
         {
-//            LPC_GPIO->DIR[static_cast<std::size_t>(port)] = (LPC_GPIO->DIR[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
-        }
+            GPIO_Type* gpio_base = get_gpio_base(port);
 
-        static void set_mask(const Name port)
-        {
-            // NOTE: Zeroes in these registers enable reading and writing.
-            //       Ones disable writing and result in zeros in corresponding
-            //       positions when reading.
-//            LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0xFFFFFFFF;
-        }
-
-        static void clear_mask(const Name port)
-        {
-            // NOTE: Zeroes in these registers enable reading and writing.
-            //       Ones disable writing and result in zeros in corresponding
-            //       positions when reading.
-//            LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0;
-        }
-
-        static void set_mask(const Pin::Name pin)
-        {
-            assert(pin >= Pin::Name::NC);
-
-            // NOTE: Zeroes in these registers enable reading and writing.
-            //       Ones disable writing and result in zeros in corresponding
-            //       positions when reading.
-//            LPC_GPIO->MASK0 |= 1UL << static_cast<uint32_t>(pin);
-        }
-
-        static void clear_mask(const Pin::Name pin)
-        {
-            assert(pin >= Pin::Name::NC);
-
-            // NOTE: Zeroes in these registers enable reading and writing.
-            //       Ones disable writing and result in zeros in corresponding
-            //       positions when reading.
-//            LPC_GPIO->MASK0 &= ~(1UL << static_cast<uint32_t>(pin));
+            gpio_base->PDDR = (gpio_base->PDDR & ~mask) | (value & mask);
         }
 
         static uint32_t read(const Name port)
         {
-            return 0;//LPC_GPIO->PIN[static_cast<std::size_t>(port)];
+            const GPIO_Type* gpio_base = get_gpio_base(port);
+
+            return gpio_base->PDIR;
         }
 
         static uint32_t read(const Name port, const uint32_t mask)
         {
-            return 0;//LPC_GPIO->PIN[static_cast<std::size_t>(port)] & mask;
-        }
+            const GPIO_Type* gpio_base = get_gpio_base(port);
 
-        static uint32_t read_masked(const Name port)
-        {
-            return 0;//LPC_GPIO->MPIN[static_cast<std::size_t>(port)];
+            return gpio_base->PDIR & mask;
         }
 
         static void write(const Name port, const uint32_t value)
         {
-//            LPC_GPIO->PIN[static_cast<std::size_t>(port)] = value;
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
+            gpio_base->PDOR = value;
         }
 
         static void write(const Name port, const uint32_t mask, const uint32_t value)
         {
-//            LPC_GPIO->PIN[static_cast<std::size_t>(port)] = (LPC_GPIO->PIN[static_cast<std::size_t>(port)] & ~mask) | (value & mask);
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
+            gpio_base->PDOR = (gpio_base->PDOR & ~mask) | (value & mask);
         }
 
-        static void write_masked(const Name port, const uint32_t value)
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        static constexpr GPIO_Type* get_gpio_base(const Name port)
         {
-//            LPC_GPIO->MPIN[static_cast<std::size_t>(port)] = value;
+            return get_gpio_base(static_cast<std::size_t>(port));
+        }
+
+        static constexpr GPIO_Type* get_gpio_base(const Pin::Name pin_name)
+        {
+            return get_gpio_base(Pin::get_port_index(pin_name));
+        }
+
+        static constexpr GPIO_Type* get_gpio_base(const std::size_t port_index)
+        {
+            switch(port_index)
+            {
+                case 0:  return GPIOA; break;
+                case 1:  return GPIOB; break;
+                case 2:  return GPIOC; break;
+                case 3:  return GPIOD; break;
+                case 4:  return GPIOE; break;
+                default: return 0;     break;
+            }
         }
 };
 
