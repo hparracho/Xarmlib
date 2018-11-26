@@ -32,8 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_SYSTEM_HPP
 #define __XARMLIB_TARGETS_KV4X_SYSTEM_HPP
 
-//#include "targets/KV4x/kv4x_fsl_clock_config.h"
-#include "clock_config.h" //@FIXME
+#include "targets/KV4x/kv4x_fsl_clock_config.h"
 
 namespace xarmlib
 {
@@ -84,14 +83,16 @@ class System
                                 // LPO clock: 1 kHz
         };
 
+        /*
         // 4 MHz fast Internal Reference Clock (IRC)
-        //static constexpr int32_t IRC_FAST_4MHZ_FREQ = 4000000;
+        static constexpr int32_t IRC_FAST_4MHZ_FREQ = 4000000;
         // 32 kHz slow Internal Reference Clock (IRC)
-        //static constexpr int32_t IRC_SLOW_32KHZ_FREQ = 32768;
+        static constexpr int32_t IRC_SLOW_32KHZ_FREQ = 32768;
         // Crystal frequency (8 MHz fixed)
         static constexpr int32_t CRYSTAL_8MHZ_FREQ = BOARD_XTAL0_CLK_HZ;
         // External clock pin input frequency (EXTAL) (currently not implemented)
         static constexpr int32_t CLK_INPUT_PIN_FREQ = 0;
+        */
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -104,7 +105,7 @@ class System
                 case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;    break;
                 case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;  break;
                 case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK; break;
-                default:                 return                                   0; break;
+                default:                 return 0;                                   break;
             }
         }
 };

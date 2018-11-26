@@ -34,8 +34,7 @@
 #ifdef __KV4X__
 
 #include "xarmlib_config.hpp"
-//#include "targets/KV4x/kv4x_fsl_clock_config.h"
-#include "clock_config.h" //@FIXME
+#include "targets/KV4x/kv4x_fsl_clock_config.h"
 #include "fsl_pmc.h"
 #include "fsl_wdog.h"
 

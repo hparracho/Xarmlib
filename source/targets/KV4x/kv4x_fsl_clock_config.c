@@ -41,8 +41,12 @@ processor_version: 4.0.0
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
+#include "core/target_specs.hpp"
+
+#ifdef __KV4X__
+
+#include "targets/KV4x/kv4x_fsl_clock_config.h"
 #include "fsl_smc.h"
-#include "clock_config.h"
 
 /*******************************************************************************
  * Definitions
@@ -65,7 +69,7 @@ extern uint32_t SystemCoreClock;
 /*FUNCTION**********************************************************************
  *
  * Function Name : CLOCK_CONFIG_SetSimSafeDivs
- * Description   : This function sets the system clock dividers in SIM to safe 
+ * Description   : This function sets the system clock dividers in SIM to safe
  * value.
  *
  *END**************************************************************************/
@@ -84,14 +88,6 @@ static void CLOCK_CONFIG_SetSimSafeDivs(void)
 static void CLOCK_CONFIG_SetFllExtRefDiv(uint8_t frdiv)
 {
     MCG->C1 = ((MCG->C1 & ~MCG_C1_FRDIV_MASK) | MCG_C1_FRDIV(frdiv));
-}
-
-/*******************************************************************************
- ************************ BOARD_InitBootClocks function ************************
- ******************************************************************************/
-void BOARD_InitBootClocks(void)
-{
-    clock_config_xtal_94mhz();
 }
 
 /*******************************************************************************
@@ -378,3 +374,4 @@ void clock_config_xtal_168mhz(void)
     SystemCoreClock = CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK;
 }
 
+#endif // __KV4X__
