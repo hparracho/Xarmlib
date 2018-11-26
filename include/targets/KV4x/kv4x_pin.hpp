@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin.hpp
 // @brief   Kinetis KV4x pin class.
-// @date    20 November 2018
+// @date    23 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -191,64 +191,104 @@ class Pin
             NC
         };
 
-        using FunctionMode    = _port_pull;
-        using SlewRate        = _port_slew_rate;
-        using PassiveFilter   = _port_passive_filter_enable;
-        using OpenDrain       = _port_open_drain_enable;
-        using DriveStrength   = _port_drive_strength;
-        using PinMuxControl   = _port_mux;
-        using LockRegister    = _port_lock_register;
-        //using InterruptConfig = _port_interrupt;
+        // Pull select and enable
+        enum class FunctionMode
+        {
+            HIZ       = 0,
+            PULL_DOWN = 2,
+            PULL_UP
+        };
+
+        // Slew rate enable
+        enum class SlewRate
+        {
+            FAST = 0,
+            SLOW
+        };
+
+        // Passive filter enable
+        enum class PassiveFilter
+        {
+            DISABLE = 0,
+            ENABLE
+        };
+
+        // Open drain enable
+        enum class OpenDrain
+        {
+            DISABLE = 0,
+            ENABLE
+        };
+
+        // Drive strength enable
+        enum class DriveStrength
+        {
+            LOW = 0,
+            HIGH
+        };
+
+        // Pin mux control
+        enum class PinMux
+        {
+            PIN_DISABLED_OR_ANALOG = 0,
+            GPIO,
+            // Chip-specific
+            ALT2,
+            ALT3,
+            ALT4,
+            ALT5,
+            ALT6,
+            ALT7
+        };
+
+        // Lock register (Pin Control Register (PCR) fields [15:0])
+        enum class LockRegister
+        {
+            UNLOCK = 0,
+            LOCK
+        };
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         // Set mode of normal pins
-        static void set_mode(const Name pin_name, const FunctionMode    function_mode,
-                                                  const PinMuxControl   pin_mux_control,
-                                                  const SlewRate        slew_rate      = SlewRate::kPORT_FastSlewRate,
-                                                  const PassiveFilter   passive_filter = PassiveFilter::kPORT_PassiveFilterDisable,
-                                                  const OpenDrain       open_drain     = OpenDrain::kPORT_OpenDrainDisable,
-                                                  const DriveStrength   drive_strength = DriveStrength::kPORT_LowDriveStrength,
-                                                  const LockRegister    lock_register  = LockRegister::kPORT_UnlockRegister)
+        static void set_mode(const Name pin_name, const FunctionMode  function_mode,
+                                                  const PinMux        pin_mux,
+                                                  const SlewRate      slew_rate      = SlewRate::FAST,
+                                                  const PassiveFilter passive_filter = PassiveFilter::DISABLE,
+                                                  const OpenDrain     open_drain     = OpenDrain::DISABLE,
+                                                  const DriveStrength drive_strength = DriveStrength::LOW,
+                                                  const LockRegister  lock_register  = LockRegister::UNLOCK)
         {
-#ifdef DEBUG
             // Exclude NC
             assert(pin_name != Name::NC);
 
             // Exclude true open-drain pins
             assert(pin_name != Name::PC_6 && pin_name != Name::PC_7);
 
-            if(passive_filter == PassiveFilter::kPORT_PassiveFilterEnable)
-            {
-                // Only PA_4 has passive filter enable control
-                assert(pin_name == Name::PA_4);
-            }
+            // Only PA_4 has passive filter enable control
+            assert(passive_filter == PassiveFilter::DISABLE || (passive_filter == PassiveFilter::ENABLE && pin_name == Name::PA_4));
 
-            if(drive_strength == DriveStrength::kPORT_HighDriveStrength)
-            {
-                // Only PB_0, PB_1, PC_3, PC_4, PD_4, PD_5, PD_6 and PD_7 have drive strength enable control
-                assert(pin_name == Name::PB_0
-                    || pin_name == Name::PB_1
-                    || pin_name == Name::PC_3
-                    || pin_name == Name::PC_4
-                    || pin_name == Name::PD_4
-                    || pin_name == Name::PD_5
-                    || pin_name == Name::PD_6
-                    || pin_name == Name::PD_7);
-            }
-#endif
+            // Only PB_0, PB_1, PC_3, PC_4, PD_4, PD_5, PD_6 and PD_7 have drive strength enable control
+            assert(drive_strength == DriveStrength::LOW || (drive_strength == DriveStrength::HIGH && (pin_name == Name::PB_0
+                                                                                                   || pin_name == Name::PB_1
+                                                                                                   || pin_name == Name::PC_3
+                                                                                                   || pin_name == Name::PC_4
+                                                                                                   || pin_name == Name::PD_4
+                                                                                                   || pin_name == Name::PD_5
+                                                                                                   || pin_name == Name::PD_6
+                                                                                                   || pin_name == Name::PD_7)));
 
             const port_pin_config_t pin_config =
             {
-                function_mode,
-                slew_rate,
-                passive_filter,
-                open_drain,
-                drive_strength,
-                pin_mux_control,
-                lock_register
+                static_cast<uint16_t>(function_mode),
+                static_cast<uint16_t>(slew_rate),
+                static_cast<uint16_t>(passive_filter),
+                static_cast<uint16_t>(open_drain),
+                static_cast<uint16_t>(drive_strength),
+                static_cast<uint16_t>(pin_mux),
+                static_cast<uint16_t>(lock_register)
             };
 
             const uint32_t port_index = get_port_index(pin_name);
@@ -256,37 +296,42 @@ class Pin
 
             switch(port_index)
             {
-                case 0: CLOCK_EnableClock(kCLOCK_PortA); PORT_SetPinConfig(PORTA, pin_bit, &pin_config); break;
-                case 1: CLOCK_EnableClock(kCLOCK_PortB); PORT_SetPinConfig(PORTB, pin_bit, &pin_config); break;
-                case 2: CLOCK_EnableClock(kCLOCK_PortC); PORT_SetPinConfig(PORTC, pin_bit, &pin_config); break;
-                case 3: CLOCK_EnableClock(kCLOCK_PortD); PORT_SetPinConfig(PORTD, pin_bit, &pin_config); break;
-                case 4: CLOCK_EnableClock(kCLOCK_PortE); PORT_SetPinConfig(PORTE, pin_bit, &pin_config); break;
+                case 0: CLOCK_EnableClock(kCLOCK_PortA); assert((PORTA->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinConfig(PORTA, pin_bit, &pin_config); break;
+                case 1: CLOCK_EnableClock(kCLOCK_PortB); assert((PORTB->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinConfig(PORTB, pin_bit, &pin_config); break;
+                case 2: CLOCK_EnableClock(kCLOCK_PortC); assert((PORTC->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinConfig(PORTC, pin_bit, &pin_config); break;
+                case 3: CLOCK_EnableClock(kCLOCK_PortD); assert((PORTD->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinConfig(PORTD, pin_bit, &pin_config); break;
+                case 4: CLOCK_EnableClock(kCLOCK_PortE); assert((PORTE->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinConfig(PORTE, pin_bit, &pin_config); break;
             }
         }
 
         // Set mode of true open-drain pins (only available on PC_6 and PC_7)
-        static void set_mode(const Name pin_name, const PinMuxControl   pin_mux_control,
-                                                  const SlewRate        slew_rate      = SlewRate::kPORT_FastSlewRate,
-                                                  const PassiveFilter   passive_filter = PassiveFilter::kPORT_PassiveFilterDisable,
-                                                  const DriveStrength   drive_strength = DriveStrength::kPORT_LowDriveStrength,
-                                                  const LockRegister    lock_register  = LockRegister::kPORT_UnlockRegister)
+        static void set_mode(const Name pin_name, const PinMux        pin_mux,
+                                                  const SlewRate      slew_rate      = SlewRate::FAST,
+                                                  const PassiveFilter passive_filter = PassiveFilter::DISABLE,
+                                                  const DriveStrength drive_strength = DriveStrength::LOW,
+                                                  const LockRegister  lock_register  = LockRegister::UNLOCK)
         {
             // Available only on true open-drain pins
             assert(pin_name == Name::PC_6 || pin_name == Name::PC_7);
 
             const port_pin_config_t pin_config =
             {
-                FunctionMode::kPORT_PullDisable,
-                slew_rate,
-                passive_filter,
-                OpenDrain::kPORT_OpenDrainDisable,
-                drive_strength,
-                pin_mux_control,
-                lock_register
+                static_cast<uint16_t>(FunctionMode::HIZ),
+                static_cast<uint16_t>(slew_rate),
+                static_cast<uint16_t>(passive_filter),
+                static_cast<uint16_t>(OpenDrain::DISABLE),
+                static_cast<uint16_t>(drive_strength),
+                static_cast<uint16_t>(pin_mux),
+                static_cast<uint16_t>(lock_register)
             };
 
             CLOCK_EnableClock(kCLOCK_PortC);
-            PORT_SetPinConfig(PORTC, get_pin_bit(pin_name), &pin_config);
+
+            const uint32_t pin_bit = get_pin_bit(pin_name);
+
+            assert((PORTC->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0);
+
+            PORT_SetPinConfig(PORTC, pin_bit, &pin_config);
         }
 
         static constexpr uint32_t get_port_index(const Name pin_name)
