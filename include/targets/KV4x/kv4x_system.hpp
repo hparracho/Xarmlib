@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_system.hpp
 // @brief   Kinetis KV4x system level configuration class.
-// @date    16 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace kv4x
 
 
 
-class System
+class SystemDriver
 {
     public:
 
@@ -106,6 +106,28 @@ class System
                 case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;  break;
                 case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK; break;
                 default:                 return 0;                                   break;
+            }
+        }
+
+        static constexpr int32_t get_fast_peripheral_clock_frequency(const Clock clock)
+        {
+            switch(clock)
+            {
+                case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;        break;
+                case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;      break;
+                case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 2; break;
+                default:                 return 0;                                       break;
+            }
+        }
+
+        static constexpr int32_t get_bus_clock_frequency(const Clock clock)
+        {
+            switch(clock)
+            {
+                case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK / 5;    break;
+                case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK / 4;  break;
+                case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 8; break;
+                default:                 return 0;                                       break;
             }
         }
 };
