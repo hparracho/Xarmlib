@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_specs.hpp
 // @brief   Kinetis KV4x specification definitions.
-// @date    19 November 2018
+// @date    26 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -90,7 +90,6 @@
 #   define TARGET_SPI_COUNT                 (FSL_FEATURE_SOC_DSPI_COUNT)
 #   define TARGET_USART_COUNT               (FSL_FEATURE_SOC_UART_COUNT)
 #   define TARGET_TIMER_COUNT               (FSL_FEATURE_PIT_TIMER_COUNT)
-#   define TARGET_TIMER_TYPE_PIT
 #endif
 
 
