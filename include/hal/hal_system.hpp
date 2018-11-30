@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    29 October 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,35 @@
 #ifndef __XARMLIB_HAL_SYSTEM_HPP
 #define __XARMLIB_HAL_SYSTEM_HPP
 
+namespace xarmlib
+{
+namespace hal
+{
+
+
+
+
+template <typename TargetSystemDriver>
+class SystemHal : protected TargetSystemDriver
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Clock = typename TargetSystemDriver::Clock;
+};
+
+
+
+
+} // namespace hal
+} // namespace xarmlib
+
+
+
+
 #include "core/target_specs.hpp"
 
 #if defined __KV4X__
@@ -40,7 +69,8 @@
 
 namespace xarmlib
 {
-using System = targets::kv4x::System;
+using SystemHal = hal::SystemHal<targets::kv4x::SystemDriver>;
+//using System = SystemHal;
 }
 
 #elif defined __LPC84X__
@@ -49,7 +79,18 @@ using System = targets::kv4x::System;
 
 namespace xarmlib
 {
-using System = targets::lpc84x::System;
+using SystemHal = hal::SystemHal<targets::lpc84x::SystemDriver>;
+
+class System : public SystemHal
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Swd = typename SystemHal::Swd;
+};
 }
 
 #elif defined __LPC81X__
@@ -58,7 +99,8 @@ using System = targets::lpc84x::System;
 
 namespace xarmlib
 {
-using System = targets::lpc81x::System;
+using SystemHal = hal::SystemHal<targets::lpc81x::SystemDriver>;
+//using System = SystemHal;
 }
 
 #elif defined __OHER_TARGET__
@@ -67,7 +109,8 @@ using System = targets::lpc81x::System;
 
 namespace xarmlib
 {
-using System = targets::other_target::System;
+using SystemHal = hal::SystemHal<targets::other_target::SystemDriver>;
+using System = SystemHal;
 }
 
 #endif

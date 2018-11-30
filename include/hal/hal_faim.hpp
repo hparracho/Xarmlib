@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_faim.hpp
 // @brief   Fast Initialization Memory (FAIM) HAL interface class.
-// @date    14 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -42,8 +42,8 @@ namespace hal
 
 
 
-template <class TargetFaim>
-class Faim
+template <typename TargetFaimDriver>
+class FaimHal : protected TargetFaimDriver
 {
     public:
 
@@ -51,10 +51,10 @@ class Faim
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using PinConfig = typename TargetFaim::PinConfig;
+        using PinConfig = typename TargetFaimDriver::PinConfig;
 
         template<std::size_t SIZE>
-        using PinConfigArray = typename TargetFaim::template PinConfigArray<SIZE>;
+        using PinConfigArray = typename TargetFaimDriver::template PinConfigArray<SIZE>;
 };
 
 
@@ -74,7 +74,8 @@ class Faim
 
 namespace xarmlib
 {
-using Faim = hal::Faim<targets::lpc84x::Faim>;
+using FaimHal = hal::FaimHal<targets::lpc84x::FaimDriver>;
+//using Faim = FaimHal;
 }
 
 #elif defined __OHER_TARGET__
@@ -83,7 +84,8 @@ using Faim = hal::Faim<targets::lpc84x::Faim>;
 
 namespace xarmlib
 {
-using Faim = hal::Faim<targets::other_target::Faim>;
+using FaimHal = hal::FaimHal<targets::other_target::FaimDriver>;
+using Faim = FaimHal;
 }
 
 #endif

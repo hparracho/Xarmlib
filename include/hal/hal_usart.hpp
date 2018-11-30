@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    12 July 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,12 +70,12 @@ class Usart : private TargetUsart
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Usart(const xarmlib::Pin::Name txd,
-              const xarmlib::Pin::Name rxd,
-              const int32_t            baudrate,
-              const DataBits           data_bits = DataBits::BITS_8,
-              const StopBits           stop_bits = StopBits::BITS_1,
-              const Parity             parity    = Parity::NONE)
+        Usart(const xarmlib::PinHal::Name txd,
+              const xarmlib::PinHal::Name rxd,
+              const int32_t               baudrate,
+              const DataBits              data_bits = DataBits::BITS_8,
+              const StopBits              stop_bits = StopBits::BITS_1,
+              const Parity                parity    = Parity::NONE)
             : TargetUsart(txd, rxd, baudrate, data_bits, stop_bits, parity)
         {}
 
@@ -133,9 +133,9 @@ class Usart : private TargetUsart
         // Read data as soon as possible (with timeout)
         uint32_t read(const std::chrono::microseconds timeout_us) const
         {
-            const auto start = UsTicker::now();
+            const auto start = UsTickerHal::now();
 
-            while(is_rx_ready() == false && UsTicker::is_timeout(start, timeout_us) == false);
+            while(is_rx_ready() == false && UsTickerHal::is_timeout(start, timeout_us) == false);
 
             return TargetUsart::read_data();
         }
@@ -143,10 +143,10 @@ class Usart : private TargetUsart
         // Read buffer with timeout, returning the number of actual read bytes.
         int32_t read_buffer(const gsl::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
         {
-            const auto start = UsTicker::now();
+            const auto start = UsTickerHal::now();
             int32_t count = 0;
 
-            while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
+            while(count < buffer.size() && UsTickerHal::is_timeout(start, timeout_us) == false)
             {
                 if(is_rx_ready() == true)
                 {
@@ -170,9 +170,9 @@ class Usart : private TargetUsart
         // Write data as soon as possible (with timeout)
         void write(const uint32_t value, const std::chrono::microseconds timeout_us)
         {
-            const auto start = UsTicker::now();
+            const auto start = UsTickerHal::now();
 
-            while(is_tx_ready() == false && UsTicker::is_timeout(start, timeout_us) == false);
+            while(is_tx_ready() == false && UsTickerHal::is_timeout(start, timeout_us) == false);
 
             TargetUsart::write_data(value);
         }
@@ -180,10 +180,10 @@ class Usart : private TargetUsart
         // Write buffer with timeout, returning the number of actual written bytes.
         int32_t write_buffer(const gsl::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
         {
-            const auto start = UsTicker::now();
+            const auto start = UsTickerHal::now();
             int32_t count = 0;
 
-            while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
+            while(count < buffer.size() && UsTickerHal::is_timeout(start, timeout_us) == false)
             {
                 if(is_tx_ready() == true)
                 {
@@ -202,7 +202,7 @@ class Usart : private TargetUsart
         // PRIVATE TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using UsTicker = xarmlib::UsTicker;
+        using UsTickerHal = xarmlib::UsTickerHal;
 };
 
 
@@ -230,7 +230,7 @@ using Usart = hal::Usart<targets::lpc84x::Usart>;
 
 namespace xarmlib
 {
-using Usart = hal::Usart<targets::lpc81x::Usart>;
+using UsartHal = hal::Usart<targets::lpc81x::Usart>;
 }
 
 #elif defined __OHER_TARGET__

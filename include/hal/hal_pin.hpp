@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin.hpp
 // @brief   Pin HAL interface class.
-// @date    22 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,8 +40,8 @@ namespace hal
 
 
 
-template <class TargetPin>
-class Pin
+template <typename TargetPinDriver>
+class PinHal : protected TargetPinDriver
 {
     public:
 
@@ -49,7 +49,7 @@ class Pin
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Name = typename TargetPin::Name;
+        using Name = typename TargetPinDriver::Name;
 };
 
 
@@ -69,7 +69,8 @@ class Pin
 
 namespace xarmlib
 {
-using Pin = hal::Pin<targets::kv4x::Pin>;
+using PinHal = hal::PinHal<targets::kv4x::PinDriver>;
+//using Pin = PinHal;
 }
 
 #elif defined __LPC84X__
@@ -78,7 +79,8 @@ using Pin = hal::Pin<targets::kv4x::Pin>;
 
 namespace xarmlib
 {
-using Pin = hal::Pin<targets::lpc84x::Pin>;
+using PinHal = hal::PinHal<targets::lpc84x::PinDriver>;
+//using Pin = PinHal;
 }
 
 #elif defined __LPC81X__
@@ -87,7 +89,8 @@ using Pin = hal::Pin<targets::lpc84x::Pin>;
 
 namespace xarmlib
 {
-using Pin = hal::Pin<targets::lpc81x::Pin>;
+using PinHal = hal::PinHal<targets::lpc81x::PinDriver>;
+//using Pin = PinHal;
 }
 
 #elif defined __OHER_TARGET__
@@ -96,7 +99,8 @@ using Pin = hal::Pin<targets::lpc81x::Pin>;
 
 namespace xarmlib
 {
-using Pin = hal::Pin<targets::other_target::Pin>;
+using PinHal = hal::PinHal<targets::other_target::PinDriver>;
+using Pin = PinHal;
 }
 
 #endif
