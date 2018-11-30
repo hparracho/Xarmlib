@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_fmc.hpp
 // @brief   NXP LPC84x Flash Memory Controller (FMC) class.
-// @date    29 June 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc84x
 
 
 
-class Fmc
+class FmcDriver
 {
     public:
 

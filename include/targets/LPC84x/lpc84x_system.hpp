@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_system.hpp
 // @brief   NXP LPC84x system level configuration class.
-// @date    18 May 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc84x
 
 
 
-class System
+class SystemDriver
 {
     public:
 

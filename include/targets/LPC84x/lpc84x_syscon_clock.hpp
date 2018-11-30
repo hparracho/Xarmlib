@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    6 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -49,7 +49,7 @@ namespace lpc84x
 
 
 
-class Clock
+class ClockDriver
 {
     public:
 
@@ -411,7 +411,7 @@ class Clock
                 uint32_t faim_word0 {};
 
                 // Read current FAIM word 0
-                if(Iap::read_faim_word(0, faim_word0) == false)
+                if(IapDriver::read_faim_word(0, faim_word0) == false)
                 {
                     return 0;
                 }
@@ -457,9 +457,9 @@ class Clock
             // The frequencies are fixed and defined in 'lpc84x_target.hpp'
             switch(get_external_clock_source())
             {
-                case ExternalClockSource::SYS_OSC_CLK: return System::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
-                case ExternalClockSource::CLK_IN:      return System::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
-                default:                               return 0;                          break;
+                case ExternalClockSource::SYS_OSC_CLK: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
+                case ExternalClockSource::CLK_IN:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
+                default:                               return 0;                                break;
             }
         }
 

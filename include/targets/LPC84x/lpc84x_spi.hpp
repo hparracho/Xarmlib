@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    29 August 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -217,19 +217,19 @@ class Spi : private PeripheralRefCounter<Spi, TARGET_SPI_COUNT>
             // Disable peripheral clock sources and interrupts
             switch(name)
             {
-                case Name::SPI0: Clock::disable(Clock::Peripheral::SPI0); NVIC_DisableIRQ(SPI0_IRQn); break;
-                case Name::SPI1: Clock::disable(Clock::Peripheral::SPI1); NVIC_DisableIRQ(SPI1_IRQn); break;
-                default:                                                                              break;
+                case Name::SPI0: ClockDriver::disable(ClockDriver::Peripheral::SPI0); NVIC_DisableIRQ(SPI0_IRQn); break;
+                case Name::SPI1: ClockDriver::disable(ClockDriver::Peripheral::SPI1); NVIC_DisableIRQ(SPI1_IRQn); break;
+                default:                                                                                          break;
             }
         }
 
         // -------- INITIALIZATION / CONFIGURATION ----------------------------
 
         // Initialize SPI peripheral structure and pins (constructor helper function)
-        void initialize(const Pin::Name mosi,
-                        const Pin::Name miso,
-                        const Pin::Name sck,
-                        const Pin::Name slave_sel)
+        void initialize(const PinDriver::Name mosi,
+                        const PinDriver::Name miso,
+                        const PinDriver::Name sck,
+                        const PinDriver::Name slave_sel)
         {
             const Name name = static_cast<Name>(get_index());
 
@@ -240,19 +240,19 @@ class Spi : private PeripheralRefCounter<Spi, TARGET_SPI_COUNT>
                     // Set pointer to the available SPI structure
                     m_spi = LPC_SPI0;
 
-                    Clock::enable(Clock::Peripheral::SPI0);
-                    Power::reset(Power::ResetPeripheral::SPI0);
+                    ClockDriver::enable(ClockDriver::Peripheral::SPI0);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::SPI0);
 
-                    Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::SPI0,
-                                                       Clock::PeripheralClockSource::MAIN_CLK);
+                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::SPI0,
+                                                             ClockDriver::PeripheralClockSource::MAIN_CLK);
 
-                    Swm::assign(Swm::PinMovable::SPI0_MOSI_IO, mosi);
-                    Swm::assign(Swm::PinMovable::SPI0_MISO_IO, miso);
-                    Swm::assign(Swm::PinMovable::SPI0_SCK_IO, sck);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI0_MOSI_IO, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI0_MISO_IO, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI0_SCK_IO, sck);
 
-                    if(slave_sel != Pin::Name::NC)
+                    if(slave_sel != PinDriver::Name::NC)
                     {
-                        Swm::assign(Swm::PinMovable::SPI0_SSEL0_IO, slave_sel);
+                        SwmDriver::assign(SwmDriver::PinMovable::SPI0_SSEL0_IO, slave_sel);
                     }
                 }   break;
 
@@ -261,19 +261,19 @@ class Spi : private PeripheralRefCounter<Spi, TARGET_SPI_COUNT>
                     // Set pointer to the available SPI structure
                     m_spi = LPC_SPI1;
 
-                    Clock::enable(Clock::Peripheral::SPI1);
-                    Power::reset(Power::ResetPeripheral::SPI1);
+                    ClockDriver::enable(ClockDriver::Peripheral::SPI1);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::SPI1);
 
-                    Clock::set_peripheral_clock_source(Clock::PeripheralClockSelect::SPI1,
-                                                       Clock::PeripheralClockSource::MAIN_CLK);
+                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::SPI1,
+                                                             ClockDriver::PeripheralClockSource::MAIN_CLK);
 
-                    Swm::assign(Swm::PinMovable::SPI1_MOSI_IO, mosi);
-                    Swm::assign(Swm::PinMovable::SPI1_MISO_IO, miso);
-                    Swm::assign(Swm::PinMovable::SPI1_SCK_IO, sck);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI1_MOSI_IO, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI1_MISO_IO, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::SPI1_SCK_IO, sck);
 
-                    if(slave_sel != Pin::Name::NC)
+                    if(slave_sel != PinDriver::Name::NC)
                     {
-                        Swm::assign(Swm::PinMovable::SPI1_SSEL0_IO, slave_sel);
+                        SwmDriver::assign(SwmDriver::PinMovable::SPI1_SSEL0_IO, slave_sel);
                     }
                 }   break;
 
@@ -312,7 +312,7 @@ class Spi : private PeripheralRefCounter<Spi, TARGET_SPI_COUNT>
         //       the closest frequency that is below the target frequency.
         void set_frequency(const int32_t max_frequency)
         {
-            const int32_t clock_freq = Clock::get_main_clock_frequency();
+            const int32_t clock_freq = ClockDriver::get_main_clock_frequency();
 
             assert(max_frequency >= (clock_freq / 65536) &&  max_frequency <= clock_freq);
 

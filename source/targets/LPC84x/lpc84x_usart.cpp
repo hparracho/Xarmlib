@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    16 July 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,17 +53,17 @@ namespace lpc84x
 
 void Usart::initialize_frg0()
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
     constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
 
     // Select main clock as the source for FRG0
-    Clock::set_frg_clock_source(Clock::FrgClockSelect::FRG0, Clock::FrgClockSource::MAIN_CLK);
+    ClockDriver::set_frg_clock_source(ClockDriver::FrgClockSelect::FRG0, ClockDriver::FrgClockSource::MAIN_CLK);
 
     // Set the FRG0 fractional divider
-    Clock::set_frg_clock_divider(Clock::FrgClockSelect::FRG0, mul, div);
+    ClockDriver::set_frg_clock_divider(ClockDriver::FrgClockSelect::FRG0, mul, div);
 }
 
 
@@ -71,7 +71,7 @@ void Usart::initialize_frg0()
 
 int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
 {
-    constexpr int32_t main_clk_freq = System::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
+    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
 
     return usart_freq / 16 / baudrate;

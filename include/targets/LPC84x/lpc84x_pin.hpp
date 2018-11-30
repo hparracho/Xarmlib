@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pin.hpp
 // @brief   NXP LPC84x pin class.
-// @date    16 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,7 +36,6 @@
 #include "core/target_specs.hpp"
 
 #include <array>
-#include <cassert>
 
 namespace xarmlib
 {
@@ -48,7 +47,7 @@ namespace lpc84x
 
 
 
-class Pin
+class PinDriver
 {
     public:
 
@@ -206,7 +205,7 @@ class Pin
                                                   const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
         {
             // Exclude NC and true open-drain pins
-            assert(pin_name != Pin::Name::NC && pin_name != Name::P0_10 && pin_name != Name::P0_11);
+            assert(pin_name != Name::NC && pin_name != Name::P0_10 && pin_name != Name::P0_11);
 
             const int32_t pin_index = m_pin_number_to_iocon[static_cast<int32_t>(pin_name)];
 

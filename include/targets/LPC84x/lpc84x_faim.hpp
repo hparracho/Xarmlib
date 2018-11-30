@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    26 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace lpc84x
 
 
 
-class Faim
+class FaimDriver
 {
     public:
 
@@ -61,7 +61,7 @@ class Faim
         };
 
         // Pin configuration type
-        using PinConfig = std::pair<Pin::Name, Pin::FunctionMode>;
+        using PinConfig = std::pair<PinDriver::Name, PinDriver::FunctionMode>;
 
         // Pin configuration array type
         template <std::size_t Size>
@@ -75,10 +75,10 @@ class Faim
         // NOTE: If the configuration is updated a system reset is
         //       performed immediately after the FAIM Memory is written.
         template<std::size_t SIZE>
-        static bool ensures(const System::Swd           swd_config,
+        static bool ensures(const SystemDriver::Swd     swd_config,
                             const Boot                  boot_config,
-                            const Pin::Name             isp_uart0_tx,
-                            const Pin::Name             isp_uart0_rx,
+                            const PinDriver::Name       isp_uart0_tx,
+                            const PinDriver::Name       isp_uart0_rx,
                             const PinConfigArray<SIZE>& pin_config)
         {
             // Get intended configuration words
@@ -91,7 +91,7 @@ class Faim
                 uint32_t faim_value {};
 
                 // Read current configuration
-                if(Iap::read_faim_word(word_idx, faim_value) == false)
+                if(IapDriver::read_faim_word(word_idx, faim_value) == false)
                 {
                     return false;
                 }
@@ -99,7 +99,7 @@ class Faim
                 // Compare intended with current configuration and update if needed
                 if(faim_value != faim_words[word_idx])
                 {
-                    if(Iap::write_faim_word(word_idx, faim_words[word_idx]) == false)
+                    if(IapDriver::write_faim_word(word_idx, faim_words[word_idx]) == false)
                     {
                         return false;
                     }
@@ -126,10 +126,10 @@ class Faim
 
         // Make and return the 8 words of FAIM accordingly to the supplied parameters
         template<std::size_t SIZE>
-        static constexpr auto get_config_words(const System::Swd           swd_config,
+        static constexpr auto get_config_words(const SystemDriver::Swd     swd_config,
                                                const Boot                  boot_config,
-                                               const Pin::Name             isp_uart0_tx,
-                                               const Pin::Name             isp_uart0_rx,
+                                               const PinDriver::Name       isp_uart0_tx,
+                                               const PinDriver::Name       isp_uart0_rx,
                                                const PinConfigArray<SIZE>& pin_config)
         {
             std::array<uint32_t, 8> faim_data   // FAIM 8 words
@@ -147,9 +147,9 @@ class Faim
 
             for(std::size_t i = 0; i < pin_config.size(); ++i)
             {
-                const Pin::Name pin_name = std::get<0>(pin_config[i]);
+                const PinDriver::Name pin_name = std::get<0>(pin_config[i]);
 
-                if(pin_name != Pin::Name::NC)
+                if(pin_name != PinDriver::Name::NC)
                 {
                     const int32_t pin_word = ((63 - static_cast<int32_t>(pin_name)) / 16) + 4;
                     const int32_t pin_bit  = ((63 - static_cast<int32_t>(pin_name)) % 16) * 2;
@@ -158,7 +158,7 @@ class Faim
                     faim_data[pin_word] &= ~(0x03 << pin_bit);
 
                     // Set new value
-                    const Pin::FunctionMode pin_mode = std::get<1>(pin_config[i]);
+                    const PinDriver::FunctionMode pin_mode = std::get<1>(pin_config[i]);
                     faim_data[pin_word] |= static_cast<int32_t>(pin_mode) << pin_bit;
                 }
             }
@@ -167,18 +167,18 @@ class Faim
         }
 
         // Make and return the word1 of FAIM accordingly to the supplied parameters
-        static constexpr uint32_t get_isp_uart0_word1(const Pin::Name isp_uart0_tx,
-                                                      const Pin::Name isp_uart0_rx)
+        static constexpr uint32_t get_isp_uart0_word1(const PinDriver::Name isp_uart0_tx,
+                                                      const PinDriver::Name isp_uart0_rx)
         {
-            uint32_t pin_tx = static_cast<uint32_t>(Pin::Name::P0_25); // Default ISP USART0 TX pin: PIO0_25
-            uint32_t pin_rx = static_cast<uint32_t>(Pin::Name::P0_24); // Default ISP USART0 RX pin: PIO0_24
+            uint32_t pin_tx = static_cast<uint32_t>(PinDriver::Name::P0_25); // Default ISP USART0 TX pin: PIO0_25
+            uint32_t pin_rx = static_cast<uint32_t>(PinDriver::Name::P0_24); // Default ISP USART0 RX pin: PIO0_24
 
-            if(isp_uart0_tx != Pin::Name::NC)
+            if(isp_uart0_tx != PinDriver::Name::NC)
             {
                 pin_tx = static_cast<uint32_t>(isp_uart0_tx);
             }
 
-            if(isp_uart0_rx != Pin::Name::NC)
+            if(isp_uart0_rx != PinDriver::Name::NC)
             {
                 pin_rx = static_cast<uint32_t>(isp_uart0_rx);
             }
