@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    23 November 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -50,14 +50,14 @@ class SpiIoSource : public PinSource
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiIoSource(      SpiMaster&  spi_master,
-                    const Pin::Name   latch,
-                    const Pin::Name   enable,
-                    const std::size_t port_count) : m_spi_master { spi_master },
-                                                    m_latch(latch, { Gpio::OutputMode::PUSH_PULL_HIGH }),
-                                                    m_enable(enable, { Gpio::OutputMode::PUSH_PULL_HIGH }),
-                                                    m_outputs(port_count, static_cast<uint8_t>(0xFF)),
-                                                    m_reads(port_count, static_cast<uint8_t>(0))
+        SpiIoSource(      SpiMasterHal& spi_master,
+                    const PinHal::Name  latch,
+                    const PinHal::Name  enable,
+                    const std::size_t   port_count) : m_spi_master { spi_master },
+                                                      m_latch(latch, { GpioHal::OutputMode::PUSH_PULL_HIGH }),
+                                                      m_enable(enable, { GpioHal::OutputMode::PUSH_PULL_HIGH }),
+                                                      m_outputs(port_count, static_cast<uint8_t>(0xFF)),
+                                                      m_reads(port_count, static_cast<uint8_t>(0))
         {
             assert(spi_master.is_enabled() == true);
             assert(port_count > 0);
@@ -167,7 +167,7 @@ class SpiIoSource : public PinSource
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        SpiMaster&             m_spi_master;
+        SpiMasterHal&          m_spi_master;
         DigitalOut             m_latch;
         DigitalOut             m_enable;
 
