@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_port.hpp
 // @brief   Kinetis KV4x port class.
-// @date    26 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace kv4x
 
 
 
-class Port
+class PortDriver
 {
     public:
 
@@ -98,24 +98,24 @@ class Port
             gpio_base->PDDR &= ~mask;
         }
 
-        static void set_direction(const Pin::Name pin)
+        static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::NC);
 
             GPIO_Type* gpio_base = get_gpio_base(pin);
 
             // NOTE: Ones configure as outputs
-            gpio_base->PDDR |= 1UL << Pin::get_pin_bit(pin);
+            gpio_base->PDDR |= 1UL << PinDriver::get_pin_bit(pin);
         }
 
-        static void clear_direction(const Pin::Name pin)
+        static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::NC);
 
             GPIO_Type* gpio_base = get_gpio_base(pin);
 
             // NOTE: Zeros configure as inputs
-            gpio_base->PDDR &= ~(1UL << Pin::get_pin_bit(pin));
+            gpio_base->PDDR &= ~(1UL << PinDriver::get_pin_bit(pin));
         }
 
         static void write_direction(const Name port, const uint32_t mask, const uint32_t value)
@@ -164,9 +164,9 @@ class Port
             return get_gpio_base(static_cast<std::size_t>(port));
         }
 
-        static constexpr GPIO_Type* get_gpio_base(const Pin::Name pin_name)
+        static constexpr GPIO_Type* get_gpio_base(const PinDriver::Name pin_name)
         {
-            return get_gpio_base(Pin::get_port_index(pin_name));
+            return get_gpio_base(PinDriver::get_port_index(pin_name));
         }
 
         static constexpr GPIO_Type* get_gpio_base(const std::size_t port_index)

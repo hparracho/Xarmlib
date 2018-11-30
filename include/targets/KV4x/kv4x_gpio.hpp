@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_gpio.hpp
 // @brief   Kinetis KV4x GPIO class.
-// @date    23 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,12 +45,12 @@ namespace kv4x
 
 
 
-class Gpio
+class GpioDriver
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC DEFINITIONS
+        // PROTECTED DEFINITIONS
         // --------------------------------------------------------------------
 
         // Input pin modes
@@ -77,16 +77,10 @@ class Gpio
             HIZ
         };
 
-        using SlewRate      = Pin::SlewRate;
-        using PassiveFilter = Pin::PassiveFilter;
-        using DriveStrength = Pin::DriveStrength;
-        using LockRegister  = Pin::LockRegister;
-
-    protected:
-
-        // --------------------------------------------------------------------
-        // PROTECTED DEFINITIONS
-        // --------------------------------------------------------------------
+        using SlewRate      = PinDriver::SlewRate;
+        using PassiveFilter = PinDriver::PassiveFilter;
+        using DriveStrength = PinDriver::DriveStrength;
+        using LockRegister  = PinDriver::LockRegister;
 
         struct InputModeConfig
         {
@@ -124,13 +118,13 @@ class Gpio
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Default constructor (assign a NC pin)
-        Gpio() : m_pin_name { Pin::Name::NC }
+        GpioDriver() : m_pin_name { PinDriver::Name::NC }
         {}
 
         // Normal input pin constructor
-        Gpio(const Pin::Name pin_name, const InputModeConfig config) : m_pin_name { pin_name }
+        GpioDriver(const PinDriver::Name pin_name, const InputModeConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name != Pin::Name::NC)
+            if(pin_name != PinDriver::Name::NC)
             {
                 config_port();
                 set_mode(config);
@@ -138,9 +132,9 @@ class Gpio
         }
 
         // Normal output pin constructor
-        Gpio(const Pin::Name pin_name, const OutputModeConfig config) : m_pin_name { pin_name }
+        GpioDriver(const PinDriver::Name pin_name, const OutputModeConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name != Pin::Name::NC)
+            if(pin_name != PinDriver::Name::NC)
             {
                 config_port();
                 set_mode(config);
@@ -148,9 +142,9 @@ class Gpio
         }
 
         // True open-drain input pin constructor (only available on PC_6 and PC_7)
-        Gpio(const Pin::Name pin_name, const InputModeTrueOpenDrainConfig config) : m_pin_name { pin_name }
+        GpioDriver(const PinDriver::Name pin_name, const InputModeTrueOpenDrainConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name == Pin::Name::PC_6 || pin_name == Pin::Name::PC_7)
+            if(pin_name == PinDriver::Name::PC_6 || pin_name == PinDriver::Name::PC_7)
             {
                 config_port();
                 set_mode(config);
@@ -158,9 +152,9 @@ class Gpio
         }
 
         // True open-drain output pin constructor (only available on PC_6 and PC_7)
-        Gpio(const Pin::Name pin_name, const OutputModeTrueOpenDrainConfig config) : m_pin_name { pin_name }
+        GpioDriver(const PinDriver::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name == Pin::Name::PC_6 || pin_name == Pin::Name::PC_7)
+            if(pin_name == PinDriver::Name::PC_6 || pin_name == PinDriver::Name::PC_7)
             {
                 config_port();
                 set_mode(config);
@@ -170,93 +164,93 @@ class Gpio
         // -------- CONFIGURATION ---------------------------------------------
 
         // Set normal input pin mode
-        void set_mode(const InputModeConfig config)
+        void set_mode(const InputModeConfig& config)
         {
             // Exclude NC
-            assert(m_pin_name != Pin::Name::NC);
+            assert(m_pin_name != PinDriver::Name::NC);
 
             // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::PC_6 && m_pin_name != Pin::Name::PC_7);
+            assert(m_pin_name != PinDriver::Name::PC_6 && m_pin_name != PinDriver::Name::PC_7);
 
-            Pin::FunctionMode function_mode;
+            PinDriver::FunctionMode function_mode;
 
             switch(config.input_mode)
             {
-                case InputMode::HIZ:       function_mode = Pin::FunctionMode::HIZ;       break;
-                case InputMode::PULL_DOWN: function_mode = Pin::FunctionMode::PULL_DOWN; break;
+                case InputMode::HIZ:       function_mode = PinDriver::FunctionMode::HIZ;       break;
+                case InputMode::PULL_DOWN: function_mode = PinDriver::FunctionMode::PULL_DOWN; break;
                 case InputMode::PULL_UP:
-                default:                   function_mode = Pin::FunctionMode::PULL_UP;   break;
+                default:                   function_mode = PinDriver::FunctionMode::PULL_UP;   break;
             }
 
-            Pin::set_mode(m_pin_name, function_mode,
-                                      Pin::PinMux::GPIO,
-                                      SlewRate::FAST,
-                                      config.passive_filter,
-                                      Pin::OpenDrain::DISABLE,
-                                      DriveStrength::LOW,
-                                      config.lock_register);
+            PinDriver::set_mode(m_pin_name, function_mode,
+                                            PinDriver::PinMux::GPIO,
+                                            SlewRate::FAST,
+                                            config.passive_filter,
+                                            PinDriver::OpenDrain::DISABLE,
+                                            DriveStrength::LOW,
+                                            config.lock_register);
 
             initialize(Direction::INPUT, 0);
         }
 
         // Set normal output pin mode
-        void set_mode(const OutputModeConfig config)
+        void set_mode(const OutputModeConfig& config)
         {
             // Exclude NC
-            assert(m_pin_name != Pin::Name::NC);
+            assert(m_pin_name != PinDriver::Name::NC);
 
             // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::PC_6 && m_pin_name != Pin::Name::PC_7);
+            assert(m_pin_name != PinDriver::Name::PC_6 && m_pin_name != PinDriver::Name::PC_7);
 
-            uint8_t        pin_value;
-            Pin::OpenDrain open_drain;
+            uint8_t              pin_value;
+            PinDriver::OpenDrain open_drain;
 
             switch(config.output_mode)
             {
-                case OutputMode::PUSH_PULL_LOW:  pin_value = 0; open_drain = Pin::OpenDrain::DISABLE; break;
-                case OutputMode::OPEN_DRAIN_LOW: pin_value = 0; open_drain = Pin::OpenDrain::ENABLE;  break;
-                case OutputMode::OPEN_DRAIN_HIZ: pin_value = 1; open_drain = Pin::OpenDrain::ENABLE;  break;
+                case OutputMode::PUSH_PULL_LOW:  pin_value = 0; open_drain = PinDriver::OpenDrain::DISABLE; break;
+                case OutputMode::OPEN_DRAIN_LOW: pin_value = 0; open_drain = PinDriver::OpenDrain::ENABLE;  break;
+                case OutputMode::OPEN_DRAIN_HIZ: pin_value = 1; open_drain = PinDriver::OpenDrain::ENABLE;  break;
                 case OutputMode::PUSH_PULL_HIGH:
-                default:                         pin_value = 1; open_drain = Pin::OpenDrain::DISABLE; break;
+                default:                         pin_value = 1; open_drain = PinDriver::OpenDrain::DISABLE; break;
             }
 
-            Pin::set_mode(m_pin_name, Pin::FunctionMode::HIZ,
-                                      Pin::PinMux::GPIO,
-                                      config.slew_rate,
-                                      PassiveFilter::DISABLE,
-                                      open_drain,
-                                      config.drive_strength,
-                                      config.lock_register);
+            PinDriver::set_mode(m_pin_name, PinDriver::FunctionMode::HIZ,
+                                            PinDriver::PinMux::GPIO,
+                                            config.slew_rate,
+                                            PassiveFilter::DISABLE,
+                                            open_drain,
+                                            config.drive_strength,
+                                            config.lock_register);
 
             initialize(Direction::OUTPUT, pin_value);
         }
 
         // Set true open-drain input pin mode (only available on PC_6 and PC_7)
-        void set_mode(const InputModeTrueOpenDrainConfig config)
+        void set_mode(const InputModeTrueOpenDrainConfig& config)
         {
             // Available only on true open-drain pins
-            assert(m_pin_name == Pin::Name::PC_6 || m_pin_name == Pin::Name::PC_7);
+            assert(m_pin_name == PinDriver::Name::PC_6 || m_pin_name == PinDriver::Name::PC_7);
 
-            Pin::set_mode(m_pin_name, Pin::PinMux::GPIO,
-                                      SlewRate::FAST,
-                                      PassiveFilter::DISABLE,
-                                      DriveStrength::LOW,
-                                      config.lock_register);
+            PinDriver::set_mode(m_pin_name, PinDriver::PinMux::GPIO,
+                                            SlewRate::FAST,
+                                            PassiveFilter::DISABLE,
+                                            DriveStrength::LOW,
+                                            config.lock_register);
 
             initialize(Direction::INPUT, 0);
         }
 
         // Set true open-drain output pin mode (only available on PC_6 and PC_7)
-        void set_mode(const OutputModeTrueOpenDrainConfig config)
+        void set_mode(const OutputModeTrueOpenDrainConfig& config)
         {
             // Available only on true open-drain pins
-            assert(m_pin_name == Pin::Name::PC_6 || m_pin_name == Pin::Name::PC_7);
+            assert(m_pin_name == PinDriver::Name::PC_6 || m_pin_name == PinDriver::Name::PC_7);
 
-            Pin::set_mode(m_pin_name, Pin::PinMux::GPIO,
-                                      config.slew_rate,
-                                      PassiveFilter::DISABLE,
-                                      config.drive_strength,
-                                      config.lock_register);
+            PinDriver::set_mode(m_pin_name, PinDriver::PinMux::GPIO,
+                                            config.slew_rate,
+                                            PassiveFilter::DISABLE,
+                                            config.drive_strength,
+                                            config.lock_register);
 
             initialize(Direction::OUTPUT, (config.output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
         }
@@ -300,8 +294,8 @@ class Gpio
 
         void config_port()
         {
-            const uint32_t port_index = Pin::get_port_index(m_pin_name);
-                           m_pin      = Pin::get_pin_bit(m_pin_name);
+            const uint32_t port_index = PinDriver::get_port_index(m_pin_name);
+                           m_pin      = PinDriver::get_pin_bit(m_pin_name);
 
             switch(port_index)
             {
@@ -328,9 +322,9 @@ class Gpio
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        const Pin::Name m_pin_name;
-        GPIO_Type*      m_gpio_base { nullptr };
-        uint32_t        m_pin { 0 };
+        const PinDriver::Name m_pin_name;
+        GPIO_Type*            m_gpio_base { nullptr };
+        uint32_t              m_pin { 0 };
 };
 
 

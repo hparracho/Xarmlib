@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin.hpp
 // @brief   Kinetis KV4x pin class.
-// @date    23 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace kv4x
 
 
 
-class Pin
+class PinDriver
 {
     public:
 
