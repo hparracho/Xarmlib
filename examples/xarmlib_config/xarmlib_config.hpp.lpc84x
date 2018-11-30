@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib demo configuration header file for NXP LPC84x targets.
-// @date    17 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,13 +54,13 @@ namespace xarmlib
 #endif
 
 // -------- SYSTEM CLOCK ------------------------------------------------------
-constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::OSC_24MHZ };
+constexpr SystemHal::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { SystemHal::Clock::OSC_24MHZ };
 
 // -------- FAIM --------------------------------------------------------------
-constexpr System::Swd             XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_25)
-constexpr Pin::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { Pin::Name::NC        }; // Use default pin (PIO0_24)
-constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
+constexpr System::Swd                XARMLIB_CONFIG_FAIM_SWD              { System::Swd::ENABLED }; // Enabled by default (!!!CAUTION WHEN DISABLING!!!)
+constexpr PinHal::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_TX_PIN { PinHal::Name::NC     }; // Use default pin (PIO0_25)
+constexpr PinHal::Name               XARMLIB_CONFIG_FAIM_ISP_UART0_RX_PIN { PinHal::Name::NC     }; // Use default pin (PIO0_24)
+constexpr FaimHal::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                                 // Setup all IOs with pull-up by default
 
 
 
