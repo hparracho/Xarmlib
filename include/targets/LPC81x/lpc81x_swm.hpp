@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_swm.hpp
 // @brief   NXP LPC81x Switch Matrix (SWM) class.
-// @date    9 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc81x
 
 
 
-class Swm
+class SwmDriver
 {
     public:
 
@@ -112,9 +112,9 @@ class Swm
         // --------------------------------------------------------------------
 
         // Assign a movable pin function to a physical pin in Switch Matrix
-        static void assign(const PinMovable movable, const Pin::Name pin)
+        static void assign(const PinMovable movable, const PinDriver::Name pin)
         {
-            if(pin == Pin::Name::NC)
+            if(pin == PinDriver::Name::NC)
             {
                 return;
             }

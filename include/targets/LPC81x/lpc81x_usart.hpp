@@ -190,18 +190,18 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Usart(const Pin::Name txd,
-              const Pin::Name rxd,
-              const int32_t   baudrate,
-              const DataBits  data_bits,
-              const StopBits  stop_bits,
-              const Parity    parity) : PeripheralUsart(*this)
+        Usart(const PinDriver::Name txd,
+              const PinDriver::Name rxd,
+              const int32_t         baudrate,
+              const DataBits        data_bits,
+              const StopBits        stop_bits,
+              const Parity          parity) : PeripheralUsart(*this)
         {
             // Configure USART clock if this is the first USART peripheral instantiation
             if(get_used() == 1)
             {
                 // Set USART clock divider to 1 for USART FRG clock in to be equal to the main clock
-                Clock::set_usart_clock_divider(1);
+                ClockDriver::set_usart_clock_divider(1);
 
                 initialize_usart_frg();
             }
@@ -211,30 +211,30 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             switch(name)
             {
                 case Name::USART0: m_usart = LPC_USART0;
-                                   Clock::enable(Clock::Peripheral::USART0);
-                                   Power::reset(Power::ResetPeripheral::USART0);
-                                   Swm::assign(Swm::PinMovable::U0_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U0_TXD_O, txd);
+                                   ClockDriver::enable(ClockDriver::Peripheral::USART0);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART0);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U0_RXD_I, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U0_TXD_O, txd);
                                    break;
 
                 case Name::USART1: m_usart = LPC_USART1;
-                                   Clock::enable(Clock::Peripheral::USART1);
-                                   Power::reset(Power::ResetPeripheral::USART1);
-                                   Swm::assign(Swm::PinMovable::U1_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U1_TXD_O, txd);
+                                   ClockDriver::enable(ClockDriver::Peripheral::USART1);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART1);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U1_RXD_I, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U1_TXD_O, txd);
                                    break;
 #if (TARGET_USART_COUNT == 3)
                 case Name::USART2: m_usart = LPC_USART2;
-                                   Clock::enable(Clock::Peripheral::USART2);
-                                   Power::reset(Power::ResetPeripheral::USART2);
-                                   Swm::assign(Swm::PinMovable::U2_RXD_I, rxd);
-                                   Swm::assign(Swm::PinMovable::U2_TXD_O, txd);
+                                   ClockDriver::enable(ClockDriver::Peripheral::USART2);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART2);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U2_RXD_I, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::U2_TXD_O, txd);
                                    break;
 #endif
             };
 
-            Pin::set_mode(txd, Pin::FunctionMode::HIZ);
-            Pin::set_mode(rxd, Pin::FunctionMode::PULL_UP);
+            PinDriver::set_mode(txd, PinDriver::FunctionMode::HIZ);
+            PinDriver::set_mode(rxd, PinDriver::FunctionMode::PULL_UP);
 
             disable_irq();
 
@@ -258,14 +258,14 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             // Disable peripheral clock sources and interrupts
             switch(name)
             {
-                case Name::USART0: Clock::disable(Clock::Peripheral::USART0);
+                case Name::USART0: ClockDriver::disable(ClockDriver::Peripheral::USART0);
                                    NVIC_DisableIRQ(USART0_IRQn);
                                    break;
-                case Name::USART1: Clock::disable(Clock::Peripheral::USART1);
+                case Name::USART1: ClockDriver::disable(ClockDriver::Peripheral::USART1);
                                    NVIC_DisableIRQ(USART1_IRQn);
                                    break;
 #if (TARGET_USART_COUNT == 3)
-                case Name::USART2: Clock::disable(Clock::Peripheral::USART2);
+                case Name::USART2: ClockDriver::disable(ClockDriver::Peripheral::USART2);
                                    NVIC_DisableIRQ(USART2_IRQn);
                                    break;
 #endif
@@ -274,7 +274,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             // Disable USART clock if this the last USART peripheral deleted
             if(get_used() == 1)
             {
-                Clock::set_usart_clock_divider(0);
+                ClockDriver::set_usart_clock_divider(0);
             }
         }
 

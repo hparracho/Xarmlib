@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_system.hpp
 // @brief   NXP LPC81x system level configuration class.
-// @date    14 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,7 +46,7 @@ namespace lpc81x
 
 
 
-class System
+class SystemDriver
 {
     public:
 

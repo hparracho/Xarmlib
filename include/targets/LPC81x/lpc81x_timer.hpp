@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.hpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    16 July 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,7 +38,6 @@
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
 
-#include <cassert>
 #include <chrono>
 
 
@@ -60,7 +59,7 @@ namespace lpc81x
 
 
 
-class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
+class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -76,7 +75,7 @@ class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralTimer = PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>;
+        using PeripheralTimer = PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT>;
 
         // Timer running mode selection (defined to map the CTRL register directly)
         enum class Mode
@@ -95,13 +94,13 @@ class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Timer() : PeripheralTimer(*this)
+        TimerDriver() : PeripheralTimer(*this)
         {
             // Enable MRT if this is the first timer created
             if(get_used() == 1)
             {
-                Clock::enable(Clock::Peripheral::MRT);
-                Power::reset(Power::ResetPeripheral::MRT);
+                ClockDriver::enable(ClockDriver::Peripheral::MRT);
+                PowerDriver::reset(PowerDriver::ResetPeripheral::MRT);
 
                 NVIC_EnableIRQ(MRT_IRQn);
             }
@@ -115,7 +114,7 @@ class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
             clear_irq_pending();
         }
 
-        ~Timer()
+        ~TimerDriver()
         {
             set_interval(0);
             clear_irq_pending();
@@ -123,7 +122,7 @@ class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
             // Disable MRT if this the last timer deleted
             if(get_used() == 1)
             {
-                Clock::disable(Clock::Peripheral::MRT);
+                ClockDriver::disable(ClockDriver::Peripheral::MRT);
 
                 NVIC_DisableIRQ(MRT_IRQn);
             }
@@ -132,7 +131,7 @@ class Timer : private PeripheralRefCounter<Timer, TARGET_TIMER_COUNT>
         // -------- START / STOP ----------------------------------------------
 
         // Start the timer with the supplied interval and mode
-        void start(const std::chrono::microseconds& rate_us, const Mode mode)
+        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING)
         {
             assert(rate_us.count() >= get_min_rate_us());
             assert(rate_us.count() <= get_max_rate_us());

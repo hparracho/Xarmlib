@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_clock.hpp
 // @brief   NXP LPC81x SYSCON clock control class.
-// @date    9 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -48,7 +48,7 @@ namespace lpc81x
 
 
 
-class Clock
+class ClockDriver
 {
     public:
 
@@ -233,10 +233,10 @@ class Clock
         {
             switch(get_system_pll_source())
             {
-                case SystemPllSource::IRC:         return System::IRC_12MHZ_FREQ;     break; // 12 MHz internal RC oscillator
-                case SystemPllSource::SYS_OSC_CLK: return System::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
-                case SystemPllSource::CLK_IN:      return System::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
-                default:                           return 0;                          break;
+                case SystemPllSource::IRC:         return SystemDriver::IRC_12MHZ_FREQ;     break; // 12 MHz internal RC oscillator
+                case SystemPllSource::SYS_OSC_CLK: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
+                case SystemPllSource::CLK_IN:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
+                default:                           return 0;                                break;
             }
         }
 
@@ -281,7 +281,7 @@ class Clock
         {
             switch(get_main_clock_source())
             {
-                case MainClockSource::IRC:             return System::IRC_12MHZ_FREQ;         break;
+                case MainClockSource::IRC:             return SystemDriver::IRC_12MHZ_FREQ;   break;
                 case MainClockSource::SYS_PLL_IN_CLK:  return get_system_pll_in_frequency();  break;
                 case MainClockSource::WDT_OSC_CLK:     return get_watchdog_osc_frequency();   break;
                 case MainClockSource::SYS_PLL_OUT_CLK: return get_system_pll_out_frequency(); break;

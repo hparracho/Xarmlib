@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_iap.hpp
 // @brief   NXP LPC81x In-Application Programming (IAP) class.
-// @date    14 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace lpc81x
 
 
 
-class Iap
+class IapDriver
 {
     public:
 
