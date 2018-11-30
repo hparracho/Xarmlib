@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_gpio_source.hpp
 // @brief   API GPIO source class.
-// @date    18 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -106,12 +106,12 @@ class GpioSource : public PinSource
             m_outputs_mask[port_index] |= pin_mask;
         }
 
-        static constexpr int8_t get_port_index(const Pin::Name pin_name)
+        static constexpr int8_t get_port_index(const PinHal::Name pin_name)
         {
             return static_cast<int8_t>(static_cast<std::size_t>(pin_name) >> 5);    // (pin_name / 32)
         }
 
-        static constexpr int8_t get_pin_bit(const Pin::Name pin_name)
+        static constexpr int8_t get_pin_bit(const PinHal::Name pin_name)
         {
             return static_cast<int8_t>(static_cast<std::size_t>(pin_name) & 0x1F);  // (pin_name % 32)
         }
@@ -126,18 +126,18 @@ class GpioSource : public PinSource
         {
             for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
-                const Port::Name port_name = static_cast<Port::Name>(port_index);
+                const PortHal::Name port_name = static_cast<PortHal::Name>(port_index);
 
                 // NOTE: Ones configure as outputs
                 //       Zeros configure as inputs
-                Port::write_direction(port_name, m_outputs_mask[port_index], ~m_outputs[port_index]);
+                PortHal::write_direction(port_name, m_outputs_mask[port_index], ~m_outputs[port_index]);
 
-                Port::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
+                PortHal::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
 
                 // Clear mask
                 m_outputs_mask[port_index] = 0;
 
-                m_reads[port_index] = Port::read(port_name);
+                m_reads[port_index] = PortHal::read(port_name);
             }
         }
 

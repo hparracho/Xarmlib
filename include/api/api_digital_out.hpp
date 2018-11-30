@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    23 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalOut : private Gpio
+class DigitalOut : private GpioHal
 {
     public:
 
@@ -48,40 +48,40 @@ class DigitalOut : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputModeConfig config) : Gpio(pin_name, config)
+        DigitalOut(const PinHal::Name pin_name, const GpioHal::OutputModeConfig& config) : GpioHal(pin_name, config)
         {}
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputModeTrueOpenDrainConfig config) : Gpio(pin_name, config)
+        DigitalOut(const PinHal::Name pin_name, const GpioHal::OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
         {}
 
         // -------- READ ------------------------------------------------------
 
-        using Gpio::read;
+        using GpioHal::read;
 
         operator uint32_t () const
         {
-            return Gpio::read();
+            return GpioHal::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !Gpio::read();
+            return !GpioHal::read();
         }
 
         // -------- WRITE -----------------------------------------------------
 
-        using Gpio::write;
+        using GpioHal::write;
 
         DigitalOut& operator = (const uint32_t value)
         {
-            Gpio::write(value);
+            GpioHal::write(value);
             return (*this);
         }
 
         DigitalOut& operator = (const DigitalOut &rhs)
         {
-            Gpio::write(rhs.read());
+            GpioHal::write(rhs.read());
             return (*this);
         }
 };

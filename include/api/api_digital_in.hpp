@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    23 November 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalIn : private Gpio
+class DigitalIn : private GpioHal
 {
     public:
 
@@ -48,25 +48,25 @@ class DigitalIn : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalIn(const Pin::Name pin_name, const Gpio::InputModeConfig config) : Gpio(pin_name, config)
+        DigitalIn(const PinHal::Name pin_name, const GpioHal::InputModeConfig& config) : GpioHal(pin_name, config)
         {}
 
-        DigitalIn(const Pin::Name pin_name, const Gpio::InputModeTrueOpenDrainConfig config) : Gpio(pin_name, config)
+        DigitalIn(const PinHal::Name pin_name, const GpioHal::InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
         {}
 
         // -------- READ ------------------------------------------------------
 
-        using Gpio::read;
+        using GpioHal::read;
 
         operator uint32_t () const
         {
-            return Gpio::read();
+            return GpioHal::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !Gpio::read();
+            return !GpioHal::read();
         }
 };
 

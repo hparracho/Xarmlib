@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer).
-// @date    26 July 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -131,13 +131,13 @@ class PinScanner
         {
             if(m_timer.is_running() == false)
             {
-                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                const auto handler = TimerHal::IrqHandler::create<&timer_irq_handler>();
                 m_timer.assign_irq_handler(handler);
                 m_timer.enable_irq();
             }
 
             // Start or restart the timer with the new specified scan time
-            m_timer.start(scan_time, Timer::Mode::FREE_RUNNING);
+            m_timer.start(scan_time);
         }
 
         static void stop()
@@ -156,7 +156,7 @@ class PinScanner
         {
             if(m_timer.is_running() == false)
             {
-                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                const auto handler = TimerHal::IrqHandler::create<&timer_irq_handler>();
                 m_timer.assign_irq_handler(handler);
                 m_timer.enable_irq();
                 m_timer.reload();
@@ -173,7 +173,7 @@ class PinScanner
         //       Only one IRQ and one priority available for all channels.
         static void set_mrt_irq_priority(const int32_t irq_priority)
         {
-            Timer::set_mrt_irq_priority(irq_priority);
+            TimerHal::set_mrt_irq_priority(irq_priority);
         }
 #else
         // NOTE: Timer type is an independent timer (multiple individual timers).
@@ -224,7 +224,7 @@ class PinScanner
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static Timer                           m_timer;
+        static TimerHal                        m_timer;
         static std::dynarray<PinSourceHandler> m_pin_source_handlers;
         static std::dynarray<DebouncerHandler> m_debouncer_handlers;
         static std::dynarray<PinChangeHandler> m_pin_change_handlers;
