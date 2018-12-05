@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_us_ticker.hpp
 // @brief   NXP LPC84x SysTick timer class (microsecond resolution).
-// @date    30 November 2018
+// @date    5 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,7 +47,7 @@ namespace lpc84x
 
 
 
-class UsTicker
+class UsTickerDriver
 {
     protected:
 
