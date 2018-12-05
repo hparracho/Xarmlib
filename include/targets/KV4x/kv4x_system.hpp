@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_system.hpp
 // @brief   Kinetis KV4x system level configuration class.
-// @date    29 November 2018
+// @date    3 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -57,6 +57,7 @@ class SystemDriver
         {
             IRC_4MHZ,           // Very Low Power Run (VLPR) using Internal Reference Clock (IRC) @ 4MHz
                                 // Outputs:
+                                // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
                                 // Core clock: 4 MHz
                                 // System clock: 4 MHz
@@ -66,6 +67,7 @@ class SystemDriver
 
             XTAL_94MHZ,         // Normal Run (RUN) using external crystal @ 94MHz
                                 // Outputs:
+                                // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
                                 // Core clock: 94 MHz
                                 // System clock: 94 MHz
@@ -75,6 +77,7 @@ class SystemDriver
 
             XTAL_168MHZ         // High Speed Run (HSRUN) using external crystal @ 168MHz
                                 // Outputs:
+                                // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
                                 // Core clock: 168 MHz
                                 // System clock: 168 MHz
@@ -97,6 +100,12 @@ class SystemDriver
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // 4 MHz Internal Reference Clock (MCGIRCLK)
+        static constexpr int32_t get_internal_reference_clock_frequency()
+        {
+            return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;
+        }
 
         static constexpr int32_t get_core_clock_frequency(const Clock clock)
         {
