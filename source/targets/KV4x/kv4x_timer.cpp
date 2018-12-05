@@ -2,7 +2,7 @@
 // @file    kv4x_timer.cpp
 // @brief   Kinetis KV4x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    30 November 2018
+// @date    4 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -59,11 +59,19 @@ uint32_t TimerDriver::convert_us_to_period(const int64_t rate_us)
 
 
 
+int64_t TimerDriver::convert_period_to_us(const uint32_t period)
+{
+    return (static_cast<int64_t>(period) * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+}
+
+
+
+
 int64_t TimerDriver::get_min_rate_us()
 {
-    constexpr int64_t min_interval = 0x01;
+    constexpr int64_t min_period = 0x01;
 
-    return (min_interval * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+    return (min_period * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
 }
 
 
@@ -71,9 +79,9 @@ int64_t TimerDriver::get_min_rate_us()
 
 int64_t TimerDriver::get_max_rate_us()
 {
-    constexpr int64_t max_interval = 0xFFFFFFFF;
+    constexpr int64_t max_period = 0xFFFFFFFF;
 
-    return (max_interval * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+    return (max_period * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
 }
 
 

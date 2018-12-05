@@ -2,7 +2,7 @@
 // @file    kv4x_timer.hpp
 // @brief   Kinetis KV4x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    30 November 2018
+// @date    5 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,6 +63,8 @@ namespace kv4x
 
 class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT>
 {
+    public:
+
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
         // --------------------------------------------------------------------
@@ -73,10 +75,8 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         friend void ::PIT2_IRQHandler(void);
         friend void ::PIT3_IRQHandler(void);
 
-    protected:
-
         // --------------------------------------------------------------------
-        // PROTECTED DEFINITIONS
+        // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
         // Base class alias
@@ -87,7 +87,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         using IrqHandler     = Delegate<IrqHandlerType>;
 
         // --------------------------------------------------------------------
-        // PROTECTED MEMBER FUNCTIONS
+        // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
@@ -138,6 +138,14 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
             enable();
         }
 
+        // Start the timer with maximum period
+        void start_free_running()
+        {
+            disable();
+            set_period(0xFFFFFFFF);
+            enable();
+        }
+
         // Reload the timer by first disabling and then enabling
         void reload()
         {
@@ -157,6 +165,20 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         bool is_running() const
         {
             return is_enabled();
+        }
+
+        // -------- UP COUNTER ------------------------------------------------
+
+        std::chrono::microseconds up_counter()
+        {
+            // NOTES: - if the timer is disabled, timer value is unreliable
+            //        - the timer uses a downcounter
+
+            assert(is_enabled() == true);
+
+            const uint32_t up_counter = get_period() - PIT_GetCurrentTimerCount(PIT, static_cast<pit_chnl_t>(get_index()));
+
+            return std::chrono::microseconds(convert_period_to_us(up_counter));
         }
 
         // -------- INTERRUPTS ------------------------------------------------
@@ -276,19 +298,19 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // Get timer period value
         uint32_t get_period() const { return PIT->CHANNEL[get_index()].LDVAL; }
 
+        // NOTE: next methods are implemented on the CPP file because it uses
+        //       parameters from the library configuration file (xarmlib_config.h).
+
         // Get timer period value (ready to load into LDVAL register) based on supplied rate in microseconds
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
         static uint32_t convert_us_to_period(const int64_t rate_us);
 
+        // Get rate in microseconds based on timer period value
+        static int64_t convert_period_to_us(const uint32_t period);
+
         // Get the minimum allowed rate in microseconds
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
         static int64_t get_min_rate_us();
 
         // Get the maximum allowed rate in microseconds
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
         static int64_t get_max_rate_us();
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
