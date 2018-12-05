@@ -51,7 +51,6 @@ processor_version: 4.0.0
 /*******************************************************************************
  * Definitions
  ******************************************************************************/
-#define MCG_IRCLK_DISABLE                                 0U  /*!< MCGIRCLK disabled */
 #define MCG_PLL_DISABLE                                   0U  /*!< MCGPLLCLK disabled */
 #define OSC_CAP0P                                         0U  /*!< Oscillator 0pF capacitor load */
 #define OSC_ER_CLK_DISABLE                                0U  /*!< Disable external reference clock */
@@ -102,6 +101,7 @@ outputs:
 - {id: Core_clock.outFreq, value: 4 MHz}
 - {id: Flash_clock.outFreq, value: 800 kHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
+- {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: BLPI}
@@ -109,6 +109,7 @@ settings:
 - {id: MCG.CLKS.sel, value: MCG.IRCS}
 - {id: MCG.FCRDIV.scale, value: '1', locked: true}
 - {id: MCG.IRCS.sel, value: MCG.FCRDIV}
+- {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
 - {id: OSC_CR_EREFSTEN_CFG, value: Enabled}
 - {id: OSC_CR_EREFSTEN_UNDIV_CFG, value: Enabled}
 - {id: SIM.CLKOUTSEL.sel, value: MCG.MCGIRCLK}
@@ -122,7 +123,7 @@ settings:
 const mcg_config_t mcgConfig_clock_config_irc_4mhz =
     {
         .mcgMode = kMCG_ModeBLPI,                 /* BLPI - Bypassed Low Power Internal */
-        .irclkEnableMode = MCG_IRCLK_DISABLE,     /* MCGIRCLK disabled */
+        .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
         .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 1 */
@@ -192,6 +193,7 @@ outputs:
 - {id: Core_clock.outFreq, value: 94 MHz}
 - {id: Flash_clock.outFreq, value: 23.5 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
+- {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 94 MHz}
 settings:
 - {id: MCGMode, value: PEE}
@@ -203,6 +205,7 @@ settings:
 - {id: MCG.PLLS.sel, value: MCG.PLL_DIV2}
 - {id: MCG.PRDIV.scale, value: '1', locked: true}
 - {id: MCG.VDIV.scale, value: '47', locked: true}
+- {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
 - {id: MCG_C2_OSC_MODE_CFG, value: ModeOscLowPower}
 - {id: MCG_C2_RANGE0_CFG, value: High}
 - {id: MCG_C2_RANGE0_FRDIV_CFG, value: High}
@@ -222,7 +225,7 @@ sources:
 const mcg_config_t mcgConfig_clock_config_xtal_94mhz =
     {
         .mcgMode = kMCG_ModePEE,                  /* PEE - PLL Engaged External */
-        .irclkEnableMode = MCG_IRCLK_DISABLE,     /* MCGIRCLK disabled */
+        .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
         .frdiv = 0x3U,                            /* FLL reference clock divider: divided by 256 */
@@ -268,6 +271,10 @@ void clock_config_xtal_94mhz(void)
     CLOCK_BootToPeeMode(kMCG_OscselOsc,
                         kMCG_PllClkSelPll0,
                         &mcgConfig_clock_config_xtal_94mhz.pll0Config);
+    /* Configure the Internal Reference clock (MCGIRCLK). */
+    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_94mhz.irclkEnableMode,
+                                  mcgConfig_clock_config_xtal_94mhz.ircs,
+                                  mcgConfig_clock_config_xtal_94mhz.fcrdiv);
     /* Set the clock configuration in SIM module. */
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_94mhz);
     /* Set SystemCoreClock variable. */
@@ -286,6 +293,7 @@ outputs:
 - {id: Core_clock.outFreq, value: 168 MHz}
 - {id: Flash_clock.outFreq, value: 21 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
+- {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 168 MHz}
 settings:
 - {id: MCGMode, value: PEE}
@@ -297,6 +305,7 @@ settings:
 - {id: MCG.PLLS.sel, value: MCG.PLL_DIV2}
 - {id: MCG.PRDIV.scale, value: '1', locked: true}
 - {id: MCG.VDIV.scale, value: '42', locked: true}
+- {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
 - {id: MCG_C2_OSC_MODE_CFG, value: ModeOscLowPower}
 - {id: MCG_C2_RANGE0_CFG, value: High}
 - {id: MCG_C2_RANGE0_FRDIV_CFG, value: High}
@@ -316,7 +325,7 @@ sources:
 const mcg_config_t mcgConfig_clock_config_xtal_168mhz =
     {
         .mcgMode = kMCG_ModePEE,                  /* PEE - PLL Engaged External */
-        .irclkEnableMode = MCG_IRCLK_DISABLE,     /* MCGIRCLK disabled */
+        .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
         .frdiv = 0x3U,                            /* FLL reference clock divider: divided by 256 */
@@ -368,6 +377,10 @@ void clock_config_xtal_168mhz(void)
     CLOCK_BootToPeeMode(kMCG_OscselOsc,
                         kMCG_PllClkSelPll0,
                         &mcgConfig_clock_config_xtal_168mhz.pll0Config);
+    /* Configure the Internal Reference clock (MCGIRCLK). */
+    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_168mhz.irclkEnableMode,
+                                  mcgConfig_clock_config_xtal_168mhz.ircs,
+                                  mcgConfig_clock_config_xtal_168mhz.fcrdiv);
     /* Set the clock configuration in SIM module. */
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_168mhz);
     /* Set SystemCoreClock variable. */
