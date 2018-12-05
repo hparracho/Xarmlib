@@ -1,5 +1,5 @@
 // ----------------------------------------------------------------------------
-// @file    fsl_mkv4xf16_cmsis.cpp
+// @file    fsl_mkv4xf16_cmsis.h
 // @brief   CMSIS Core Peripheral Access Layer header file for Kinetis MKV4xF16 MCUs.
 // @date    31 October 2018
 // ----------------------------------------------------------------------------
