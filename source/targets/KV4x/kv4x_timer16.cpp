@@ -1,6 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
+// @file    kv4x_timer16.cpp
+// @brief   Kinetis KV4x Timer 16-bit (LPTMR) class.
+// @note    Only time counter mode is implemented
 // @date    4 December 2018
 // ----------------------------------------------------------------------------
 //
@@ -29,36 +30,35 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "core/target_specs.hpp"
+
+#ifdef __KV4X__
+
+#include <cassert>  //@FIXME
+
+#include "targets/KV4x/kv4x_timer16.hpp"
 
 
 
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-//#include "api/api_input_debouncer.hpp"
-//#include "api/api_io_debouncer.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_scanner.hpp"
+using namespace xarmlib::targets::kv4x;
 
-// Targets HAL interface
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_timer16.hpp"
-#include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
-//#include "hal/hal_watchdog.hpp"
+// ----------------------------------------------------------------------------
+// IRQ HANDLER
+// ----------------------------------------------------------------------------
+
+extern "C" void LPTMR0_IRQHandler(void)
+{
+    const int32_t yield = Timer16Driver::irq_handler(0);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
 
 
 
 
-#endif // __XARMLIB_HPP
+#endif // __KV4X__
