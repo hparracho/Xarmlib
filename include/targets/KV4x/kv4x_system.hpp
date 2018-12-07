@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_system.hpp
 // @brief   Kinetis KV4x system level configuration class.
-// @date    3 December 2018
+// @date    6 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -64,6 +64,7 @@ class SystemDriver
                                 // Fast peripheral clock: 4 MHz
                                 // Bus/Flash clock: 800 kHz
                                 // LPO clock: 1 kHz
+                                // WDOGCLK: 4 MHz (MCGIRCLK)
 
             XTAL_94MHZ,         // Normal Run (RUN) using external crystal @ 94MHz
                                 // Outputs:
@@ -74,6 +75,7 @@ class SystemDriver
                                 // Fast peripheral clock: 94 MHz
                                 // Bus/Flash clock: 23.5 MHz
                                 // LPO clock: 1 kHz
+                                // WDOGCLK: 4 MHz (MCGIRCLK)
 
             XTAL_168MHZ         // High Speed Run (HSRUN) using external crystal @ 168MHz
                                 // Outputs:
@@ -84,6 +86,7 @@ class SystemDriver
                                 // Fast peripheral clock: 84 MHz
                                 // Bus/Flash clock: 21 MHz
                                 // LPO clock: 1 kHz
+                                // WDOGCLK: 4 MHz (MCGIRCLK)
         };
 
         /*

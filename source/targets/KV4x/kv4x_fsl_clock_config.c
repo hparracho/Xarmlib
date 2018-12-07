@@ -55,6 +55,7 @@ processor_version: 4.0.0
 #define OSC_CAP0P                                         0U  /*!< Oscillator 0pF capacitor load */
 #define OSC_ER_CLK_DISABLE                                0U  /*!< Disable external reference clock */
 #define SIM_OSC32KSEL_OSC32KCLK_CLK                       0U  /*!< OSC32KSEL select: OSC32KCLK clock */
+#define SIM_WDOG_CLK_SEL_MCGIRCLK_CLK                     1U  /*!< WDOG clock select: MCGIRCLK clock */
 
 /*******************************************************************************
  * Variables
@@ -89,6 +90,18 @@ static void CLOCK_CONFIG_SetFllExtRefDiv(uint8_t frdiv)
     MCG->C1 = ((MCG->C1 & ~MCG_C1_FRDIV_MASK) | MCG_C1_FRDIV(frdiv));
 }
 
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : CLOCK_CONFIG_SetWdogClock
+ * Description   : Set WDOG clock source.
+ * Param src     : The value to set WDOG clock source.
+ *
+ *END**************************************************************************/
+static void CLOCK_CONFIG_SetWdogClock(uint8_t src)
+{
+    SIM->WDOGC = ((SIM->WDOGC & ~SIM_WDOGC_WDOGCLKS_MASK) | SIM_WDOGC_WDOGCLKS(src));
+}
+
 /*******************************************************************************
  ******************** Configuration clock_config_irc_4mhz **********************
  ******************************************************************************/
@@ -103,6 +116,7 @@ outputs:
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 4 MHz}
+- {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: BLPI}
 - {id: powerMode, value: VLPR}
@@ -114,6 +128,8 @@ settings:
 - {id: OSC_CR_EREFSTEN_UNDIV_CFG, value: Enabled}
 - {id: SIM.CLKOUTSEL.sel, value: MCG.MCGIRCLK}
 - {id: SIM.OUTDIV4.scale, value: '5'}
+- {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
+- {id: WDOGClkConfig, value: 'yes'}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
@@ -178,6 +194,8 @@ void clock_config_irc_4mhz(void)
     }
     /* Set SystemCoreClock variable. */
     SystemCoreClock = CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;
+    /* Set WDOG clock source. */
+    CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
 /*******************************************************************************
@@ -195,6 +213,7 @@ outputs:
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 94 MHz}
+- {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: PEE}
 - {id: MCG.FCRDIV.scale, value: '1', locked: true}
@@ -214,6 +233,8 @@ settings:
 - {id: SIM.OUTDIV1.scale, value: '2', locked: true}
 - {id: SIM.OUTDIV2.scale, value: '2'}
 - {id: SIM.OUTDIV4.scale, value: '8'}
+- {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
+- {id: WDOGClkConfig, value: 'yes'}
 sources:
 - {id: OSC.OSC.outFreq, value: 8 MHz, enabled: true}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -279,6 +300,8 @@ void clock_config_xtal_94mhz(void)
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_94mhz);
     /* Set SystemCoreClock variable. */
     SystemCoreClock = CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;
+    /* Set WDOG clock source. */
+    CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
 /*******************************************************************************
@@ -295,6 +318,7 @@ outputs:
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 168 MHz}
+- {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: PEE}
 - {id: powerMode, value: HSRUN}
@@ -314,6 +338,8 @@ settings:
 - {id: SIM.OUTDIV1.scale, value: '1', locked: true}
 - {id: SIM.OUTDIV2.scale, value: '2'}
 - {id: SIM.OUTDIV4.scale, value: '8'}
+- {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
+- {id: WDOGClkConfig, value: 'yes'}
 sources:
 - {id: OSC.OSC.outFreq, value: 8 MHz, enabled: true}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
@@ -385,6 +411,8 @@ void clock_config_xtal_168mhz(void)
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_168mhz);
     /* Set SystemCoreClock variable. */
     SystemCoreClock = CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK;
+    /* Set WDOG clock source. */
+    CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
 #endif // __KV4X__
