@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_watchdog.hpp
 // @brief   Watchdog HAL interface class.
-// @date    6 July 2018
+// @date    7 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -42,8 +42,8 @@ namespace hal
 
 
 
-template <class TargetWatchdog>
-class Watchdog
+template <typename TargetWatchdogDriver>
+class WatchdogHal : protected TargetWatchdogDriver
 {
     public:
 
@@ -53,19 +53,19 @@ class Watchdog
 
         // Start the watchdog timer with the supplied timeout duration
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
-        static void start()
+        static inline void start()
         {
             static_assert(std::chrono::is_duration<Duration>::value, "Duration must be a std::chrono::duration type.");
 #ifdef NDEBUG
-            TargetWatchdog::template start<duration_value, Duration>();
+            TargetWatchdogDriver::template start<duration_value, Duration>();
 #endif
         }
 
         // Reset the watchdog timeout duration
-        static void reset()
+        static inline void reset()
         {
 #ifdef NDEBUG
-            TargetWatchdog::reset();
+            TargetWatchdogDriver::reset();
 #endif
         }
 };
@@ -81,13 +81,24 @@ class Watchdog
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_watchdog.hpp"
+
+namespace xarmlib
+{
+using WatchdogHal = hal::WatchdogHal<targets::kv4x::WatchdogDriver>;
+//using Watchdog = WatchdogHal;
+}
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_watchdog.hpp"
 
 namespace xarmlib
 {
-using Watchdog = hal::Watchdog<targets::lpc84x::Watchdog>;
+using WatchdogHal = hal::WatchdogHal<targets::lpc84x::WatchdogDriver>;
+//using Watchdog = WatchdogHal;
 }
 
 #elif defined __LPC81X__
@@ -96,7 +107,8 @@ using Watchdog = hal::Watchdog<targets::lpc84x::Watchdog>;
 
 namespace xarmlib
 {
-using Watchdog = hal::Watchdog<targets::lpc81x::Watchdog>;
+using WatchdogHal = hal::WatchdogHal<targets::lpc81x::WatchdogDriver>;
+//using Watchdog = WatchdogHal;
 }
 
 #elif defined __OHER_TARGET__
@@ -105,7 +117,8 @@ using Watchdog = hal::Watchdog<targets::lpc81x::Watchdog>;
 
 namespace xarmlib
 {
-using Watchdog = hal::Watchdog<targets::other_target::Watchdog>;
+using WatchdogHal = hal::WatchdogHal<targets::other_target::WatchdogDriver>;
+using Watchdog = WatchdogHal;
 }
 
 #endif

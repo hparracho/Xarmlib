@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_watchdog.hpp
 // @brief   NXP LPC81x Watchdog class.
-// @date    9 July 2018
+// @date    6 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,12 +47,12 @@ namespace lpc81x
 
 
 
-class Watchdog
+class WatchdogDriver
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
@@ -63,17 +63,17 @@ class Watchdog
             assert(m_initialized == false);
             m_initialized = true;
 
-            Power::power_up(Power::Peripheral::WDTOSC);
-            Clock::enable(Clock::Peripheral::WWDT);
+            PowerDriver::power_up(PowerDriver::Peripheral::WDTOSC);
+            ClockDriver::enable(ClockDriver::Peripheral::WWDT);
 
             // Disable watchdog
             LPC_WWDT->MOD     = 0;
             LPC_WWDT->WARNINT = 0x00;
             LPC_WWDT->WINDOW  = 0xFFFFFF;
 
-            constexpr Clock::WatchdogConfig wdt_config = Clock::get_watchdog_osc_config<duration_value, Duration>();
+            constexpr ClockDriver::WatchdogConfig wdt_config = ClockDriver::get_watchdog_osc_config<duration_value, Duration>();
 
-            Clock::set_watchdog_osc_frequency(wdt_config.frequency, wdt_config.divider);
+            ClockDriver::set_watchdog_osc_frequency(wdt_config.frequency, wdt_config.divider);
 
             LPC_WWDT->TC  = wdt_config.counter;
             LPC_WWDT->MOD = MOD_WDEN | MOD_WDRESET | MOD_WDPROTECT | MOD_LOCK;

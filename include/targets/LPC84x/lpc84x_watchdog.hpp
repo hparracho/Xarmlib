@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_watchdog.hpp
 // @brief   NXP LPC84x Watchdog class.
-// @date    30 November 2018
+// @date    6 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,12 +47,12 @@ namespace lpc84x
 
 
 
-class Watchdog
+class WatchdogDriver
 {
-    public:
+    protected:
 
         // --------------------------------------------------------------------
-        // PUBLIC MEMBER FUNCTIONS
+        // PROTECTED MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
         template<int64_t duration_value, typename Duration = std::chrono::microseconds>
