@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    4 December 2018
+// @file    kv4x_watchdog.cpp
+// @brief   Kinetis KV4x Watchdog class.
+// @date    7 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,36 +29,44 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "core/target_specs.hpp"
+
+#ifdef __KV4X__
+
+#include "xarmlib_config.hpp"
+#include "targets/KV4x/kv4x_watchdog.hpp"
+
+namespace xarmlib
+{
+namespace targets
+{
+namespace kv4x
+{
 
 
 
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-//#include "api/api_input_debouncer.hpp"
-//#include "api/api_io_debouncer.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_scanner.hpp"
+// ----------------------------------------------------------------------------
+// PRIVATE MEMBER FUNCTIONS
+// ----------------------------------------------------------------------------
 
-// Targets HAL interface
-#include "hal/hal_faim.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_timer16.hpp"
-#include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
-#include "hal/hal_watchdog.hpp"
+int64_t WatchdogDriver::get_min_timeout_us()
+{
+    // NOTE: timeout value must be always greater than 2xWCT time + 20 bus clock cycles.
+    //       (WCT = 256 bus clock cycles)
+    //       For further details see the section 26.4.2 - Watchdog configuration time (WCT)
+    //       from the reference manual (KV4XP100M168RM)
+    constexpr int64_t min_timeout = 532;
+
+    return ((min_timeout * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK))
+          +((min_timeout * 1000000UL % SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK)) != 0));
+}
 
 
 
 
-#endif // __XARMLIB_HPP
+} // namespace kv4x
+} // namespace targets
+} // namespace xarmlib
+
+#endif // __KV4X__
