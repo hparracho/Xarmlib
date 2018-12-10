@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_port.hpp
 // @brief   Kinetis KV4x port class.
-// @date    29 November 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,11 +55,11 @@ class PortDriver
         // Port names (all packages have 5 ports)
         enum class Name
         {
-            A = 0,
-            B,
-            C,
-            D,
-            E,
+            porta = 0,
+            portb,
+            portc,
+            portd,
+            porte,
         };
 
         // --------------------------------------------------------------------
@@ -100,7 +100,7 @@ class PortDriver
 
         static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             GPIO_Type* gpio_base = get_gpio_base(pin);
 
@@ -110,7 +110,7 @@ class PortDriver
 
         static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             GPIO_Type* gpio_base = get_gpio_base(pin);
 

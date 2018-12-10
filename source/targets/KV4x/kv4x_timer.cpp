@@ -2,7 +2,7 @@
 // @file    kv4x_timer.cpp
 // @brief   Kinetis KV4x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    4 December 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -102,7 +102,7 @@ using namespace xarmlib::targets::kv4x;
 
 extern "C" void PIT0_IRQHandler(void)
 {
-    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::CHANNEL0);
+    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::channel0);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -116,7 +116,7 @@ extern "C" void PIT0_IRQHandler(void)
 
 extern "C" void PIT1_IRQHandler(void)
 {
-    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::CHANNEL1);
+    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::channel1);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -130,7 +130,7 @@ extern "C" void PIT1_IRQHandler(void)
 
 extern "C" void PIT2_IRQHandler(void)
 {
-    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::CHANNEL2);
+    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::channel2);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -144,7 +144,7 @@ extern "C" void PIT2_IRQHandler(void)
 
 extern "C" void PIT3_IRQHandler(void)
 {
-    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::CHANNEL3);
+    const int32_t yield = TimerDriver::irq_handler(TimerDriver::Channel::channel3);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_system.hpp
 // @brief   Kinetis KV4x system level configuration class.
-// @date    6 December 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,7 +55,7 @@ class SystemDriver
         // Possible clock frequencies selection
         enum class Clock
         {
-            IRC_4MHZ,           // Very Low Power Run (VLPR) using Internal Reference Clock (IRC) @ 4MHz
+            irc_4mhz,           // Very Low Power Run (VLPR) using Internal Reference Clock (IRC) @ 4MHz
                                 // Outputs:
                                 // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
@@ -66,7 +66,7 @@ class SystemDriver
                                 // LPO clock: 1 kHz
                                 // WDOGCLK: 4 MHz (MCGIRCLK)
 
-            XTAL_94MHZ,         // Normal Run (RUN) using external crystal @ 94MHz
+            xtal_94mhz,         // Normal Run (RUN) using external crystal @ 94MHz
                                 // Outputs:
                                 // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
@@ -77,7 +77,7 @@ class SystemDriver
                                 // LPO clock: 1 kHz
                                 // WDOGCLK: 4 MHz (MCGIRCLK)
 
-            XTAL_168MHZ         // High Speed Run (HSRUN) using external crystal @ 168MHz
+            xtal_168mhz         // High Speed Run (HSRUN) using external crystal @ 168MHz
                                 // Outputs:
                                 // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
@@ -114,9 +114,9 @@ class SystemDriver
         {
             switch(clock)
             {
-                case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;    break;
-                case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;  break;
-                case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK; break;
+                case Clock::irc_4mhz:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;    break;
+                case Clock::xtal_94mhz:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;  break;
+                case Clock::xtal_168mhz: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK; break;
                 default:                 return 0;                                   break;
             }
         }
@@ -125,9 +125,9 @@ class SystemDriver
         {
             switch(clock)
             {
-                case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;        break;
-                case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;      break;
-                case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 2; break;
+                case Clock::irc_4mhz:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;        break;
+                case Clock::xtal_94mhz:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK;      break;
+                case Clock::xtal_168mhz: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 2; break;
                 default:                 return 0;                                       break;
             }
         }
@@ -136,9 +136,9 @@ class SystemDriver
         {
             switch(clock)
             {
-                case Clock::IRC_4MHZ:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK / 5;    break;
-                case Clock::XTAL_94MHZ:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK / 4;  break;
-                case Clock::XTAL_168MHZ: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 8; break;
+                case Clock::irc_4mhz:    return CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK / 5;    break;
+                case Clock::xtal_94mhz:  return CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK / 4;  break;
+                case Clock::xtal_168mhz: return CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK / 8; break;
                 default:                 return 0;                                       break;
             }
         }

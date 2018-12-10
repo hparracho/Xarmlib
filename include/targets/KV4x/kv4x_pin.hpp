@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin.hpp
 // @brief   Kinetis KV4x pin class.
-// @date    29 November 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -57,195 +57,195 @@ class PinDriver
         enum class Name
         {
             // The following pins are present in all packages
-            PA_0  = 0,
-            PA_1  = 1,
-            PA_2  = 2,
-            PA_3  = 3,
-            PA_4  = 4,
+            pa_0  = 0,
+            pa_1  = 1,
+            pa_2  = 2,
+            pa_3  = 3,
+            pa_4  = 4,
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
             // The following pins are only present in
             // LQFP64 / LQFP100 packages
-            PA_5  = 5,
-            PA_12 = 12,
-            PA_13 = 13,
+            pa_5  = 5,
+            pa_12 = 12,
+            pa_13 = 13,
 #endif
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP100 package
-            PA_14 = 14,
-            PA_15 = 15,
-            PA_16 = 16,
-            PA_17 = 17,
+            pa_14 = 14,
+            pa_15 = 15,
+            pa_16 = 16,
+            pa_17 = 17,
 #endif
             // The following pins are present in all packages
-            PA_18 = 18,
-            PA_19 = 19,
+            pa_18 = 18,
+            pa_19 = 19,
 
-            PB_0  = 32,
-            PB_1  = 33,
-            PB_2  = 34,
-            PB_3  = 35,
+            pb_0  = 32,
+            pb_1  = 33,
+            pb_2  = 34,
+            pb_3  = 35,
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP100 package
-            PB_9  = 41,
-            PB_10 = 42,
-            PB_11 = 43,
+            pb_9  = 41,
+            pb_10 = 42,
+            pb_11 = 43,
 #endif
             // The following pins are present in all packages
-            PB_16 = 48,
-            PB_17 = 49,
+            pb_16 = 48,
+            pb_17 = 49,
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
             // The following pins are only present in
             // LQFP64 / LQFP100 packages
-            PB_18 = 50,
-            PB_19 = 51,
+            pb_18 = 50,
+            pb_19 = 51,
 #endif
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP100 package
-            PB_20 = 52,
-            PB_21 = 53,
-            PB_22 = 54,
-            PB_23 = 55,
+            pb_20 = 52,
+            pb_21 = 53,
+            pb_22 = 54,
+            pb_23 = 55,
 #endif
 
             // The following pins are present in all packages
-            PC_0  = 64,
-            PC_1  = 65,
-            PC_2  = 66,
-            PC_3  = 67,
-            PC_4  = 68,
-            PC_5  = 69,
-            PC_6  = 70,
-            PC_7  = 71,
+            pc_0  = 64,
+            pc_1  = 65,
+            pc_2  = 66,
+            pc_3  = 67,
+            pc_4  = 68,
+            pc_5  = 69,
+            pc_6  = 70,
+            pc_7  = 71,
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
             // The following pins are only present in
             // LQFP64 / LQFP100 packages
-            PC_8  = 72,
-            PC_9  = 73,
-            PC_10 = 74,
-            PC_11 = 75,
+            pc_8  = 72,
+            pc_9  = 73,
+            pc_10 = 74,
+            pc_11 = 75,
 #endif
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP100 package
-            PC_12 = 76,
-            PC_13 = 77,
-            PC_14 = 78,
-            PC_15 = 79,
-            PC_16 = 80,
-            PC_17 = 81,
-            PC_18 = 82,
+            pc_12 = 76,
+            pc_13 = 77,
+            pc_14 = 78,
+            pc_15 = 79,
+            pc_16 = 80,
+            pc_17 = 81,
+            pc_18 = 82,
 #endif
 
             // The following pins are present in all packages
-            PD_0  = 96,
-            PD_1  = 97,
-            PD_2  = 98,
-            PD_3  = 99,
-            PD_4  = 100,
-            PD_5  = 101,
-            PD_6  = 102,
-            PD_7  = 103,
+            pd_0  = 96,
+            pd_1  = 97,
+            pd_2  = 98,
+            pd_3  = 99,
+            pd_4  = 100,
+            pd_5  = 101,
+            pd_6  = 102,
+            pd_7  = 103,
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
             // The following pins are only present in
             // LQFP64 / LQFP100 packages
-            PE_0  = 128,
-            PE_1  = 129,
+            pe_0  = 128,
+            pe_1  = 129,
 #endif
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP100 package
-            PE_2  = 130,
-            PE_3  = 131,
-            PE_4  = 132,
-            PE_5  = 133,
-            PE_6  = 134,
+            pe_2  = 130,
+            pe_3  = 131,
+            pe_4  = 132,
+            pe_5  = 133,
+            pe_6  = 134,
 #endif
             // The following pins are present in all packages
-            PE_16 = 144,
-            PE_17 = 145,
-            PE_18 = 146,
-            PE_19 = 147,
+            pe_16 = 144,
+            pe_17 = 145,
+            pe_18 = 146,
+            pe_19 = 147,
 #if (TARGET_PACKAGE_PIN_COUNT == 48 || TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pins are only present in
             // LQFP48 / LQFP100 packages
-            PE_20 = 148,
-            PE_21 = 149,
+            pe_20 = 148,
+            pe_21 = 149,
 #endif
             // The following pins are present in all packages
-            PE_24 = 152,
-            PE_25 = 153,
+            pe_24 = 152,
+            pe_25 = 153,
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
             // The following pin is only present in
             // LQFP100 package
-            PE_26 = 154,
+            pe_26 = 154,
 #endif
             // The following pins are present in all packages
-            PE_29 = 157,
-            PE_30 = 158,
+            pe_29 = 157,
+            pe_30 = 158,
 
             // Not connected
-            NC
+            nc
         };
 
         // Pull select and enable
         enum class FunctionMode
         {
-            HIZ       = 0,
-            PULL_DOWN = 2,
-            PULL_UP
+            hiz       = 0,
+            pull_down = 2,
+            pull_up
         };
 
         // Slew rate enable
         enum class SlewRate
         {
-            FAST = 0,
-            SLOW
+            fast = 0,
+            slow
         };
 
         // Passive filter enable
         enum class PassiveFilter
         {
-            DISABLE = 0,
-            ENABLE
+            disable = 0,
+            enable
         };
 
         // Open drain enable
         enum class OpenDrain
         {
-            DISABLE = 0,
-            ENABLE
+            disable = 0,
+            enable
         };
 
         // Drive strength enable
         enum class DriveStrength
         {
-            LOW = 0,
-            HIGH
+            low = 0,
+            high
         };
 
         // Pin mux control
         enum class PinMux
         {
-            PIN_DISABLED_OR_ANALOG = 0,
-            GPIO,
+            pin_disabled_or_analog = 0,
+            gpio,
             // Chip-specific
-            ALT2,
-            ALT3,
-            ALT4,
-            ALT5,
-            ALT6,
-            ALT7
+            alt2,
+            alt3,
+            alt4,
+            alt5,
+            alt6,
+            alt7
         };
 
         // Lock register (Pin Control Register (PCR) fields [15:0])
         enum class LockRegister
         {
-            UNLOCK = 0,
-            LOCK
+            unlock = 0,
+            lock
         };
 
         // --------------------------------------------------------------------
@@ -255,30 +255,30 @@ class PinDriver
         // Set mode of normal pins
         static void set_mode(const Name pin_name, const FunctionMode  function_mode,
                                                   const PinMux        pin_mux,
-                                                  const SlewRate      slew_rate      = SlewRate::FAST,
-                                                  const PassiveFilter passive_filter = PassiveFilter::DISABLE,
-                                                  const OpenDrain     open_drain     = OpenDrain::DISABLE,
-                                                  const DriveStrength drive_strength = DriveStrength::LOW,
-                                                  const LockRegister  lock_register  = LockRegister::UNLOCK)
+                                                  const SlewRate      slew_rate      = SlewRate::fast,
+                                                  const PassiveFilter passive_filter = PassiveFilter::disable,
+                                                  const OpenDrain     open_drain     = OpenDrain::disable,
+                                                  const DriveStrength drive_strength = DriveStrength::low,
+                                                  const LockRegister  lock_register  = LockRegister::unlock)
         {
             // Exclude NC
-            assert(pin_name != Name::NC);
+            assert(pin_name != Name::nc);
 
             // Exclude true open-drain pins
-            assert(pin_name != Name::PC_6 && pin_name != Name::PC_7);
+            assert(pin_name != Name::pc_6 && pin_name != Name::pc_7);
 
             // Only PA_4 has passive filter enable control
-            assert(passive_filter == PassiveFilter::DISABLE || (passive_filter == PassiveFilter::ENABLE && pin_name == Name::PA_4));
+            assert(passive_filter == PassiveFilter::disable || (passive_filter == PassiveFilter::enable && pin_name == Name::pa_4));
 
             // Only PB_0, PB_1, PC_3, PC_4, PD_4, PD_5, PD_6 and PD_7 have drive strength enable control
-            assert(drive_strength == DriveStrength::LOW || (drive_strength == DriveStrength::HIGH && (pin_name == Name::PB_0
-                                                                                                   || pin_name == Name::PB_1
-                                                                                                   || pin_name == Name::PC_3
-                                                                                                   || pin_name == Name::PC_4
-                                                                                                   || pin_name == Name::PD_4
-                                                                                                   || pin_name == Name::PD_5
-                                                                                                   || pin_name == Name::PD_6
-                                                                                                   || pin_name == Name::PD_7)));
+            assert(drive_strength == DriveStrength::low || (drive_strength == DriveStrength::high && (pin_name == Name::pb_0
+                                                                                                   || pin_name == Name::pb_1
+                                                                                                   || pin_name == Name::pc_3
+                                                                                                   || pin_name == Name::pc_4
+                                                                                                   || pin_name == Name::pd_4
+                                                                                                   || pin_name == Name::pd_5
+                                                                                                   || pin_name == Name::pd_6
+                                                                                                   || pin_name == Name::pd_7)));
 
             const port_pin_config_t pin_config =
             {
@@ -306,20 +306,20 @@ class PinDriver
 
         // Set mode of true open-drain pins (only available on PC_6 and PC_7)
         static void set_mode(const Name pin_name, const PinMux        pin_mux,
-                                                  const SlewRate      slew_rate      = SlewRate::FAST,
-                                                  const PassiveFilter passive_filter = PassiveFilter::DISABLE,
-                                                  const DriveStrength drive_strength = DriveStrength::LOW,
-                                                  const LockRegister  lock_register  = LockRegister::UNLOCK)
+                                                  const SlewRate      slew_rate      = SlewRate::fast,
+                                                  const PassiveFilter passive_filter = PassiveFilter::disable,
+                                                  const DriveStrength drive_strength = DriveStrength::low,
+                                                  const LockRegister  lock_register  = LockRegister::unlock)
         {
             // Available only on true open-drain pins
-            assert(pin_name == Name::PC_6 || pin_name == Name::PC_7);
+            assert(pin_name == Name::pc_6 || pin_name == Name::pc_7);
 
             const port_pin_config_t pin_config =
             {
-                static_cast<uint16_t>(FunctionMode::HIZ),
+                static_cast<uint16_t>(FunctionMode::hiz),
                 static_cast<uint16_t>(slew_rate),
                 static_cast<uint16_t>(passive_filter),
-                static_cast<uint16_t>(OpenDrain::DISABLE),
+                static_cast<uint16_t>(OpenDrain::disable),
                 static_cast<uint16_t>(drive_strength),
                 static_cast<uint16_t>(pin_mux),
                 static_cast<uint16_t>(lock_register)

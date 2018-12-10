@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    29 November 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -66,7 +66,7 @@ class PinBus<Type, typename std::enable_if<std::is_same<Type, PinHal::Name>::val
             {
                 if constexpr(std::is_same<Type, PinHal::Name>::value == true)
                 {
-                    assert(pin != PinHal::Name::NC);
+                    assert(pin != PinHal::Name::nc);
                 }
 
                 if constexpr(std::is_same<Type, int8_t>::value == true)

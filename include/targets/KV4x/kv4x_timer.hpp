@@ -2,7 +2,7 @@
 // @file    kv4x_timer.hpp
 // @brief   Kinetis KV4x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    5 December 2018
+// @date    10 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -193,10 +193,10 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
 
             switch(channel)
             {
-                case Channel::CHANNEL0: NVIC_EnableIRQ(PIT0_IRQn); break;
-                case Channel::CHANNEL1: NVIC_EnableIRQ(PIT1_IRQn); break;
-                case Channel::CHANNEL2: NVIC_EnableIRQ(PIT2_IRQn); break;
-                case Channel::CHANNEL3: NVIC_EnableIRQ(PIT3_IRQn); break;
+                case Channel::channel0: NVIC_EnableIRQ(PIT0_IRQn); break;
+                case Channel::channel1: NVIC_EnableIRQ(PIT1_IRQn); break;
+                case Channel::channel2: NVIC_EnableIRQ(PIT2_IRQn); break;
+                case Channel::channel3: NVIC_EnableIRQ(PIT3_IRQn); break;
                 default:                                           break;
             }
         }
@@ -209,10 +209,10 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
 
             switch(channel)
             {
-                case Channel::CHANNEL0: NVIC_DisableIRQ(PIT0_IRQn); break;
-                case Channel::CHANNEL1: NVIC_DisableIRQ(PIT1_IRQn); break;
-                case Channel::CHANNEL2: NVIC_DisableIRQ(PIT2_IRQn); break;
-                case Channel::CHANNEL3: NVIC_DisableIRQ(PIT3_IRQn); break;
+                case Channel::channel0: NVIC_DisableIRQ(PIT0_IRQn); break;
+                case Channel::channel1: NVIC_DisableIRQ(PIT1_IRQn); break;
+                case Channel::channel2: NVIC_DisableIRQ(PIT2_IRQn); break;
+                case Channel::channel3: NVIC_DisableIRQ(PIT3_IRQn); break;
                 default:                                            break;
             }
 
@@ -240,10 +240,10 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
 
             switch(channel)
             {
-                case Channel::CHANNEL0: NVIC_SetPriority(PIT0_IRQn, irq_priority); break;
-                case Channel::CHANNEL1: NVIC_SetPriority(PIT1_IRQn, irq_priority); break;
-                case Channel::CHANNEL2: NVIC_SetPriority(PIT2_IRQn, irq_priority); break;
-                case Channel::CHANNEL3: NVIC_SetPriority(PIT3_IRQn, irq_priority); break;
+                case Channel::channel0: NVIC_SetPriority(PIT0_IRQn, irq_priority); break;
+                case Channel::channel1: NVIC_SetPriority(PIT1_IRQn, irq_priority); break;
+                case Channel::channel2: NVIC_SetPriority(PIT2_IRQn, irq_priority); break;
+                case Channel::channel3: NVIC_SetPriority(PIT3_IRQn, irq_priority); break;
                 default:                                                           break;
             }
         }
@@ -269,10 +269,10 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // PIT channel names
         enum class Channel
         {
-            CHANNEL0 = 0,
-            CHANNEL1,
-            CHANNEL2,
-            CHANNEL3
+            channel0 = 0,
+            channel1,
+            channel2,
+            channel3
         };
 
         // --------------------------------------------------------------------
