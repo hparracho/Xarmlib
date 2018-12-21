@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin.hpp
 // @brief   Kinetis KV4x pin class.
-// @date    10 December 2018
+// @date    12 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -254,7 +254,7 @@ class PinDriver
 
         // Set mode of normal pins
         static void set_mode(const Name pin_name, const FunctionMode  function_mode,
-                                                  const PinMux        pin_mux,
+                                                  const PinMux        pin_mux        = PinMux::gpio,
                                                   const SlewRate      slew_rate      = SlewRate::fast,
                                                   const PassiveFilter passive_filter = PassiveFilter::disable,
                                                   const OpenDrain     open_drain     = OpenDrain::disable,
@@ -305,7 +305,7 @@ class PinDriver
         }
 
         // Set mode of true open-drain pins (only available on PC_6 and PC_7)
-        static void set_mode(const Name pin_name, const PinMux        pin_mux,
+        static void set_mode(const Name pin_name, const PinMux        pin_mux        = PinMux::gpio,
                                                   const SlewRate      slew_rate      = SlewRate::fast,
                                                   const PassiveFilter passive_filter = PassiveFilter::disable,
                                                   const DriveStrength drive_strength = DriveStrength::low,
@@ -332,6 +332,24 @@ class PinDriver
             assert((PORTC->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0);
 
             PORT_SetPinConfig(PORTC, pin_bit, &pin_config);
+        }
+
+        static void set_pin_mux(const Name pin_name, const PinMux pin_mux)
+        {
+            // Exclude NC
+            assert(pin_name != Name::nc);
+
+            const uint32_t port_index = get_port_index(pin_name);
+            const uint32_t pin_bit    = get_pin_bit(pin_name);
+
+            switch(port_index)
+            {
+                case 0: CLOCK_EnableClock(kCLOCK_PortA); assert((PORTA->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinMux(PORTA, pin_bit, static_cast<port_mux_t>(pin_mux)); break;
+                case 1: CLOCK_EnableClock(kCLOCK_PortB); assert((PORTB->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinMux(PORTB, pin_bit, static_cast<port_mux_t>(pin_mux)); break;
+                case 2: CLOCK_EnableClock(kCLOCK_PortC); assert((PORTC->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinMux(PORTC, pin_bit, static_cast<port_mux_t>(pin_mux)); break;
+                case 3: CLOCK_EnableClock(kCLOCK_PortD); assert((PORTD->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinMux(PORTD, pin_bit, static_cast<port_mux_t>(pin_mux)); break;
+                case 4: CLOCK_EnableClock(kCLOCK_PortE); assert((PORTE->PCR[pin_bit] & PORT_PCR_LK_MASK) == 0); PORT_SetPinMux(PORTE, pin_bit, static_cast<port_mux_t>(pin_mux)); break;
+            }
         }
 
         static constexpr uint32_t get_port_index(const Name pin_name)
