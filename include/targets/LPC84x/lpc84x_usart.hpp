@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    30 November 2018
+// @date    17 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -122,7 +122,7 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
 
 
 
-class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
+class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -144,19 +144,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralUsart = PeripheralRefCounter<Usart, TARGET_USART_COUNT>;
-
-        // USART peripheral names selection
-        enum class Name
-        {
-            USART0 = 0,
-            USART1,
-#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-            USART2,
-            USART3,
-            USART4
-#endif
-        };
+        using PeripheralUsart = PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT>;
 
         // Data length selection (defined to map the CFG register directly)
         enum class DataBits
@@ -181,6 +169,14 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             ODD  = (3 << 4)     // USART odd parity select
         };
 
+        struct Config
+        {
+            int32_t  baudrate  = 9600;
+            DataBits data_bits = DataBits::BITS_8;
+            StopBits stop_bits = StopBits::BITS_1;
+            Parity   parity    = Parity::NONE;
+        };
+
         // Type safe accessor to STAT register
         using Status        = private_usart::Status;
         using StatusBitmask = bitmask::bitmask<Status>;
@@ -199,12 +195,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Usart(const PinDriver::Name txd,
-              const PinDriver::Name rxd,
-              const int32_t         baudrate,
-              const DataBits        data_bits,
-              const StopBits        stop_bits,
-              const Parity          parity) : PeripheralUsart(*this)
+        UsartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUsart(*this)
         {
             // Initialize and configure FRG0 if this is the first USART peripheral instantiation
             if(get_used() == 1)
@@ -274,11 +265,11 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
             // Clear all status bits
             clear_status(Status::CLEAR_ALL_BITMASK);
 
-            set_format(data_bits, stop_bits, parity);
-            set_baudrate(baudrate);
+            set_format(config.data_bits, config.stop_bits, config.parity);
+            set_baudrate(config.baudrate);
         }
 
-        ~Usart()
+        ~UsartDriver()
         {
             // Disable peripheral
             disable();
@@ -575,6 +566,18 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
+        // USART peripheral names selection
+        enum class Name
+        {
+            USART0 = 0,
+            USART1,
+#if (TARGET_USART_COUNT == 5) /* __LPC845__ */
+            USART2,
+            USART3,
+            USART4
+#endif
+        };
+
         // USART Configuration Register (CFG) bits and masks
         enum CFG : uint32_t
         {
@@ -642,7 +645,7 @@ class Usart : private PeripheralRefCounter<Usart, TARGET_USART_COUNT>
         {
             const auto index = static_cast<std::size_t>(name);
 
-            return Usart::get_reference(index).irq_handler();
+            return UsartDriver::get_reference(index).irq_handler();
         }
 
         // --------------------------------------------------------------------

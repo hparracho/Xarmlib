@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    29 November 2018
+// @date    17 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,7 +51,7 @@ namespace lpc81x
 // PRIVATE MEMBER FUNCTIONS
 // --------------------------------------------------------------------
 
-void Usart::initialize_usart_frg()
+void UsartDriver::initialize_usart_frg()
 {
     constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
@@ -66,7 +66,7 @@ void Usart::initialize_usart_frg()
 
 
 
-int32_t Usart::get_baudrate_generator_div(const int32_t baudrate)
+int32_t UsartDriver::get_baudrate_generator_div(const int32_t baudrate)
 {
     constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
     constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
@@ -92,7 +92,7 @@ using namespace xarmlib::targets::lpc81x;
 
 extern "C" void USART0_IRQHandler(void)
 {
-    const int32_t yield = Usart::irq_handler(Usart::Name::USART0);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART0);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -106,7 +106,7 @@ extern "C" void USART0_IRQHandler(void)
 
 extern "C" void USART1_IRQHandler(void)
 {
-    const int32_t yield = Usart::irq_handler(Usart::Name::USART1);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART1);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -122,7 +122,7 @@ extern "C" void USART1_IRQHandler(void)
 
 extern "C" void USART2_IRQHandler(void)
 {
-    const int32_t yield = Usart::irq_handler(Usart::Name::USART2);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART2);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
