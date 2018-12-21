@@ -55,7 +55,7 @@
 #include "hal/hal_timer.hpp"
 #include "hal/hal_timer16.hpp"
 #include "hal/hal_us_ticker.hpp"
-//#include "hal/hal_usart.hpp"
+#include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 
