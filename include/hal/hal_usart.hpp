@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    20 December 2018
+// @date    26 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -215,6 +215,15 @@ class Uart : public UartHal
 
         Uart(const PinHal::Name txd, const PinHal::Name rxd, const Config& config) : UartHal(txd, rxd, config)
         {}
+
+        // -------- FLUSH FIFOS -----------------------------------------------
+
+        // NOTE: Reading an empty data register to clear one of the flags of
+        //       the S1 register causes the FIFO pointers to become misaligned.
+        //       A receive FIFO flush reinitializes the pointers.
+
+        inline void flush_rx_fifo() { UartHal::flush_rx_fifo(); }
+        inline void flush_tx_fifo() { UartHal::flush_tx_fifo(); }
 
         // -------- STATUS INTERRUPTS -----------------------------------------
 
