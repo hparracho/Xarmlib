@@ -261,7 +261,8 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        UartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUart(*this)
+        UartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUart(*this),
+                                                                                                 m_is_9bit { config.data_bits == DataBits::bits_9 }
         {
             const std::size_t pin_map_index = get_pin_map_index(txd, rxd);
 
@@ -314,17 +315,25 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // Read data that has been received
         uint32_t read_data() const
         {
-            const bool r8_bit = (m_uart_base->C3 & UART_C3_R8_MASK) != 0;
+            if(m_is_9bit == true)
+            {
+                const bool r8_bit = (m_uart_base->C3 & UART_C3_R8_MASK) != 0;
 
-            return (static_cast<uint32_t>(UART_ReadByte(m_uart_base)) | (static_cast<uint32_t>(r8_bit) << 8));
+                return (static_cast<uint32_t>(UART_ReadByte(m_uart_base)) | (static_cast<uint32_t>(r8_bit) << 8));
+            }
+
+            return static_cast<uint32_t>(UART_ReadByte(m_uart_base));
         }
 
         // Write data to be transmitted
         void write_data(const uint32_t value)
         {
-            const bool t8_bit = (value & (1 << 8)) != 0;
+            if(m_is_9bit == true)
+            {
+                const bool t8_bit = (value & (1 << 8)) != 0;
 
-            m_uart_base->C3 = (m_uart_base->C3 & ~UART_C3_T8_MASK) | (static_cast<uint8_t>(t8_bit) << UART_C3_T8_SHIFT);
+                m_uart_base->C3 = (m_uart_base->C3 & ~UART_C3_T8_MASK) | (static_cast<uint8_t>(t8_bit) << UART_C3_T8_SHIFT);
+            }
 
             UART_WriteByte(m_uart_base, static_cast<uint8_t>(value));
         }
@@ -667,10 +676,11 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        Name       m_uart_name;
-        UART_Type* m_uart_base { nullptr }; // Pointer to the CMSIS UART structure
-        IrqHandler m_status_irq_handler;    // User defined status IRQ handler
-        IrqHandler m_error_irq_handler;     // User defined error IRQ handler
+        const uint32_t   m_is_9bit;
+              Name       m_uart_name;
+              UART_Type* m_uart_base { nullptr };   // Pointer to the CMSIS UART structure
+              IrqHandler m_status_irq_handler;      // User defined status IRQ handler
+              IrqHandler m_error_irq_handler;       // User defined error IRQ handler
 
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
         static constexpr std::array<PinMap, 10> m_pin_map_array
