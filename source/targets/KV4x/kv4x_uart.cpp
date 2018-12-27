@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    20 December 2018
+// @date    27 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,11 +52,9 @@ namespace kv4x
 // PRIVATE MEMBER FUNCTIONS
 // --------------------------------------------------------------------
 
-int32_t UartDriver::initialize(const Config& config)
+void UartDriver::initialize(const Config& config)
 {
     assert(config.baudrate > 0);
-
-    (void)config.data_bits;
 
     const uart_config_t uart_config =
     {
@@ -72,7 +70,20 @@ int32_t UartDriver::initialize(const Config& config)
         false   // Disable RX
     };
 
-    return UART_Init(m_uart_base, &uart_config, SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+    const int32_t result = UART_Init(m_uart_base, &uart_config, SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+    // Assert baudrate less than 3%
+    assert(result == 0);
+
+    if(config.data_bits == DataBits::bits_9)
+    {
+        m_uart_base->C1 |= UART_C1_M_MASK;
+
+        if(config.parity != Parity::none)
+        {
+            m_uart_base->C4 |= UART_C4_M10_MASK;
+        }
+    }
 }
 
 
