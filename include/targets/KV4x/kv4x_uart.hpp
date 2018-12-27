@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    21 December 2018
+// @date    27 December 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -96,17 +96,17 @@ enum class Status : uint32_t
     //       tx_data_register_empty           (S1[TDRE])
     //       tx_complete                      (S1[TC])
     //       rx_data_register_full            (S1[RDRF])
+    //       idle_line                        (S1[IDLE])
+    //       rx_overrun                       (S1[OR])
+    //       noise_error                      (S1[NF])
+    //       framing_error                    (S1[FE])
+    //       parity_error                     (S1[PF])
     //       rx_active                        (S2[RAF])
     //       noise_error_in_rx_data_register  (ED[NOISY])
     //       parity_error_in_rx_data_register (ED[PARITYE])
     //       tx_fifo_empty                    (SFIFO[TXEMPT])
     //       rx_fifo_empty                    (SFIFO[RXEMPT])
-    clear_all_manual_bitmask         = idle_line
-                                     | rx_overrun
-                                     | noise_error
-                                     | framing_error
-                                     | parity_error
-                                     | lin_break
+    clear_all_manual_bitmask         = lin_break
                                      | rx_active_edge
                                      | tx_fifo_overflow
                                      | rx_fifo_overflow
@@ -283,16 +283,13 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
                 case Name::uart1: m_uart_base = UART1; break;
             };
 
-            const int32_t result = initialize(config);
-
-            // Assert baudrate less than 3%
-            assert(result == 0);
+            initialize(config);
 
             disable_status_irq();
             disable_error_irq();
 
             // Clear all manual status bits
-            //clear_status(Status::clear_all_manual_bitmask);
+            clear_status(Status::clear_all_manual_bitmask);
         }
 
         ~UartDriver()
@@ -301,7 +298,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
             disable_error_irq();
 
             // Clear all manual status bits
-            //clear_status(Status::clear_all_manual_bitmask);
+            clear_status(Status::clear_all_manual_bitmask);
 
             UART_Deinit(m_uart_base);
         }
@@ -317,13 +314,37 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // Read data that has been received
         uint32_t read_data() const
         {
-            return UART_ReadByte(m_uart_base);
+            const bool r8_bit = (m_uart_base->C3 & UART_C3_R8_MASK) != 0;
+
+            return (static_cast<uint32_t>(UART_ReadByte(m_uart_base)) | (static_cast<uint32_t>(r8_bit) << 8));
         }
 
         // Write data to be transmitted
         void write_data(const uint32_t value)
         {
-            UART_WriteByte(m_uart_base, value);
+            const bool t8_bit = (value & (1 << 8)) != 0;
+
+            m_uart_base->C3 = (m_uart_base->C3 & ~UART_C3_T8_MASK) | (static_cast<uint8_t>(t8_bit) << UART_C3_T8_SHIFT);
+
+            UART_WriteByte(m_uart_base, static_cast<uint8_t>(value));
+        }
+
+        // -------- FLUSH FIFOS -----------------------------------------------
+
+        // NOTE: Reading an empty data register to clear one of the flags of
+        //       the S1 register causes the FIFO pointers to become misaligned.
+        //       A receive FIFO flush reinitializes the pointers.
+
+        // Flush receive FIFO data
+        void flush_rx_fifo()
+        {
+            m_uart_base->CFIFO |= UART_CFIFO_RXFLUSH_MASK;
+        }
+
+        // Flush transmit FIFO data
+        void flush_tx_fifo()
+        {
+            m_uart_base->CFIFO |= UART_CFIFO_TXFLUSH_MASK;
         }
 
         // -------- ENABLE / DISABLE TX AND RX --------------------------------
@@ -366,105 +387,12 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
 
         void clear_status(const StatusBitmask bitmask)
         {
-            // NOTE: some flags can only clear or set by the hardware itself
             assert((bitmask.bits() & ~static_cast<uint32_t>(Status::clear_all_manual_bitmask)) == 0);
-
-            while(is_tx_idle() == false && is_rx_idle() == false);
 
             const int32_t result = UART_ClearStatusFlags(m_uart_base, bitmask.bits());
 
-            // NOTE: some flags can only clear or set by the hardware itself
+            // Assert kStatus_Success
             assert(result == 0);
-
-
-
-
-
-            /* Using FSL driver to clear flags, if we want to clear idle_line
-             * or noise_error or framing_error or parity_error flags
-             * and rx_overrun flag, it will read D twice and it will set
-             * rx_fifo_underflow flag!
-             *
-             * const int32_t result = UART_ClearStatusFlags(m_uart_base, bitmask.bits());
-
-             * // NOTE: some flags can only clear or set by the hardware itself
-             * assert(result == 0);
-             */
-
-
-
-
-//            const bool interrupt_underflow = ((get_error_interrupts_enabled() & ErrorInterrupt::rx_fifo_underflow)).bits() ? true : false;
-//
-//            disable_error_interrupts(ErrorInterrupt::rx_fifo_underflow);
-
-//            const int32_t result = UART_ClearStatusFlags(m_uart_base, (bitmask & ~(Status::rx_overrun | Status::rx_fifo_underflow)).bits());
-//
-//            // NOTE: some flags can only clear or set by the hardware itself
-//            assert(result == 0);
-//
-//            if(bitmask & Status::rx_overrun)
-//            {
-//                (void)m_uart_base->S1;
-//                (void)m_uart_base->D;
-//                m_uart_base->CFIFO |= UART_CFIFO_RXFLUSH_MASK;
-//                (void)m_uart_base->S1;
-//                (void)m_uart_base->SFIFO;
-//            }
-//
-////            if(interrupt_underflow == true)
-//            {
-//                enable_error_interrupts(ErrorInterrupt::rx_fifo_underflow);
-//            }
-//
-//            if(bitmask & Status::rx_overrun)
-//            {
-//                /* Read base->D to clear the flags and Flush all data in FIFO. */
-////                (void)m_uart_base->S1;
-////                (void)m_uart_base->D;
-////
-////                /* Flush FIFO date, otherwise FIFO pointer will be in unknown state. */
-////                m_uart_base->CFIFO |= UART_CFIFO_RXFLUSH_MASK;
-//
-//                (void)m_uart_base->S1;
-//                (void)m_uart_base->SFIFO;
-//            }
-//
-//            enable_error_interrupts(ErrorInterrupt::rx_fifo_underflow);
-
-
-
-
-            // NOTE: some flags can only clear or set by the hardware itself
-//            assert((bitmask.bits() & ~static_cast<uint32_t>(Status::clear_all_manual_bitmask)) == 0);
-//
-////            const uint32_t mask = bitmask.bits();//(bitmask & Status::clear_all_manual_bitmask).bits();
-//
-//            const uint8_t register_s2 = m_uart_base->S2 & ~(UART_S2_RXEDGIF_MASK | UART_S2_LBKDIF_MASK);
-//
-//            m_uart_base->S2 = register_s2 | static_cast<uint8_t>(bitmask.bits() >> 8);
-//
-//            m_uart_base->SFIFO = static_cast<uint8_t>(bitmask.bits() >> 24);
-//
-//            if(bitmask & (Status::idle_line | Status::noise_error | Status::framing_error | Status::parity_error))
-//            {
-//                // Read m_uart_base->D to clear the flag(s)
-//                (void)m_uart_base->S1;
-//                (void)m_uart_base->D;
-//            }
-//
-//            if(bitmask & Status::rx_overrun)
-//            {
-////                (void)m_uart_base->S1;
-////                (void)m_uart_base->D;
-////
-////                // Flush all data in FIFO, otherwise FIFO pointer will be in unknown state
-////                m_uart_base->CFIFO |= UART_CFIFO_RXFLUSH_MASK;
-//            }
-//
-//            const auto status = get_status();
-//
-//            assert((status & Status::clear_all_manual_bitmask).bits() == 0);
         }
 
         // -------- STATUS INTERRUPTS -----------------------------------------
@@ -685,7 +613,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
 
         // NOTE: implemented on the CPP file because it uses parameters from
         //       the library configuration file (xarmlib_config.h).
-        int32_t initialize(const Config& config);
+        void initialize(const Config& config);
 
         // -------- PRIVATE STATUS IRQ HANDLERS -------------------------------
 
