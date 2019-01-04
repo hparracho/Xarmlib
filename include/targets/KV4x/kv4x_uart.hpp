@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    27 December 2018
+// @date    4 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -264,19 +264,14 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         UartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUart(*this),
                                                                                                  m_is_9bit { config.data_bits == DataBits::bits_9 }
         {
-            const std::size_t pin_map_index = get_pin_map_index(txd, rxd);
+            const auto pin_config = get_pin_config(txd, rxd);
 
-            // Assert txd and rxd are Uart pins
-            assert(pin_map_index < m_pin_map_array.size());
+            PinDriver::set_pin_mux(txd, pin_config.pin_mux);
+            PinDriver::set_pin_mux(rxd, pin_config.pin_mux);
 
-            const auto pin_map = m_pin_map_array[pin_map_index];
+            select_data_sources(pin_config.uart_name, TransmitDataSource::tx_pin, ReceiveDataSource::rx_pin);
 
-            PinDriver::set_pin_mux(txd, pin_map.pin_mux);
-            PinDriver::set_pin_mux(rxd, pin_map.pin_mux);
-
-            select_data_sources(pin_map.uart_name, TransmitDataSource::tx_pin, ReceiveDataSource::rx_pin);
-
-            m_uart_name = pin_map.uart_name;
+            m_uart_name = pin_config.uart_name;
 
             switch(m_uart_name)
             {
@@ -571,10 +566,8 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
             cmp1
         };
 
-        struct PinMap
+        struct PinConfig
         {
-            PinDriver::Name   pin_name_txd;
-            PinDriver::Name   pin_name_rxd;
             Name              uart_name;
             PinDriver::PinMux pin_mux;
         };
@@ -583,9 +576,10 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        // -------- CONFIGURATION ---------------------------------------------
+        // -------- CONFIGURATION / INITIALIZATION ----------------------------
 
-        static constexpr std::size_t get_pin_map_index(const PinDriver::Name txd, const PinDriver::Name rxd)
+        // Get the pin config struct if the specified txd and rxd are Uart pins
+        static constexpr PinConfig get_pin_config(const PinDriver::Name txd, const PinDriver::Name rxd)
         {
             std::size_t index = 0;
 
@@ -593,13 +587,16 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
             {
                 const auto pin_map = m_pin_map_array[index];
 
-                if(pin_map.pin_name_txd == txd && pin_map.pin_name_rxd == rxd)
+                if(std::get<0>(pin_map) == txd && std::get<1>(pin_map) == rxd)
                 {
-                    return index;
+                    return std::get<2>(pin_map);
                 }
             }
 
-            return index;
+            // Assert txd and rxd are Uart pins
+            assert(index < m_pin_map_array.size());
+
+            return { Name::uart0, PinDriver::PinMux::pin_disabled_or_analog };
         }
 
         static void select_data_sources(const Name name, const TransmitDataSource transmit_data_source,
@@ -683,27 +680,27 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
               IrqHandler m_error_irq_handler;       // User defined error IRQ handler
 
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
-        static constexpr std::array<PinMap, 10> m_pin_map_array
+        static constexpr std::array<std::tuple<PinDriver::Name, PinDriver::Name, PinConfig>, 10> m_pin_map_array
 #else
-        static constexpr std::array<PinMap, 8> m_pin_map_array
+        static constexpr std::array<std::tuple<PinDriver::Name, PinDriver::Name, PinConfig>, 8> m_pin_map_array
 #endif
-        { { //                   TXD                     RXD
+        { { //                   TXD                     RXD      PinConfig
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
-              { PinDriver::Name::pe_0,  PinDriver::Name::pe_1,  Name::uart1, PinDriver::PinMux::alt3 },
+              { PinDriver::Name::pe_0,  PinDriver::Name::pe_1,  { Name::uart1, PinDriver::PinMux::alt3 } },
 #endif
-              { PinDriver::Name::pe_16, PinDriver::Name::pe_17, Name::uart1, PinDriver::PinMux::alt3 },
+              { PinDriver::Name::pe_16, PinDriver::Name::pe_17, { Name::uart1, PinDriver::PinMux::alt3 } },
 #if (TARGET_PACKAGE_PIN_COUNT == 48 || TARGET_PACKAGE_PIN_COUNT == 100)
-              { PinDriver::Name::pe_20, PinDriver::Name::pe_21, Name::uart0, PinDriver::PinMux::alt4 },
+              { PinDriver::Name::pe_20, PinDriver::Name::pe_21, { Name::uart0, PinDriver::PinMux::alt4 } },
 #endif
-              { PinDriver::Name::pa_2,  PinDriver::Name::pa_1,  Name::uart0, PinDriver::PinMux::alt2 },
+              { PinDriver::Name::pa_2,  PinDriver::Name::pa_1,  { Name::uart0, PinDriver::PinMux::alt2 } },
 #if (TARGET_PACKAGE_PIN_COUNT == 100)
-              { PinDriver::Name::pa_14, PinDriver::Name::pa_15, Name::uart0, PinDriver::PinMux::alt3 },
+              { PinDriver::Name::pa_14, PinDriver::Name::pa_15, { Name::uart0, PinDriver::PinMux::alt3 } },
 #endif
-              { PinDriver::Name::pb_1,  PinDriver::Name::pb_0,  Name::uart0, PinDriver::PinMux::alt7 },
-              { PinDriver::Name::pb_17, PinDriver::Name::pb_16, Name::uart0, PinDriver::PinMux::alt3 },
-              { PinDriver::Name::pc_4,  PinDriver::Name::pc_3,  Name::uart1, PinDriver::PinMux::alt3 },
-              { PinDriver::Name::pc_7,  PinDriver::Name::pc_6,  Name::uart0, PinDriver::PinMux::alt5 },
-              { PinDriver::Name::pd_7,  PinDriver::Name::pd_6,  Name::uart0, PinDriver::PinMux::alt3 }
+              { PinDriver::Name::pb_1,  PinDriver::Name::pb_0,  { Name::uart0, PinDriver::PinMux::alt7 } },
+              { PinDriver::Name::pb_17, PinDriver::Name::pb_16, { Name::uart0, PinDriver::PinMux::alt3 } },
+              { PinDriver::Name::pc_4,  PinDriver::Name::pc_3,  { Name::uart1, PinDriver::PinMux::alt3 } },
+              { PinDriver::Name::pc_7,  PinDriver::Name::pc_6,  { Name::uart0, PinDriver::PinMux::alt5 } },
+              { PinDriver::Name::pd_7,  PinDriver::Name::pd_6,  { Name::uart0, PinDriver::PinMux::alt3 } }
         } };
 };
 
