@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_xbara.hpp
 // @brief   Kinetis KV4x Inter-Peripheral Crossbar Switch A (XBARA) class.
-// @date    2 January 2019
+// @date    4 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -187,6 +187,18 @@ class XbaraDriver
             ewm_in          = kXBARA_OutputEwmIn,               // XBARA_OUT58 output assigned to EWM input
         };
 
+        struct InputPinConfig
+        {
+            PinDriver::PinMux pin_mux;
+            InputSignal       input_signal;
+        };
+
+        struct OutputPinConfig
+        {
+            PinDriver::PinMux pin_mux;
+            OutputSignal      output_signal;
+        };
+
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -204,6 +216,48 @@ class XbaraDriver
             XBARA_SetSignalsConnection(XBARA, static_cast<xbar_input_signal_t>(input), static_cast<xbar_output_signal_t>(output));
         }
 
+        // Get the input pin config struct if the specified pin name has XBARA mux
+        static constexpr InputPinConfig get_input_pin_config(const PinDriver::Name pin_name)
+        {
+            std::size_t index = 0;
+
+            for(; index < m_input_pin_map_array.size(); ++index)
+            {
+                const auto pin_map = m_input_pin_map_array[index];
+
+                if(pin_map.first == pin_name)
+                {
+                    return pin_map.second;
+                }
+            }
+
+            // Assert pin name has XBARA mux
+            assert(index < m_input_pin_map_array.size());
+
+            return { PinDriver::PinMux::pin_disabled_or_analog, InputSignal::xbar_in2 };
+        }
+
+        // Get the output pin config struct if the specified pin name has XBARA mux
+        static constexpr OutputPinConfig get_output_pin_config(const PinDriver::Name pin_name)
+        {
+            std::size_t index = 0;
+
+            for(; index < m_output_pin_map_array.size(); ++index)
+            {
+                const auto pin_map = m_output_pin_map_array[index];
+
+                if(pin_map.first == pin_name)
+                {
+                    return pin_map.second;
+                }
+            }
+
+            // Assert pin name has XBARA mux
+            assert(index < m_output_pin_map_array.size());
+
+            return { PinDriver::PinMux::pin_disabled_or_analog, OutputSignal::xbar_out4 };
+        }
+
     private:
 
         // --------------------------------------------------------------------
@@ -211,6 +265,49 @@ class XbaraDriver
         // --------------------------------------------------------------------
 
         inline static bool m_initialized { false };
+
+#if (TARGET_PACKAGE_PIN_COUNT >= 64)
+        static constexpr std::array<std::pair<PinDriver::Name, InputPinConfig>, 15> m_input_pin_map_array
+#else
+        static constexpr std::array<std::pair<PinDriver::Name, InputPinConfig>, 13> m_input_pin_map_array
+#endif
+        { {
+#if (TARGET_PACKAGE_PIN_COUNT >= 64)
+              { PinDriver::Name::pe_0,  { PinDriver::PinMux::alt5, InputSignal::xbar_in11 } },
+              { PinDriver::Name::pe_1,  { PinDriver::PinMux::alt5, InputSignal::xbar_in7 } },
+#endif
+              { PinDriver::Name::pe_24, { PinDriver::PinMux::alt4, InputSignal::xbar_in2 } },
+              { PinDriver::Name::pe_25, { PinDriver::PinMux::alt4, InputSignal::xbar_in3 } },
+              { PinDriver::Name::pa_0,  { PinDriver::PinMux::alt4, InputSignal::xbar_in4 } },
+              { PinDriver::Name::pa_3,  { PinDriver::PinMux::alt4, InputSignal::xbar_in9 } },
+              { PinDriver::Name::pa_4,  { PinDriver::PinMux::alt4, InputSignal::xbar_in10 } },
+              { PinDriver::Name::pa_18, { PinDriver::PinMux::alt2, InputSignal::xbar_in7 } },
+              { PinDriver::Name::pa_19, { PinDriver::PinMux::alt2, InputSignal::xbar_in8 } },
+              { PinDriver::Name::pb_16, { PinDriver::PinMux::alt7, InputSignal::xbar_in5 } },
+              { PinDriver::Name::pc_1,  { PinDriver::PinMux::alt6, InputSignal::xbar_in11 } },
+              { PinDriver::Name::pc_2,  { PinDriver::PinMux::alt6, InputSignal::xbar_in6 } },
+              { PinDriver::Name::pc_5,  { PinDriver::PinMux::alt4, InputSignal::xbar_in2 } },
+              { PinDriver::Name::pc_6,  { PinDriver::PinMux::alt4, InputSignal::xbar_in3 } },
+              { PinDriver::Name::pc_7,  { PinDriver::PinMux::alt4, InputSignal::xbar_in4 } }
+        } };
+
+#if (TARGET_PACKAGE_PIN_COUNT >= 64)
+        static constexpr std::array<std::pair<PinDriver::Name, OutputPinConfig>, 8> m_output_pin_map_array
+#else
+        static constexpr std::array<std::pair<PinDriver::Name, OutputPinConfig>, 6> m_output_pin_map_array
+#endif
+        { {
+#if (TARGET_PACKAGE_PIN_COUNT >= 64)
+              { PinDriver::Name::pe_0,  { PinDriver::PinMux::alt4, OutputSignal::xbar_out10 } },
+              { PinDriver::Name::pe_1,  { PinDriver::PinMux::alt4, OutputSignal::xbar_out11 } },
+#endif
+              { PinDriver::Name::pe_24, { PinDriver::PinMux::alt7, OutputSignal::xbar_out4 } },
+              { PinDriver::Name::pe_25, { PinDriver::PinMux::alt7, OutputSignal::xbar_out5 } },
+              { PinDriver::Name::pa_18, { PinDriver::PinMux::alt5, OutputSignal::xbar_out8 } },
+              { PinDriver::Name::pa_19, { PinDriver::PinMux::alt5, OutputSignal::xbar_out9 } },
+              { PinDriver::Name::pc_6,  { PinDriver::PinMux::alt6, OutputSignal::xbar_out6 } },
+              { PinDriver::Name::pc_7,  { PinDriver::PinMux::alt6, OutputSignal::xbar_out7 } }
+        } };
 };
 
 
