@@ -16,9 +16,10 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ## External Dependencies:
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
-- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using development commit as of 6 July 2018
-- [GSL: Guideline Support Library](https://github.com/Microsoft/GSL) - currently using master commit as of 15 June 2018
-- [FSL: Freescale drivers from Kinetis SDK Version 2.4.1](https://www.nxp.com/support/developer-resources/evaluation-and-development-boards/freedom-development-boards/mcu-boards/software-development-kit-for-kinetis-mcus:KINETIS-SDK)
+- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using master commit as of 3 September 2018
+- [fsl: Freescale drivers from Kinetis SDK Version 2.4.1](https://www.nxp.com/support/developer-resources/evaluation-and-development-boards/freedom-development-boards/mcu-boards/software-development-kit-for-kinetis-mcus:KINETIS-SDK)
+- [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 3 December 2018
+- [usflib: Micro String Format (μSF) library](https://github.com/hparracho/usflib) - currently using master commit as of 14 January 2019
 
 ---
 ## Credit where it is due:
