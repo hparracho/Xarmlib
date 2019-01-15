@@ -39,7 +39,7 @@ __attribute__ ((weak, noreturn))
 void abort(void);
 
 __attribute__ ((noreturn))
-void __xarmlib_assert_func()
+void __xarmlib_assert_func(void)
 {
     abort();
 }

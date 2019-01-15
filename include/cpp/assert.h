@@ -50,7 +50,7 @@ extern "C" {
 #else
 
 __attribute__ ((noreturn))
-void __xarmlib_assert_func();
+void __xarmlib_assert_func(void);
 
 #define assert(__e) ((__e) ? (void)0 : __xarmlib_assert_func())
 
