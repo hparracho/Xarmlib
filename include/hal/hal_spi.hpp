@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    30 November 2018
+// @date    11 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_HAL_SPI_HPP
 #define __XARMLIB_HAL_SPI_HPP
 
-#include "external/gsl.hpp"
+#include "external/span.hpp"
 #include "hal/hal_pin.hpp"
 
 namespace xarmlib
@@ -71,7 +71,7 @@ class SpiMasterHal : protected TargetSpiDriver
                      const LoopbackMode          loopback_mode = LoopbackMode::DISABLED)
        {
             // Initialize peripheral structure and pins
-            TargetSpiDriver::initialize(master_mosi, master_miso, master_sck, xarmlib::PinHal::Name::NC);
+            TargetSpiDriver::initialize(master_mosi, master_miso, master_sck, xarmlib::PinHal::Name::nc);
             // Configure data format and operating modes
             TargetSpiDriver::set_configuration(TargetSpiDriver::MasterMode::MASTER, spi_mode, data_bits, data_order, TargetSpiDriver::SselPolarity::LOW, loopback_mode);
             // Set supplied maximum frequency
@@ -114,7 +114,7 @@ class SpiMasterHal : protected TargetSpiDriver
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const gsl::span<uint8_t> buffer)
+        void transfer(const tcb::span<uint8_t> buffer)
         {
             for(auto& frame : buffer)
             {
@@ -123,7 +123,7 @@ class SpiMasterHal : protected TargetSpiDriver
         }
 
         // Transfer a buffer (simultaneous write and read)
-        void transfer(const gsl::span<const uint8_t> tx_buffer, const gsl::span<uint8_t> rx_buffer)
+        void transfer(const tcb::span<const uint8_t> tx_buffer, const tcb::span<uint8_t> rx_buffer)
         {
             assert(tx_buffer.size() == rx_buffer.size());
 
@@ -218,7 +218,7 @@ class SpiSlaveHal : protected TargetSpiDriver
                     const SselPolarity          ssel_polarity = SselPolarity::LOW,
                     const LoopbackMode          loopback_mode = LoopbackMode::DISABLED)
         {
-            assert(slave_sel != xarmlib::PinHal::Name::NC);
+            assert(slave_sel != xarmlib::PinHal::Name::nc);
 
             // Initialize peripheral structure and pins
             TargetSpiDriver::initialize(slave_mosi, slave_miso, slave_sck, slave_sel);
