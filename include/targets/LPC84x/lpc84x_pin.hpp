@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_pin.hpp
 // @brief   NXP LPC84x pin class.
-// @date    29 November 2018
+// @date    15 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,6 +36,7 @@
 #include "core/target_specs.hpp"
 
 #include <array>
+#include <cassert>
 
 namespace xarmlib
 {
