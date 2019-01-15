@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_timer.hpp
 // @brief   NXP LPC84x Timer (MRT) class.
-// @date    30 November 2018
+// @date    15 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,7 +38,6 @@
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
 
-#include <cassert>
 #include <chrono>
 
 
