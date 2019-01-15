@@ -2,7 +2,7 @@
 // @file    kv4x_timer16.cpp
 // @brief   Kinetis KV4x Timer 16-bit (LPTMR) class.
 // @note    Only time counter mode is implemented
-// @date    4 December 2018
+// @date    15 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,8 +33,6 @@
 #include "core/target_specs.hpp"
 
 #ifdef __KV4X__
-
-#include <cassert>  //@FIXME
 
 #include "targets/KV4x/kv4x_timer16.hpp"
 
