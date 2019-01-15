@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_iap.hpp
 // @brief   NXP LPC81x In-Application Programming (IAP) class.
-// @date    29 November 2018
+// @date    15 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_IAP_HPP
 #define __XARMLIB_TARGETS_LPC81X_IAP_HPP
 
-#include "external/gsl.hpp"
+#include "external/span.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
 
 namespace xarmlib
@@ -86,7 +86,7 @@ class IapDriver
         // @flash_page: Destination flash page where data is to be written.
         // @ buffer:    Buffer span containing the data to be written.
         // NOTE:        Buffer size must be 64 bytes (page size).
-        static bool write_flash_page(const int32_t flash_page, const gsl::span<const uint8_t> buffer)
+        static bool write_flash_page(const int32_t flash_page, const tcb::span<const uint8_t> buffer)
         {
             if(buffer.size() != TARGET_FLASH_PAGE_SIZE)
             {
@@ -130,7 +130,7 @@ class IapDriver
         //                 This address should be a 64 byte boundary.
         // @ buffer:       Buffer span containing the data to be written.
         // NOTE:           Buffer size must be multiple of 64 bytes (page size).
-        static bool write_flash(const int32_t flash_address, const gsl::span<const uint8_t> buffer)
+        static bool write_flash(const int32_t flash_address, const tcb::span<const uint8_t> buffer)
         {
             // Check for valid buffer size (multiple of page size)
             if(buffer.size() <= 0 || (buffer.size() % TARGET_FLASH_PAGE_SIZE) != 0)
@@ -224,7 +224,7 @@ class IapDriver
 
         // Copy RAM contents into flash
         // NOTE: Buffer size must be 64 | 128 | 256 | 512 | 1024 bytes.
-        static StatusCode copy_ram_to_flash(const int32_t flash_address, const gsl::span<const uint8_t> buffer)
+        static StatusCode copy_ram_to_flash(const int32_t flash_address, const tcb::span<const uint8_t> buffer)
         {
             uint32_t result[5];
             uint32_t command[5] {      static_cast<uint32_t>(CommandCode::COPY_RAM_TO_FLASH),
