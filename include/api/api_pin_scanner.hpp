@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer).
-// @date    30 November 2018
+// @date    15 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,6 +34,7 @@
 
 #include "hal/hal_timer.hpp"
 
+#include <algorithm>
 #include <dynarray>
 
 namespace xarmlib
