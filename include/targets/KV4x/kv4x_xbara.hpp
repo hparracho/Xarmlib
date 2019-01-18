@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_xbara.hpp
 // @brief   Kinetis KV4x Inter-Peripheral Crossbar Switch A (XBARA) class.
-// @date    4 January 2019
+// @date    16 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_XBARA_HPP
 #define __XARMLIB_TARGETS_KV4X_XBARA_HPP
 
+#include "targets/KV4x/kv4x_pin.hpp"
 #include "fsl_xbara.h"
 
 namespace xarmlib
