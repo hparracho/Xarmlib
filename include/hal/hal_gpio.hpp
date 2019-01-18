@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    30 November 2018
+// @date    18 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -129,6 +129,26 @@ using GpioHal = hal::GpioHal<targets::kv4x::GpioDriver>;
 //        using PassiveFilter = typename GpioHal::PassiveFilter;
 //        using DriveStrength = typename GpioHal::DriveStrength;
 //        using LockRegister  = typename GpioHal::LockRegister;
+//
+//        // --------------------------------------------------------------------
+//        // PUBLIC MEMBER FUNCTIONS
+//        // --------------------------------------------------------------------
+//
+//        // Normal input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // Normal output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
 //};
 }
 
@@ -156,6 +176,22 @@ using GpioHal = hal::GpioHal<targets::lpc84x::GpioDriver>;
 //        // --------------------------------------------------------------------
 //        // PUBLIC MEMBER FUNCTIONS
 //        // --------------------------------------------------------------------
+//
+//        // Normal input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // Normal output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
 //
 //        static inline void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
 //        {
@@ -188,6 +224,22 @@ using GpioHal = hal::GpioHal<targets::lpc81x::GpioDriver>;
 //        // --------------------------------------------------------------------
 //        // PUBLIC MEMBER FUNCTIONS
 //        // --------------------------------------------------------------------
+//
+//        // Normal input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // Normal output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain input pin constructor
+//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
+//
+//        // True open-drain output pin constructor
+//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+//        {}
 //
 //        static inline void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
 //        {
