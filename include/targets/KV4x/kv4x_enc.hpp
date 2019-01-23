@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.hpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    18 January 2019
+// @date    23 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,6 +37,8 @@
 #include "targets/KV4x/kv4x_xbara.hpp"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
+
+#include <chrono>
 
 
 
@@ -306,19 +308,21 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         struct Config
         {
-            HomeTriggerMode   home_trigger_mode  = HomeTriggerMode::disabled;
-            DirectionCounting direction_counting = DirectionCounting::normal;
-            PhaseCountMode    phase_count_mode   = PhaseCountMode::standard;
-            IndexTriggerMode  index_trigger_mode = IndexTriggerMode::disabled;
-            Watchdog          watchdog           = Watchdog::disabled;
-            uint16_t          watchdog_timeout   = 0;
+            HomeTriggerMode   home_trigger_mode             = HomeTriggerMode::disabled;
+            DirectionCounting direction_counting            = DirectionCounting::normal;
+            PhaseCountMode    phase_count_mode              = PhaseCountMode::standard;
+            IndexTriggerMode  index_trigger_mode            = IndexTriggerMode::disabled;
+            Watchdog          watchdog                      = Watchdog::disabled;
+            std::chrono::microseconds watchdog_timeout_rate = std::chrono::microseconds(0);
+            //uint16_t          watchdog_timeout   = 0;
 
             InputFilterSampleCount input_filter_sample_count = InputFilterSampleCount::count_3_samples;
             // Input filter sample period for PHASEA, PHASEB, INDEX and HOME
             // - This value should be set such that the sampling period is larger than the period of
             //   the expected noise. This value represents the sampling period (in IPBus clock cycles)
-            //   of the decoder input signals.
-            uint8_t input_filter_sample_period = 0;
+            //   of the decoder input signals. If 0x00 (default), then the input filter is bypassed.
+            std::chrono::microseconds input_filter_sample_rate = std::chrono::microseconds(0);
+            //uint8_t input_filter_sample_period = 0;
 
             OutputControl            output_control             = OutputControl::on_position_counter_equal_to_compare_value;
             RevolutionCounterModulus revolution_counter_modulus = RevolutionCounterModulus::on_index_pulse;
@@ -414,6 +418,16 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
                 XbaraDriver::set_signals_connection(XbaraDriver::InputSignal::enc_posmatch, position_match.output_signal);
             }
 
+            assert(config.watchdog_timeout_rate.count() >= 0);
+            assert(config.watchdog_timeout_rate.count() <= get_max_watchdog_timeout_rate_us());
+
+            const uint16_t watchdog_timeout_period = convert_us_to_period(config.watchdog_timeout_rate.count());
+
+            assert(config.input_filter_sample_rate.count() >= 0);
+            assert(config.input_filter_sample_rate.count() <= get_max_input_filter_sample_rate_us());
+
+            const uint16_t input_filter_sample_period = convert_us_to_period(config.input_filter_sample_rate.count());
+
             const enc_config_t enc_config =
             {
                 static_cast<bool>(config.direction_counting),
@@ -423,9 +437,9 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
                 static_cast<bool>(config.update_position_registers),
                 static_cast<bool>(config.update_hold_registers),
                 static_cast<bool>(config.watchdog),
-                config.watchdog_timeout,
+                watchdog_timeout_period,
                 static_cast<uint16_t>(config.input_filter_sample_count),
-                static_cast<uint16_t>(config.input_filter_sample_period),
+                input_filter_sample_period,
                 static_cast<enc_position_match_mode_t>(config.output_control),
                 config.compare_position_value,
                 static_cast<enc_revolution_count_condition_t>(config.revolution_counter_modulus),
@@ -758,6 +772,20 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // -------- PERIOD CONFIGURATION --------------------------------------
+
+        // NOTE: next methods are implemented on the CPP file because it uses
+        //       parameters from the library configuration file (xarmlib_config.h).
+
+        // Get period value based on supplied rate in microseconds
+        static uint16_t convert_us_to_period(const int64_t rate_us);
+
+        // Get the maximum allowed watchdog timeout rate in microseconds
+        static int64_t get_max_watchdog_timeout_rate_us();
+
+        // Get the maximum allowed input filter sample rate in microseconds
+        static int64_t get_max_input_filter_sample_rate_us();
 
         // -------- PRIVATE HOME IRQ HANDLERS ---------------------------------
 
