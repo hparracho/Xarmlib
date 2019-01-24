@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.cpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    23 January 2019
+// @date    24 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -91,9 +91,9 @@ using namespace xarmlib::targets::kv4x;
 // IRQ HANDLERS
 // --------------------------------------------------------------------
 
-extern "C" void ENC0_HOME_IRQHandler(void)
+extern "C" void ENC_HOME_IRQHandler(void)
 {
-    const int32_t yield = EncDriver::home_irq_handler(0);
+    const int32_t yield = EncDriver::home_irq_handler();
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -102,9 +102,9 @@ extern "C" void ENC0_HOME_IRQHandler(void)
 #endif
 }
 
-extern "C" void ENC0_INDEX_IRQHandler(void)
+extern "C" void ENC_INDEX_IRQHandler(void)
 {
-    const int32_t yield = EncDriver::index_irq_handler(0);
+    const int32_t yield = EncDriver::index_irq_handler();
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -113,9 +113,9 @@ extern "C" void ENC0_INDEX_IRQHandler(void)
 #endif
 }
 
-extern "C" void ENC0_WDOG_SAB_IRQHandler(void)
+extern "C" void ENC_WDOG_SAB_IRQHandler(void)
 {
-    const int32_t yield = EncDriver::watchdog_and_sab_irq_handler(0);
+    const int32_t yield = EncDriver::watchdog_and_sab_irq_handler();
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -124,9 +124,9 @@ extern "C" void ENC0_WDOG_SAB_IRQHandler(void)
 #endif
 }
 
-extern "C" void ENC0_COMPARE_IRQHandler(void)
+extern "C" void ENC_COMPARE_IRQHandler(void)
 {
-    const int32_t yield = EncDriver::compare_irq_handler(0);
+    const int32_t yield = EncDriver::compare_irq_handler();
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.hpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    23 January 2019
+// @date    24 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,10 +44,10 @@
 
 
 // Forward declaration of IRQ handlers for all KV4x packages
-extern "C" void ENC0_HOME_IRQHandler    (void);
-extern "C" void ENC0_INDEX_IRQHandler   (void);
-extern "C" void ENC0_WDOG_SAB_IRQHandler(void);
-extern "C" void ENC0_COMPARE_IRQHandler (void);
+extern "C" void ENC_HOME_IRQHandler    (void);
+extern "C" void ENC_INDEX_IRQHandler   (void);
+extern "C" void ENC_WDOG_SAB_IRQHandler(void);
+extern "C" void ENC_COMPARE_IRQHandler (void);
 
 
 
@@ -190,10 +190,10 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // --------------------------------------------------------------------
 
         // Friend IRQ handler C functions to give access to private IRQ handler member function
-        friend void ::ENC0_HOME_IRQHandler    (void);
-        friend void ::ENC0_INDEX_IRQHandler   (void);
-        friend void ::ENC0_WDOG_SAB_IRQHandler(void);
-        friend void ::ENC0_COMPARE_IRQHandler (void);
+        friend void ::ENC_HOME_IRQHandler    (void);
+        friend void ::ENC_INDEX_IRQHandler   (void);
+        friend void ::ENC_WDOG_SAB_IRQHandler(void);
+        friend void ::ENC_COMPARE_IRQHandler (void);
 
     protected:
 
@@ -635,22 +635,22 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         void enable_home_irq()
         {
-            NVIC_EnableIRQ(ENC0_HOME_IRQn);
+            NVIC_EnableIRQ(ENC_HOME_IRQn);
         }
 
         void disable_home_irq()
         {
-            NVIC_DisableIRQ(ENC0_HOME_IRQn);
+            NVIC_DisableIRQ(ENC_HOME_IRQn);
         }
 
         bool is_home_irq_enabled() const
         {
-            return (NVIC_GetEnableIRQ(ENC0_HOME_IRQn) != 0);
+            return (NVIC_GetEnableIRQ(ENC_HOME_IRQn) != 0);
         }
 
         void set_home_irq_priority(const int32_t irq_priority)
         {
-            NVIC_SetPriority(ENC0_HOME_IRQn, irq_priority);
+            NVIC_SetPriority(ENC_HOME_IRQn, irq_priority);
         }
 
         void assign_home_irq_handler(const IrqHandler& irq_handler)
@@ -669,22 +669,22 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         void enable_index_irq()
         {
-            NVIC_EnableIRQ(ENC0_INDEX_IRQn);
+            NVIC_EnableIRQ(ENC_INDEX_IRQn);
         }
 
         void disable_index_irq()
         {
-            NVIC_DisableIRQ(ENC0_INDEX_IRQn);
+            NVIC_DisableIRQ(ENC_INDEX_IRQn);
         }
 
         bool is_index_irq_enabled() const
         {
-            return (NVIC_GetEnableIRQ(ENC0_INDEX_IRQn) != 0);
+            return (NVIC_GetEnableIRQ(ENC_INDEX_IRQn) != 0);
         }
 
         void set_index_irq_priority(const int32_t irq_priority)
         {
-            NVIC_SetPriority(ENC0_INDEX_IRQn, irq_priority);
+            NVIC_SetPriority(ENC_INDEX_IRQn, irq_priority);
         }
 
         void assign_index_irq_handler(const IrqHandler& irq_handler)
@@ -703,22 +703,22 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         void enable_watchdog_and_sab_irq()
         {
-            NVIC_EnableIRQ(ENC0_WDOG_SAB_IRQn);
+            NVIC_EnableIRQ(ENC_WDOG_SAB_IRQn);
         }
 
         void disable_watchdog_and_sab_irq()
         {
-            NVIC_DisableIRQ(ENC0_WDOG_SAB_IRQn);
+            NVIC_DisableIRQ(ENC_WDOG_SAB_IRQn);
         }
 
         bool is_watchdog_and_sab_irq_enabled() const
         {
-            return (NVIC_GetEnableIRQ(ENC0_WDOG_SAB_IRQn) != 0);
+            return (NVIC_GetEnableIRQ(ENC_WDOG_SAB_IRQn) != 0);
         }
 
         void set_watchdog_and_sab_irq_priority(const int32_t irq_priority)
         {
-            NVIC_SetPriority(ENC0_WDOG_SAB_IRQn, irq_priority);
+            NVIC_SetPriority(ENC_WDOG_SAB_IRQn, irq_priority);
         }
 
         void assign_watchdog_and_sab_irq_handler(const IrqHandler& irq_handler)
@@ -737,22 +737,22 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         void enable_compare_irq()
         {
-            NVIC_EnableIRQ(ENC0_COMPARE_IRQn);
+            NVIC_EnableIRQ(ENC_COMPARE_IRQn);
         }
 
         void disable_compare_irq()
         {
-            NVIC_DisableIRQ(ENC0_COMPARE_IRQn);
+            NVIC_DisableIRQ(ENC_COMPARE_IRQn);
         }
 
         bool is_compare_irq_enabled() const
         {
-            return (NVIC_GetEnableIRQ(ENC0_COMPARE_IRQn) != 0);
+            return (NVIC_GetEnableIRQ(ENC_COMPARE_IRQn) != 0);
         }
 
         void set_compare_irq_priority(const int32_t irq_priority)
         {
-            NVIC_SetPriority(ENC0_COMPARE_IRQn, irq_priority);
+            NVIC_SetPriority(ENC_COMPARE_IRQn, irq_priority);
         }
 
         void assign_compare_irq_handler(const IrqHandler& irq_handler)
@@ -787,92 +787,72 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // Get the maximum allowed input filter sample rate in microseconds
         static int64_t get_max_input_filter_sample_rate_us();
 
-        // -------- PRIVATE HOME IRQ HANDLERS ---------------------------------
-
-        // HOME IRQ handler private implementation (call user IRQ handler)
-        int32_t home_irq_handler()
-        {
-            int32_t yield = 0;  // User in FreeRTOS
-
-            if(m_home_irq_handler != nullptr)
-            {
-                yield = m_home_irq_handler();
-            }
-
-            return yield;
-        }
+        // -------- PRIVATE HOME IRQ HANDLER ----------------------------------
 
         // HOME IRQ handler called directly by the interrupt C functions
+        // (call user IRQ handler)
         // NOTE: Returns yield flag for FreeRTOS
-        static int32_t home_irq_handler(const std::size_t index)
-        {
-            return EncDriver::get_reference(index).home_irq_handler();
-        }
-
-        // -------- PRIVATE INDEX IRQ HANDLERS --------------------------------
-
-        // INDEX IRQ handler private implementation (call user IRQ handler)
-        int32_t index_irq_handler()
+        static int32_t home_irq_handler()
         {
             int32_t yield = 0;  // User in FreeRTOS
 
-            if(m_index_irq_handler != nullptr)
+            if(get_reference(0).m_home_irq_handler != nullptr)
             {
-                yield = m_index_irq_handler();
+                yield = get_reference(0).m_home_irq_handler();
             }
 
             return yield;
         }
+
+        // -------- PRIVATE INDEX IRQ HANDLER ---------------------------------
 
         // INDEX IRQ handler called directly by the interrupt C functions
+        // (call user IRQ handler)
         // NOTE: Returns yield flag for FreeRTOS
-        static int32_t index_irq_handler(const std::size_t index)
-        {
-            return EncDriver::get_reference(index).index_irq_handler();
-        }
-
-        // -------- PRIVATE WATCHDOG AND SAB IRQ HANDLERS ---------------------
-
-        // Watchdog timeout and simultaneous PHASEA and PHASEB change IRQ handler private implementation (call user IRQ handler)
-        int32_t watchdog_and_sab_irq_handler()
+        static int32_t index_irq_handler()
         {
             int32_t yield = 0;  // User in FreeRTOS
 
-            if(m_watchdog_and_sab_irq_handler != nullptr)
+            if(get_reference(0).m_index_irq_handler != nullptr)
             {
-                yield = m_watchdog_and_sab_irq_handler();
+                yield = get_reference(0).m_index_irq_handler();
             }
 
             return yield;
         }
+
+        // -------- PRIVATE WATCHDOG AND SAB IRQ HANDLER ----------------------
 
         // Watchdog timeout and simultaneous PHASEA and PHASEB change IRQ handler called directly by the interrupt C functions
+        // (call user IRQ handler)
         // NOTE: Returns yield flag for FreeRTOS
-        static int32_t watchdog_and_sab_irq_handler(const std::size_t index)
-        {
-            return EncDriver::get_reference(index).watchdog_and_sab_irq_handler();
-        }
-
-        // -------- PRIVATE COMPARE IRQ HANDLERS ------------------------------
-
-        // Compare IRQ handler private implementation (call user IRQ handler)
-        int32_t compare_irq_handler()
+        static int32_t watchdog_and_sab_irq_handler()
         {
             int32_t yield = 0;  // User in FreeRTOS
 
-            if(m_compare_irq_handler != nullptr)
+            if(get_reference(0).m_watchdog_and_sab_irq_handler != nullptr)
             {
-                yield = m_compare_irq_handler();
+                yield = get_reference(0).m_watchdog_and_sab_irq_handler();
             }
 
             return yield;
         }
 
+        // -------- PRIVATE COMPARE IRQ HANDLER -------------------------------
+
         // Compare IRQ handler called directly by the interrupt C functions
+        // (call user IRQ handler)
         // NOTE: Returns yield flag for FreeRTOS
-        static int32_t compare_irq_handler(const std::size_t index)
+        static int32_t compare_irq_handler()
         {
-            return EncDriver::get_reference(index).compare_irq_handler();
+            int32_t yield = 0;  // User in FreeRTOS
+
+            if(get_reference(0).m_compare_irq_handler != nullptr)
+            {
+                yield = get_reference(0).m_compare_irq_handler();
+            }
+
+            return yield;
         }
 
         // --------------------------------------------------------------------
