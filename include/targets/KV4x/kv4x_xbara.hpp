@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_xbara.hpp
 // @brief   Kinetis KV4x Inter-Peripheral Crossbar Switch A (XBARA) class.
-// @date    16 January 2019
+// @date    25 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,8 @@
 #ifndef __XARMLIB_TARGETS_KV4X_XBARA_HPP
 #define __XARMLIB_TARGETS_KV4X_XBARA_HPP
 
-#include "targets/KV4x/kv4x_pin.hpp"
 #include "fsl_xbara.h"
+#include "targets/KV4x/kv4x_pin.hpp"
 
 namespace xarmlib
 {
@@ -262,16 +262,28 @@ class XbaraDriver
     private:
 
         // --------------------------------------------------------------------
-        // PRIVATE MEMBER VARIABLES
+        // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
-        inline static bool m_initialized { false };
+        // Input pin map type
+        using InputPinMap = std::pair<PinDriver::Name, InputPinConfig>;
 
-#if (TARGET_PACKAGE_PIN_COUNT >= 64)
-        static constexpr std::array<std::pair<PinDriver::Name, InputPinConfig>, 15> m_input_pin_map_array
-#else
-        static constexpr std::array<std::pair<PinDriver::Name, InputPinConfig>, 13> m_input_pin_map_array
-#endif
+        // Input pin map array type
+        template <std::size_t Size>
+        using InputPinMapArray = std::array<InputPinMap, Size>;
+
+        // Output pin map type
+        using OutputPinMap = std::pair<PinDriver::Name, OutputPinConfig>;
+
+        // Output pin map array type
+        template <std::size_t Size>
+        using OutputPinMapArray = std::array<OutputPinMap, Size>;
+
+        // -------- AVAILABLE INPUT PINS --------------------------------------
+
+        static constexpr std::size_t m_input_pin_map_array_size { (TARGET_PACKAGE_PIN_COUNT >= 64) ? 15 : 13 };
+
+        static constexpr InputPinMapArray<m_input_pin_map_array_size> m_input_pin_map_array
         { {
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
               { PinDriver::Name::pe_0,  { PinDriver::PinMux::alt5, InputSignal::xbar_in11 } },
@@ -292,11 +304,11 @@ class XbaraDriver
               { PinDriver::Name::pc_7,  { PinDriver::PinMux::alt4, InputSignal::xbar_in4 } }
         } };
 
-#if (TARGET_PACKAGE_PIN_COUNT >= 64)
-        static constexpr std::array<std::pair<PinDriver::Name, OutputPinConfig>, 8> m_output_pin_map_array
-#else
-        static constexpr std::array<std::pair<PinDriver::Name, OutputPinConfig>, 6> m_output_pin_map_array
-#endif
+        // -------- AVAILABLE OUTPUT PINS -------------------------------------
+
+        static constexpr std::size_t m_output_pin_map_array_size { (TARGET_PACKAGE_PIN_COUNT >= 64) ? 8 : 6 };
+
+        static constexpr OutputPinMapArray<m_output_pin_map_array_size> m_output_pin_map_array
         { {
 #if (TARGET_PACKAGE_PIN_COUNT >= 64)
               { PinDriver::Name::pe_0,  { PinDriver::PinMux::alt4, OutputSignal::xbar_out10 } },
@@ -309,6 +321,12 @@ class XbaraDriver
               { PinDriver::Name::pc_6,  { PinDriver::PinMux::alt6, OutputSignal::xbar_out6 } },
               { PinDriver::Name::pc_7,  { PinDriver::PinMux::alt6, OutputSignal::xbar_out7 } }
         } };
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER VARIABLES
+        // --------------------------------------------------------------------
+
+        inline static bool m_initialized { false };
 };
 
 

@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    4 January 2019
+// @date    25 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -572,6 +572,35 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
             PinDriver::PinMux pin_mux;
         };
 
+        // Pin map type
+        using PinMap = std::tuple<PinDriver::Name, PinDriver::Name, PinConfig>;
+
+        // Pin map array type
+        template <std::size_t Size>
+        using PinMapArray = std::array<PinMap, Size>;
+
+        static constexpr std::size_t m_pin_map_array_size { (TARGET_PACKAGE_PIN_COUNT == 100) ? 10 : 8 };
+
+        static constexpr PinMapArray<m_pin_map_array_size> m_pin_map_array
+        { { //                   TXD                     RXD      PinConfig
+#if (TARGET_PACKAGE_PIN_COUNT >= 64)
+              { PinDriver::Name::pe_0,  PinDriver::Name::pe_1,  { Name::uart1, PinDriver::PinMux::alt3 } },
+#endif
+              { PinDriver::Name::pe_16, PinDriver::Name::pe_17, { Name::uart1, PinDriver::PinMux::alt3 } },
+#if (TARGET_PACKAGE_PIN_COUNT == 48 || TARGET_PACKAGE_PIN_COUNT == 100)
+              { PinDriver::Name::pe_20, PinDriver::Name::pe_21, { Name::uart0, PinDriver::PinMux::alt4 } },
+#endif
+              { PinDriver::Name::pa_2,  PinDriver::Name::pa_1,  { Name::uart0, PinDriver::PinMux::alt2 } },
+#if (TARGET_PACKAGE_PIN_COUNT == 100)
+              { PinDriver::Name::pa_14, PinDriver::Name::pa_15, { Name::uart0, PinDriver::PinMux::alt3 } },
+#endif
+              { PinDriver::Name::pb_1,  PinDriver::Name::pb_0,  { Name::uart0, PinDriver::PinMux::alt7 } },
+              { PinDriver::Name::pb_17, PinDriver::Name::pb_16, { Name::uart0, PinDriver::PinMux::alt3 } },
+              { PinDriver::Name::pc_4,  PinDriver::Name::pc_3,  { Name::uart1, PinDriver::PinMux::alt3 } },
+              { PinDriver::Name::pc_7,  PinDriver::Name::pc_6,  { Name::uart0, PinDriver::PinMux::alt5 } },
+              { PinDriver::Name::pd_7,  PinDriver::Name::pd_6,  { Name::uart0, PinDriver::PinMux::alt3 } }
+        } };
+
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
@@ -678,30 +707,6 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
               UART_Type* m_uart_base { nullptr };   // Pointer to the CMSIS UART structure
               IrqHandler m_status_irq_handler;      // User defined status IRQ handler
               IrqHandler m_error_irq_handler;       // User defined error IRQ handler
-
-#if (TARGET_PACKAGE_PIN_COUNT == 100)
-        static constexpr std::array<std::tuple<PinDriver::Name, PinDriver::Name, PinConfig>, 10> m_pin_map_array
-#else
-        static constexpr std::array<std::tuple<PinDriver::Name, PinDriver::Name, PinConfig>, 8> m_pin_map_array
-#endif
-        { { //                   TXD                     RXD      PinConfig
-#if (TARGET_PACKAGE_PIN_COUNT >= 64)
-              { PinDriver::Name::pe_0,  PinDriver::Name::pe_1,  { Name::uart1, PinDriver::PinMux::alt3 } },
-#endif
-              { PinDriver::Name::pe_16, PinDriver::Name::pe_17, { Name::uart1, PinDriver::PinMux::alt3 } },
-#if (TARGET_PACKAGE_PIN_COUNT == 48 || TARGET_PACKAGE_PIN_COUNT == 100)
-              { PinDriver::Name::pe_20, PinDriver::Name::pe_21, { Name::uart0, PinDriver::PinMux::alt4 } },
-#endif
-              { PinDriver::Name::pa_2,  PinDriver::Name::pa_1,  { Name::uart0, PinDriver::PinMux::alt2 } },
-#if (TARGET_PACKAGE_PIN_COUNT == 100)
-              { PinDriver::Name::pa_14, PinDriver::Name::pa_15, { Name::uart0, PinDriver::PinMux::alt3 } },
-#endif
-              { PinDriver::Name::pb_1,  PinDriver::Name::pb_0,  { Name::uart0, PinDriver::PinMux::alt7 } },
-              { PinDriver::Name::pb_17, PinDriver::Name::pb_16, { Name::uart0, PinDriver::PinMux::alt3 } },
-              { PinDriver::Name::pc_4,  PinDriver::Name::pc_3,  { Name::uart1, PinDriver::PinMux::alt3 } },
-              { PinDriver::Name::pc_7,  PinDriver::Name::pc_6,  { Name::uart0, PinDriver::PinMux::alt5 } },
-              { PinDriver::Name::pd_7,  PinDriver::Name::pd_6,  { Name::uart0, PinDriver::PinMux::alt3 } }
-        } };
 };
 
 
