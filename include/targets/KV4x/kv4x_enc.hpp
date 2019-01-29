@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.hpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    24 January 2019
+// @date    28 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -472,14 +472,6 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
             ENC_Deinit(ENC);
         }
 
-        // -------- SOFTWARE INITIALIZE POSITION COUNTER ----------------------
-
-        // Software triggered initialization of position counter
-        void software_initialize_position_counter()
-        {
-            ENC_DoSoftwareLoadInitialPositionValue(ENC);
-        }
-
         // -------- ENABLE / DISABLE WATCHDOG ---------------------------------
 
         // Enable watchdog
@@ -500,6 +492,26 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
             return ((ENC->CTRL & ENC_CTRL_WDE_MASK) != 0);
         }
 
+        // -------- SOFTWARE INITIALIZE POSITION COUNTER ----------------------
+
+        // Get initial position value
+        uint32_t get_initial_position() const
+        {
+            return ((ENC->UINIT << 16UL) | ENC->LINIT);
+        }
+
+        // Set initial position value
+        void set_initial_position(const uint32_t value)
+        {
+            ENC_SetInitialPositionValue(ENC, value);
+        }
+
+        // Software triggered initialization of position counter
+        void software_initialize_position_counter()
+        {
+            ENC_DoSoftwareLoadInitialPositionValue(ENC);
+        }
+
         // -------- POSITION / REVOLUTION -------------------------------------
 
         // NOTE: when any of the counter registers is read, the contents of each
@@ -514,10 +526,23 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
             return ENC_GetPositionValue(ENC);
         }
 
+        // Set the current position counter's value
+        void set_position(const uint32_t value)
+        {
+            ENC->UPOS = static_cast<uint16_t>(value >> 16UL);
+            ENC->LPOS = static_cast<uint16_t>(value);
+        }
+
         // Get the position difference counter's value
         uint16_t get_position_difference() const
         {
             return ENC_GetPositionDifferenceValue(ENC);
+        }
+
+        // Set the position difference counter's value
+        void set_position_difference(const uint16_t value)
+        {
+            ENC->POSD = value;
         }
 
         // Get the revolution counter's value
@@ -525,6 +550,20 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         {
             return ENC_GetRevolutionValue(ENC);
         }
+
+        // Set the revolution counter's value
+        void set_revolution(const uint16_t value)
+        {
+            ENC->REV = value;
+        }
+
+        // -------- HOLD POSITION / REVOLUTION --------------------------------
+
+        // NOTE: when any of the counter registers is read, the contents of each
+        //       counter register is written to the corresponding hold register
+        //       and the position difference counter is cleared.
+        //       Taking a snapshot of the counters' values provides a consistent
+        //       view of a system position and a velocity to be attained.
 
         // Get the hold position counter's value
         uint32_t get_hold_position() const
@@ -542,6 +581,21 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         uint16_t get_hold_revolution() const
         {
             return ENC_GetHoldRevolutionValue(ENC);
+        }
+
+        // -------- COMPARE POSITION ------------------------------------------
+
+        // Get the compare position counter's value
+        uint32_t get_compare_position() const
+        {
+            return ((ENC->UCOMP << 16UL) | ENC->LCOMP);
+        }
+
+        // Set the compare position counter's value
+        void set_compare_position(const uint32_t value)
+        {
+            ENC->UCOMP = static_cast<uint16_t>(value >> 16UL);
+            ENC->LCOMP = static_cast<uint16_t>(value);
         }
 
         // -------- STATUS FLAGS ----------------------------------------------

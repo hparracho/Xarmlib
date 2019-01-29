@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_enc.hpp
 // @brief   Quadrature Encoder/Decoder (ENC) HAL interface class.
-// @date    18 January 2019
+// @date    28 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -92,15 +92,18 @@ class EncHal : protected TargetEncDriver
                                                                                                                 output_position_match)
         {}
 
-        // -------- SOFTWARE INITIALIZE POSITION COUNTER ----------------------
-
-        inline void software_initialize_position_counter() { TargetEncDriver::software_initialize_position_counter(); }
-
         // -------- ENABLE / DISABLE WATCHDOG ---------------------------------
 
         inline void enable_watchdog()          { TargetEncDriver::enable_watchdog(); }
         inline void disable_watchdog()         { TargetEncDriver::disable_watchdog(); }
         inline bool is_enable_watchdog() const { return TargetEncDriver::is_enable_watchdog(); }
+
+        // -------- SOFTWARE INITIALIZE POSITION COUNTER ----------------------
+
+        inline uint32_t get_initial_position() const               { return TargetEncDriver::get_initial_position(); }
+        inline void     set_initial_position(const uint32_t value) { TargetEncDriver::set_initial_position(value); }
+
+        inline void software_initialize_position_counter() { TargetEncDriver::software_initialize_position_counter(); }
 
         // -------- POSITION / REVOLUTION -------------------------------------
 
@@ -110,13 +113,31 @@ class EncHal : protected TargetEncDriver
         //       Taking a snapshot of the counters' values provides a consistent
         //       view of a system position and a velocity to be attained.
 
-        inline uint32_t get_position() const            { return TargetEncDriver::get_position(); }
-        inline uint16_t get_position_difference() const { return TargetEncDriver::get_position_difference(); }
-        inline uint16_t get_revolution() const          { return TargetEncDriver::get_revolution(); }
+        inline uint32_t get_position() const               { return TargetEncDriver::get_position(); }
+        inline void     set_position(const uint32_t value) { TargetEncDriver::set_position(value); }
+
+        inline uint16_t get_position_difference() const               { return TargetEncDriver::get_position_difference(); }
+        inline void     set_position_difference(const uint16_t value) { TargetEncDriver::set_position_difference(value); }
+
+        inline uint16_t get_revolution() const               { return TargetEncDriver::get_revolution(); }
+        inline void     set_revolution(const uint16_t value) { TargetEncDriver::set_revolution(value); }
+
+        // -------- HOLD POSITION / REVOLUTION --------------------------------
+
+        // NOTE: when any of the counter registers is read, the contents of each
+        //       counter register is written to the corresponding hold register
+        //       and the position difference counter is cleared.
+        //       Taking a snapshot of the counters' values provides a consistent
+        //       view of a system position and a velocity to be attained.
 
         inline uint32_t get_hold_position() const            { return TargetEncDriver::get_hold_position(); }
         inline uint16_t get_hold_position_difference() const { return TargetEncDriver::get_hold_position_difference(); }
         inline uint16_t get_hold_revolution() const          { return TargetEncDriver::get_hold_revolution(); }
+
+        // -------- COMPARE POSITION ------------------------------------------
+
+        inline uint32_t get_compare_position() const               { return TargetEncDriver::get_compare_position(); }
+        inline void     set_compare_position(const uint32_t value) { TargetEncDriver::set_compare_position(value); }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
