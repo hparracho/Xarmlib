@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    29 August 2018
+// @date    29 January 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -105,10 +105,7 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
 
 
 
-// Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { TARGET_SPI_COUNT };
-
-class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
+class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -127,16 +124,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralSpi = PeripheralRefCounter<Spi, SPI_COUNT>;
-
-        // SPI peripheral names selection
-        enum class Name
-        {
-            SPI0 = 0,
-#if (TARGET_SPI_COUNT == 2)
-            SPI1
-#endif
-        };
+        using PeripheralSpi = PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>;
 
         // Master modes selection (defined to map the CFG register directly)
         enum class MasterMode
@@ -197,6 +185,25 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             ENABLED  = (1 << 7)
         };
 
+        struct MasterConfig
+        {
+            int32_t      max_frequency = 500000;
+            SpiMode      spi_mode      = SpiMode::MODE3;
+            DataBits     data_bits     = DataBits::BITS_8;
+            DataOrder    data_order    = DataOrder::MSB_FIRST;
+            LoopbackMode loopback_mode = LoopbackMode::DISABLED;
+        };
+
+        struct SlaveConfig
+        {
+            int32_t      max_frequency = 500000;
+            SpiMode      spi_mode      = SpiMode::MODE3;
+            DataBits     data_bits     = DataBits::BITS_8;
+            DataOrder    data_order    = DataOrder::MSB_FIRST;
+            SselPolarity ssel_polarity = SselPolarity::LOW;
+            LoopbackMode loopback_mode = LoopbackMode::DISABLED;
+        };
+
         // Type safe accessor to STAT register
         using Status        = private_spi::Status;
         using StatusBitmask = bitmask::bitmask<Status>;
@@ -215,10 +222,42 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Spi() : PeripheralSpi(*this)
-        {}
+        // Master mode constructor
+        SpiDriver(const PinDriver::Name master_mosi,
+                  const PinDriver::Name master_miso,
+                  const PinDriver::Name master_sck,
+                  const MasterConfig&   master_config) : PeripheralSpi(*this)
+       {
+            // Initialize peripheral structure and pins
+            initialize(master_mosi, master_miso, master_sck, PinDriver::Name::NC);
 
-        ~Spi()
+            // Configure data format and operating modes
+            set_configuration(MasterMode::MASTER, master_config.spi_mode, master_config.data_bits, master_config.data_order, SselPolarity::LOW, master_config.loopback_mode);
+
+            // Set supplied maximum frequency
+            set_frequency(master_config.max_frequency);
+        }
+
+        // Slave mode constructor
+        SpiDriver(const PinDriver::Name slave_mosi,
+                  const PinDriver::Name slave_miso,
+                  const PinDriver::Name slave_sck,
+                  const PinDriver::Name slave_sel,
+                  const SlaveConfig&    slave_config) : PeripheralSpi(*this)
+        {
+            assert(slave_sel != PinDriver::Name::NC);
+
+            // Initialize peripheral structure and pins
+            initialize(slave_mosi, slave_miso, slave_sck, slave_sel);
+
+            // Configure data format and operating modes
+            set_configuration(MasterMode::SLAVE, slave_config.spi_mode, slave_config.data_bits, slave_config.data_order, slave_config.ssel_polarity, slave_config.loopback_mode);
+
+            // Set supplied maximum frequency
+            set_frequency(slave_config.max_frequency);
+        }
+
+        ~SpiDriver()
         {
             // Disable peripheral
             disable();
@@ -343,10 +382,16 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             return m_spi->RXDAT & 0x0000FFFF;
         }
 
-        // Write data to be transmitted
-        void write_data(const uint32_t value)
+        // Write data to be transmitted in master mode
+        void master_write_data(const uint32_t value)
         {
-            m_spi->TXDAT = value & 0x0000FFFF;
+            write_data(value);
+        }
+
+        // Write data to be transmitted in slave mode
+        void slave_write_data(const uint32_t value)
+        {
+            write_data(value);
         }
 
         // -------- ENABLE / DISABLE ------------------------------------------
@@ -468,6 +513,15 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // PRIVATE DEFINITIONS
         // --------------------------------------------------------------------
 
+        // SPI peripheral names selection
+        enum class Name
+        {
+            SPI0 = 0,
+#if (TARGET_SPI_COUNT == 2)
+            SPI1
+#endif
+        };
+
         // SPI Configuration Register (CFG) bits
         enum CFG : uint32_t
         {
@@ -509,6 +563,14 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+        // -------- WRITE -----------------------------------------------------
+
+        // Write data to be transmitted
+        void write_data(const uint32_t value)
+        {
+            m_spi->TXDAT = value & 0x0000FFFF;
+        }
+
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 
         // IRQ handler private implementation (manage interrupt flags and call user IRQ handlers)
@@ -528,7 +590,7 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         {
             const auto index = static_cast<std::size_t>(name);
 
-            return Spi::get_reference(index).irq_handler();
+            return SpiDriver::get_reference(index).irq_handler();
         }
 
         // --------------------------------------------------------------------
