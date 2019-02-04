@@ -51,7 +51,7 @@
 #include "hal/hal_gpio.hpp"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
+#include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
 #include "hal/hal_timer16.hpp"
