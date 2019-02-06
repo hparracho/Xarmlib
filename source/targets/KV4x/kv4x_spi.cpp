@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    4 February 2019
+// @date    5 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,13 +54,13 @@ namespace kv4x
 
 void SpiDriver::initialize(const MasterConfig& master_config)
 {
-    const dspi_master_ctar_config_t spi_master_ctar_config =
+    const dspi_master_ctar_config_t spi_master_ctar0_config =
     {
-        static_cast<uint32_t>(master_config.ctar_config.baudrate),
-        static_cast<uint32_t>(master_config.ctar_config.data_bits),
-        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(master_config.ctar_config.spi_mode) >> 1),
-        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(master_config.ctar_config.spi_mode) & 1),
-        static_cast<dspi_shift_direction_t>(master_config.ctar_config.data_order),
+        static_cast<uint32_t>(master_config.ctars_config.baudrate),
+        static_cast<uint32_t>(master_config.ctars_config.data_bits),
+        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) >> 1),
+        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) & 1),
+        static_cast<dspi_shift_direction_t>(master_config.ctars_config.data_order),
         0,  // PCS to SCK delay time in nanoseconds (0 is the minimum delay)
         0,  // The last SCK to PCS delay time in nanoseconds (0 is the minimum delay)
         0   // After the SCK delay time in nanoseconds (0 is the minimum delay)
@@ -68,8 +68,8 @@ void SpiDriver::initialize(const MasterConfig& master_config)
 
     const dspi_master_config_t spi_master_config =
     {
-        static_cast<dspi_ctar_selection_t>(master_config.ctar_selection),
-        spi_master_ctar_config,
+        kDSPI_Ctar0,
+        spi_master_ctar0_config,
         kDSPI_Pcs0,         // The desired Peripheral Chip Select (PCS)
         kDSPI_PcsActiveLow, // The desired PCS active high or low
         static_cast<bool>(master_config.continuous_sck),

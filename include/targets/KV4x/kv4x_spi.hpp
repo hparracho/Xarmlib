@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    4 February 2019
+// @date    6 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -224,8 +224,9 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
         struct MasterConfig
         {
-            CtarSelection          ctar_selection           = CtarSelection::ctar0;
-            MasterCtarConfig       ctar_config              = MasterCtarConfig{};
+            /*CtarSelection          ctar_selection           = CtarSelection::ctar0;*/
+            // NOTE: in master mode both CTARs are configured with the same MasterCtarConfig
+            MasterCtarConfig       ctars_config             = MasterCtarConfig{};
             ContinuousSck          continuous_sck           = ContinuousSck::disabled;
             ModifiedTransferFormat modified_transfer_format = ModifiedTransferFormat::disabled;
             SamplePoint            sample_point             = SamplePoint::sck_to_sin_0_clock;
@@ -281,6 +282,9 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             // transfers by own initiative -_- )
             disable();
 
+            // Configure CTAR1 after CTAR0 was configured in initialize
+            config_master_ctar(CtarSelection::ctar1, master_config.ctars_config);
+
             disable_irq();
 
             // Clear all status bits
@@ -329,12 +333,35 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             DSPI_Deinit(SPI);
         }
 
-        // -------- MASTER CTAR CONFIGURATION ---------------------------------
+        // -------- CTAR DATA BITS --------------------------------------------
 
-        // NOTES: - do not configure CTAR while the module is in the Running state;
-        //        - implemented on the CPP file because it uses parameters from
-        //          the library configuration file (xarmlib_config.h).
-        void config_master_ctar(const CtarSelection ctar_selection, const MasterCtarConfig& master_ctar_config);
+        DataBits get_ctar_data_bits(const CtarSelection ctar_selection) const
+        {
+            const auto ctar_index = static_cast<std::size_t>(ctar_selection);
+
+            return static_cast<DataBits>(((SPI->CTAR[ctar_index] & SPI_CTAR_FMSZ_MASK) >> SPI_CTAR_FMSZ_SHIFT) + 1);
+        }
+
+        // NOTE: to configure CTAR will be ensured that the module is in the stopped state
+        void set_ctar_data_bits(const CtarSelection ctar_selection, const DataBits data_bits)
+        {
+            const bool enabled = is_enabled();
+
+            disable();
+
+            while(is_enabled() == true);
+
+            const auto ctar_index = static_cast<std::size_t>(ctar_selection);
+
+            const auto frame_size = static_cast<uint32_t>(data_bits) - 1;
+
+            SPI->CTAR[ctar_index] = (SPI->CTAR[ctar_index] & ~SPI_CTAR_FMSZ_MASK) | SPI_CTAR_FMSZ(frame_size);
+
+            if(enabled == true)
+            {
+                enable();
+            }
+        }
 
         // -------- READ / WRITE ----------------------------------------------
 
@@ -635,6 +662,11 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         //       the library configuration file (xarmlib_config.h).
         void initialize(const MasterConfig& master_config);
         void initialize(const SlaveConfig&  slave_config);
+
+        // NOTES: - do not configure CTAR while the module is in the Running state;
+        //        - implemented on the CPP file because it uses parameters from
+        //          the library configuration file (xarmlib_config.h).
+        void config_master_ctar(const CtarSelection ctar_selection, const MasterCtarConfig& master_ctar_config);
 
         bool is_master() const
         {
