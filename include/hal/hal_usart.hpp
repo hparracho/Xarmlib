@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    11 January 2019
+// @date    6 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -109,7 +109,7 @@ class UartHal : protected TargetUartDriver
         }
 
         // Read buffer with timeout, returning the number of actual read bytes
-        inline int32_t read_buffer(const tcb::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
+        inline int32_t read_buffer(const std::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
         {
             const auto start = UsTickerHal::now();
             int32_t count = 0;
@@ -146,7 +146,7 @@ class UartHal : protected TargetUartDriver
         }
 
         // Write buffer with timeout, returning the number of actual written bytes
-        inline int32_t write_buffer(const tcb::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
+        inline int32_t write_buffer(const std::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
         {
             const auto start = UsTickerHal::now();
             int32_t count = 0;
