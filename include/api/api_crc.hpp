@@ -4,7 +4,7 @@
 //          available). Specializations for some common types of 8, 16 and
 //          32 bits. Formulas taken from:
 //          https://barrgroup.com/Embedded-Systems/How-To/CRC-Calculation-C-Code
-// @date    11 January 2019
+// @date    6 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -60,7 +60,7 @@ class Crc
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static constexpr Type calculate(const tcb::span<const uint8_t> buffer)
+        static constexpr Type calculate(const std::span<const uint8_t> buffer)
         {
             Type remainder = InitialRemainder;
 
