@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    4 February 2019
+// @date    6 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -115,24 +115,6 @@ class SpiMasterHal : protected TargetSpiDriver
         inline void assign_irq_handler(const IrqHandler& irq_handler) { TargetSpiDriver::assign_irq_handler(irq_handler); }
         inline void remove_irq_handler()                              { TargetSpiDriver::remove_irq_handler(); }
 
-        // -------- READ / WRITE ----------------------------------------------
-
-        // Read a frame as soon as possible
-        uint32_t read() const
-        {
-            while(TargetSpiDriver::is_readable() == false);
-
-            return TargetSpiDriver::read_data();
-        }
-
-        // Write a frame as soon as possible
-        void write(const uint32_t frame)
-        {
-            while(TargetSpiDriver::is_writable() == false);
-
-            TargetSpiDriver::master_write_data(frame);
-        }
-
         // -------- TRANSFER --------------------------------------------------
 
         // Transfer a frame (simultaneous write and read)
@@ -145,7 +127,7 @@ class SpiMasterHal : protected TargetSpiDriver
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const tcb::span<uint8_t> buffer)
+        void transfer(const std::span<uint8_t> buffer)
         {
             for(auto& frame : buffer)
             {
@@ -154,7 +136,7 @@ class SpiMasterHal : protected TargetSpiDriver
         }
 
         // Transfer a buffer (simultaneous write and read)
-        void transfer(const tcb::span<const uint8_t> tx_buffer, const tcb::span<uint8_t> rx_buffer)
+        void transfer(const std::span<const uint8_t> tx_buffer, const std::span<uint8_t> rx_buffer)
         {
             assert(tx_buffer.size() == rx_buffer.size());
 
@@ -180,7 +162,33 @@ class SpiMasterHal : protected TargetSpiDriver
             #endif
         }
 
+    protected:
+
+        // --------------------------------------------------------------------
+        // PROTECTED MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Read a frame as soon as possible
+        uint32_t read() const
+        {
+            while(TargetSpiDriver::is_readable() == false);
+
+            return TargetSpiDriver::read_data();
+        }
+
     private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Write a frame as soon as possible
+        void write(const uint32_t frame)
+        {
+            while(TargetSpiDriver::is_writable() == false);
+
+            TargetSpiDriver::master_write_data(frame);
+        }
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
@@ -342,8 +350,6 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using CtarSelection          = typename SpiMasterHal::CtarSelection;
-
         using DataBits               = typename SpiMasterHal::DataBits;
         using SpiMode                = typename SpiMasterHal::SpiMode;
         using DataOrder              = typename SpiMasterHal::DataOrder;
@@ -356,6 +362,75 @@ class SpiMaster : public SpiMasterHal
         using MasterCtarConfig       = typename SpiMasterHal::MasterCtarConfig;
 
         // --------------------------------------------------------------------
+        // PUBLIC DEFINITIONS
+        // --------------------------------------------------------------------
+
+        enum class FrameBits
+        {
+            bits_4 = 4,
+            bits_5,
+            bits_6,
+            bits_7,
+            bits_8,
+            bits_9,
+            bits_10,
+            bits_11,
+            bits_12,
+            bits_13,
+            bits_14,
+            bits_15,
+            bits_16,
+            bits_17,
+            bits_18,
+            bits_19,
+            bits_20,
+            bits_21,
+            bits_22,
+            bits_23,
+            bits_24,
+            bits_25,
+            bits_26,
+            bits_27,
+            bits_28,
+            bits_29,
+            bits_30,
+            bits_31,
+            bits_32
+            /*bits_33,
+            bits_34,
+            bits_35,
+            bits_36,
+            bits_37,
+            bits_38,
+            bits_39,
+            bits_40,
+            bits_41,
+            bits_42,
+            bits_43,
+            bits_44,
+            bits_45,
+            bits_46,
+            bits_47,
+            bits_48,
+            bits_49,
+            bits_50,
+            bits_51,
+            bits_52,
+            bits_53,
+            bits_54,
+            bits_55,
+            bits_56,
+            bits_57,
+            bits_58,
+            bits_59,
+            bits_60,
+            bits_61,
+            bits_62,
+            bits_63,
+            bits_64*/
+        };
+
+        // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
@@ -365,54 +440,33 @@ class SpiMaster : public SpiMasterHal
                   const MasterConfig& master_config) : SpiMasterHal(master_mosi, master_miso, master_sck, master_config)
         {}
 
-        // -------- MASTER CTAR CONFIGURATION ---------------------------------
-
-        // NOTE: do not configure CTAR while the module is in the Running state
-        inline void config_master_ctar(const CtarSelection ctar_selection, const MasterCtarConfig& master_ctar_config) { SpiMasterHal::config_master_ctar(ctar_selection, master_ctar_config); }
-
-        // -------- WRITE -----------------------------------------------------
-
-        // Write a frame as soon as possible
-        void write(const uint32_t      frame,
-                   const CtarSelection ctar_selection = CtarSelection::ctar0,
-                   const bool          is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                   const bool          clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
-        {
-            while(SpiMasterHal::is_writable() == false);
-
-            SpiMasterHal::master_write_data(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
-        }
-
         // -------- TRANSFER --------------------------------------------------
 
         // Transfer a frame (simultaneous write and read)
         // NOTE: Return the read value
-        uint32_t transfer(const uint32_t      frame,
-                          const CtarSelection ctar_selection = CtarSelection::ctar0,
-                          const bool          is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                          const bool          clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
+        uint32_t transfer(const uint32_t frame,
+                          const bool     is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
+                          const bool     clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
         {
-            write(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+            write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
             return SpiMasterHal::read();
         }
 
         // Transfer a buffer (simultaneous write and read)
         // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const tcb::span<uint8_t> buffer,
-                      const CtarSelection      ctar_selection = CtarSelection::ctar0,
+        void transfer(const std::span<uint8_t> buffer,
                       const bool               is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
                       const bool               clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
         {
             for(auto& frame : buffer)
             {
-                frame = transfer(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+                frame = transfer(frame, is_end_of_queue, clear_queue_transfer_counter);
             }
         }
 
         // Transfer a buffer (simultaneous write and read)
-        void transfer(const tcb::span<const uint8_t> tx_buffer,
-                      const tcb::span<uint8_t>       rx_buffer,
-                      const CtarSelection            ctar_selection = CtarSelection::ctar0,
+        void transfer(const std::span<const uint8_t> tx_buffer,
+                      const std::span<uint8_t>       rx_buffer,
                       const bool                     is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
                       const bool                     clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
         {
@@ -420,8 +474,58 @@ class SpiMaster : public SpiMasterHal
 
             for(std::ptrdiff_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
             {
-                rx_buffer[frame_index] = transfer(tx_buffer[frame_index], ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+                rx_buffer[frame_index] = transfer(tx_buffer[frame_index], is_end_of_queue, clear_queue_transfer_counter);
             }
+        }
+
+        // Transfer a frame (simultaneous write and read) with a specified number of bits [4 to 32]
+        // NOTE: Return the read value
+        uint32_t transfer(const uint32_t  frame,
+                          const FrameBits frame_bits,
+                          const bool      is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
+                          const bool      clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
+        {
+            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
+
+            uint32_t read_value = 0;
+
+            if(frame_bits <= FrameBits::bits_16)
+            {
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(frame_bits));
+
+                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
+                read_value = SpiMasterHal::read();
+            }
+            else if(frame_bits < FrameBits::bits_20)
+            {
+                const auto ctar0_data_bits = static_cast<uint32_t>(frame_bits) - 4;
+
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, DataBits::bits_4);
+
+                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
+                read_value = SpiMasterHal::read();
+
+                write(frame >> ctar0_data_bits, CtarSelection::ctar1, is_end_of_queue, clear_queue_transfer_counter);
+                read_value |= SpiMasterHal::read() << ctar0_data_bits;
+            }
+            else
+            {
+                const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - 16;
+
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, DataBits::bits_16);
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+
+                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
+                read_value = SpiMasterHal::read();
+
+                write(frame >> 16, CtarSelection::ctar1, is_end_of_queue, clear_queue_transfer_counter);
+                read_value |= SpiMasterHal::read() << 16;
+            }
+
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
+
+            return read_value;
         }
 
         // Get the transfer counter that indicates the number of SPI transfers made
@@ -441,6 +545,23 @@ class SpiMaster : public SpiMasterHal
 
         // Get the number of valid entries in the TX FIFO
         std::size_t get_tx_fifo_counter() const { return SpiMasterHal::get_tx_fifo_counter(); }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Write a frame as soon as possible
+        void write(const uint32_t      frame,
+                   const CtarSelection ctar_selection,
+                   const bool          is_end_of_queue,
+                   const bool          clear_queue_transfer_counter)
+        {
+            while(SpiMasterHal::is_writable() == false);
+
+            SpiMasterHal::master_write_data(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+        }
 };
 
 class SpiSlave : public SpiSlaveHal
