@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    6 February 2019
+// @date    15 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -169,7 +169,7 @@ class SpiMasterHal : protected TargetSpiDriver
         // --------------------------------------------------------------------
 
         // Read a frame as soon as possible
-        uint32_t read() const
+        uint32_t read()
         {
             while(TargetSpiDriver::is_readable() == false);
 
@@ -279,7 +279,7 @@ class SpiSlaveHal : protected TargetSpiDriver
         // -------- READ / WRITE ----------------------------------------------
 
         // Read a frame as soon as possible
-        uint32_t read() const
+        uint32_t read()
         {
             while(TargetSpiDriver::is_readable() == false);
 
@@ -365,69 +365,24 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        enum class FrameBits
+        enum class Frame32Bits
         {
-            bits_4 = 4,
-            bits_5,
-            bits_6,
-            bits_7,
-            bits_8,
-            bits_9,
-            bits_10,
-            bits_11,
-            bits_12,
-            bits_13,
-            bits_14,
-            bits_15,
-            bits_16,
-            bits_17,
-            bits_18,
-            bits_19,
-            bits_20,
-            bits_21,
-            bits_22,
-            bits_23,
-            bits_24,
-            bits_25,
-            bits_26,
-            bits_27,
-            bits_28,
-            bits_29,
-            bits_30,
-            bits_31,
-            bits_32
-            /*bits_33,
-            bits_34,
-            bits_35,
-            bits_36,
-            bits_37,
-            bits_38,
-            bits_39,
-            bits_40,
-            bits_41,
-            bits_42,
-            bits_43,
-            bits_44,
-            bits_45,
-            bits_46,
-            bits_47,
-            bits_48,
-            bits_49,
-            bits_50,
-            bits_51,
-            bits_52,
-            bits_53,
-            bits_54,
-            bits_55,
-            bits_56,
-            bits_57,
-            bits_58,
-            bits_59,
-            bits_60,
-            bits_61,
-            bits_62,
-            bits_63,
-            bits_64*/
+                                       bits_4 = 4, bits_5,  bits_6,  bits_7,  bits_8,
+            bits_9,  bits_10, bits_11, bits_12,    bits_13, bits_14, bits_15, bits_16,
+            bits_17, bits_18, bits_19, bits_20,    bits_21, bits_22, bits_23, bits_24,
+            bits_25, bits_26, bits_27, bits_28,    bits_29, bits_30, bits_31, bits_32
+        };
+
+        enum class Frame64Bits
+        {
+                                       bits_4 = 4, bits_5,  bits_6,  bits_7,  bits_8,
+            bits_9,  bits_10, bits_11, bits_12,    bits_13, bits_14, bits_15, bits_16,
+            bits_17, bits_18, bits_19, bits_20,    bits_21, bits_22, bits_23, bits_24,
+            bits_25, bits_26, bits_27, bits_28,    bits_29, bits_30, bits_31, bits_32,
+            bits_33, bits_34, bits_35, bits_36,    bits_37, bits_38, bits_39, bits_40,
+            bits_41, bits_42, bits_43, bits_44,    bits_45, bits_46, bits_47, bits_48,
+            bits_49, bits_50, bits_51, bits_52,    bits_53, bits_54, bits_55, bits_56,
+            bits_57, bits_58, bits_59, bits_60,    bits_61, bits_62, bits_63, bits_64
         };
 
         // --------------------------------------------------------------------
@@ -440,97 +395,65 @@ class SpiMaster : public SpiMasterHal
                   const MasterConfig& master_config) : SpiMasterHal(master_mosi, master_miso, master_sck, master_config)
         {}
 
-        // -------- TRANSFER --------------------------------------------------
+        // -------- READ / WRITE ----------------------------------------------
 
-        // Transfer a frame (simultaneous write and read)
-        // NOTE: Return the read value
-        uint32_t transfer(const uint32_t frame,
-                          const bool     is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                          const bool     clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
+        // Read a frame as soon as possible
+        inline uint32_t read() { return SpiMasterHal::read(); }
+
+        // Write a frame as soon as possible
+        void write(const uint32_t frame,
+                   const bool     is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
+                   const bool     clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
         {
             write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
-            return SpiMasterHal::read();
-        }
-
-        // Transfer a buffer (simultaneous write and read)
-        // NOTE: The read values will be placed on the same buffer, destroying the original buffer.
-        void transfer(const std::span<uint8_t> buffer,
-                      const bool               is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                      const bool               clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
-        {
-            for(auto& frame : buffer)
-            {
-                frame = transfer(frame, is_end_of_queue, clear_queue_transfer_counter);
-            }
-        }
-
-        // Transfer a buffer (simultaneous write and read)
-        void transfer(const std::span<const uint8_t> tx_buffer,
-                      const std::span<uint8_t>       rx_buffer,
-                      const bool                     is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                      const bool                     clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
-        {
-            assert(tx_buffer.size() == rx_buffer.size());
-
-            for(std::ptrdiff_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
-            {
-                rx_buffer[frame_index] = transfer(tx_buffer[frame_index], is_end_of_queue, clear_queue_transfer_counter);
-            }
-        }
-
-        // Transfer a frame (simultaneous write and read) with a specified number of bits [4 to 32]
-        // NOTE: Return the read value
-        uint32_t transfer(const uint32_t  frame,
-                          const FrameBits frame_bits,
-                          const bool      is_end_of_queue = false,              // Signals that the current transfer is the last in the queue
-                          const bool      clear_queue_transfer_counter = false) // Clears the transfer counter before transmission starts
-        {
-            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
-
-            uint32_t read_value = 0;
-
-            if(frame_bits <= FrameBits::bits_16)
-            {
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(frame_bits));
-
-                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
-                read_value = SpiMasterHal::read();
-            }
-            else if(frame_bits < FrameBits::bits_20)
-            {
-                const auto ctar0_data_bits = static_cast<uint32_t>(frame_bits) - 4;
-
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, DataBits::bits_4);
-
-                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
-                read_value = SpiMasterHal::read();
-
-                write(frame >> ctar0_data_bits, CtarSelection::ctar1, is_end_of_queue, clear_queue_transfer_counter);
-                read_value |= SpiMasterHal::read() << ctar0_data_bits;
-            }
-            else
-            {
-                const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - 16;
-
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, DataBits::bits_16);
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
-
-                write(frame, CtarSelection::ctar0, is_end_of_queue, clear_queue_transfer_counter);
-                read_value = SpiMasterHal::read();
-
-                write(frame >> 16, CtarSelection::ctar1, is_end_of_queue, clear_queue_transfer_counter);
-                read_value |= SpiMasterHal::read() << 16;
-            }
-
-            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
-
-            return read_value;
         }
 
         // Get the transfer counter that indicates the number of SPI transfers made
         // NOTE: this counter is intended to assist in queue management
         inline uint16_t get_queue_transfer_counter() const { return SpiMasterHal::get_queue_transfer_counter(); }
+
+        // -------- TRANSFER --------------------------------------------------
+
+        inline uint32_t transfer(const uint32_t frame)                                                         { return SpiMasterHal::transfer(frame); }
+        inline void     transfer(const std::span<uint8_t> buffer)                                              { SpiMasterHal::transfer(buffer); }
+        inline void     transfer(const std::span<const uint8_t> tx_buffer, const std::span<uint8_t> rx_buffer) { SpiMasterHal::transfer(tx_buffer, rx_buffer); }
+
+        // Transfer a frame (simultaneous write and read) up to 32 bits
+        // NOTES: - return the read value
+        //        - RX and TX FIFOs will be flushed
+        uint32_t transfer(const uint32_t frame, const Frame32Bits frame_bits)
+        {
+            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
+
+            const uint32_t read_value = transfer_4_to_32bits(frame, frame_bits);
+
+            disable();
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
+            enable();
+
+            return read_value;
+        }
+
+        // Transfer a frame (simultaneous write and read) up to 64 bits
+        // NOTES: - return the read value
+        //        - RX and TX FIFOs will be flushed
+        uint64_t transfer(const uint64_t frame, const Frame64Bits frame_bits)
+        {
+            if(frame_bits <= Frame64Bits::bits_32)
+            {
+                return transfer(static_cast<uint32_t>(frame), static_cast<Frame32Bits>(frame_bits));
+            }
+
+            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
+
+            const uint64_t read_value = transfer_33_to_64bits(frame, frame_bits);
+
+            disable();
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
+            enable();
+
+            return read_value;
+        }
 
         // -------- FIFOS -----------------------------------------------------
 
@@ -541,10 +464,10 @@ class SpiMaster : public SpiMasterHal
         inline void flush_tx_fifo() { SpiMasterHal::flush_tx_fifo(); }
 
         // Get the number of valid entries in the RX FIFO
-        std::size_t get_rx_fifo_counter() const { return SpiMasterHal::get_rx_fifo_counter(); }
+        inline std::size_t get_rx_fifo_counter() const { return SpiMasterHal::get_rx_fifo_counter(); }
 
         // Get the number of valid entries in the TX FIFO
-        std::size_t get_tx_fifo_counter() const { return SpiMasterHal::get_tx_fifo_counter(); }
+        inline std::size_t get_tx_fifo_counter() const { return SpiMasterHal::get_tx_fifo_counter(); }
 
     private:
 
@@ -555,12 +478,153 @@ class SpiMaster : public SpiMasterHal
         // Write a frame as soon as possible
         void write(const uint32_t      frame,
                    const CtarSelection ctar_selection,
-                   const bool          is_end_of_queue,
-                   const bool          clear_queue_transfer_counter)
+                   const bool          is_end_of_queue = false,
+                   const bool          clear_queue_transfer_counter = false)
         {
             while(SpiMasterHal::is_writable() == false);
 
             SpiMasterHal::master_write_data(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+        }
+
+        uint32_t transfer_4_to_32bits(const uint32_t frame, const Frame32Bits frame_bits)
+        {
+            disable();
+
+            flush_tx_fifo();
+            flush_rx_fifo();
+
+            if(frame_bits <= Frame32Bits::bits_16)
+            {
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(frame_bits));
+
+                write(frame, CtarSelection::ctar0);
+
+                enable();
+
+                return read();
+            }
+
+            const auto ctar0_data_bits = static_cast<uint32_t>(frame_bits) / 2;
+            const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits;
+
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+
+            const DataOrder data_order = get_data_order(CtarSelection::ctar0);
+
+            if(data_order == DataOrder::msb_first)
+            {
+                write(frame >> ctar1_data_bits, CtarSelection::ctar0);
+                write(frame,                    CtarSelection::ctar1);
+
+                enable();
+
+                uint32_t read_value  = read() << ctar1_data_bits;
+                         read_value |= read();
+
+                return read_value;
+            }
+
+            write(frame,                    CtarSelection::ctar0);
+            write(frame >> ctar0_data_bits, CtarSelection::ctar1);
+
+            enable();
+
+            uint32_t read_value  = read();
+                     read_value |= read() << ctar0_data_bits;
+
+            return read_value;
+        }
+
+        uint64_t transfer_33_to_64bits(const uint64_t frame, const Frame64Bits frame_bits)
+        {
+            assert(frame_bits > Frame64Bits::bits_32);
+
+            const DataOrder data_order = get_data_order(CtarSelection::ctar0);
+
+            disable();
+
+            flush_tx_fifo();
+            flush_rx_fifo();
+
+            if(frame_bits <= Frame64Bits::bits_48)
+            {
+                const auto ctar0_data_bits_2x = static_cast<uint32_t>(frame_bits) - 15;
+
+                const auto ctar0_data_bits = ctar0_data_bits_2x / 2;
+                const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits_2x;
+
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+
+                if(data_order == DataOrder::msb_first)
+                {
+                    write(frame >> (ctar0_data_bits + ctar1_data_bits), CtarSelection::ctar0);
+                    write(frame >>  ctar1_data_bits,                    CtarSelection::ctar0);
+                    write(frame,                                        CtarSelection::ctar1);
+
+                    enable();
+
+                    uint64_t read_value  = static_cast<uint64_t>(read()) << (ctar0_data_bits + ctar1_data_bits);
+                             read_value |= static_cast<uint64_t>(read()) <<  ctar1_data_bits;
+                             read_value |= static_cast<uint64_t>(read());
+
+                    return read_value;
+                }
+
+                write(frame,                       CtarSelection::ctar0);
+                write(frame >> ctar0_data_bits,    CtarSelection::ctar0);
+                write(frame >> ctar0_data_bits_2x, CtarSelection::ctar1);
+
+                enable();
+
+                uint64_t read_value  = static_cast<uint64_t>(read());
+                         read_value |= static_cast<uint64_t>(read()) << ctar0_data_bits;
+                         read_value |= static_cast<uint64_t>(read()) << ctar0_data_bits_2x;
+
+                return read_value;
+            }
+
+            const auto ctar0_data_bits_3x = static_cast<uint32_t>(frame_bits) - 14;
+
+            const auto ctar0_data_bits = ctar0_data_bits_3x / 3;
+            const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits_3x;
+
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+
+            const auto ctar0_data_bits_2x = ctar0_data_bits + ctar0_data_bits;
+
+            if(data_order == DataOrder::msb_first)
+            {
+                write(frame >> (ctar0_data_bits_2x + ctar1_data_bits), CtarSelection::ctar0);
+                write(frame >> (ctar0_data_bits    + ctar1_data_bits), CtarSelection::ctar0);
+                write(frame >>  ctar1_data_bits,                       CtarSelection::ctar0);
+                write(frame,                                           CtarSelection::ctar1);
+
+                enable();
+
+                uint64_t read_value  = static_cast<uint64_t>(read()) << (ctar0_data_bits_2x + ctar1_data_bits);
+                         read_value  = static_cast<uint64_t>(read()) << (ctar0_data_bits    + ctar1_data_bits);
+                         read_value |= static_cast<uint64_t>(read()) <<  ctar1_data_bits;
+                         read_value |= static_cast<uint64_t>(read());
+
+                return read_value;
+            }
+
+            write(frame,                       CtarSelection::ctar0);
+            write(frame >> ctar0_data_bits,    CtarSelection::ctar0);
+            write(frame >> ctar0_data_bits_2x, CtarSelection::ctar0);
+            write(frame >> ctar0_data_bits_3x, CtarSelection::ctar1);
+
+            enable();
+
+            uint64_t read_value  = static_cast<uint64_t>(read());
+                     read_value |= static_cast<uint64_t>(read()) << ctar0_data_bits;
+                     read_value |= static_cast<uint64_t>(read()) << ctar0_data_bits_2x;
+                     read_value |= static_cast<uint64_t>(read()) << ctar0_data_bits_3x;
+
+            return read_value;
         }
 };
 
@@ -572,11 +636,8 @@ class SpiSlave : public SpiSlaveHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using CtarSelection          = typename SpiSlaveHal::CtarSelection;
-
         using DataBits               = typename SpiSlaveHal::DataBits;
         using SpiMode                = typename SpiSlaveHal::SpiMode;
-        using DataOrder              = typename SpiSlaveHal::DataOrder;
 
         using ContinuousSck          = typename SpiSlaveHal::ContinuousSck;
         using ModifiedTransferFormat = typename SpiSlaveHal::ModifiedTransferFormat;
@@ -605,10 +666,10 @@ class SpiSlave : public SpiSlaveHal
         inline void flush_tx_fifo() { SpiSlaveHal::flush_tx_fifo(); }
 
         // Get the number of valid entries in the RX FIFO
-        std::size_t get_rx_fifo_counter() const { return SpiSlaveHal::get_rx_fifo_counter(); }
+        inline std::size_t get_rx_fifo_counter() const { return SpiSlaveHal::get_rx_fifo_counter(); }
 
         // Get the number of valid entries in the TX FIFO
-        std::size_t get_tx_fifo_counter() const { return SpiSlaveHal::get_tx_fifo_counter(); }
+        inline std::size_t get_tx_fifo_counter() const { return SpiSlaveHal::get_tx_fifo_counter(); }
 };
 }
 
