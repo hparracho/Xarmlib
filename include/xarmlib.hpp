@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    18 January 2019
+// @date    15 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,8 +40,8 @@
 #include "api/api_digital_in.hpp"
 #include "api/api_digital_in_bus.hpp"
 #include "api/api_digital_out.hpp"
-//#include "api/api_input_debouncer.hpp"
-//#include "api/api_io_debouncer.hpp"
+#include "api/api_input_debouncer.hpp"
+#include "api/api_io_debouncer.hpp"
 #include "api/api_pin_bus.hpp"
 #include "api/api_pin_scanner.hpp"
 
