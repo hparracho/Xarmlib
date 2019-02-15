@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    5 February 2019
+// @date    12 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,16 +54,27 @@ namespace kv4x
 
 void SpiDriver::initialize(const MasterConfig& master_config)
 {
+    assert(master_config.ctars_config.baudrate > 0);
+
+    const uint32_t baudrate = static_cast<uint32_t>(master_config.ctars_config.baudrate);
+
+    // Delay between the negation of the PCS signal at the end of a frame and
+    // the assertion of PCS at the beginning of the next frame
+    // NOTE: 50 ns is the minimum delay needed by the peripheral @ Clock::xtal_94mhz
+    const uint32_t delay_between_transfer_ns = (500000000 / baudrate) - 50;
+
     const dspi_master_ctar_config_t spi_master_ctar0_config =
     {
-        static_cast<uint32_t>(master_config.ctars_config.baudrate),
+        baudrate,
         static_cast<uint32_t>(master_config.ctars_config.data_bits),
         static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) >> 1),
         static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) & 1),
         static_cast<dspi_shift_direction_t>(master_config.ctars_config.data_order),
-        0,  // PCS to SCK delay time in nanoseconds (0 is the minimum delay)
-        0,  // The last SCK to PCS delay time in nanoseconds (0 is the minimum delay)
-        0   // After the SCK delay time in nanoseconds (0 is the minimum delay)
+        0,  // Delay between assertion of PCS and the first edge of the SCK in nanoseconds
+            // NOTE: 0 sets the minimum delay. It also sets the boundary value if out of range
+        0,  // Delay between the last edge of SCK and the negation of PCS in nanoseconds
+            // NOTE: 0 sets the minimum delay. It also sets the boundary value if out of range
+        delay_between_transfer_ns
     };
 
     const dspi_master_config_t spi_master_config =
@@ -79,6 +90,14 @@ void SpiDriver::initialize(const MasterConfig& master_config)
     };
 
     DSPI_MasterInit(SPI, &spi_master_config, SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+    // Stop frame transfers
+    // ( DSPI_MasterInit(...) FSL's function decided to start frame
+    // transfers by own initiative -_- )
+    disable();
+
+    // Configure CTAR1 after CTAR0 was configured in initialize
+    SPI->CTAR[kDSPI_Ctar1] = SPI->CTAR[kDSPI_Ctar0];
 }
 
 void SpiDriver::initialize(const SlaveConfig& slave_config)
@@ -101,33 +120,11 @@ void SpiDriver::initialize(const SlaveConfig& slave_config)
     };
 
     DSPI_SlaveInit(SPI, &spi_slave_config);
-}
 
-
-
-
-void SpiDriver::config_master_ctar(const CtarSelection ctar_selection, const MasterCtarConfig& master_ctar_config)
-{
-    assert(is_master() == true);
-    assert(is_enabled() == false);
-
-    const auto ctar_index = static_cast<std::size_t>(ctar_selection);
-
-    const auto frame_size     = static_cast<uint32_t>(master_ctar_config.data_bits) - 1;
-    const auto clock_polarity = static_cast<uint32_t>(master_ctar_config.spi_mode) >> 1;
-    const auto clock_phase    = static_cast<uint32_t>(master_ctar_config.spi_mode) & 1;
-    const auto lsb_first      = static_cast<uint32_t>(master_ctar_config.data_order);
-
-    SPI->CTAR[ctar_index] = SPI_CTAR_FMSZ(frame_size)
-                          | SPI_CTAR_CPOL(clock_polarity)
-                          | SPI_CTAR_CPHA(clock_phase)
-                          | SPI_CTAR_LSBFE(lsb_first);
-
-    const uint32_t result = DSPI_MasterSetBaudRate(SPI, static_cast<dspi_ctar_selection_t>(ctar_selection),
-                                                        static_cast<uint32_t>(master_ctar_config.baudrate),
-                                                        SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-
-    assert(result != 0);
+    // Stop frame transfers
+    // ( DSPI_SlaveInit(...) FSL's function decided to start frame
+    // transfers by own initiative -_- )
+    disable();
 }
 
 

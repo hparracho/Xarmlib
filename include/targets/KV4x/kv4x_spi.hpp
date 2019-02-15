@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    6 February 2019
+// @date    14 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -277,15 +277,10 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
             initialize(master_config);
 
-            // Stop frame transfers
-            // ( DSPI_MasterInit(...) FSL's function decided to start frame
-            // transfers by own initiative -_- )
-            disable();
-
-            // Configure CTAR1 after CTAR0 was configured in initialize
-            config_master_ctar(CtarSelection::ctar1, master_config.ctars_config);
-
             disable_irq();
+
+            flush_rx_fifo();
+            flush_tx_fifo();
 
             // Clear all status bits
             clear_status(Status::clear_all_bitmask);
@@ -312,12 +307,10 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
             initialize(slave_config);
 
-            // Stop frame transfers
-            // ( DSPI_SlaveInit(...) FSL's function decided to start frame
-            // transfers by own initiative -_- )
-            disable();
-
             disable_irq();
+
+            flush_rx_fifo();
+            flush_tx_fifo();
 
             // Clear all status bits
             clear_status(Status::clear_all_bitmask);
@@ -327,13 +320,16 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         {
             disable_irq();
 
+            flush_rx_fifo();
+            flush_tx_fifo();
+
             // Clear all status bits
             clear_status(Status::clear_all_bitmask);
 
             DSPI_Deinit(SPI);
         }
 
-        // -------- CTAR DATA BITS --------------------------------------------
+        // -------- CTARS -----------------------------------------------------
 
         DataBits get_ctar_data_bits(const CtarSelection ctar_selection) const
         {
@@ -342,33 +338,35 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             return static_cast<DataBits>(((SPI->CTAR[ctar_index] & SPI_CTAR_FMSZ_MASK) >> SPI_CTAR_FMSZ_SHIFT) + 1);
         }
 
-        // NOTE: to configure CTAR will be ensured that the module is in the stopped state
+        // NOTE: to configure CTAR the module must be in the stopped state
         void set_ctar_data_bits(const CtarSelection ctar_selection, const DataBits data_bits)
         {
-            const bool enabled = is_enabled();
-
-            disable();
-
-            while(is_enabled() == true);
+            assert(is_enabled() == false);
 
             const auto ctar_index = static_cast<std::size_t>(ctar_selection);
 
             const auto frame_size = static_cast<uint32_t>(data_bits) - 1;
 
             SPI->CTAR[ctar_index] = (SPI->CTAR[ctar_index] & ~SPI_CTAR_FMSZ_MASK) | SPI_CTAR_FMSZ(frame_size);
+        }
 
-            if(enabled == true)
-            {
-                enable();
-            }
+        DataOrder get_data_order(const CtarSelection ctar_selection) const
+        {
+            const auto ctar_index = static_cast<std::size_t>(ctar_selection);
+
+            return static_cast<DataOrder>((SPI->CTAR[ctar_index] & SPI_CTAR_LSBFE_MASK) >> SPI_CTAR_LSBFE_SHIFT);
         }
 
         // -------- READ / WRITE ----------------------------------------------
 
         // Read data that has been received
-        uint32_t read_data() const
+        uint32_t read_data()
         {
-            return DSPI_ReadData(SPI);
+            const uint32_t data = DSPI_ReadData(SPI);
+
+            clear_status(Status::rx_fifo_drain_request);
+
+            return data;
         }
 
         // Write data to be transmitted in master mode
@@ -389,6 +387,8 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             };
 
             DSPI_MasterWriteData(SPI, &spi_command_data_config, static_cast<uint16_t>(value));
+
+            clear_status(Status::tx_fifo_fill_request);
         }
 
         // Write data to be transmitted in slave mode
@@ -397,6 +397,8 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             assert(is_master() == false);
 
             DSPI_SlaveWriteData(SPI, value);
+
+            clear_status(Status::tx_fifo_fill_request);
         }
 
         // Get the transfer counter that indicates the number of SPI transfers made
@@ -461,7 +463,7 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
         StatusBitmask get_status() const
         {
-            return static_cast<Status>(DSPI_GetStatusFlags(SPI));
+            return static_cast<Status>(DSPI_GetStatusFlags(SPI) & static_cast<uint32_t>(Status::bitmask));
         }
 
         void clear_status(const StatusBitmask bitmask)
@@ -662,11 +664,6 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         //       the library configuration file (xarmlib_config.h).
         void initialize(const MasterConfig& master_config);
         void initialize(const SlaveConfig&  slave_config);
-
-        // NOTES: - do not configure CTAR while the module is in the Running state;
-        //        - implemented on the CPP file because it uses parameters from
-        //          the library configuration file (xarmlib_config.h).
-        void config_master_ctar(const CtarSelection ctar_selection, const MasterCtarConfig& master_ctar_config);
 
         bool is_master() const
         {
