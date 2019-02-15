@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    30 November 2018
+// @date    15 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -54,8 +54,8 @@ class SpiIoSource : public PinSource
                     const PinHal::Name  latch,
                     const PinHal::Name  enable,
                     const std::size_t   port_count) : m_spi_master { spi_master },
-                                                      m_latch(latch, { GpioHal::OutputMode::PUSH_PULL_HIGH }),
-                                                      m_enable(enable, { GpioHal::OutputMode::PUSH_PULL_HIGH }),
+                                                      m_latch(latch, { GpioHal::OutputMode::push_pull_high }),
+                                                      m_enable(enable, { GpioHal::OutputMode::push_pull_high }),
                                                       m_outputs(port_count, static_cast<uint8_t>(0xFF)),
                                                       m_reads(port_count, static_cast<uint8_t>(0))
         {
@@ -122,7 +122,7 @@ class SpiIoSource : public PinSource
         }
 
         // Transfer a buffer (simultaneous write and read)
-        void transfer(const gsl::span<const uint8_t> output_buffer, const gsl::span<uint8_t> input_buffer)
+        void transfer(const std::span<const uint8_t> output_buffer, const std::span<uint8_t> input_buffer)
         {
             assert(output_buffer.size() > 0);
             assert(output_buffer.size() == input_buffer.size());
