@@ -1,35 +1,9 @@
 /*
- * The Clear BSD License
  * Copyright (c) 2015, Freescale Semiconductor, Inc.
  * Copyright 2016-2017 NXP
  * All rights reserved.
  *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided
- *  that the following conditions are met:
- *
- * o Redistributions of source code must retain the above copyright notice, this list
- *   of conditions and the following disclaimer.
- *
- * o Redistributions in binary form must reproduce the above copyright notice, this
- *   list of conditions and the following disclaimer in the documentation and/or
- *   other materials provided with the distribution.
- *
- * o Neither the name of the copyright holder nor the names of its
- *   contributors may be used to endorse or promote products derived from this
- *   software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS LICENSE.
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR
- * ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- * (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- * LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
- * ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ * SPDX-License-Identifier: BSD-3-Clause
  */
 
 #include "fsl_cadc.h"
@@ -120,6 +94,17 @@ static uint32_t CADC_GetInstance(ADC_Type *base)
     return instance;
 }
 
+/*!
+ * brief Initializes the CADC module.
+ *
+ * This function is to make the initialization for using CADC module.
+ * The operations are:
+ *  - Enable the clock for CADC.
+ *  - Set the global settings for CADC converter.
+ *
+ * param base   CADC peripheral base address.
+ * param config Pointer to configuration structure. See "cadc_config_t".
+ */
 void CADC_Init(ADC_Type *base, const cadc_config_t *config)
 {
     assert(NULL != config);
@@ -175,9 +160,26 @@ void CADC_Init(ADC_Type *base, const cadc_config_t *config)
     }
 }
 
+/*!
+ * brief Gets an available pre-defined settings for module's configuration.
+ *
+ * This function initializes the module's configuration structure with an available settings.
+ * The default value are:
+ * code
+ *   config->dualConverterScanMode = kCADC_DualConverterWorkAsTriggeredParallel;
+ *   config->enableSimultaneousMode = true;
+ *   config->DMATriggerSoruce = kCADC_DMATriggerSourceAsEndOfScan;
+ *   config->idleWorkMode = kCADC_IdleKeepNormal;
+ *   config->powerUpDelay = 26U;
+ * endcode
+ * param config Pointer to configuration structure. See "cadc_config_t"
+ */
 void CADC_GetDefaultConfig(cadc_config_t *config)
 {
     assert(NULL != config);
+
+    /* Initializes the configure structure to zero. */
+    memset(config, 0, sizeof(*config));
 
     /* The default values are from power up reset state. */
     config->dualConverterScanMode = kCADC_DualConverterWorkAsTriggeredParallel;
@@ -187,6 +189,16 @@ void CADC_GetDefaultConfig(cadc_config_t *config)
     config->powerUpDelay = 26U;
 }
 
+/*!
+ * brief Deinitializes the CADC module.
+ *
+ * This function is to make the de-initialization for using CADC module.
+ * The operations are:
+ *  - Power down both converter.
+ *  - Disable the clock for CADC.
+ *
+ * param base CADC peripheral base address.
+ */
 void CADC_Deinit(ADC_Type *base)
 {
     /* Stop both converter. */
@@ -262,6 +274,13 @@ static void CADC_SetConverterBConfig(ADC_Type *base, const cadc_converter_config
     base->CTRL3 = tmp16;
 }
 
+/*!
+ * brief Configures the converter.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be configured. See "_cadc_converter_id".
+ * param config        Pointer to configuration structure. See "cadc_converter_config_t".
+ */
 void CADC_SetConverterConfig(ADC_Type *base, uint16_t converterMask, const cadc_converter_config_t *config)
 {
     assert(NULL != config);
@@ -278,9 +297,26 @@ void CADC_SetConverterConfig(ADC_Type *base, uint16_t converterMask, const cadc_
     }
 }
 
+/*!
+ * brief Gets an available pre-defined settings for each converter's configuration.
+ *
+ * This function initializes each converter's configuration structure with an available settings.
+ * The default value are:
+ * code
+ *   config->clockDivisor = 4U;
+ *   config->speedMode = kCADC_SpeedMode0;
+ *   config->highReferenceVoltageSource = kCADC_ReferenceVoltageVrefPad;
+ *   config->lowReferenceVoltageSource = kCADC_ReferenceVoltageVrefPad;
+ *   config->sampleWindowCount = 0U;
+ * endcode
+ * param config Pointer to configuration structure. See "cadc_converter_config_t"
+ */
 void CADC_GetDefaultConverterConfig(cadc_converter_config_t *config)
 {
     assert(NULL != config);
+
+    /* Initializes the configure structure to zero. */
+    memset(config, 0, sizeof(*config));
 
     /* The default values are from power up reset state. */
     config->clockDivisor = 4U;
@@ -290,6 +326,17 @@ void CADC_GetDefaultConverterConfig(cadc_converter_config_t *config)
     config->sampleWindowCount = 0U;
 }
 
+/*!
+ * brief Enables the converter's conversion.
+ *
+ * This function is to enable the converter's conversion. The conversion should only be launched after the converter is
+ * enabled. When this feature is asserted to be "false", the current scan is stopped and no further scans can start. All
+ * the software trigger and hardware trigger are ignored.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be operated. See "_cadc_converter_id".
+ * param enable        Enable the power for converter.
+ */
 void CADC_EnableConverter(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
@@ -318,6 +365,18 @@ void CADC_EnableConverter(ADC_Type *base, uint16_t converterMask, bool enable)
     }
 }
 
+/*!
+ * brief Enables the input of external sync signal.
+ *
+ * This function is to enable the input of external sync signal. The external sync signal could be used to trigger the
+ * conversion if the hardware trigger related setting is used.
+ * Note: When in "Once" scan mode, this gate would be off automatically after an available sync is received. User needs
+ * to enable the input again manually if another sync signal is wanted.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be operated. See "_cadc_converter_id".
+ * param enable        Enable the feature or not.
+ */
 void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
@@ -346,6 +405,17 @@ void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool 
     }
 }
 
+/*!
+ * brief Enables power for the converter.
+ *
+ * This function is to enable the power for the converter. The converter should be powered on before conversion.
+ * Once this API is called, the converter would be powered on after a few moment (so-called power up delay), so that
+ * the power would be stable.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be operated. See "_cadc_converter_id".
+ * param enable        Enable the feature or not.
+ */
 void CADC_EnableConverterPower(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
@@ -374,6 +444,15 @@ void CADC_EnableConverterPower(ADC_Type *base, uint16_t converterMask, bool enab
     }
 }
 
+/*!
+ * brief Triggers the converter by software trigger.
+ *
+ * This function is to do the software trigger to the converter. The software trigger can used to start a conversion
+ * sequence.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be operated. See "_cadc_converter_id".
+ */
 void CADC_DoSoftwareTriggerConverter(ADC_Type *base, uint16_t converterMask)
 {
     /* For converter A. */
@@ -388,6 +467,13 @@ void CADC_DoSoftwareTriggerConverter(ADC_Type *base, uint16_t converterMask)
     }
 }
 
+/*!
+ * brief Enables the DMA feature.
+ *
+ * param base          CADC peripheral base address.
+ * param converterMask Mask for converters to be operated. See "_cadc_converter_id".
+ * param enable        Enable the feature or not.
+ */
 void CADC_EnableConverterDMA(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
@@ -416,6 +502,12 @@ void CADC_EnableConverterDMA(ADC_Type *base, uint16_t converterMask, bool enable
     }
 }
 
+/*!
+ * brief Enables the interrupts.
+ *
+ * param base CADC peripheral base address.
+ * param mask Mask value for interrupt events. See "_cadc_interrupt_enable".
+ */
 void CADC_EnableInterrupts(ADC_Type *base, uint16_t mask)
 {
     uint16_t tmp16 = 0U;
@@ -445,6 +537,12 @@ void CADC_EnableInterrupts(ADC_Type *base, uint16_t mask)
         base->CTRL2 |= ADC_CTRL2_EOSIE1_MASK;
     }
 }
+/*!
+ * brief Disables the interrupts.
+ *
+ * param base CADC peripheral base address.
+ * param mask Mask value for interrupt events. See "_cadc_interrupt_enable".
+ */
 void CADC_DisableInterrupts(ADC_Type *base, uint16_t mask)
 {
     uint16_t tmp16 = 0U;
@@ -475,6 +573,13 @@ void CADC_DisableInterrupts(ADC_Type *base, uint16_t mask)
     }
 }
 
+/*!
+ * brief  Gets the status flags.
+ *
+ * param  base CADC peripheral base address.
+ *
+ * return      Mask value for the event flags. See "_cadc_status_flags".
+ */
 uint16_t CADC_GetStatusFlags(ADC_Type *base)
 {
     uint16_t tmp16 = 0U;
@@ -521,6 +626,12 @@ uint16_t CADC_GetStatusFlags(ADC_Type *base)
     return tmp16;
 }
 
+/*!
+ * brief Clears the status flags.
+ *
+ * param base  CADC peripheral base address.
+ * param flags Mask value for the event flags to be cleared. See "_cadc_status_flags".
+ */
 void CADC_ClearStatusFlags(ADC_Type *base, uint16_t flags)
 {
     uint16_t tmp16 = 0U;
@@ -551,6 +662,13 @@ static const uint16_t g_CADCChannelConfigDifferentialMask[] = {
     0x0400  /* CHN14-15, ANB6-ANB7. ADC_CTRL2[CHNCFG_H]. */
 };
 
+/*!
+ * brief Configures the sample slot.
+ *
+ * param base        CADC peripheral base address.
+ * param sampleIndex Index of sample slot in conversion sequence. Available range is 0-15.
+ * param config      Pointer to configuration structure. See "cadc_sample_config_t"
+ */
 void CADC_SetSampleConfig(ADC_Type *base, uint16_t sampleIndex, const cadc_sample_config_t *config)
 {
     assert(NULL != config);
