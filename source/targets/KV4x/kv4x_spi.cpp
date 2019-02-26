@@ -63,6 +63,29 @@ void SpiDriver::initialize(const MasterConfig& master_config)
     // NOTE: 50 ns is the minimum delay needed by the peripheral @ Clock::xtal_94mhz
     const uint32_t delay_between_transfer_ns = (500000000 / baudrate) - 50;
 
+    /*
+     * NOTA (Emanuel Pinto @ 26 February 2019):
+     * Em vez de se introduzir um delay entre transferências pode-se
+     * ligar o Continuous SCK e usar o PCS também em modo contínuo até
+     * à última transferência.
+     * Código exemplo para ambos CTAR com DataBits::bits_10
+     * (relembro que CPHA tem de ser 1!):
+
+       flush_tx_fifo();
+       flush_rx_fifo();
+
+       write(0x1F, SpiMaster::CtarSelection::ctar0, true);
+       write(0x1F, SpiMaster::CtarSelection::ctar1, false);
+
+       set_continuous_sck(SpiMaster::ContinuousSck::enabled);
+       enable();
+
+       while(get_tx_fifo_counter() > 0);
+
+       set_continuous_sck(SpiMaster::ContinuousSck::disabled);
+       disable();
+     */
+
     const dspi_master_ctar_config_t spi_master_ctar0_config =
     {
         baudrate,
