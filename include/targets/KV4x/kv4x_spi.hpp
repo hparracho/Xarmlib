@@ -358,10 +358,10 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         }
 
         // NOTE: this is only supported for CPHA = 1
-//        void set_continuous_sck(const ContinuousSck continuous_sck)
-//        {
-//            SPI->MCR = (SPI->MCR & ~SPI_MCR_CONT_SCKE_MASK) | SPI_MCR_CONT_SCKE(static_cast<uint32_t>(continuous_sck));
-//        }
+        void set_continuous_sck(const ContinuousSck continuous_sck)
+        {
+            SPI->MCR = (SPI->MCR & ~SPI_MCR_CONT_SCKE_MASK) | SPI_MCR_CONT_SCKE(static_cast<uint32_t>(continuous_sck));
+        }
 
         // -------- READ / WRITE ----------------------------------------------
 
