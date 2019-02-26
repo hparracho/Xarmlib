@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    14 February 2019
+// @date    26 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -329,7 +329,7 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             DSPI_Deinit(SPI);
         }
 
-        // -------- CTARS -----------------------------------------------------
+        // -------- CONFIGURATION ---------------------------------------------
 
         DataBits get_ctar_data_bits(const CtarSelection ctar_selection) const
         {
@@ -356,6 +356,12 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
             return static_cast<DataOrder>((SPI->CTAR[ctar_index] & SPI_CTAR_LSBFE_MASK) >> SPI_CTAR_LSBFE_SHIFT);
         }
+
+        // NOTE: this is only supported for CPHA = 1
+//        void set_continuous_sck(const ContinuousSck continuous_sck)
+//        {
+//            SPI->MCR = (SPI->MCR & ~SPI_MCR_CONT_SCKE_MASK) | SPI_MCR_CONT_SCKE(static_cast<uint32_t>(continuous_sck));
+//        }
 
         // -------- READ / WRITE ----------------------------------------------
 
