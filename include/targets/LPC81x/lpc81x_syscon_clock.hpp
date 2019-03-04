@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_clock.hpp
 // @brief   NXP LPC81x SYSCON clock control class.
-// @date    29 November 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -59,86 +59,86 @@ class ClockDriver
         // System and peripheral clocks
         enum class Peripheral
         {
-            SYS = 0,
-            ROM,
-            RAM,
-            FLASHREG,
-            FLASH,
-            I2C,
-            GPIO,
-            SWM,
-            SCT,
-            WKT,
-            MRT,
-            SPI0,
-            SPI1,
-            CRC,
-            USART0,
-            USART1,
-            USART2,
-            WWDT,
-            IOCON,
-            ACOMP
+            sys = 0,
+            rom,
+            ram,
+            flashreg,
+            flash,
+            i2c,
+            gpio,
+            swm,
+            sct,
+            wkt,
+            mrt,
+            spi0,
+            spi1,
+            crc,
+            usart0,
+            usart1,
+            usart2,
+            wwdt,
+            iocon,
+            acomp
         };
 
         // System PLL clock source selection
         enum class SystemPllSource
         {
-            IRC = 0,                // Internal oscillator
-            SYS_OSC_CLK = 1,        // System oscillator clock input (crystal)
-            CLK_IN = 3              // Clock In pin input
+            irc = 0,                // Internal oscillator
+            sys_osc_clk = 1,        // System oscillator clock input (crystal)
+            clk_in = 3              // Clock In pin input
         };
 
         // Main clock source selection
         enum class MainClockSource
         {
-            IRC = 0,                // Internal oscillator
-            SYS_PLL_IN_CLK,         // System PLL input
-            WDT_OSC_CLK,            // Watchdog oscillator
-            SYS_PLL_OUT_CLK         // System PLL output
+            irc = 0,                // Internal oscillator
+            sys_pll_in_clk,         // System PLL input
+            wdt_osc_clk,            // Watchdog oscillator
+            sys_pll_out_clk         // System PLL output
         };
 
         // IOCON glitch filter clock divider selection
         // NOTE: The clock selection is actually reversed. This is not a bug!
         enum class IoconClockDividerSelect
         {
-            CLKDIV6 = 0,            // IOCONCLKDIV6
-            CLKDIV5,                // IOCONCLKDIV5
-            CLKDIV4,                // IOCONCLKDIV4
-            CLKDIV3,                // IOCONCLKDIV3
-            CLKDIV2,                // IOCONCLKDIV2
-            CLKDIV1,                // IOCONCLKDIV1
-            CLKDIV0                 // IOCONCLKDIV0
+            clkdiv6 = 0,            // IOCONCLKDIV6
+            clkdiv5,                // IOCONCLKDIV5
+            clkdiv4,                // IOCONCLKDIV4
+            clkdiv3,                // IOCONCLKDIV3
+            clkdiv2,                // IOCONCLKDIV2
+            clkdiv1,                // IOCONCLKDIV1
+            clkdiv0                 // IOCONCLKDIV0
         };
 
         // CLKOUT clock source selection
         enum class ClockoutSource
         {
-            IRC = 0,                // Internal oscillator
-            SYS_OSC_CLK,            // System oscillator clock input (crystal)
-            WDT_OSC_CLK,            // Watchdog oscillator
-            MAIN_CLK                // Main system clock
+            irc = 0,                // Internal oscillator
+            sys_osc_clk,            // System oscillator clock input (crystal)
+            wdt_osc_clk,            // Watchdog oscillator
+            main_clk                // Main system clock
         };
 
         // Watchdog oscillator analog output frequency selection (plus or minus 40%)
         enum class WatchdogFrequency
         {
-            OSC_ILLEGAL = 0,
-            OSC_0_60,               // 0.6  MHz watchdog rate
-            OSC_1_05,               // 1.05 MHz watchdog rate
-            OSC_1_40,               // 1.4  MHz watchdog rate
-            OSC_1_75,               // 1.75 MHz watchdog rate
-            OSC_2_10,               // 2.1  MHz watchdog rate
-            OSC_2_40,               // 2.4  MHz watchdog rate
-            OSC_2_70,               // 2.7  MHz watchdog rate
-            OSC_3_00,               // 3.0  MHz watchdog rate
-            OSC_3_25,               // 3.25 MHz watchdog rate
-            OSC_3_50,               // 3.5  MHz watchdog rate
-            OSC_3_75,               // 3.75 MHz watchdog rate
-            OSC_4_00,               // 4.0  MHz watchdog rate
-            OSC_4_20,               // 4.2  MHz watchdog rate
-            OSC_4_40,               // 4.4  MHz watchdog rate
-            OSC_4_60                // 4.6  MHz watchdog rate
+            osc_illegal = 0,
+            osc_0_60,               // 0.6  MHz watchdog rate
+            osc_1_05,               // 1.05 MHz watchdog rate
+            osc_1_40,               // 1.4  MHz watchdog rate
+            osc_1_75,               // 1.75 MHz watchdog rate
+            osc_2_10,               // 2.1  MHz watchdog rate
+            osc_2_40,               // 2.4  MHz watchdog rate
+            osc_2_70,               // 2.7  MHz watchdog rate
+            osc_3_00,               // 3.0  MHz watchdog rate
+            osc_3_25,               // 3.25 MHz watchdog rate
+            osc_3_50,               // 3.5  MHz watchdog rate
+            osc_3_75,               // 3.75 MHz watchdog rate
+            osc_4_00,               // 4.0  MHz watchdog rate
+            osc_4_20,               // 4.2  MHz watchdog rate
+            osc_4_40,               // 4.4  MHz watchdog rate
+            osc_4_60                // 4.6  MHz watchdog rate
         };
 
         // Helper structure for automatic Watchdog clock configuration
@@ -233,9 +233,9 @@ class ClockDriver
         {
             switch(get_system_pll_source())
             {
-                case SystemPllSource::IRC:         return SystemDriver::IRC_12MHZ_FREQ;     break; // 12 MHz internal RC oscillator
-                case SystemPllSource::SYS_OSC_CLK: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
-                case SystemPllSource::CLK_IN:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
+                case SystemPllSource::irc:         return SystemDriver::IRC_12MHZ_FREQ;     break; // 12 MHz internal RC oscillator
+                case SystemPllSource::sys_osc_clk: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
+                case SystemPllSource::clk_in:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
                 default:                           return 0;                                break;
             }
         }
@@ -281,10 +281,10 @@ class ClockDriver
         {
             switch(get_main_clock_source())
             {
-                case MainClockSource::IRC:             return SystemDriver::IRC_12MHZ_FREQ;   break;
-                case MainClockSource::SYS_PLL_IN_CLK:  return get_system_pll_in_frequency();  break;
-                case MainClockSource::WDT_OSC_CLK:     return get_watchdog_osc_frequency();   break;
-                case MainClockSource::SYS_PLL_OUT_CLK: return get_system_pll_out_frequency(); break;
+                case MainClockSource::irc:             return SystemDriver::IRC_12MHZ_FREQ;   break;
+                case MainClockSource::sys_pll_in_clk:  return get_system_pll_in_frequency();  break;
+                case MainClockSource::wdt_osc_clk:     return get_watchdog_osc_frequency();   break;
+                case MainClockSource::sys_pll_out_clk: return get_system_pll_out_frequency(); break;
                 default:                               return 0;                              break;
             }
         }

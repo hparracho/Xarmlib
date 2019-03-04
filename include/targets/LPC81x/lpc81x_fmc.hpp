@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_fmc.hpp
 // @brief   NXP LPC81x Flash Memory Controller (FMC) class.
-// @date    29 November 2018
+// @date    1 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -55,8 +55,8 @@ class FmcDriver
         // Flash access time
         enum class AccessTime
         {
-            TIME_1_SYSCLK = 0,      // Flash accesses use 1 system clock (valid for up to 20 MHz CPU clock)
-            TIME_2_SYSCLK,          // Flash accesses use 2 system clocks (valid for up to 30 MHz CPU clock)
+            time_1_sysclk = 0,      // Flash accesses use 1 system clock (valid for up to 20 MHz CPU clock)
+            time_2_sysclk,          // Flash accesses use 2 system clocks (valid for up to 30 MHz CPU clock)
         };
 
         // --------------------------------------------------------------------

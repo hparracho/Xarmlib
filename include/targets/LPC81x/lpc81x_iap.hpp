@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_iap.hpp
 // @brief   NXP LPC81x In-Application Programming (IAP) class.
-// @date    15 January 2019
+// @date    1 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,26 +56,26 @@ class IapDriver
         // IAP status codes
         enum class StatusCode
         {
-            CMD_SUCCESS = 0,                            // Command is executed successfully
-            INVALID_COMMAND,                            // Invalid command
-            SRC_ADDR_ERROR,                             // Source address not on word boundary
-            DST_ADDR_ERROR,                             // Destination address is not on a correct boundary
-            SRC_ADDR_NOT_MAPPED,                        // Source address is not mapped in the memory map
-            DST_ADDR_NOT_MAPPED,                        // Destination address is not mapped in the memory map
-            COUNT_ERROR,                                // Byte count is not multiple of 4 or is not a permitted value
-            INVALID_SECTOR_INVALID_PAGE,                // Sector/page number is invalid or end sector number is greater than start sector number
-            SECTOR_NOT_BLANK,                           // Sector is not blank
-            SECTOR_NOT_PREPARED_FOR_WRITE_OPERATION,    // Command to prepare sector for write operation was not executed
-            COMPARE_ERROR,                              // Source and destination data not equal
-            BUSY,                                       // Flash programming hardware interface is busy
-            PARAM_ERROR,                                // Insufficient number of parameters or invalid parameter
-            ADDR_ERROR,                                 // Address is not on word boundary
-            ADDR_NOT_MAPPED,                            // Address is not mapped in the memory map
-            CMD_LOCKED,                                 // Command is locked
-            INVALID_CODE,                               // Unlock code is invalid
-            INVALID_BAUD_RATE,                          // Invalid baud rate setting
-            INVALID_STOP_BIT,                           // Invalid stop bit setting
-            CODE_READ_PROTECTION_ENABLED                // Code read protection enabled
+            cmd_success = 0,                            // Command is executed successfully
+            invalid_command,                            // Invalid command
+            src_addr_error,                             // Source address not on word boundary
+            dst_addr_error,                             // Destination address is not on a correct boundary
+            src_addr_not_mapped,                        // Source address is not mapped in the memory map
+            dst_addr_not_mapped,                        // Destination address is not mapped in the memory map
+            count_error,                                // Byte count is not multiple of 4 or is not a permitted value
+            invalid_sector_invalid_page,                // Sector/page number is invalid or end sector number is greater than start sector number
+            sector_not_blank,                           // Sector is not blank
+            sector_not_prepared_for_write_operation,    // Command to prepare sector for write operation was not executed
+            compare_error,                              // Source and destination data not equal
+            busy,                                       // Flash programming hardware interface is busy
+            param_error,                                // Insufficient number of parameters or invalid parameter
+            addr_error,                                 // Address is not on word boundary
+            addr_not_mapped,                            // Address is not mapped in the memory map
+            cmd_locked,                                 // Command is locked
+            invalid_code,                               // Unlock code is invalid
+            invalid_baud_rate,                          // Invalid baud rate setting
+            invalid_stop_bit,                           // Invalid stop bit setting
+            code_read_protection_enabled                // Code read protection enabled
         };
 
         // --------------------------------------------------------------------
@@ -104,25 +104,25 @@ class IapDriver
             const uint32_t flash_sector = get_sector(flash_address);
 
             // Prepare sector for erasing
-            if(prepare_sectors(flash_sector, flash_sector) != StatusCode::CMD_SUCCESS)
+            if(prepare_sectors(flash_sector, flash_sector) != StatusCode::cmd_success)
             {
                 return false;
             }
 
             // Erase page
-            if(erase_pages(flash_page, flash_page) != StatusCode::CMD_SUCCESS)
+            if(erase_pages(flash_page, flash_page) != StatusCode::cmd_success)
             {
                 return false;
             }
 
             // Prepare sector for writing
-            if(prepare_sectors(flash_sector, flash_sector) != StatusCode::CMD_SUCCESS)
+            if(prepare_sectors(flash_sector, flash_sector) != StatusCode::cmd_success)
             {
                 return false;
             }
 
             // Write to flash
-            return (copy_ram_to_flash(flash_address, buffer) == StatusCode::CMD_SUCCESS);
+            return (copy_ram_to_flash(flash_address, buffer) == StatusCode::cmd_success);
         }
 
         // Write to flash
@@ -182,7 +182,7 @@ class IapDriver
         static StatusCode prepare_sectors(const int32_t sector_start, const int32_t sector_end)
         {
             uint32_t result[5];
-            uint32_t command[5] { static_cast<uint32_t>(CommandCode::PREPARE_SECTOR),
+            uint32_t command[5] { static_cast<uint32_t>(CommandCode::prepare_sector),
                                   static_cast<uint32_t>(sector_start),
                                   static_cast<uint32_t>(sector_end)
                                 };
@@ -196,7 +196,7 @@ class IapDriver
         static StatusCode erase_sectors(const int32_t sector_start, const int32_t sector_end)
         {
             uint32_t result[5];
-            uint32_t command[5] { static_cast<uint32_t>(CommandCode::ERASE_SECTOR),
+            uint32_t command[5] { static_cast<uint32_t>(CommandCode::erase_sector),
                                   static_cast<uint32_t>(sector_start),
                                   static_cast<uint32_t>(sector_end),
                                   SystemCoreClock / 1000    // CPU Clock Frequency in kHz
@@ -211,7 +211,7 @@ class IapDriver
         static StatusCode erase_pages(const int32_t page_start, const int32_t page_end)
         {
             uint32_t result[5];
-            uint32_t command[5] { static_cast<uint32_t>(CommandCode::ERASE_PAGE),
+            uint32_t command[5] { static_cast<uint32_t>(CommandCode::erase_page),
                                   static_cast<uint32_t>(page_start),
                                   static_cast<uint32_t>(page_end),
                                   SystemCoreClock / 1000    // CPU Clock Frequency in kHz
@@ -227,7 +227,7 @@ class IapDriver
         static StatusCode copy_ram_to_flash(const int32_t flash_address, const tcb::span<const uint8_t> buffer)
         {
             uint32_t result[5];
-            uint32_t command[5] {      static_cast<uint32_t>(CommandCode::COPY_RAM_TO_FLASH),
+            uint32_t command[5] {      static_cast<uint32_t>(CommandCode::copy_ram_to_flash),
                                        static_cast<uint32_t>(flash_address),
                                   reinterpret_cast<uint32_t>(&buffer[0]),
                                        static_cast<uint32_t>(buffer.size()),
@@ -246,16 +246,16 @@ class IapDriver
         // Command codes for IAP
         enum class CommandCode
         {
-            PREPARE_SECTOR     = 50,
-            COPY_RAM_TO_FLASH  = 51,
-            ERASE_SECTOR       = 52,
-            BLANK_CHECK_SECTOR = 53,
-            READ_PART_ID       = 54,
-            READ_BOOT_CODE_VER = 55,
-            COMPARE            = 56,
-            REINVOKE_ISP       = 57,
-            READ_UID           = 58,
-            ERASE_PAGE         = 59
+            prepare_sector     = 50,
+            copy_ram_to_flash  = 51,
+            erase_sector       = 52,
+            blank_check_sector = 53,
+            read_part_id       = 54,
+            read_boot_code_ver = 55,
+            compare            = 56,
+            reinvoke_isp       = 57,
+            read_uid           = 58,
+            erase_page         = 59
         };
 };
 

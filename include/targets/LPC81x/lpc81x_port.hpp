@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    29 November 2018
+// @date    28 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,7 +56,7 @@ class PortDriver
         // Port names (all packages have 1 port)
         enum class Name
         {
-            PORT0 = 0
+            port0 = 0
         };
 
         // --------------------------------------------------------------------
@@ -89,7 +89,7 @@ class PortDriver
 
         static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Ones configure as outputs
             LPC_GPIO->DIR0 |= 1UL << static_cast<uint32_t>(pin);
@@ -97,7 +97,7 @@ class PortDriver
 
         static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeros configure as inputs
             LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
@@ -126,7 +126,7 @@ class PortDriver
 
         static void set_mask(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
@@ -136,7 +136,7 @@ class PortDriver
 
         static void clear_mask(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding

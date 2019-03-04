@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_watchdog.hpp
 // @brief   NXP LPC81x Watchdog class.
-// @date    6 December 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,8 +63,8 @@ class WatchdogDriver
             assert(m_initialized == false);
             m_initialized = true;
 
-            PowerDriver::power_up(PowerDriver::Peripheral::WDTOSC);
-            ClockDriver::enable(ClockDriver::Peripheral::WWDT);
+            PowerDriver::power_up(PowerDriver::Peripheral::wdtosc);
+            ClockDriver::enable(ClockDriver::Peripheral::wwdt);
 
             // Disable watchdog
             LPC_WWDT->MOD     = 0;
@@ -76,7 +76,7 @@ class WatchdogDriver
             ClockDriver::set_watchdog_osc_frequency(wdt_config.frequency, wdt_config.divider);
 
             LPC_WWDT->TC  = wdt_config.counter;
-            LPC_WWDT->MOD = MOD_WDEN | MOD_WDRESET | MOD_WDPROTECT | MOD_LOCK;
+            LPC_WWDT->MOD = mod_wden | mod_wdreset | mod_wdprotect | mod_lock;
 
             reset();
         }
@@ -106,12 +106,12 @@ class WatchdogDriver
         // Windowed Watchdog MOD Register bits
         enum MOD
         {
-            MOD_WDEN      = (1 << 0),       // WWDT enable bit
-            MOD_WDRESET   = (1 << 1),       // WWDT reset enable bit
-            MOD_WDTOF     = (1 << 2),       // WWDT time-out flag bit
-            MOD_WDINT     = (1 << 3),       // WWDT warning interrupt flag bit
-            MOD_WDPROTECT = (1 << 4),       // WWDT update mode bit
-            MOD_LOCK      = (1 << 5)        // WWDT osc lock mode bit
+            mod_wden      = (1 << 0),       // WWDT enable bit
+            mod_wdreset   = (1 << 1),       // WWDT reset enable bit
+            mod_wdtof     = (1 << 2),       // WWDT time-out flag bit
+            mod_wdint     = (1 << 3),       // WWDT warning interrupt flag bit
+            mod_wdprotect = (1 << 4),       // WWDT update mode bit
+            mod_lock      = (1 << 5)        // WWDT osc lock mode bit
         };
 
         // --------------------------------------------------------------------

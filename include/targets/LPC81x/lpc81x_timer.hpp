@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.hpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    30 November 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -80,8 +80,8 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // Timer running mode selection (defined to map the CTRL register directly)
         enum class Mode
         {
-            FREE_RUNNING = (0 << 1),    // Re-start at the end of counter
-            SINGLE_SHOT  = (1 << 1)     // Stop at the end of counter
+            free_running = (0 << 1),    // Re-start at the end of counter
+            single_shot  = (1 << 1)     // Stop at the end of counter
         };
 
         // IRQ handlers definition
@@ -99,8 +99,8 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
             // Enable MRT if this is the first timer created
             if(get_used() == 1)
             {
-                ClockDriver::enable(ClockDriver::Peripheral::MRT);
-                PowerDriver::reset(PowerDriver::ResetPeripheral::MRT);
+                ClockDriver::enable(ClockDriver::Peripheral::mrt);
+                PowerDriver::reset(PowerDriver::ResetPeripheral::mrt);
 
                 NVIC_EnableIRQ(MRT_IRQn);
             }
@@ -122,7 +122,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
             // Disable MRT if this the last timer deleted
             if(get_used() == 1)
             {
-                ClockDriver::disable(ClockDriver::Peripheral::MRT);
+                ClockDriver::disable(ClockDriver::Peripheral::mrt);
 
                 NVIC_DisableIRQ(MRT_IRQn);
             }
@@ -131,7 +131,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // -------- START / STOP ----------------------------------------------
 
         // Start the timer with the supplied interval and mode
-        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING)
+        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::free_running)
         {
             assert(rate_us.count() >= get_min_rate_us());
             assert(rate_us.count() <= get_max_rate_us());
@@ -159,34 +159,34 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
 
         bool is_running() const
         {
-            return ((m_channel->STAT & STAT_RUN) != 0);
+            return ((m_channel->STAT & stat_run) != 0);
         }
 
         // -------- INTERRUPTS ------------------------------------------------
 
         void enable_irq()
         {
-            m_channel->CTRL |= CTRL_INTEN;
+            m_channel->CTRL |= ctrl_inten;
         }
 
         void disable_irq()
         {
-            m_channel->CTRL &= ~CTRL_INTEN;
+            m_channel->CTRL &= ~ctrl_inten;
         }
 
         bool is_irq_enabled() const
         {
-            return ((m_channel->CTRL & CTRL_INTEN) != 0);
+            return ((m_channel->CTRL & ctrl_inten) != 0);
         }
 
         bool is_irq_pending() const
         {
-            return ((m_channel->STAT & STAT_INTFLAG) != 0);
+            return ((m_channel->STAT & stat_intflag) != 0);
         }
 
         void clear_irq_pending()
         {
-            m_channel->STAT |= STAT_INTFLAG;
+            m_channel->STAT |= stat_intflag;
         }
 
         static void set_mrt_irq_priority(const uint32_t irq_priority)
@@ -215,23 +215,23 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // MRT Time Interval Register (INTVAL) bits
         enum INTVAL : uint32_t
         {
-            INTVAL_LOAD         = (1UL << 31)
+            intval_load         = (1UL << 31)
         };
 
         // MRT Control Register (CTRL) bits and masks
         enum CTRL : uint32_t
         {
-            CTRL_INTEN          = (1 << 0),
-            CTRL_MODE_REPEAT    = (0 << 1),     // Free running
-            CTRL_MODE_ONE_SHOT  = (1 << 1),     // Single shot
-            CTRL_MODE_MASK      = (3 << 1)
+            ctrl_inten          = (1 << 0),
+            ctrl_mode_repeat    = (0 << 1),     // Free running
+            ctrl_mode_one_shot  = (1 << 1),     // Single shot
+            ctrl_mode_mask      = (3 << 1)
         };
 
         // MRT Status Register (STAT) bits
         enum STAT : uint32_t
         {
-            STAT_INTFLAG        = (1 << 0),
-            STAT_RUN            = (1 << 1)
+            stat_intflag        = (1 << 0),
+            stat_run            = (1 << 1)
         };
 
         // --------------------------------------------------------------------
@@ -240,7 +240,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
 
         void set_mode(const Mode mode)
         {
-            m_channel->CTRL = (m_channel->CTRL & ~CTRL_MODE_MASK) | static_cast<uint32_t>(mode);
+            m_channel->CTRL = (m_channel->CTRL & ~ctrl_mode_mask) | static_cast<uint32_t>(mode);
         }
 
         // Set timer time interval value
@@ -249,7 +249,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         //       the time interval value will be loaded in next timer cycle.
         void set_interval(const uint32_t timer_interval)
         {
-            m_channel->INTVAL = timer_interval | INTVAL_LOAD;
+            m_channel->INTVAL = timer_interval | intval_load;
         }
 
         // Get timer interval value (ready to load into INTVAL register) based on supplied rate in microseconds

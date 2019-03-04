@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer 32-bit HAL interface class.
-// @date    30 November 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -142,22 +142,22 @@ namespace xarmlib
 {
 using TimerHal = hal::TimerHal<targets::lpc81x::TimerDriver>;
 
-//class Timer : public TimerHal
-//{
-//    public:
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC TYPE ALIASES
-//        // --------------------------------------------------------------------
-//
-//        using Mode = typename TimerHal::Mode;
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC MEMBER FUNCTIONS
-//        // --------------------------------------------------------------------
-//
-//        inline void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING) { TimerHal::TimerDriver::start(rate_us, mode); }
-//};
+class Timer : public TimerHal
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Mode = typename TimerHal::Mode;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        inline void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::free_running) { TimerHal::TimerDriver::start(rate_us, mode); }
+};
 }
 
 #elif defined __OHER_TARGET__
