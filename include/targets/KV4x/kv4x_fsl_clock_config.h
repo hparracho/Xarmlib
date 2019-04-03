@@ -49,25 +49,25 @@ void clock_config_irc_4mhz(void);
 #endif /* __cplusplus*/
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_94mhz *********************
+ ******************* Configuration clock_config_xtal_80mhz *********************
  ******************************************************************************/
 /*******************************************************************************
- * Definitions for clock_config_xtal_94mhz configuration
+ * Definitions for clock_config_xtal_80mhz configuration
  ******************************************************************************/
-#define CLOCK_CONFIG_XTAL_94MHZ_CORE_CLOCK         94000000U  /*!< Core clock frequency: 94000000Hz */
+#define CLOCK_CONFIG_XTAL_80MHZ_CORE_CLOCK         80000000U  /*!< Core clock frequency: 80000000Hz */
 
-/*! @brief MCG set for clock_config_xtal_94mhz configuration.
+/*! @brief MCG set for clock_config_xtal_80mhz configuration.
  */
-extern const mcg_config_t mcgConfig_clock_config_xtal_94mhz;
-/*! @brief SIM module set for clock_config_xtal_94mhz configuration.
+extern const mcg_config_t mcgConfig_clock_config_xtal_80mhz;
+/*! @brief SIM module set for clock_config_xtal_80mhz configuration.
  */
-extern const sim_clock_config_t simConfig_clock_config_xtal_94mhz;
-/*! @brief OSC set for clock_config_xtal_94mhz configuration.
+extern const sim_clock_config_t simConfig_clock_config_xtal_80mhz;
+/*! @brief OSC set for clock_config_xtal_80mhz configuration.
  */
-extern const osc_config_t oscConfig_clock_config_xtal_94mhz;
+extern const osc_config_t oscConfig_clock_config_xtal_80mhz;
 
 /*******************************************************************************
- * API for clock_config_xtal_94mhz configuration
+ * API for clock_config_xtal_80mhz configuration
  ******************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
@@ -77,32 +77,32 @@ extern "C" {
  * @brief This function executes configuration of clocks.
  *
  */
-void clock_config_xtal_94mhz(void);
+void clock_config_xtal_80mhz(void);
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus*/
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_168mhz ********************
+ ******************* Configuration clock_config_xtal_160mhz ********************
  ******************************************************************************/
 /*******************************************************************************
- * Definitions for clock_config_xtal_168mhz configuration
+ * Definitions for clock_config_xtal_160mhz configuration
  ******************************************************************************/
-#define CLOCK_CONFIG_XTAL_168MHZ_CORE_CLOCK       168000000U  /*!< Core clock frequency: 168000000Hz */
+#define CLOCK_CONFIG_XTAL_160MHZ_CORE_CLOCK       160000000U  /*!< Core clock frequency: 160000000Hz */
 
-/*! @brief MCG set for clock_config_xtal_168mhz configuration.
+/*! @brief MCG set for clock_config_xtal_160mhz configuration.
  */
-extern const mcg_config_t mcgConfig_clock_config_xtal_168mhz;
-/*! @brief SIM module set for clock_config_xtal_168mhz configuration.
+extern const mcg_config_t mcgConfig_clock_config_xtal_160mhz;
+/*! @brief SIM module set for clock_config_xtal_160mhz configuration.
  */
-extern const sim_clock_config_t simConfig_clock_config_xtal_168mhz;
-/*! @brief OSC set for clock_config_xtal_168mhz configuration.
+extern const sim_clock_config_t simConfig_clock_config_xtal_160mhz;
+/*! @brief OSC set for clock_config_xtal_160mhz configuration.
  */
-extern const osc_config_t oscConfig_clock_config_xtal_168mhz;
+extern const osc_config_t oscConfig_clock_config_xtal_160mhz;
 
 /*******************************************************************************
- * API for clock_config_xtal_168mhz configuration
+ * API for clock_config_xtal_160mhz configuration
  ******************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
@@ -112,7 +112,7 @@ extern "C" {
  * @brief This function executes configuration of clocks.
  *
  */
-void clock_config_xtal_168mhz(void);
+void clock_config_xtal_160mhz(void);
 
 #if defined(__cplusplus)
 }
