@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_faim.hpp
 // @brief   Fast Initialization Memory (FAIM) HAL interface class.
-// @date    29 November 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,8 +53,8 @@ class FaimHal : protected TargetFaimDriver
 
         using PinConfig = typename TargetFaimDriver::PinConfig;
 
-        template<std::size_t SIZE>
-        using PinConfigArray = typename TargetFaimDriver::template PinConfigArray<SIZE>;
+        template<std::size_t Size>
+        using PinConfigArray = typename TargetFaimDriver::template PinConfigArray<Size>;
 };
 
 
