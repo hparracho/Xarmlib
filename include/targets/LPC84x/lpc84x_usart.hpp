@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.hpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    17 December 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -77,45 +77,45 @@ namespace private_usart
 // USART Status register (STAT) bits
 enum class Status
 {
-    RX_READY           = (1 << 0),  // Receiver ready
-    RX_IDLE            = (1 << 1),  // Receiver idle
-    TX_READY           = (1 << 2),  // Transmitter ready for data
-    TX_IDLE            = (1 << 3),  // Transmitter idle
-    CTS                = (1 << 4),  // Status of CTS signal
-    CTS_DELTA          = (1 << 5),  // Change in CTS state
-    TX_DISABLED        = (1 << 6),  // Transmitter disabled
-    RX_OVERRUN         = (1 << 8),  // Overrun Error interrupt flag
-    RX_BREAK           = (1 << 10), // Received break
-    RX_BREAK_DELTA     = (1 << 11), // Change in receive break detection
-    START              = (1 << 12), // Start detected
-    FRAME_ERROR        = (1 << 13), // Framing Error interrupt flag
-    PARITY_ERROR       = (1 << 14), // Parity Error interrupt flag
-    RX_NOISE           = (1 << 15), // Received Noise interrupt flag
-    AUTOBAUD_ERROR     = (1 << 16), // Auto-baud Error
-    CLEAR_ALL_BITMASK  = 0x1F920,   // Clear all bitmask (1'1111'1001'0010'0000)
-    BITMASK            = 0x1FD7F    // Full bitmask (1'1111'1101'0111'1111)
+    rx_ready           = (1 << 0),  // Receiver ready
+    rx_idle            = (1 << 1),  // Receiver idle
+    tx_ready           = (1 << 2),  // Transmitter ready for data
+    tx_idle            = (1 << 3),  // Transmitter idle
+    cts                = (1 << 4),  // Status of CTS signal
+    cts_delta          = (1 << 5),  // Change in CTS state
+    tx_disabled        = (1 << 6),  // Transmitter disabled
+    rx_overrun         = (1 << 8),  // Overrun Error interrupt flag
+    rx_break           = (1 << 10), // Received break
+    rx_break_delta     = (1 << 11), // Change in receive break detection
+    start              = (1 << 12), // Start detected
+    frame_error        = (1 << 13), // Framing Error interrupt flag
+    parity_error       = (1 << 14), // Parity Error interrupt flag
+    rx_noise           = (1 << 15), // Received Noise interrupt flag
+    autobaud_error     = (1 << 16), // Auto-baud Error
+    clear_all_bitmask  = 0x1F920,   // Clear all bitmask (1'1111'1001'0010'0000)
+    bitmask            = 0x1FD7F    // Full bitmask (1'1111'1101'0111'1111)
 };
 
 // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
 enum class Interrupt
 {
-    RX_READY       = (1 << 0),  // Receiver ready
-    TX_READY       = (1 << 2),  // Transmitter ready for data
-    TX_IDLE        = (1 << 3),  // Transmitter idle
-    CTS_DELTA      = (1 << 5),  // Change in CTS state
-    TX_DISABLEDT   = (1 << 6),  // Transmitter disabled
-    RX_OVERRUN     = (1 << 8),  // Overrun Error interrupt flag
-    RX_BREAK_DELTA = (1 << 11), // Change in receive break detection
-    START          = (1 << 12), // Start detected
-    FRAME_ERROR    = (1 << 13), // Framing Error interrupt flag
-    PARITY_ERROR   = (1 << 14), // Parity Error interrupt flag
-    RX_NOISE       = (1 << 15), // Received Noise interrupt flag
-    AUTOBAUD_ERROR = (1 << 16), // Auto-baud Error
-    BITMASK        = 0x1F96D    // Full bitmask (1'1111'1001'0110'1101)
+    rx_ready       = (1 << 0),  // Receiver ready
+    tx_ready       = (1 << 2),  // Transmitter ready for data
+    tx_idle        = (1 << 3),  // Transmitter idle
+    cts_delta      = (1 << 5),  // Change in CTS state
+    tx_disabledt   = (1 << 6),  // Transmitter disabled
+    rx_overrun     = (1 << 8),  // Overrun Error interrupt flag
+    rx_break_delta = (1 << 11), // Change in receive break detection
+    start          = (1 << 12), // Start detected
+    frame_error    = (1 << 13), // Framing Error interrupt flag
+    parity_error   = (1 << 14), // Parity Error interrupt flag
+    rx_noise       = (1 << 15), // Received Noise interrupt flag
+    autobaud_error = (1 << 16), // Auto-baud Error
+    bitmask        = 0x1F96D    // Full bitmask (1'1111'1001'0110'1101)
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::BITMASK))
-BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::bitmask))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::bitmask))
 
 } // namespace private_usart
 
@@ -149,32 +149,32 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
         // Data length selection (defined to map the CFG register directly)
         enum class DataBits
         {
-            BITS_7 = (0 << 2),  // USART 7 bit data mode
-            BITS_8 = (1 << 2),  // USART 8 bit data mode
-            BITS_9 = (2 << 2)   // USART 9 bit data mode
+            bits_7 = (0 << 2),  // USART 7 bit data mode
+            bits_8 = (1 << 2),  // USART 8 bit data mode
+            bits_9 = (2 << 2)   // USART 9 bit data mode
         };
 
         // Stop bits selection (defined to map the CFG register directly)
         enum class StopBits
         {
-            BITS_1 = (0 << 6),  // USART 1 stop bit
-            BITS_2 = (1 << 6)   // USART 2 stop bits
+            bits_1 = (0 << 6),  // USART 1 stop bit
+            bits_2 = (1 << 6)   // USART 2 stop bits
         };
 
         // Parity selection (defined to map the CFG register directly)
         enum class Parity
         {
-            NONE = (0 << 4),    // USART no parity
-            EVEN = (2 << 4),    // USART even parity select
-            ODD  = (3 << 4)     // USART odd parity select
+            none = (0 << 4),    // USART no parity
+            even = (2 << 4),    // USART even parity select
+            odd  = (3 << 4)     // USART odd parity select
         };
 
         struct Config
         {
             int32_t  baudrate  = 9600;
-            DataBits data_bits = DataBits::BITS_8;
-            StopBits stop_bits = StopBits::BITS_1;
-            Parity   parity    = Parity::NONE;
+            DataBits data_bits = DataBits::bits_8;
+            StopBits stop_bits = StopBits::bits_1;
+            Parity   parity    = Parity::none;
         };
 
         // Type safe accessor to STAT register
@@ -207,55 +207,55 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
             switch(name)
             {
-                case Name::USART0: m_usart = LPC_USART0;
-                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::USART0,
-                                                                            ClockDriver::PeripheralClockSource::FRG0_CLK);
-                                   ClockDriver::enable(ClockDriver::Peripheral::USART0);
-                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART0);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U0_RXD_I, rxd);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U0_TXD_O, txd);
+                case Name::usart0: m_usart = LPC_USART0;
+                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::usart0,
+                                                                            ClockDriver::PeripheralClockSource::frg0_clk);
+                                   ClockDriver::enable(ClockDriver::Peripheral::usart0);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::usart0);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u0_rxd_i, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u0_txd_o, txd);
                                    break;
 
-                case Name::USART1: m_usart = LPC_USART1;
-                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::USART1,
-                                                                            ClockDriver::PeripheralClockSource::FRG0_CLK);
-                                   ClockDriver::enable(ClockDriver::Peripheral::USART1);
-                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART1);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U1_RXD_I, rxd);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U1_TXD_O, txd);
+                case Name::usart1: m_usart = LPC_USART1;
+                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::usart1,
+                                                                            ClockDriver::PeripheralClockSource::frg0_clk);
+                                   ClockDriver::enable(ClockDriver::Peripheral::usart1);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::usart1);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u1_rxd_i, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u1_txd_o, txd);
                                    break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: m_usart = LPC_USART2;
-                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::USART2,
-                                                                            ClockDriver::PeripheralClockSource::FRG0_CLK);
-                                   ClockDriver::enable(ClockDriver::Peripheral::USART2);
-                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART2);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U2_RXD_I, rxd);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U2_TXD_O, txd);
+                case Name::usart2: m_usart = LPC_USART2;
+                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::usart2,
+                                                                            ClockDriver::PeripheralClockSource::frg0_clk);
+                                   ClockDriver::enable(ClockDriver::Peripheral::usart2);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::usart2);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u2_rxd_i, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u2_txd_o, txd);
                                    break;
 
-                case Name::USART3: m_usart = LPC_USART3;
-                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::USART3,
-                                                                            ClockDriver::PeripheralClockSource::FRG0_CLK);
-                                   ClockDriver::enable(ClockDriver::Peripheral::USART3);
-                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART3);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U3_RXD_I, rxd);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U3_TXD_O, txd);
+                case Name::usart3: m_usart = LPC_USART3;
+                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::usart3,
+                                                                            ClockDriver::PeripheralClockSource::frg0_clk);
+                                   ClockDriver::enable(ClockDriver::Peripheral::usart3);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::usart3);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u3_rxd_i, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u3_txd_o, txd);
                                    break;
 
-                case Name::USART4: m_usart = LPC_USART4;
-                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::USART4,
-                                                                            ClockDriver::PeripheralClockSource::FRG0_CLK);
-                                   ClockDriver::enable(ClockDriver::Peripheral::USART4);
-                                   PowerDriver::reset(PowerDriver::ResetPeripheral::USART4);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U4_RXD_I, rxd);
-                                   SwmDriver::assign(SwmDriver::PinMovable::U4_TXD_O, txd);
+                case Name::usart4: m_usart = LPC_USART4;
+                                   ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::usart4,
+                                                                            ClockDriver::PeripheralClockSource::frg0_clk);
+                                   ClockDriver::enable(ClockDriver::Peripheral::usart4);
+                                   PowerDriver::reset(PowerDriver::ResetPeripheral::usart4);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u4_rxd_i, rxd);
+                                   SwmDriver::assign(SwmDriver::PinMovable::u4_txd_o, txd);
                                    break;
 #endif
             };
 
-            PinDriver::set_mode(txd, PinDriver::FunctionMode::HIZ);
-            PinDriver::set_mode(rxd, PinDriver::FunctionMode::PULL_UP);
+            PinDriver::set_mode(txd, PinDriver::FunctionMode::hiz);
+            PinDriver::set_mode(rxd, PinDriver::FunctionMode::pull_up);
 
             disable_irq();
 
@@ -263,7 +263,7 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
             m_usart->CTL = 0;
 
             // Clear all status bits
-            clear_status(Status::CLEAR_ALL_BITMASK);
+            clear_status(Status::clear_all_bitmask);
 
             set_format(config.data_bits, config.stop_bits, config.parity);
             set_baudrate(config.baudrate);
@@ -279,20 +279,20 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
             // Disable peripheral clock sources and interrupts
             switch(name)
             {
-                case Name::USART0: ClockDriver::disable(ClockDriver::Peripheral::USART0);
+                case Name::usart0: ClockDriver::disable(ClockDriver::Peripheral::usart0);
                                    NVIC_DisableIRQ(USART0_IRQn);
                                    break;
-                case Name::USART1: ClockDriver::disable(ClockDriver::Peripheral::USART1);
+                case Name::usart1: ClockDriver::disable(ClockDriver::Peripheral::usart1);
                                    NVIC_DisableIRQ(USART1_IRQn);
                                    break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: ClockDriver::disable(ClockDriver::Peripheral::USART2);
+                case Name::usart2: ClockDriver::disable(ClockDriver::Peripheral::usart2);
                                    NVIC_DisableIRQ(USART2_IRQn);
                                    break;
-                case Name::USART3: ClockDriver::disable(ClockDriver::Peripheral::USART3);
+                case Name::usart3: ClockDriver::disable(ClockDriver::Peripheral::usart3);
                                    /* DO NOT DISABLE SHARED INTERRUPTS */     // PININT6 / USART3 shared interrupt
                                    break;
-                case Name::USART4: ClockDriver::disable(ClockDriver::Peripheral::USART4);
+                case Name::usart4: ClockDriver::disable(ClockDriver::Peripheral::usart4);
                                    /* DO NOT DISABLE SHARED INTERRUPTS */     // PININT7 / USART4 shared interrupt
                                    break;
 #endif
@@ -325,7 +325,7 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
             }
 
             // Set new data bits
-            m_usart->CFG = (m_usart->CFG & ~CFG_DATALEN_BITMASK) | static_cast<uint32_t>(data_bits);
+            m_usart->CFG = (m_usart->CFG & ~cfg_datalen_bitmask) | static_cast<uint32_t>(data_bits);
 
             if(enabled == true)
             {
@@ -351,7 +351,7 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
             }
 
             // Set new stop bits
-            m_usart->CFG = (m_usart->CFG & ~CFG_STOPLEN_BITMASK) | static_cast<uint32_t>(stop_bits);
+            m_usart->CFG = (m_usart->CFG & ~cfg_stoplen_bitmask) | static_cast<uint32_t>(stop_bits);
 
             if(enabled == true)
             {
@@ -377,7 +377,7 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
             }
 
             // Set new parity
-            m_usart->CFG = (m_usart->CFG & ~CFG_PARITY_BITMASK) | static_cast<uint32_t>(parity);
+            m_usart->CFG = (m_usart->CFG & ~cfg_parity_bitmask) | static_cast<uint32_t>(parity);
 
             if(enabled == true)
             {
@@ -436,20 +436,20 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
         // -------- ENABLE / DISABLE ------------------------------------------
 
         // Enable peripheral
-        void enable() { m_usart->CFG |= CFG_ENABLE; }
+        void enable() { m_usart->CFG |= cfg_enable; }
 
         // Disable peripheral
-        void disable() { m_usart->CFG &= ~CFG_ENABLE; }
+        void disable() { m_usart->CFG &= ~cfg_enable; }
 
         // Gets the enable state
-        bool is_enabled() const { return (m_usart->CFG & CFG_ENABLE) != 0; }
+        bool is_enabled() const { return (m_usart->CFG & cfg_enable) != 0; }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        bool is_rx_ready() const { return (get_status() & Status::RX_READY) != 0; }
-        bool is_rx_idle () const { return (get_status() & Status::RX_IDLE ) != 0; }
-        bool is_tx_ready() const { return (get_status() & Status::TX_READY) != 0; }
-        bool is_tx_idle () const { return (get_status() & Status::TX_IDLE ) != 0; }
+        bool is_rx_ready() const { return (get_status() & Status::rx_ready) != 0; }
+        bool is_rx_idle () const { return (get_status() & Status::rx_idle ) != 0; }
+        bool is_tx_ready() const { return (get_status() & Status::tx_ready) != 0; }
+        bool is_tx_idle () const { return (get_status() & Status::tx_idle ) != 0; }
 
         StatusBitmask get_status() const
         {
@@ -458,7 +458,7 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
         void clear_status(const StatusBitmask bitmask)
         {
-            m_usart->STAT = (bitmask & Status::CLEAR_ALL_BITMASK).bits();
+            m_usart->STAT = (bitmask & Status::clear_all_bitmask).bits();
         }
 
         // -------- INTERRUPTS ------------------------------------------------
@@ -486,12 +486,12 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
             switch(name)
             {
-                case Name::USART0: NVIC_EnableIRQ(USART0_IRQn);         break;
-                case Name::USART1: NVIC_EnableIRQ(USART1_IRQn);         break;
+                case Name::usart0: NVIC_EnableIRQ(USART0_IRQn);         break;
+                case Name::usart1: NVIC_EnableIRQ(USART1_IRQn);         break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: NVIC_EnableIRQ(USART2_IRQn);         break;
-                case Name::USART3: NVIC_EnableIRQ(PININT6_USART3_IRQn); break; // PININT6 / USART3 shared interrupt
-                case Name::USART4: NVIC_EnableIRQ(PININT7_USART4_IRQn); break; // PININT7 / USART4 shared interrupt
+                case Name::usart2: NVIC_EnableIRQ(USART2_IRQn);         break;
+                case Name::usart3: NVIC_EnableIRQ(PININT6_USART3_IRQn); break; // PININT6 / USART3 shared interrupt
+                case Name::usart4: NVIC_EnableIRQ(PININT7_USART4_IRQn); break; // PININT7 / USART4 shared interrupt
 #endif
                 default:                                                break;
             }
@@ -503,12 +503,12 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
             switch(name)
             {
-                case Name::USART0: NVIC_DisableIRQ(USART0_IRQn);          break;
-                case Name::USART1: NVIC_DisableIRQ(USART1_IRQn);          break;
+                case Name::usart0: NVIC_DisableIRQ(USART0_IRQn);          break;
+                case Name::usart1: NVIC_DisableIRQ(USART1_IRQn);          break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: NVIC_DisableIRQ(USART2_IRQn);          break;
-                case Name::USART3: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // PININT6 / USART3 shared interrupt
-                case Name::USART4: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // PININT7 / USART4 shared interrupt
+                case Name::usart2: NVIC_DisableIRQ(USART2_IRQn);          break;
+                case Name::usart3: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // PININT6 / USART3 shared interrupt
+                case Name::usart4: /* DO NOT DISABLE SHARED INTERRUPTS */ break; // PININT7 / USART4 shared interrupt
 #endif
                 default:                                                  break;
             }
@@ -520,12 +520,12 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
             switch(name)
             {
-                case Name::USART0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0);         break;
-                case Name::USART1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0);         break;
+                case Name::usart0: return (NVIC_GetEnableIRQ(USART0_IRQn) != 0);         break;
+                case Name::usart1: return (NVIC_GetEnableIRQ(USART1_IRQn) != 0);         break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0);         break;
-                case Name::USART3: return (NVIC_GetEnableIRQ(PININT6_USART3_IRQn) != 0); break; // PININT6 / USART3 shared interrupt
-                case Name::USART4: return (NVIC_GetEnableIRQ(PININT7_USART4_IRQn) != 0); break; // PININT7 / USART4 shared interrupt
+                case Name::usart2: return (NVIC_GetEnableIRQ(USART2_IRQn) != 0);         break;
+                case Name::usart3: return (NVIC_GetEnableIRQ(PININT6_USART3_IRQn) != 0); break; // PININT6 / USART3 shared interrupt
+                case Name::usart4: return (NVIC_GetEnableIRQ(PININT7_USART4_IRQn) != 0); break; // PININT7 / USART4 shared interrupt
 #endif
                 default:           return false;                                         break;
             }
@@ -537,12 +537,12 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
             switch(name)
             {
-                case Name::USART0: NVIC_SetPriority(USART0_IRQn,         irq_priority); break;
-                case Name::USART1: NVIC_SetPriority(USART1_IRQn,         irq_priority); break;
+                case Name::usart0: NVIC_SetPriority(USART0_IRQn,         irq_priority); break;
+                case Name::usart1: NVIC_SetPriority(USART1_IRQn,         irq_priority); break;
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-                case Name::USART2: NVIC_SetPriority(USART2_IRQn,         irq_priority); break;
-                case Name::USART3: NVIC_SetPriority(PININT6_USART3_IRQn, irq_priority); break; // PININT6 / USART3 shared interrupt
-                case Name::USART4: NVIC_SetPriority(PININT7_USART4_IRQn, irq_priority); break; // PININT7 / USART4 shared interrupt
+                case Name::usart2: NVIC_SetPriority(USART2_IRQn,         irq_priority); break;
+                case Name::usart3: NVIC_SetPriority(PININT6_USART3_IRQn, irq_priority); break; // PININT6 / USART3 shared interrupt
+                case Name::usart4: NVIC_SetPriority(PININT7_USART4_IRQn, irq_priority); break; // PININT7 / USART4 shared interrupt
 #endif
                 default:                                                                break;
             }
@@ -569,22 +569,22 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
         // USART peripheral names selection
         enum class Name
         {
-            USART0 = 0,
-            USART1,
+            usart0 = 0,
+            usart1,
 #if (TARGET_USART_COUNT == 5) /* __LPC845__ */
-            USART2,
-            USART3,
-            USART4
+            usart2,
+            usart3,
+            usart4
 #endif
         };
 
         // USART Configuration Register (CFG) bits and masks
         enum CFG : uint32_t
         {
-            CFG_ENABLE          = (1 << 0),     // USART enable
-            CFG_DATALEN_BITMASK = (3 << 2),     // USART data mode bitmask
-            CFG_STOPLEN_BITMASK = (1 << 6),     // USART stop bits bitmask
-            CFG_PARITY_BITMASK  = (3 << 4)      // USART parity bitmask
+            cfg_enable          = (1 << 0),     // USART enable
+            cfg_datalen_bitmask = (3 << 2),     // USART data mode bitmask
+            cfg_stoplen_bitmask = (1 << 6),     // USART stop bits bitmask
+            cfg_parity_bitmask  = (3 << 4)      // USART parity bitmask
         };
 
         // --------------------------------------------------------------------

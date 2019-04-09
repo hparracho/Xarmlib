@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    29 November 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,9 +56,9 @@ class PortDriver
         // Port names according to the target package
         enum class Name
         {
-            PORT0 = 0,
+            port0 = 0,
 #if (TARGET_PORT_COUNT  == 2)
-            PORT1
+            port1
 #endif
         };
 
@@ -92,7 +92,7 @@ class PortDriver
 
         static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Ones configure as outputs
 
@@ -108,7 +108,7 @@ class PortDriver
 
         static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeros configure as inputs
 
@@ -145,7 +145,7 @@ class PortDriver
 
         static void set_mask(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
@@ -163,7 +163,7 @@ class PortDriver
 
         static void clear_mask(const PinDriver::Name pin)
         {
-            assert(pin >= PinDriver::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding

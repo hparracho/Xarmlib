@@ -2,7 +2,7 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    17 December 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -60,10 +60,10 @@ void UsartDriver::initialize_frg0()
     constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
 
     // Select main clock as the source for FRG0
-    ClockDriver::set_frg_clock_source(ClockDriver::FrgClockSelect::FRG0, ClockDriver::FrgClockSource::MAIN_CLK);
+    ClockDriver::set_frg_clock_source(ClockDriver::FrgClockSelect::frg0, ClockDriver::FrgClockSource::main_clk);
 
     // Set the FRG0 fractional divider
-    ClockDriver::set_frg_clock_divider(ClockDriver::FrgClockSelect::FRG0, mul, div);
+    ClockDriver::set_frg_clock_divider(ClockDriver::FrgClockSelect::frg0, mul, div);
 }
 
 
@@ -95,7 +95,7 @@ using namespace xarmlib::targets::lpc84x;
 
 extern "C" void USART0_IRQHandler(void)
 {
-    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART0);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart0);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -109,7 +109,7 @@ extern "C" void USART0_IRQHandler(void)
 
 extern "C" void USART1_IRQHandler(void)
 {
-    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART1);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart1);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);
@@ -125,7 +125,7 @@ extern "C" void USART1_IRQHandler(void)
 
 extern "C" void USART2_IRQHandler(void)
 {
-    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::USART2);
+    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart2);
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);

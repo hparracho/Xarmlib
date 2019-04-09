@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    29 November 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -61,186 +61,186 @@ class ClockDriver
         enum class Peripheral
         {
             // SYSAHBCLKCTRL0, System clock control 0 register
-            SYS = 0,
-            ROM,
-            RAM,
+            sys = 0,
+            rom,
+            ram,
          // RESERVED
-            FLASH = 4,
-            I2C0,
-            GPIO0,
-            SWM,
-            SCT,
-            WKT,
-            MRT,
-            SPI0,
-            SPI1,
-            CRC,
-            USART0,
-            USART1,
-            USART2,
-            WWDT,
-            IOCON,
-            ACOMP,
-            GPIO1,
-            I2C1,
-            I2C2,
-            I2C3,
-            ADC,
-            CTIMER0,
-            MTB,
-            DAC0,
-            GPIOINT,
-            DMA,
-            USART3,
-            USART4,
+            flash = 4,
+            i2c0,
+            gpio0,
+            swm,
+            sct,
+            wkt,
+            mrt,
+            spi0,
+            spi1,
+            crc,
+            usart0,
+            usart1,
+            usart2,
+            wwdt,
+            iocon,
+            acomp,
+            gpio1,
+            i2c1,
+            i2c2,
+            i2c3,
+            adc,
+            ctimer0,
+            mtb,
+            dac0,
+            gpioint,
+            dma,
+            usart3,
+            usart4,
 
             // SYSAHBCLKCTRL1, System clock control 1 register
-            CAPT = 32,
-            DAC1,
+            capt = 32,
+            dac1,
         };
 
         // FRO (internal oscillator) available frequencies
         enum class FroFrequency
         {
-            FREQ_18MHZ = 0,
-            FREQ_24MHZ,
-            FREQ_30MHZ
+            freq_18mhz = 0,
+            freq_24mhz,
+            freq_30mhz
         };
 
         // External clock source selection
         enum class ExternalClockSource
         {
-            SYS_OSC_CLK = 0,        // System oscillator clock input (crystal)
-            CLK_IN,                 // Clock In pin input
+            sys_osc_clk = 0,        // System oscillator clock input (crystal)
+            clk_in,                 // Clock In pin input
         };
 
         // System PLL clock source selection
         enum class SystemPllSource
         {
-            FRO = 0,                // Internal oscillator
-            EXTERNAL_CLK,           // External clock input
-            WDT_OSC_CLK,            // Watchdog oscillator
-            FRO_DIV                 // FRO clock divider
+            fro = 0,                // Internal oscillator
+            external_clk,           // External clock input
+            wdt_osc_clk,            // Watchdog oscillator
+            fro_div                 // FRO clock divider
         };
 
         // Main clock source selection
         enum class MainClockSource
         {
-            FRO = 0,                // Internal oscillator
-            EXTERNAL_CLK,           // External clock input
-            WDT_OSC_CLK,            // Watchdog oscillator
-            FRO_DIV                 // FRO clock divider
+            fro = 0,                // Internal oscillator
+            external_clk,           // External clock input
+            wdt_osc_clk,            // Watchdog oscillator
+            fro_div                 // FRO clock divider
         };
 
         // Main clock PLL source selection
         enum class MainClockPllSource
         {
-            MAIN_CLK_PRE_PLL = 0,   // Main clock select output
-            SYS_PLL_CLK,            // System PLL output
-            NONE = 3                // No clock input
+            main_clk_pre_pll = 0,   // Main clock select output
+            sys_pll_clk,            // System PLL output
+            none = 3                // No clock input
         };
 
         // CLKOUT clock source selection
         enum class ClockoutSource
         {
-            FRO = 0,                // Internal oscillator
-            MAIN_CLK,               // Main system clock
-            SYS_PLL_CLK,            // System PLL output
-            EXTERNAL_CLK,           // External clock
-            WDT_OSC_CLK,            // Watchdog oscillator
-            NONE = 7                // No clock input
+            fro = 0,                // Internal oscillator
+            main_clk,               // Main system clock
+            sys_pll_clk,            // System PLL output
+            external_clk,           // External clock
+            wdt_osc_clk,            // Watchdog oscillator
+            none = 7                // No clock input
         };
 
         // SCT clock source selection
         enum class SctClockSource
         {
-            FRO = 0,                // Internal oscillator
-            MAIN_CLK,               // Main system clock
-            SYS_PLL_CLK,            // System PLL output
-            NONE = 3                // No clock input
+            fro = 0,                // Internal oscillator
+            main_clk,               // Main system clock
+            sys_pll_clk,            // System PLL output
+            none = 3                // No clock input
         };
 
         // CapTouch clock source selection
         enum class CaptClockSource
         {
-            FRO = 0,                // Internal oscillator
-            MAIN_CLK,               // Main system clock
-            SYS_PLL_CLK,            // System PLL output
-            FRO_DIV,                // FRO clock divider
-            WDT_OSC_CLK,            // Watchdog oscillator
-            NONE = 7                // No clock input
+            fro = 0,                // Internal oscillator
+            main_clk,               // Main system clock
+            sys_pll_clk,            // System PLL output
+            fro_div,                // FRO clock divider
+            wdt_osc_clk,            // Watchdog oscillator
+            none = 7                // No clock input
         };
 
         // ADC clock source selection
         enum class AdcClockSource
         {
-            FRO = 0,                // Internal oscillator
-            SYS_PLL_CLK,            // System PLL output
-            NONE = 3                // No clock input
+            fro = 0,                // Internal oscillator
+            sys_pll_clk,            // System PLL output
+            none = 3                // No clock input
         };
 
         // Fractional Rate Generator selection
         enum class FrgClockSelect
         {
-            FRG0 = 0,
-            FRG1
+            frg0 = 0,
+            frg1
         };
 
         // Fractional Rate Generator clock source selection
         enum class FrgClockSource
         {
-            FRO = 0,                // Internal oscillator
-            MAIN_CLK,               // Main system clock
-            SYS_PLL_CLK,            // System PLL output
-            NONE = 3                // No clock input
+            fro = 0,                // Internal oscillator
+            main_clk,               // Main system clock
+            sys_pll_clk,            // System PLL output
+            none = 3                // No clock input
         };
 
         // Peripheral to select respective clock source
         enum class PeripheralClockSelect
         {
-            USART0 = 0,
-            USART1,
-            USART2,
-            USART3,
-            USART4,
-            I2C0,
-            I2C1,
-            I2C2,
-            I2C3,
-            SPI0,
-            SPI1
+            usart0 = 0,
+            usart1,
+            usart2,
+            usart3,
+            usart4,
+            i2c0,
+            i2c1,
+            i2c2,
+            i2c3,
+            spi0,
+            spi1
         };
 
         // Peripheral clock source selection
         enum class PeripheralClockSource
         {
-            FRO = 0,                // Internal oscillator
-            MAIN_CLK,               // Main system clock
-            FRG0_CLK,               // FRG0 output
-            FRG1_CLK,               // FRG1 output
-            FRO_DIV,                // FRO clock divider
-            NONE = 7                // No clock input
+            fro = 0,                // Internal oscillator
+            main_clk,               // Main system clock
+            frg0_clk,               // FRG0 output
+            frg1_clk,               // FRG1 output
+            fro_div,                // FRO clock divider
+            none = 7                // No clock input
         };
 
         // Watchdog oscillator analog output frequency selection (plus or minus 40%)
         enum class WatchdogFrequency
         {
-            OSC_ILLEGAL = 0,
-            OSC_0_60,               // 0.6  MHz watchdog rate
-            OSC_1_05,               // 1.05 MHz watchdog rate
-            OSC_1_40,               // 1.4  MHz watchdog rate
-            OSC_1_75,               // 1.75 MHz watchdog rate
-            OSC_2_10,               // 2.1  MHz watchdog rate
-            OSC_2_40,               // 2.4  MHz watchdog rate
-            OSC_2_70,               // 2.7  MHz watchdog rate
-            OSC_3_00,               // 3.0  MHz watchdog rate
-            OSC_3_25,               // 3.25 MHz watchdog rate
-            OSC_3_50,               // 3.5  MHz watchdog rate
-            OSC_3_75,               // 3.75 MHz watchdog rate
-            OSC_4_00,               // 4.0  MHz watchdog rate
-            OSC_4_20,               // 4.2  MHz watchdog rate
-            OSC_4_40,               // 4.4  MHz watchdog rate
-            OSC_4_60                // 4.6  MHz watchdog rate
+            osc_illegal = 0,
+            osc_0_60,               // 0.6  MHz watchdog rate
+            osc_1_05,               // 1.05 MHz watchdog rate
+            osc_1_40,               // 1.4  MHz watchdog rate
+            osc_1_75,               // 1.75 MHz watchdog rate
+            osc_2_10,               // 2.1  MHz watchdog rate
+            osc_2_40,               // 2.4  MHz watchdog rate
+            osc_2_70,               // 2.7  MHz watchdog rate
+            osc_3_00,               // 3.0  MHz watchdog rate
+            osc_3_25,               // 3.25 MHz watchdog rate
+            osc_3_50,               // 3.5  MHz watchdog rate
+            osc_3_75,               // 3.75 MHz watchdog rate
+            osc_4_00,               // 4.0  MHz watchdog rate
+            osc_4_20,               // 4.2  MHz watchdog rate
+            osc_4_40,               // 4.4  MHz watchdog rate
+            osc_4_60                // 4.6  MHz watchdog rate
         };
 
         // Helper structure for automatic Watchdog clock configuration
@@ -255,13 +255,13 @@ class ClockDriver
         // NOTE: The clock selection is actually reversed. This is not a bug!
         enum class IoconClockDividerSelect
         {
-            CLKDIV6 = 0,            // IOCONCLKDIV6
-            CLKDIV5,                // IOCONCLKDIV5
-            CLKDIV4,                // IOCONCLKDIV4
-            CLKDIV3,                // IOCONCLKDIV3
-            CLKDIV2,                // IOCONCLKDIV2
-            CLKDIV1,                // IOCONCLKDIV1
-            CLKDIV0                 // IOCONCLKDIV0
+            clkdiv6 = 0,            // IOCONCLKDIV6
+            clkdiv5,                // IOCONCLKDIV5
+            clkdiv4,                // IOCONCLKDIV4
+            clkdiv3,                // IOCONCLKDIV3
+            clkdiv2,                // IOCONCLKDIV2
+            clkdiv1,                // IOCONCLKDIV1
+            clkdiv0                 // IOCONCLKDIV0
         };
 
         // --------------------------------------------------------------------
@@ -362,9 +362,9 @@ class ClockDriver
 
             switch(fro_frequency)
             {
-                case FroFrequency::FREQ_18MHZ: freq_khz = 18000; /*kHz*/ break;
-                case FroFrequency::FREQ_30MHZ: freq_khz = 30000; /*kHz*/ break;
-                case FroFrequency::FREQ_24MHZ:
+                case FroFrequency::freq_18mhz: freq_khz = 18000; /*kHz*/ break;
+                case FroFrequency::freq_30mhz: freq_khz = 30000; /*kHz*/ break;
+                case FroFrequency::freq_24mhz:
                 default:                       freq_khz = 24000; /*kHz*/ break;
             }
 
@@ -372,11 +372,11 @@ class ClockDriver
 
             if(fro_direct)
             {
-                LPC_SYSCON->FROOSCCTRL |= FROOSCCTRL_FRO_DIRECT;
+                LPC_SYSCON->FROOSCCTRL |= frooscctrl_fro_direct;
             }
             else
             {
-                LPC_SYSCON->FROOSCCTRL &= ~FROOSCCTRL_FRO_DIRECT;
+                LPC_SYSCON->FROOSCCTRL &= ~frooscctrl_fro_direct;
             }
 
             // Enable FRO direct update (change from 0 to 1)
@@ -400,13 +400,13 @@ class ClockDriver
 
             switch(fro_frequency)
             {
-                case FroFrequency::FREQ_18MHZ: freq_hz = 18000000; /*Hz*/ break;
-                case FroFrequency::FREQ_30MHZ: freq_hz = 30000000; /*Hz*/ break;
-                case FroFrequency::FREQ_24MHZ:
+                case FroFrequency::freq_18mhz: freq_hz = 18000000; /*Hz*/ break;
+                case FroFrequency::freq_30mhz: freq_hz = 30000000; /*Hz*/ break;
+                case FroFrequency::freq_24mhz:
                 default:                       freq_hz = 24000000; /*Hz*/ break;
             }
 
-            if((LPC_SYSCON->FROOSCCTRL & FROOSCCTRL_FRO_DIRECT) == 0)
+            if((LPC_SYSCON->FROOSCCTRL & frooscctrl_fro_direct) == 0)
             {
                 uint32_t faim_word0 {};
 
@@ -457,8 +457,8 @@ class ClockDriver
             // The frequencies are fixed and defined in 'lpc84x_target.hpp'
             switch(get_external_clock_source())
             {
-                case ExternalClockSource::SYS_OSC_CLK: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
-                case ExternalClockSource::CLK_IN:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
+                case ExternalClockSource::sys_osc_clk: return SystemDriver::CRYSTAL_12MHZ_FREQ; break; // System oscillator (crystal)
+                case ExternalClockSource::clk_in:      return SystemDriver::CLK_INPUT_PIN_FREQ; break; // CLK_IN (clock input pin)
                 default:                               return 0;                                break;
             }
         }
@@ -498,10 +498,10 @@ class ClockDriver
         {
             switch(get_system_pll_source())
             {
-                case SystemPllSource::FRO:          return get_fro_frequency();            break;
-                case SystemPllSource::EXTERNAL_CLK: return get_external_clock_frequency(); break;
-                case SystemPllSource::WDT_OSC_CLK:  return get_watchdog_osc_frequency();   break;
-                case SystemPllSource::FRO_DIV:      return get_fro_div_frequency();        break;
+                case SystemPllSource::fro:          return get_fro_frequency();            break;
+                case SystemPllSource::external_clk: return get_external_clock_frequency(); break;
+                case SystemPllSource::wdt_osc_clk:  return get_watchdog_osc_frequency();   break;
+                case SystemPllSource::fro_div:      return get_fro_div_frequency();        break;
                 default:                            return 0;                              break;
             }
         }
@@ -547,10 +547,10 @@ class ClockDriver
         {
             switch(get_main_clock_source())
             {
-                case MainClockSource::FRO:          return get_fro_frequency();            break;
-                case MainClockSource::EXTERNAL_CLK: return get_external_clock_frequency(); break;
-                case MainClockSource::WDT_OSC_CLK:  return get_watchdog_osc_frequency();   break;
-                case MainClockSource::FRO_DIV:      return get_fro_div_frequency();        break;
+                case MainClockSource::fro:          return get_fro_frequency();            break;
+                case MainClockSource::external_clk: return get_external_clock_frequency(); break;
+                case MainClockSource::wdt_osc_clk:  return get_watchdog_osc_frequency();   break;
+                case MainClockSource::fro_div:      return get_fro_div_frequency();        break;
                 default:                            return 0;                              break;
             }
         }
@@ -581,8 +581,8 @@ class ClockDriver
         {
             switch(get_main_clock_pll_source())
             {
-                 case MainClockPllSource::MAIN_CLK_PRE_PLL: return get_main_clock_frequency();     break;
-                 case MainClockPllSource::SYS_PLL_CLK:      return get_system_pll_out_frequency(); break;
+                 case MainClockPllSource::main_clk_pre_pll: return get_main_clock_frequency();     break;
+                 case MainClockPllSource::sys_pll_clk:      return get_system_pll_out_frequency(); break;
                  default:                                   return 0;                              break;
             }
         }
@@ -648,7 +648,7 @@ class ClockDriver
         // Set clock source
         static void set_frg_clock_source(const FrgClockSelect frg, const FrgClockSource source)
         {
-            if(frg == FrgClockSelect::FRG0)
+            if(frg == FrgClockSelect::frg0)
             {
                 LPC_SYSCON->FRG0CLKSEL = static_cast<uint32_t>(source);
             }
@@ -661,7 +661,7 @@ class ClockDriver
         // Get clock source
         static FrgClockSource get_frg_clock_source(const FrgClockSelect frg)
         {
-            if(frg == FrgClockSelect::FRG0)
+            if(frg == FrgClockSelect::frg0)
             {
                 return static_cast<FrgClockSource>(LPC_SYSCON->FRG0CLKSEL & 0x03);
             }
@@ -679,7 +679,7 @@ class ClockDriver
         //        fractional baud rate generator.
         static void set_frg_clock_divider(const FrgClockSelect frg, const uint8_t mult, const uint8_t div)
         {
-            if(frg == FrgClockSelect::FRG0)
+            if(frg == FrgClockSelect::frg0)
             {
                 LPC_SYSCON->FRG0MULT = static_cast<uint32_t>(mult);
                 LPC_SYSCON->FRG0DIV  = static_cast<uint32_t>(div);
@@ -696,9 +696,9 @@ class ClockDriver
         {
             switch(get_frg_clock_source(frg))
             {
-                case FrgClockSource::FRO:         return get_fro_frequency();            break;
-                case FrgClockSource::MAIN_CLK:    return get_main_clock_pll_frequency(); break;
-                case FrgClockSource::SYS_PLL_CLK: return get_system_pll_out_frequency(); break;
+                case FrgClockSource::fro:         return get_fro_frequency();            break;
+                case FrgClockSource::main_clk:    return get_main_clock_pll_frequency(); break;
+                case FrgClockSource::sys_pll_clk: return get_system_pll_out_frequency(); break;
                 default:                          return 0;                              break;
             }
         }
@@ -713,7 +713,7 @@ class ClockDriver
             {
                 int32_t mult, div;
 
-                if(frg == FrgClockSelect::FRG0)
+                if(frg == FrgClockSelect::frg0)
                 {
                     mult = static_cast<int32_t>(LPC_SYSCON->FRG0MULT & 0xFF);
                     div  = static_cast<int32_t>(LPC_SYSCON->FRG0DIV  & 0xFF);
@@ -758,11 +758,11 @@ class ClockDriver
         {
             switch(get_peripheral_clock_source(peripheral))
             {
-                case PeripheralClockSource::FRO:      return get_fro_frequency();                               break;
-                case PeripheralClockSource::MAIN_CLK: return get_main_clock_pll_frequency();                    break;
-                case PeripheralClockSource::FRG0_CLK: return get_frg_clock_out_frequency(FrgClockSelect::FRG0); break;
-                case PeripheralClockSource::FRG1_CLK: return get_frg_clock_out_frequency(FrgClockSelect::FRG1); break;
-                case PeripheralClockSource::FRO_DIV:  return get_fro_div_frequency();                           break;
+                case PeripheralClockSource::fro:      return get_fro_frequency();                               break;
+                case PeripheralClockSource::main_clk: return get_main_clock_pll_frequency();                    break;
+                case PeripheralClockSource::frg0_clk: return get_frg_clock_out_frequency(FrgClockSelect::frg0); break;
+                case PeripheralClockSource::frg1_clk: return get_frg_clock_out_frequency(FrgClockSelect::frg1); break;
+                case PeripheralClockSource::fro_div:  return get_fro_div_frequency();                           break;
                 default:                              return 0;                                                 break;
             }
         }
@@ -836,7 +836,7 @@ class ClockDriver
         // FRO Oscillator Control Register (FROOSCCTRL) bits
         enum FROOSCCTRL : uint32_t
         {
-            FROOSCCTRL_FRO_DIRECT = (1 << 17)
+            frooscctrl_fro_direct = (1 << 17)
         };
 
         // --------------------------------------------------------------------

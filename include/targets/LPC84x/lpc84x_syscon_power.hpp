@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    29 November 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -56,57 +56,57 @@ class PowerDriver
         enum class Peripheral
         {
             // PDRUNCFG, Power configuration register
-            FROOUT = 0,
-            FRO,
-            FLASH,
-            BOD,
-            ADC,
-            SYSOSC,
-            WDTOSC,
-            SYSPLL,
-            DAC0 = 13,
-            DAC1,
-            ACMP
+            froout = 0,
+            fro,
+            flash,
+            bod,
+            adc,
+            sysosc,
+            wdtosc,
+            syspll,
+            dac0 = 13,
+            dac1,
+            acmp
         };
 
         // Peripheral reset
         enum class ResetPeripheral
         {
             // PRESETCTRL0, Peripheral reset control 0 register
-            FLASH = 4,
-            I2C0,
-            GPIO0,
-            SWM,
-            SCT,
-            WKT,
-            MRT,
-            SPI0,
-            SPI1,
-            CRC,
-            USART0,
-            USART1,
-            USART2,
+            flash = 4,
+            i2c0,
+            gpio0,
+            swm,
+            sct,
+            wkt,
+            mrt,
+            spi0,
+            spi1,
+            crc,
+            usart0,
+            usart1,
+            usart2,
          // RESERVED
-            IOCON = 18,
-            ACOMP,
-            GPIO1,
-            I2C1,
-            I2C2,
-            I2C3,
-            ADC,
-            CTIMER0,
+            iocon = 18,
+            acomp,
+            gpio1,
+            i2c1,
+            i2c2,
+            i2c3,
+            adc,
+            ctimer0,
          // RESERVED
-            DAC0 = 27,
-            GPIOINT,
-            DMA,
-            USART3,
-            USART4,
+            dac0 = 27,
+            gpioint,
+            dma,
+            usart3,
+            usart4,
 
             // PRESETCTRL1, Peripheral reset control 1 register
-            CAPT = 32,
-            DAC1,
-            FRG0,
-            FRG1
+            capt = 32,
+            dac1,
+            frg0,
+            frg1
         };
 
         // --------------------------------------------------------------------
@@ -162,9 +162,9 @@ class BrownOutDriver
         enum class Level
         {
          // RESERVED        // Brown-out reset at 1.84V ~ 1.97V (RESERVED?)
-            LEVEL_1 = 1,    // Brown-out reset at 2.05V ~ 2.18V / interrupt at 2.25V ~ 2.38V
-            LEVEL_2,        // Brown-out reset at 2.35V ~ 2.47V / interrupt at 2.55V ~ 2.66V
-            LEVEL_3,        // Brown-out reset at 2.63V ~ 2.76V / interrupt at 2.84V ~ 2.92V
+            level_1 = 1,    // Brown-out reset at 2.05V ~ 2.18V / interrupt at 2.25V ~ 2.38V
+            level_2,        // Brown-out reset at 2.35V ~ 2.47V / interrupt at 2.55V ~ 2.66V
+            level_3,        // Brown-out reset at 2.63V ~ 2.76V / interrupt at 2.84V ~ 2.92V
         };
 
         // --------------------------------------------------------------------
