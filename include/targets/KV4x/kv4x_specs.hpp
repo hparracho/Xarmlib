@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_specs.hpp
 // @brief   Kinetis KV4x specification definitions.
-// @date    26 February 2019
+// @date    4 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -90,6 +90,7 @@
 #   define TARGET_DAC_COUNT                 (FSL_FEATURE_SOC_DAC_COUNT)
 #   define TARGET_ENC_COUNT                 (FSL_FEATURE_SOC_ENC_COUNT)
 #   define TARGET_FTM_COUNT                 (FSL_FEATURE_SOC_FTM_COUNT)
+#   define TARGET_I2C_COUNT                 (FSL_FEATURE_SOC_I2C_COUNT)
 #   define TARGET_PORT_COUNT                (FSL_FEATURE_SOC_GPIO_COUNT)
 #   define TARGET_PWM_COUNT                 (FSL_FEATURE_SOC_PWM_COUNT)
 #   define TARGET_SPI_COUNT                 (FSL_FEATURE_SOC_DSPI_COUNT)
