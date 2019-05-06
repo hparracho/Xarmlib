@@ -5,11 +5,11 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    29 March 2019
+// @date    6 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -529,6 +529,8 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
             // Assert if Rx FIFO is enabled (if it was previously configured)
             assert(result == 0);
 
+            (void)result;
+
             const FrameFormat    format     = static_cast<FrameFormat>(rx_frame.format);
             const FrameType      type       = static_cast<FrameType>(rx_frame.type);
             const FrameDataBytes data_bytes = static_cast<FrameDataBytes>(rx_frame.length);
@@ -558,6 +560,8 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
 
             // Assert write tx message buffer successfully
             assert(result == 0);
+
+            (void)result;
         }
 
         // -------- RX FIFO STATUS FLAGS --------------------------------------
