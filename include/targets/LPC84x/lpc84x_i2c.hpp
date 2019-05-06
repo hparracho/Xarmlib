@@ -2,7 +2,7 @@
 // @file    lpc84x_i2c.hpp
 // @brief   NXP LPC84x I2C class.
 // @note    Only master mode is implemented.
-// @date    30 April 2019
+// @date    6 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -291,7 +291,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
             std::ptrdiff_t buffer_count = 0;
 
             // Write slave address and RW bit to data register
-            master_write_data((slave_address << 1) | static_cast<uint8_t>(direction));
+            master_write_data(static_cast<uint8_t>((slave_address << 1)) | static_cast<uint8_t>(direction));
 
             // Enter to master transmitter mode
             send_start();
@@ -356,7 +356,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
                                     buffer_count = 0;
 
                                     // Write slave address and RW bit to data register
-                                    master_write_data((slave_address << 1) | static_cast<uint8_t>(TransferDirection::master_read));
+                                    master_write_data(static_cast<uint8_t>((slave_address << 1)) | static_cast<uint8_t>(TransferDirection::master_read));
 
                                     // Enter to Master Transmitter mode
                                     send_start();
@@ -582,15 +582,13 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
         // I2C1/I2C2/I2C3 (standard pins) -> -1 (automatic index given by the PeripheralRefCounter)
         static constexpr int32_t get_peripheral_index(const PinDriver::Name sda, const PinDriver::Name scl)
         {
-            if(sda == PinDriver::Name::p0_11)
+            if(sda == PinDriver::Name::p0_11 && scl == PinDriver::Name::p0_10)
             {
-                assert(scl == PinDriver::Name::p0_10);
-
                 return TARGET_I2C0_INDEX;
             }
             else
             {
-                assert(scl != PinDriver::Name::p0_10);
+                assert(sda != PinDriver::Name::p0_11 && scl != PinDriver::Name::p0_10);
 
                 return TARGET_I2C_INDEX;
             }
@@ -691,10 +689,9 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
             // SCL high time value: [2 - 9]
             // SCL low  time value: [2 - 9]
 
-            const int32_t scl_max = 18;
             const int32_t scl_min = 4;
 
-            assert(max_frequency >= (clock_freq / (scl_max * 65536)) &&  max_frequency <= (clock_freq / scl_min));
+            assert(max_frequency >= (clock_freq / (18 * 65536)) &&  max_frequency <= (clock_freq / scl_min));
 
             int32_t clkdiv = (clock_freq / (scl_min * max_frequency));
 
