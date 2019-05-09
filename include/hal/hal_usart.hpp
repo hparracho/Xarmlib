@@ -2,11 +2,11 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL interface class.
 // @notes   Synchronous mode not implemented.
-// @date    6 February 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -45,8 +45,8 @@ namespace hal
 
 
 
-template <typename TargetUartDriver>
-class UartHal : protected TargetUartDriver
+template <typename UartDriver>
+class UartBase : protected UartDriver
 {
     public:
 
@@ -54,71 +54,71 @@ class UartHal : protected TargetUartDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Config        = typename TargetUartDriver::Config;
+        using Config        = typename UartDriver::Config;
 
-        using Status        = typename TargetUartDriver::Status;
-        using StatusBitmask = typename TargetUartDriver::StatusBitmask;
+        using Status        = typename UartDriver::Status;
+        using StatusBitmask = typename UartDriver::StatusBitmask;
 
-        using IrqHandler    = typename TargetUartDriver::IrqHandler;
+        using IrqHandler    = typename UartDriver::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        UartHal(const xarmlib::PinHal::Name txd, const xarmlib::PinHal::Name rxd, const Config& config) : TargetUartDriver(txd, rxd, config)
+        UartBase(const hal::Pin::Name txd, const hal::Pin::Name rxd, const Config& config) : UartDriver(txd, rxd, config)
         {}
 
         // -------- BAUDRATE --------------------------------------------------
 
-        inline void set_baudrate(const int32_t baudrate) { TargetUartDriver::set_baudrate(baudrate); }
+        void set_baudrate(const int32_t baudrate) { UartDriver::set_baudrate(baudrate); }
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
-        inline void enable()           { TargetUartDriver::enable(); }
-        inline void disable()          { TargetUartDriver::disable(); }
-        inline bool is_enabled() const { return TargetUartDriver::is_enabled(); }
+        void enable()           { UartDriver::enable(); }
+        void disable()          { UartDriver::disable(); }
+        bool is_enabled() const { return UartDriver::is_enabled(); }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        inline bool is_rx_ready() const { return TargetUartDriver::is_rx_ready(); }
-        inline bool is_rx_idle () const { return TargetUartDriver::is_rx_idle(); }
-        inline bool is_tx_ready() const { return TargetUartDriver::is_tx_ready(); }
-        inline bool is_tx_idle () const { return TargetUartDriver::is_tx_idle(); }
+        bool is_rx_ready() const { return UartDriver::is_rx_ready(); }
+        bool is_rx_idle () const { return UartDriver::is_rx_idle(); }
+        bool is_tx_ready() const { return UartDriver::is_tx_ready(); }
+        bool is_tx_idle () const { return UartDriver::is_tx_idle(); }
 
-        inline StatusBitmask get_status() const                        { return TargetUartDriver::get_status(); }
-        inline void          clear_status(const StatusBitmask bitmask) { TargetUartDriver::clear_status(bitmask); }
+        StatusBitmask get_status() const                        { return UartDriver::get_status(); }
+        void          clear_status(const StatusBitmask bitmask) { UartDriver::clear_status(bitmask); }
 
         // -------- READ / WRITE ----------------------------------------------
 
         // Read data as soon as possible (with infinite timeout)
-        inline uint32_t read() const
+        uint32_t read() const
         {
             while(is_rx_ready() == false);
 
-            return TargetUartDriver::read_data();
+            return UartDriver::read_data();
         }
 
         // Read data as soon as possible (with timeout)
-        inline uint32_t read(const std::chrono::microseconds timeout_us) const
+        uint32_t read(const std::chrono::microseconds timeout_us) const
         {
-            const auto start = UsTickerHal::now();
+            const auto start = UsTicker::now();
 
-            while(is_rx_ready() == false && UsTickerHal::is_timeout(start, timeout_us) == false);
+            while(is_rx_ready() == false && UsTicker::is_timeout(start, timeout_us) == false);
 
-            return TargetUartDriver::read_data();
+            return UartDriver::read_data();
         }
 
         // Read buffer with timeout, returning the number of actual read bytes
-        inline int32_t read_buffer(const std::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
+        int32_t read_buffer(const std::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
         {
-            const auto start = UsTickerHal::now();
+            const auto start = UsTicker::now();
             int32_t count = 0;
 
-            while(count < buffer.size() && UsTickerHal::is_timeout(start, timeout_us) == false)
+            while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
             {
                 if(is_rx_ready() == true)
                 {
-                    buffer[count] = TargetUartDriver::read_data();
+                    buffer[count] = UartDriver::read_data();
 
                     count++;
                 }
@@ -128,34 +128,34 @@ class UartHal : protected TargetUartDriver
         }
 
         // Write data as soon as possible (with infinite timeout)
-        inline void write(const uint32_t value)
+        void write(const uint32_t value)
         {
             while(is_tx_ready() == false);
 
-            TargetUartDriver::write_data(value);
+            UartDriver::write_data(value);
         }
 
         // Write data as soon as possible (with timeout)
-        inline void write(const uint32_t value, const std::chrono::microseconds timeout_us)
+        void write(const uint32_t value, const std::chrono::microseconds timeout_us)
         {
-            const auto start = UsTickerHal::now();
+            const auto start = UsTicker::now();
 
-            while(is_tx_ready() == false && UsTickerHal::is_timeout(start, timeout_us) == false);
+            while(is_tx_ready() == false && UsTicker::is_timeout(start, timeout_us) == false);
 
-            TargetUartDriver::write_data(value);
+            UartDriver::write_data(value);
         }
 
         // Write buffer with timeout, returning the number of actual written bytes
-        inline int32_t write_buffer(const std::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
+        int32_t write_buffer(const std::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
         {
-            const auto start = UsTickerHal::now();
+            const auto start = UsTicker::now();
             int32_t count = 0;
 
-            while(count < buffer.size() && UsTickerHal::is_timeout(start, timeout_us) == false)
+            while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
             {
                 if(is_tx_ready() == true)
                 {
-                    TargetUartDriver::write_data(buffer[count]);
+                    UartDriver::write_data(buffer[count]);
 
                     count++;
                 }
@@ -170,7 +170,7 @@ class UartHal : protected TargetUartDriver
         // PRIVATE TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using UsTickerHal = xarmlib::UsTickerHal;
+        using UsTicker = hal::UsTicker;
 };
 
 
@@ -189,9 +189,14 @@ class UartHal : protected TargetUartDriver
 
 namespace xarmlib
 {
-using UartHal = hal::UartHal<targets::kv4x::UartDriver>;
+namespace hal
+{
 
-class Uart : public UartHal
+using Uart = UartBase<targets::kv4x::UartDriver>;
+
+} // namespace hal
+
+class Uart : public hal::Uart
 {
     public:
 
@@ -199,22 +204,23 @@ class Uart : public UartHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits = typename UartHal::DataBits;
-        using StopBits = typename UartHal::StopBits;
-        using Parity   = typename UartHal::Parity;
-        using IdleType = typename UartHal::IdleType;
+        using Hal = hal::Uart;
 
-        using StatusInterrupt        = typename UartHal::StatusInterrupt;
-        using StatusInterruptBitmask = typename UartHal::StatusInterruptBitmask;
-        using ErrorInterrupt         = typename UartHal::ErrorInterrupt;
-        using ErrorInterruptBitmask  = typename UartHal::ErrorInterruptBitmask;
+        using DataBits = typename Hal::DataBits;
+        using StopBits = typename Hal::StopBits;
+        using Parity   = typename Hal::Parity;
+        using IdleType = typename Hal::IdleType;
+
+        using StatusInterrupt        = typename Hal::StatusInterrupt;
+        using StatusInterruptBitmask = typename Hal::StatusInterruptBitmask;
+        using ErrorInterrupt         = typename Hal::ErrorInterrupt;
+        using ErrorInterruptBitmask  = typename Hal::ErrorInterruptBitmask;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Uart(const PinHal::Name txd, const PinHal::Name rxd, const Config& config) : UartHal(txd, rxd, config)
-        {}
+        using Hal::Hal;
 
         // -------- FLUSH FIFOS -----------------------------------------------
 
@@ -222,44 +228,45 @@ class Uart : public UartHal
         //       the S1 register causes the FIFO pointers to become misaligned.
         //       A receive FIFO flush reinitializes the pointers.
 
-        inline void flush_rx_fifo() { UartHal::flush_rx_fifo(); }
-        inline void flush_tx_fifo() { UartHal::flush_tx_fifo(); }
+        void flush_rx_fifo() { Hal::flush_rx_fifo(); }
+        void flush_tx_fifo() { Hal::flush_tx_fifo(); }
 
         // -------- STATUS INTERRUPTS -----------------------------------------
 
-        inline void                   enable_status_interrupts (const StatusInterruptBitmask bitmask) { UartHal::enable_status_interrupts(bitmask); }
-        inline void                   disable_status_interrupts(const StatusInterruptBitmask bitmask) { UartHal::disable_status_interrupts(bitmask); }
-        inline StatusInterruptBitmask get_status_interrupts_enabled() const                           { return UartHal::get_status_interrupts_enabled(); }
+        void                   enable_status_interrupts (const StatusInterruptBitmask bitmask) { Hal::enable_status_interrupts(bitmask); }
+        void                   disable_status_interrupts(const StatusInterruptBitmask bitmask) { Hal::disable_status_interrupts(bitmask); }
+        StatusInterruptBitmask get_status_interrupts_enabled() const                           { return Hal::get_status_interrupts_enabled(); }
 
         // -------- ERROR INTERRUPTS ------------------------------------------
 
-        inline void                  enable_error_interrupts (const ErrorInterruptBitmask bitmask) { UartHal::enable_error_interrupts(bitmask); }
-        inline void                  disable_error_interrupts(const ErrorInterruptBitmask bitmask) { UartHal::disable_error_interrupts(bitmask); }
-        inline ErrorInterruptBitmask get_error_interrupts_enabled() const                          { return UartHal::get_error_interrupts_enabled(); }
+        void                  enable_error_interrupts (const ErrorInterruptBitmask bitmask) { Hal::enable_error_interrupts(bitmask); }
+        void                  disable_error_interrupts(const ErrorInterruptBitmask bitmask) { Hal::disable_error_interrupts(bitmask); }
+        ErrorInterruptBitmask get_error_interrupts_enabled() const                          { return Hal::get_error_interrupts_enabled(); }
 
         // -------- STATUS IRQ / IRQ HANDLER ----------------------------------
 
-        inline void enable_status_irq()     { UartHal::enable_status_irq(); }
-        inline void disable_status_irq()    { UartHal::disable_status_irq(); }
-        inline bool is_status_irq_enabled() { return UartHal::is_status_irq_enabled(); }
+        void enable_status_irq()     { Hal::enable_status_irq(); }
+        void disable_status_irq()    { Hal::disable_status_irq(); }
+        bool is_status_irq_enabled() { return Hal::is_status_irq_enabled(); }
 
-        inline void set_status_irq_priority(const int32_t irq_priority) { UartHal::set_status_irq_priority(irq_priority); }
+        void set_status_irq_priority(const int32_t irq_priority) { Hal::set_status_irq_priority(irq_priority); }
 
-        inline void assign_status_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_status_irq_handler(irq_handler); }
-        inline void remove_status_irq_handler()                              { UartHal::remove_status_irq_handler(); }
+        void assign_status_irq_handler(const IrqHandler& irq_handler) { Hal::assign_status_irq_handler(irq_handler); }
+        void remove_status_irq_handler()                              { Hal::remove_status_irq_handler(); }
 
         // -------- ERROR IRQ / IRQ HANDLER -----------------------------------
 
-        inline void enable_error_irq()     { UartHal::enable_error_irq(); }
-        inline void disable_error_irq()    { UartHal::disable_error_irq(); }
-        inline bool is_error_irq_enabled() { return UartHal::is_error_irq_enabled(); }
+        void enable_error_irq()     { Hal::enable_error_irq(); }
+        void disable_error_irq()    { Hal::disable_error_irq(); }
+        bool is_error_irq_enabled() { return Hal::is_error_irq_enabled(); }
 
-        inline void set_error_irq_priority(const int32_t irq_priority) { UartHal::set_error_irq_priority(irq_priority); }
+        void set_error_irq_priority(const int32_t irq_priority) { Hal::set_error_irq_priority(irq_priority); }
 
-        inline void assign_error_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_error_irq_handler(irq_handler); }
-        inline void remove_error_irq_handler()                              { UartHal::remove_error_irq_handler(); }
+        void assign_error_irq_handler(const IrqHandler& irq_handler) { Hal::assign_error_irq_handler(irq_handler); }
+        void remove_error_irq_handler()                              { Hal::remove_error_irq_handler(); }
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -267,9 +274,14 @@ class Uart : public UartHal
 
 namespace xarmlib
 {
-using UartHal = hal::UartHal<targets::lpc84x::UsartDriver>;
+namespace hal
+{
 
-class Uart : public UartHal
+using Uart = UartBase<targets::lpc84x::UartDriver>;
+
+} // namespace hal
+
+class Uart : public hal::Uart
 {
     public:
 
@@ -277,45 +289,47 @@ class Uart : public UartHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits = typename UartHal::DataBits;
-        using StopBits = typename UartHal::StopBits;
-        using Parity   = typename UartHal::Parity;
+        using Hal = hal::Uart;
 
-        using Interrupt        = typename UartHal::Interrupt;
-        using InterruptBitmask = typename UartHal::InterruptBitmask;
+        using DataBits = typename Hal::DataBits;
+        using StopBits = typename Hal::StopBits;
+        using Parity   = typename Hal::Parity;
+
+        using Interrupt        = typename Hal::Interrupt;
+        using InterruptBitmask = typename Hal::InterruptBitmask;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Uart(const PinHal::Name txd, const PinHal::Name rxd, const Config& config) : UartHal(txd, rxd, config)
-        {}
+        using Hal::Hal;
 
         // -------- FORMAT ----------------------------------------------------
 
-        inline void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { UartHal::set_format(data_bits, stop_bits, parity); }
-        inline void set_data_bits(const DataBits data_bits)                                                { UartHal::set_data_bits(data_bits); }
-        inline void set_stop_bits(const StopBits stop_bits)                                                { UartHal::set_stop_bits(stop_bits); }
-        inline void set_parity   (const Parity   parity)                                                   { UartHal::set_parity(parity); }
+        void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { Hal::set_format(data_bits, stop_bits, parity); }
+        void set_data_bits(const DataBits data_bits)                                                { Hal::set_data_bits(data_bits); }
+        void set_stop_bits(const StopBits stop_bits)                                                { Hal::set_stop_bits(stop_bits); }
+        void set_parity   (const Parity   parity)                                                   { Hal::set_parity(parity); }
 
         // -------- INTERRUPT FLAGS -------------------------------------------
 
-        inline void             enable_interrupts (const InterruptBitmask bitmask) { UartHal::enable_interrupts(bitmask); }
-        inline void             disable_interrupts(const InterruptBitmask bitmask) { UartHal::disable_interrupts(bitmask); }
-        inline InterruptBitmask get_interrupts_enabled() const                     { return UartHal::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { Hal::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { Hal::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return Hal::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        inline void enable_irq()     { UartHal::enable_irq(); }
-        inline void disable_irq()    { UartHal::disable_irq(); }
-        inline bool is_irq_enabled() { return UartHal::is_irq_enabled(); }
+        void enable_irq()     { Hal::enable_irq(); }
+        void disable_irq()    { Hal::disable_irq(); }
+        bool is_irq_enabled() { return Hal::is_irq_enabled(); }
 
-        inline void set_irq_priority(const int32_t irq_priority) { UartHal::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { Hal::set_irq_priority(irq_priority); }
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler()                              { UartHal::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { Hal::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { Hal::remove_irq_handler(); }
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -323,9 +337,14 @@ class Uart : public UartHal
 
 namespace xarmlib
 {
-using UartHal = hal::UartHal<targets::lpc81x::UsartDriver>;
+namespace hal
+{
 
-class Uart : public UartHal
+using Uart = UartBase<targets::lpc81x::UartDriver>;
+
+} // namespace hal
+
+class Uart : public hal::Uart
 {
     public:
 
@@ -344,34 +363,34 @@ class Uart : public UartHal
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        Uart(const PinHal::Name txd, const PinHal::Name rxd, const Config& config) : UartHal(txd, rxd, config)
-        {}
+        using UartHal::UartHal;
 
         // -------- FORMAT ----------------------------------------------------
 
-        inline void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { UartHal::set_format(data_bits, stop_bits, parity); }
-        inline void set_data_bits(const DataBits data_bits)                                                { UartHal::set_data_bits(data_bits); }
-        inline void set_stop_bits(const StopBits stop_bits)                                                { UartHal::set_stop_bits(stop_bits); }
-        inline void set_parity   (const Parity   parity)                                                   { UartHal::set_parity(parity); }
+        void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { UartHal::set_format(data_bits, stop_bits, parity); }
+        void set_data_bits(const DataBits data_bits)                                                { UartHal::set_data_bits(data_bits); }
+        void set_stop_bits(const StopBits stop_bits)                                                { UartHal::set_stop_bits(stop_bits); }
+        void set_parity   (const Parity   parity)                                                   { UartHal::set_parity(parity); }
 
         // -------- INTERRUPT FLAGS -------------------------------------------
 
-        inline void             enable_interrupts (const InterruptBitmask bitmask) { UartHal::enable_interrupts(bitmask); }
-        inline void             disable_interrupts(const InterruptBitmask bitmask) { UartHal::disable_interrupts(bitmask); }
-        inline InterruptBitmask get_interrupts_enabled() const                     { return UartHal::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { UartHal::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { UartHal::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return UartHal::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        inline void enable_irq()     { UartHal::enable_irq(); }
-        inline void disable_irq()    { UartHal::disable_irq(); }
-        inline bool is_irq_enabled() { return UartHal::is_irq_enabled(); }
+        void enable_irq()     { UartHal::enable_irq(); }
+        void disable_irq()    { UartHal::disable_irq(); }
+        bool is_irq_enabled() { return UartHal::is_irq_enabled(); }
 
-        inline void set_irq_priority(const int32_t irq_priority) { UartHal::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { UartHal::set_irq_priority(irq_priority); }
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler()                              { UartHal::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { UartHal::remove_irq_handler(); }
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -379,9 +398,16 @@ class Uart : public UartHal
 
 namespace xarmlib
 {
-using UartHal = hal::UartHal<targets::other_target::UartDriver>;
-using Uart = UartHal;
-}
+namespace hal
+{
+
+using Uart = UartBase<targets::other_target::UartDriver>;
+
+} // namespace hal
+
+using Uart = hal::Uart;
+
+} // namespace xarmlib
 
 #endif
 

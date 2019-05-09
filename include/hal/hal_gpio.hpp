@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    18 January 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -42,8 +42,8 @@ namespace hal
 
 
 
-template <typename TargetGpioDriver>
-class GpioHal : protected TargetGpioDriver
+template <typename GpioDriver>
+class GpioBase : protected GpioDriver
 {
     public:
 
@@ -51,14 +51,14 @@ class GpioHal : protected TargetGpioDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using InputMode                     = typename TargetGpioDriver::InputMode;
-        using OutputMode                    = typename TargetGpioDriver::OutputMode;
-        using OutputModeTrueOpenDrain       = typename TargetGpioDriver::OutputModeTrueOpenDrain;
+        using InputMode                     = typename GpioDriver::InputMode;
+        using OutputMode                    = typename GpioDriver::OutputMode;
+        using OutputModeTrueOpenDrain       = typename GpioDriver::OutputModeTrueOpenDrain;
 
-        using InputModeConfig               = typename TargetGpioDriver::InputModeConfig;
-        using OutputModeConfig              = typename TargetGpioDriver::OutputModeConfig;
-        using InputModeTrueOpenDrainConfig  = typename TargetGpioDriver::InputModeTrueOpenDrainConfig;
-        using OutputModeTrueOpenDrainConfig = typename TargetGpioDriver::OutputModeTrueOpenDrainConfig;
+        using InputModeConfig               = typename GpioDriver::InputModeConfig;
+        using OutputModeConfig              = typename GpioDriver::OutputModeConfig;
+        using InputModeTrueOpenDrainConfig  = typename GpioDriver::InputModeTrueOpenDrainConfig;
+        using OutputModeTrueOpenDrainConfig = typename GpioDriver::OutputModeTrueOpenDrainConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -67,35 +67,35 @@ class GpioHal : protected TargetGpioDriver
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Default constructor (assign a NC pin)
-        GpioHal() = default;
+        GpioBase() = default;
 
         // Normal input pin constructor
-        GpioHal(const xarmlib::PinHal::Name pin_name, const InputModeConfig& config) : TargetGpioDriver(pin_name, config)
+        GpioBase(const hal::Pin::Name pin_name, const InputModeConfig& config) : GpioDriver(pin_name, config)
         {}
 
         // Normal output pin constructor
-        GpioHal(const xarmlib::PinHal::Name pin_name, const OutputModeConfig& config) : TargetGpioDriver(pin_name, config)
+        GpioBase(const hal::Pin::Name pin_name, const OutputModeConfig& config) : GpioDriver(pin_name, config)
         {}
 
         // True open-drain input pin constructor
-        GpioHal(const xarmlib::PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : TargetGpioDriver(pin_name, config)
+        GpioBase(const hal::Pin::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioDriver(pin_name, config)
         {}
 
         // True open-drain output pin constructor
-        GpioHal(const xarmlib::PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : TargetGpioDriver(pin_name, config)
+        GpioBase(const hal::Pin::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioDriver(pin_name, config)
         {}
 
         // -------- CONFIGURATION ---------------------------------------------
 
-        inline void set_mode(const InputModeConfig& config)               { TargetGpioDriver::set_mode(config); }
-        inline void set_mode(const OutputModeConfig& config)              { TargetGpioDriver::set_mode(config); }
-        inline void set_mode(const InputModeTrueOpenDrainConfig& config)  { TargetGpioDriver::set_mode(config); }
-        inline void set_mode(const OutputModeTrueOpenDrainConfig& config) { TargetGpioDriver::set_mode(config); }
+        void set_mode(const InputModeConfig& config)               { GpioDriver::set_mode(config); }
+        void set_mode(const OutputModeConfig& config)              { GpioDriver::set_mode(config); }
+        void set_mode(const InputModeTrueOpenDrainConfig& config)  { GpioDriver::set_mode(config); }
+        void set_mode(const OutputModeTrueOpenDrainConfig& config) { GpioDriver::set_mode(config); }
 
         // -------- READ / WRITE ----------------------------------------------
 
-        inline uint32_t read() const                { return TargetGpioDriver::read(); }
-        inline void     write(const uint32_t value) { TargetGpioDriver::write(value); }
+        uint32_t read() const                { return GpioDriver::read(); }
+        void     write(const uint32_t value) { GpioDriver::write(value); }
 };
 
 
@@ -115,42 +115,36 @@ class GpioHal : protected TargetGpioDriver
 
 namespace xarmlib
 {
-using GpioHal = hal::GpioHal<targets::kv4x::GpioDriver>;
+namespace hal
+{
 
-//class Gpio : public GpioHal
-//{
-//    public:
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC TYPE ALIASES
-//        // --------------------------------------------------------------------
-//
-//        using SlewRate      = typename GpioHal::SlewRate;
-//        using PassiveFilter = typename GpioHal::PassiveFilter;
-//        using DriveStrength = typename GpioHal::DriveStrength;
-//        using LockRegister  = typename GpioHal::LockRegister;
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC MEMBER FUNCTIONS
-//        // --------------------------------------------------------------------
-//
-//        // Normal input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // Normal output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//};
-}
+using Gpio = GpioBase<targets::kv4x::GpioDriver>;
+
+} // namespace hal
+
+class Gpio : public hal::Gpio
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Gpio;
+
+        using SlewRate      = typename Hal::SlewRate;
+        using PassiveFilter = typename Hal::PassiveFilter;
+        using DriveStrength = typename Hal::DriveStrength;
+        using LockRegister  = typename Hal::LockRegister;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal::Hal;
+};
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -158,47 +152,40 @@ using GpioHal = hal::GpioHal<targets::kv4x::GpioDriver>;
 
 namespace xarmlib
 {
-using GpioHal = hal::GpioHal<targets::lpc84x::GpioDriver>;
+namespace hal
+{
 
-//class Gpio : public GpioHal
-//{
-//    public:
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC TYPE ALIASES
-//        // --------------------------------------------------------------------
-//
-//        using InputFilterClockDivider = typename GpioHal::InputFilterClockDivider;
-//        using InputFilter             = typename GpioHal::InputFilter;
-//        using InputInvert             = typename GpioHal::InputInvert;
-//        using InputHysteresis         = typename GpioHal::InputHysteresis;
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC MEMBER FUNCTIONS
-//        // --------------------------------------------------------------------
-//
-//        // Normal input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // Normal output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        static inline void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
-//        {
-//            GpioHal::set_input_filter_clock_divider(clock_div, div);
-//        }
-//};
-}
+using Gpio = GpioBase<targets::lpc84x::GpioDriver>;
+
+} // namespace hal
+
+class Gpio : public hal::Gpio
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+        using Hal = hal::Gpio;
+
+        using InputFilterClockDivider = typename Hal::InputFilterClockDivider;
+        using InputFilter             = typename Hal::InputFilter;
+        using InputInvert             = typename Hal::InputInvert;
+        using InputHysteresis         = typename Hal::InputHysteresis;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal::Hal;
+
+        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
+        {
+            Hal::set_input_filter_clock_divider(clock_div, div);
+        }
+};
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -206,47 +193,41 @@ using GpioHal = hal::GpioHal<targets::lpc84x::GpioDriver>;
 
 namespace xarmlib
 {
-using GpioHal = hal::GpioHal<targets::lpc81x::GpioDriver>;
+namespace hal
+{
 
-//class Gpio : public GpioHal
-//{
-//    public:
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC TYPE ALIASES
-//        // --------------------------------------------------------------------
-//
-//        using InputFilterClockDivider = typename GpioHal::InputFilterClockDivider;
-//        using InputFilter             = typename GpioHal::InputFilter;
-//        using InputInvert             = typename GpioHal::InputInvert;
-//        using InputHysteresis         = typename GpioHal::InputHysteresis;
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC MEMBER FUNCTIONS
-//        // --------------------------------------------------------------------
-//
-//        // Normal input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // Normal output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain input pin constructor
-//        Gpio(const PinHal::Name pin_name, const InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        // True open-drain output pin constructor
-//        Gpio(const PinHal::Name pin_name, const OutputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
-//        {}
-//
-//        static inline void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
-//        {
-//            GpioHal::set_input_filter_clock_divider(clock_div, div);
-//        }
-//};
-}
+using Gpio = GpioBase<targets::lpc81x::GpioDriver>;
+
+} // namespace hal
+
+class Gpio : public hal::Gpio
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Gpio;
+
+        using InputFilterClockDivider = typename Hal::InputFilterClockDivider;
+        using InputFilter             = typename Hal::InputFilter;
+        using InputInvert             = typename Hal::InputInvert;
+        using InputHysteresis         = typename Hal::InputHysteresis;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal::Hal;
+
+        static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
+        {
+            Hal::set_input_filter_clock_divider(clock_div, div);
+        }
+};
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -254,9 +235,16 @@ using GpioHal = hal::GpioHal<targets::lpc81x::GpioDriver>;
 
 namespace xarmlib
 {
-using GpioHal = hal::GpioHal<targets::other_target::GpioDriver>;
-using Gpio = GpioHal;
-}
+namespace hal
+{
+
+using Gpio = GpioBase<targets::other_target::GpioDriver>;
+
+} // namespace hal
+
+using Gpio = hal::Gpio;
+
+} // namespace xarmlib
 
 #endif
 

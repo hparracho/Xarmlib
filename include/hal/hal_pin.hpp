@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin.hpp
 // @brief   Pin HAL interface class.
-// @date    29 November 2018
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,8 +40,8 @@ namespace hal
 
 
 
-template <typename TargetPinDriver>
-class PinHal : protected TargetPinDriver
+template <typename PinDriver>
+class PinBase : protected PinDriver
 {
     public:
 
@@ -49,7 +49,7 @@ class PinHal : protected TargetPinDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Name = typename TargetPinDriver::Name;
+        using Name = typename PinDriver::Name;
 };
 
 
@@ -69,9 +69,16 @@ class PinHal : protected TargetPinDriver
 
 namespace xarmlib
 {
-using PinHal = hal::PinHal<targets::kv4x::PinDriver>;
-//using Pin = PinHal;
-}
+namespace hal
+{
+
+using Pin = PinBase<targets::kv4x::PinDriver>;
+
+} // namespace hal
+
+using Pin = hal::Pin;
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -79,9 +86,16 @@ using PinHal = hal::PinHal<targets::kv4x::PinDriver>;
 
 namespace xarmlib
 {
-using PinHal = hal::PinHal<targets::lpc84x::PinDriver>;
-//using Pin = PinHal;
-}
+namespace hal
+{
+
+using Pin = PinBase<targets::lpc84x::PinDriver>;
+
+} // namespace hal
+
+using Pin = hal::Pin;
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -89,9 +103,16 @@ using PinHal = hal::PinHal<targets::lpc84x::PinDriver>;
 
 namespace xarmlib
 {
-using PinHal = hal::PinHal<targets::lpc81x::PinDriver>;
-//using Pin = PinHal;
-}
+namespace hal
+{
+
+using Pin = PinBase<targets::lpc81x::PinDriver>;
+
+} // namespace hal
+
+using Pin = hal::Pin;
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -99,9 +120,16 @@ using PinHal = hal::PinHal<targets::lpc81x::PinDriver>;
 
 namespace xarmlib
 {
-using PinHal = hal::PinHal<targets::other_target::PinDriver>;
-using Pin = PinHal;
-}
+namespace hal
+{
+
+using Pin = PinBase<targets::other_target::PinDriver>;
+
+} // namespace hal
+
+using Pin = hal::Pin;
+
+} // namespace xarmlib
 
 #endif
 

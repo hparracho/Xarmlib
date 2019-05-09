@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    29 November 2018
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,8 +40,8 @@ namespace hal
 
 
 
-template <typename TargetSystemDriver>
-class SystemHal : protected TargetSystemDriver
+template <typename SystemDriver>
+class SystemBase : protected SystemDriver
 {
     public:
 
@@ -49,7 +49,7 @@ class SystemHal : protected TargetSystemDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Clock = typename TargetSystemDriver::Clock;
+        using Clock = typename SystemDriver::Clock;
 };
 
 
@@ -69,9 +69,16 @@ class SystemHal : protected TargetSystemDriver
 
 namespace xarmlib
 {
-using SystemHal = hal::SystemHal<targets::kv4x::SystemDriver>;
-//using System = SystemHal;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::kv4x::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -79,9 +86,14 @@ using SystemHal = hal::SystemHal<targets::kv4x::SystemDriver>;
 
 namespace xarmlib
 {
-using SystemHal = hal::SystemHal<targets::lpc84x::SystemDriver>;
+namespace hal
+{
 
-class System : public SystemHal
+using System = SystemBase<targets::lpc84x::SystemDriver>;
+
+} // namespace hal
+
+class System : public hal::System
 {
     public:
 
@@ -89,9 +101,12 @@ class System : public SystemHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Swd = typename SystemHal::Swd;
+        using Hal = hal::Spi;
+
+        using Swd = typename Hal::Swd;
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -99,9 +114,16 @@ class System : public SystemHal
 
 namespace xarmlib
 {
-using SystemHal = hal::SystemHal<targets::lpc81x::SystemDriver>;
-//using System = SystemHal;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::lpc81x::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -109,9 +131,16 @@ using SystemHal = hal::SystemHal<targets::lpc81x::SystemDriver>;
 
 namespace xarmlib
 {
-using SystemHal = hal::SystemHal<targets::other_target::SystemDriver>;
-using System = SystemHal;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::other_target::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
 
 #endif
 

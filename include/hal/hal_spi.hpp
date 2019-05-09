@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    26 February 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -43,8 +43,8 @@ namespace hal
 
 
 
-template <typename TargetSpiDriver>
-class SpiMasterHal : protected TargetSpiDriver
+template <typename SpiDriver>
+class SpiMasterBase : protected SpiDriver
 {
     public:
 
@@ -52,23 +52,23 @@ class SpiMasterHal : protected TargetSpiDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using MasterConfig     = typename TargetSpiDriver::MasterConfig;
+        using MasterConfig     = typename SpiDriver::MasterConfig;
 
-        using Status           = typename TargetSpiDriver::Status;
-        using StatusBitmask    = typename TargetSpiDriver::StatusBitmask;
-        using Interrupt        = typename TargetSpiDriver::Interrupt;
-        using InterruptBitmask = typename TargetSpiDriver::InterruptBitmask;
+        using Status           = typename SpiDriver::Status;
+        using StatusBitmask    = typename SpiDriver::StatusBitmask;
+        using Interrupt        = typename SpiDriver::Interrupt;
+        using InterruptBitmask = typename SpiDriver::InterruptBitmask;
 
-        using IrqHandler       = typename TargetSpiDriver::IrqHandler;
+        using IrqHandler       = typename SpiDriver::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMasterHal(const xarmlib::PinHal::Name master_mosi,
-                     const xarmlib::PinHal::Name master_miso,
-                     const xarmlib::PinHal::Name master_sck,
-                     const MasterConfig&         master_config) : TargetSpiDriver(master_mosi, master_miso, master_sck, master_config)
+        SpiMasterBase(const hal::Pin::Name master_mosi,
+                      const hal::Pin::Name master_miso,
+                      const hal::Pin::Name master_sck,
+                      const MasterConfig&  master_config) : SpiDriver(master_mosi, master_miso, master_sck, master_config)
        {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
@@ -76,7 +76,7 @@ class SpiMasterHal : protected TargetSpiDriver
             #endif
         }
 
-        ~SpiMasterHal()
+        ~SpiMasterBase()
         {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
@@ -86,34 +86,34 @@ class SpiMasterHal : protected TargetSpiDriver
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
-        inline void enable()           { TargetSpiDriver::enable(); }
-        inline void disable()          { TargetSpiDriver::disable(); }
-        inline bool is_enabled() const { return TargetSpiDriver::is_enabled(); }
+        void enable()           { SpiDriver::enable(); }
+        void disable()          { SpiDriver::disable(); }
+        bool is_enabled() const { return SpiDriver::is_enabled(); }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        inline bool is_writable() const { return TargetSpiDriver::is_writable(); }
-        inline bool is_readable() const { return TargetSpiDriver::is_readable(); }
+        bool is_writable() const { return SpiDriver::is_writable(); }
+        bool is_readable() const { return SpiDriver::is_readable(); }
 
-        inline StatusBitmask get_status() const                        { return TargetSpiDriver::get_status(); }
-        inline void          clear_status(const StatusBitmask bitmask) { TargetSpiDriver::clear_status(bitmask); }
+        StatusBitmask get_status() const                        { return SpiDriver::get_status(); }
+        void          clear_status(const StatusBitmask bitmask) { SpiDriver::clear_status(bitmask); }
 
         // -------- INTERRUPTS ------------------------------------------------
 
-        inline void             enable_interrupts (const InterruptBitmask bitmask) { TargetSpiDriver::enable_interrupts(bitmask); }
-        inline void             disable_interrupts(const InterruptBitmask bitmask) { TargetSpiDriver::disable_interrupts(bitmask); }
-        inline InterruptBitmask get_interrupts_enabled() const                     { return TargetSpiDriver::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { SpiDriver::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { SpiDriver::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return SpiDriver::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        inline void enable_irq()     { TargetSpiDriver::enable_irq(); }
-        inline void disable_irq()    { TargetSpiDriver::disable_irq(); }
-        inline bool is_irq_enabled() { return TargetSpiDriver::is_irq_enabled(); }
+        void enable_irq()     { SpiDriver::enable_irq(); }
+        void disable_irq()    { SpiDriver::disable_irq(); }
+        bool is_irq_enabled() { return SpiDriver::is_irq_enabled(); }
 
-        inline void set_irq_priority(const int32_t irq_priority) { TargetSpiDriver::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { SpiDriver::set_irq_priority(irq_priority); }
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { TargetSpiDriver::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler()                              { TargetSpiDriver::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { SpiDriver::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { SpiDriver::remove_irq_handler(); }
 
         // -------- TRANSFER --------------------------------------------------
 
@@ -171,9 +171,9 @@ class SpiMasterHal : protected TargetSpiDriver
         // Read a frame as soon as possible
         uint32_t read()
         {
-            while(TargetSpiDriver::is_readable() == false);
+            while(SpiDriver::is_readable() == false);
 
-            return TargetSpiDriver::read_data();
+            return SpiDriver::read_data();
         }
 
     private:
@@ -185,9 +185,9 @@ class SpiMasterHal : protected TargetSpiDriver
         // Write a frame as soon as possible
         void write(const uint32_t frame)
         {
-            while(TargetSpiDriver::is_writable() == false);
+            while(SpiDriver::is_writable() == false);
 
-            TargetSpiDriver::master_write_data(frame);
+            SpiDriver::master_write_data(frame);
         }
 
         // --------------------------------------------------------------------
@@ -203,8 +203,8 @@ class SpiMasterHal : protected TargetSpiDriver
 
 
 
-template <typename TargetSpiDriver>
-class SpiSlaveHal : protected TargetSpiDriver
+template <typename SpiDriver>
+class SpiSlaveBase : protected SpiDriver
 {
     public:
 
@@ -212,24 +212,24 @@ class SpiSlaveHal : protected TargetSpiDriver
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using SlaveConfig      = typename TargetSpiDriver::SlaveConfig;
+        using SlaveConfig      = typename SpiDriver::SlaveConfig;
 
-        using Status           = typename TargetSpiDriver::Status;
-        using StatusBitmask    = typename TargetSpiDriver::StatusBitmask;
-        using Interrupt        = typename TargetSpiDriver::Interrupt;
-        using InterruptBitmask = typename TargetSpiDriver::InterruptBitmask;
+        using Status           = typename SpiDriver::Status;
+        using StatusBitmask    = typename SpiDriver::StatusBitmask;
+        using Interrupt        = typename SpiDriver::Interrupt;
+        using InterruptBitmask = typename SpiDriver::InterruptBitmask;
 
-        using IrqHandler       = typename TargetSpiDriver::IrqHandler;
+        using IrqHandler       = typename SpiDriver::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlaveHal(const xarmlib::PinHal::Name slave_mosi,
-                    const xarmlib::PinHal::Name slave_miso,
-                    const xarmlib::PinHal::Name slave_sck,
-                    const xarmlib::PinHal::Name slave_sel,
-                    const SlaveConfig&          slave_config) : TargetSpiDriver(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
+        SpiSlaveBase(const hal::Pin::Name slave_mosi,
+                     const hal::Pin::Name slave_miso,
+                     const hal::Pin::Name slave_sck,
+                     const hal::Pin::Name slave_sel,
+                     const SlaveConfig&   slave_config) : SpiDriver(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
         {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
@@ -237,7 +237,7 @@ class SpiSlaveHal : protected TargetSpiDriver
             #endif
         }
 
-        ~SpiSlaveHal()
+        ~SpiSlaveBase()
         {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Delete access mutex
@@ -247,51 +247,51 @@ class SpiSlaveHal : protected TargetSpiDriver
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
-        inline void enable()           { TargetSpiDriver::enable(); }
-        inline void disable()          { TargetSpiDriver::disable(); }
-        inline bool is_enabled() const { return TargetSpiDriver::is_enabled(); }
+        void enable()           { SpiDriver::enable(); }
+        void disable()          { SpiDriver::disable(); }
+        bool is_enabled() const { return SpiDriver::is_enabled(); }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        inline bool is_writable() const { return TargetSpiDriver::is_writable(); }
-        inline bool is_readable() const { return TargetSpiDriver::is_readable(); }
+        bool is_writable() const { return SpiDriver::is_writable(); }
+        bool is_readable() const { return SpiDriver::is_readable(); }
 
-        inline StatusBitmask get_status() const                        { return TargetSpiDriver::get_status(); }
-        inline void          clear_status(const StatusBitmask bitmask) { TargetSpiDriver::clear_status(bitmask); }
+        StatusBitmask get_status() const                        { return SpiDriver::get_status(); }
+        void          clear_status(const StatusBitmask bitmask) { SpiDriver::clear_status(bitmask); }
 
         // -------- INTERRUPTS ------------------------------------------------
 
-        inline void             enable_interrupts (const InterruptBitmask bitmask) { TargetSpiDriver::enable_interrupts(bitmask); }
-        inline void             disable_interrupts(const InterruptBitmask bitmask) { TargetSpiDriver::disable_interrupts(bitmask); }
-        inline InterruptBitmask get_interrupts_enabled() const                     { return TargetSpiDriver::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { SpiDriver::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { SpiDriver::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return SpiDriver::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        inline void enable_irq()     { TargetSpiDriver::enable_irq(); }
-        inline void disable_irq()    { TargetSpiDriver::disable_irq(); }
-        inline bool is_irq_enabled() { return TargetSpiDriver::is_irq_enabled(); }
+        void enable_irq()     { SpiDriver::enable_irq(); }
+        void disable_irq()    { SpiDriver::disable_irq(); }
+        bool is_irq_enabled() { return SpiDriver::is_irq_enabled(); }
 
-        inline void set_irq_priority(const int32_t irq_priority) { TargetSpiDriver::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { SpiDriver::set_irq_priority(irq_priority); }
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { TargetSpiDriver::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler()                              { TargetSpiDriver::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { SpiDriver::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { SpiDriver::remove_irq_handler(); }
 
         // -------- READ / WRITE ----------------------------------------------
 
         // Read a frame as soon as possible
         uint32_t read()
         {
-            while(TargetSpiDriver::is_readable() == false);
+            while(SpiDriver::is_readable() == false);
 
-            return TargetSpiDriver::read_data();
+            return SpiDriver::read_data();
         }
 
         // Write a frame as soon as possible
         void write(const uint32_t frame)
         {
-            while(TargetSpiDriver::is_writable() == false);
+            while(SpiDriver::is_writable() == false);
 
-            TargetSpiDriver::slave_write_data(frame);
+            SpiDriver::slave_write_data(frame);
         }
 
         // -------- ACCESS MUTEX ----------------------------------------------
@@ -339,10 +339,15 @@ class SpiSlaveHal : protected TargetSpiDriver
 
 namespace xarmlib
 {
-using SpiMasterHal = hal::SpiMasterHal<targets::kv4x::SpiDriver>;
-using SpiSlaveHal  = hal::SpiSlaveHal<targets::kv4x::SpiDriver>;
+namespace hal
+{
 
-class SpiMaster : public SpiMasterHal
+using SpiMaster = SpiMasterBase<targets::kv4x::SpiDriver>;
+using SpiSlave  = SpiSlaveBase<targets::kv4x::SpiDriver>;
+
+} // namespace hal
+
+class SpiMaster : public hal::SpiMaster
 {
     public:
 
@@ -350,16 +355,18 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits               = typename SpiMasterHal::DataBits;
-        using SpiMode                = typename SpiMasterHal::SpiMode;
-        using DataOrder              = typename SpiMasterHal::DataOrder;
+        using Hal = hal::SpiMaster;
 
-        using ContinuousSck          = typename SpiMasterHal::ContinuousSck;
-        using ModifiedTransferFormat = typename SpiMasterHal::ModifiedTransferFormat;
-        using SamplePoint            = typename SpiMasterHal::SamplePoint;
-        using RxFifoOverwrite        = typename SpiMasterHal::RxFifoOverwrite;
+        using DataBits               = typename Hal::DataBits;
+        using SpiMode                = typename Hal::SpiMode;
+        using DataOrder              = typename Hal::DataOrder;
 
-        using MasterCtarConfig       = typename SpiMasterHal::MasterCtarConfig;
+        using ContinuousSck          = typename Hal::ContinuousSck;
+        using ModifiedTransferFormat = typename Hal::ModifiedTransferFormat;
+        using SamplePoint            = typename Hal::SamplePoint;
+        using RxFifoOverwrite        = typename Hal::RxFifoOverwrite;
+
+        using MasterCtarConfig       = typename Hal::MasterCtarConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC DEFINITIONS
@@ -389,16 +396,12 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMaster(const PinHal::Name  master_mosi,
-                  const PinHal::Name  master_miso,
-                  const PinHal::Name  master_sck,
-                  const MasterConfig& master_config) : SpiMasterHal(master_mosi, master_miso, master_sck, master_config)
-        {}
+        using Hal::Hal;
 
         // -------- READ / WRITE ----------------------------------------------
 
         // Read a frame as soon as possible
-        inline uint32_t read() { return SpiMasterHal::read(); }
+        uint32_t read() { return Hal::read(); }
 
         // Write a frame as soon as possible
         void write(const uint32_t frame,
@@ -410,13 +413,13 @@ class SpiMaster : public SpiMasterHal
 
         // Get the transfer counter that indicates the number of SPI transfers made
         // NOTE: this counter is intended to assist in queue management
-        inline uint16_t get_queue_transfer_counter() const { return SpiMasterHal::get_queue_transfer_counter(); }
+        uint16_t get_queue_transfer_counter() const { return Hal::get_queue_transfer_counter(); }
 
         // -------- TRANSFER --------------------------------------------------
 
-        inline uint32_t transfer(const uint32_t frame)                                                         { return SpiMasterHal::transfer(frame); }
-        inline void     transfer(const std::span<uint8_t> buffer)                                              { SpiMasterHal::transfer(buffer); }
-        inline void     transfer(const std::span<const uint8_t> tx_buffer, const std::span<uint8_t> rx_buffer) { SpiMasterHal::transfer(tx_buffer, rx_buffer); }
+        uint32_t transfer(const uint32_t frame)                                                         { return Hal::transfer(frame); }
+        void     transfer(const std::span<uint8_t> buffer)                                              { Hal::transfer(buffer); }
+        void     transfer(const std::span<const uint8_t> tx_buffer, const std::span<uint8_t> rx_buffer) { Hal::transfer(tx_buffer, rx_buffer); }
 
         // Transfer a frame (simultaneous write and read) up to 32 bits
         // NOTES: - return the read value
@@ -442,16 +445,16 @@ class SpiMaster : public SpiMasterHal
         // -------- FIFOS -----------------------------------------------------
 
         // Flush receive FIFO counter
-        inline void flush_rx_fifo() { SpiMasterHal::flush_rx_fifo(); }
+        void flush_rx_fifo() { Hal::flush_rx_fifo(); }
 
         // Flush transmit FIFO counter
-        inline void flush_tx_fifo() { SpiMasterHal::flush_tx_fifo(); }
+        void flush_tx_fifo() { Hal::flush_tx_fifo(); }
 
         // Get the number of valid entries in the RX FIFO
-        inline std::size_t get_rx_fifo_counter() const { return SpiMasterHal::get_rx_fifo_counter(); }
+        std::size_t get_rx_fifo_counter() const { return Hal::get_rx_fifo_counter(); }
 
         // Get the number of valid entries in the TX FIFO
-        inline std::size_t get_tx_fifo_counter() const { return SpiMasterHal::get_tx_fifo_counter(); }
+        std::size_t get_tx_fifo_counter() const { return Hal::get_tx_fifo_counter(); }
 
     private:
 
@@ -465,14 +468,14 @@ class SpiMaster : public SpiMasterHal
                    const bool          is_end_of_queue = false,
                    const bool          clear_queue_transfer_counter = false)
         {
-            while(SpiMasterHal::is_writable() == false);
+            while(Hal::is_writable() == false);
 
-            SpiMasterHal::master_write_data(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
+            Hal::master_write_data(frame, ctar_selection, is_end_of_queue, clear_queue_transfer_counter);
         }
 
         uint32_t transfer_4_to_32bits(const uint32_t frame, const Frame32Bits frame_bits)
         {
-            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
+            const DataBits default_ctar0_data_bits = Hal::get_ctar_data_bits(CtarSelection::ctar0);
 
             disable();
 
@@ -483,7 +486,7 @@ class SpiMaster : public SpiMasterHal
 
             if(frame_bits <= Frame32Bits::bits_16)
             {
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(frame_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(frame_bits));
 
                 write(frame, CtarSelection::ctar0);
 
@@ -496,8 +499,8 @@ class SpiMaster : public SpiMasterHal
                 const auto ctar0_data_bits = static_cast<uint32_t>(frame_bits) / 2;
                 const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits;
 
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
 
                 const DataOrder data_order = get_data_order(CtarSelection::ctar0);
 
@@ -524,7 +527,7 @@ class SpiMaster : public SpiMasterHal
             }
 
             disable();
-            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
+            Hal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
             enable();
 
             return read_value;
@@ -534,7 +537,7 @@ class SpiMaster : public SpiMasterHal
         {
             assert(frame_bits > Frame64Bits::bits_32);
 
-            const DataBits default_ctar0_data_bits = SpiMasterHal::get_ctar_data_bits(CtarSelection::ctar0);
+            const DataBits default_ctar0_data_bits = Hal::get_ctar_data_bits(CtarSelection::ctar0);
 
             const DataOrder data_order = get_data_order(CtarSelection::ctar0);
 
@@ -552,8 +555,8 @@ class SpiMaster : public SpiMasterHal
                 const auto ctar0_data_bits = ctar0_data_bits_2x / 2;
                 const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits_2x;
 
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
 
                 if(data_order == DataOrder::msb_first)
                 {
@@ -587,8 +590,8 @@ class SpiMaster : public SpiMasterHal
                 const auto ctar0_data_bits = ctar0_data_bits_3x / 3;
                 const auto ctar1_data_bits = static_cast<uint32_t>(frame_bits) - ctar0_data_bits_3x;
 
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
-                SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar0, static_cast<DataBits>(ctar0_data_bits));
+                Hal::set_ctar_data_bits(CtarSelection::ctar1, static_cast<DataBits>(ctar1_data_bits));
 
                 const auto ctar0_data_bits_2x = ctar0_data_bits + ctar0_data_bits;
 
@@ -602,7 +605,7 @@ class SpiMaster : public SpiMasterHal
                     enable();
 
                     read_value  = static_cast<uint64_t>(read()) << (ctar0_data_bits_2x + ctar1_data_bits);
-                    read_value  = static_cast<uint64_t>(read()) << (ctar0_data_bits    + ctar1_data_bits);
+                    read_value |= static_cast<uint64_t>(read()) << (ctar0_data_bits    + ctar1_data_bits);
                     read_value |= static_cast<uint64_t>(read()) <<  ctar1_data_bits;
                     read_value |= static_cast<uint64_t>(read());
                 }
@@ -623,14 +626,14 @@ class SpiMaster : public SpiMasterHal
             }
 
             disable();
-            SpiMasterHal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
+            Hal::set_ctar_data_bits(CtarSelection::ctar0, default_ctar0_data_bits);
             enable();
 
             return read_value;
         }
 };
 
-class SpiSlave : public SpiSlaveHal
+class SpiSlave : public hal::SpiSlave
 {
     public:
 
@@ -638,42 +641,40 @@ class SpiSlave : public SpiSlaveHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits               = typename SpiSlaveHal::DataBits;
-        using SpiMode                = typename SpiSlaveHal::SpiMode;
+        using Hal = hal::SpiSlave;
 
-        using ContinuousSck          = typename SpiSlaveHal::ContinuousSck;
-        using ModifiedTransferFormat = typename SpiSlaveHal::ModifiedTransferFormat;
-        using SamplePoint            = typename SpiSlaveHal::SamplePoint;
-        using RxFifoOverwrite        = typename SpiSlaveHal::RxFifoOverwrite;
+        using DataBits               = typename Hal::DataBits;
+        using SpiMode                = typename Hal::SpiMode;
 
-        using SlaveCtarConfig        = typename SpiSlaveHal::SlaveCtarConfig;
+        using ContinuousSck          = typename Hal::ContinuousSck;
+        using ModifiedTransferFormat = typename Hal::ModifiedTransferFormat;
+        using SamplePoint            = typename Hal::SamplePoint;
+        using RxFifoOverwrite        = typename Hal::RxFifoOverwrite;
+
+        using SlaveCtarConfig        = typename Hal::SlaveCtarConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlave(const PinHal::Name slave_mosi,
-                 const PinHal::Name slave_miso,
-                 const PinHal::Name slave_sck,
-                 const PinHal::Name slave_sel,
-                 const SlaveConfig& slave_config) : SpiSlaveHal(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
-        {}
+        using Hal::Hal;
 
         // -------- FIFOS -----------------------------------------------------
 
         // Flush receive FIFO counter
-        inline void flush_rx_fifo() { SpiSlaveHal::flush_rx_fifo(); }
+        void flush_rx_fifo() { Hal::flush_rx_fifo(); }
 
         // Flush transmit FIFO counter
-        inline void flush_tx_fifo() { SpiSlaveHal::flush_tx_fifo(); }
+        void flush_tx_fifo() { Hal::flush_tx_fifo(); }
 
         // Get the number of valid entries in the RX FIFO
-        inline std::size_t get_rx_fifo_counter() const { return SpiSlaveHal::get_rx_fifo_counter(); }
+        std::size_t get_rx_fifo_counter() const { return Hal::get_rx_fifo_counter(); }
 
         // Get the number of valid entries in the TX FIFO
-        inline std::size_t get_tx_fifo_counter() const { return SpiSlaveHal::get_tx_fifo_counter(); }
+        std::size_t get_tx_fifo_counter() const { return Hal::get_tx_fifo_counter(); }
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -681,10 +682,15 @@ class SpiSlave : public SpiSlaveHal
 
 namespace xarmlib
 {
-using SpiMasterHal = hal::SpiMasterHal<targets::lpc84x::SpiDriver>;
-using SpiSlaveHal  = hal::SpiSlaveHal<targets::lpc84x::SpiDriver>;
+namespace hal
+{
 
-class SpiMaster : public SpiMasterHal
+using SpiMaster = SpiMasterBase<targets::lpc84x::SpiDriver>;
+using SpiSlave  = SpiSlaveBase<targets::lpc84x::SpiDriver>;
+
+} // namespace hal
+
+class SpiMaster : public hal::SpiMaster
 {
     public:
 
@@ -692,23 +698,21 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using SpiMode      = typename SpiMasterHal::SpiMode;
-        using DataBits     = typename SpiMasterHal::DataBits;
-        using DataOrder    = typename SpiMasterHal::DataOrder;
-        using LoopbackMode = typename SpiMasterHal::LoopbackMode;
+        using Hal = hal::SpiMaster;
+
+        using SpiMode      = typename Hal::SpiMode;
+        using DataBits     = typename Hal::DataBits;
+        using DataOrder    = typename Hal::DataOrder;
+        using LoopbackMode = typename Hal::LoopbackMode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMaster(const PinHal::Name  master_mosi,
-                  const PinHal::Name  master_miso,
-                  const PinHal::Name  master_sck,
-                  const MasterConfig& master_config) : SpiMasterHal(master_mosi, master_miso, master_sck, master_config)
-       {}
+        using Hal::Hal;
 };
 
-class SpiSlave : public SpiSlaveHal
+class SpiSlave : public hal::SpiSlave
 {
     public:
 
@@ -716,24 +720,22 @@ class SpiSlave : public SpiSlaveHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using SpiMode      = typename SpiSlaveHal::SpiMode;
-        using DataBits     = typename SpiSlaveHal::DataBits;
-        using DataOrder    = typename SpiSlaveHal::DataOrder;
-        using SselPolarity = typename SpiSlaveHal::SselPolarity;
-        using LoopbackMode = typename SpiSlaveHal::LoopbackMode;
+        using Hal = hal::SpiSlave;
+
+        using SpiMode      = typename Hal::SpiMode;
+        using DataBits     = typename Hal::DataBits;
+        using DataOrder    = typename Hal::DataOrder;
+        using SselPolarity = typename Hal::SselPolarity;
+        using LoopbackMode = typename Hal::LoopbackMode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlave(const PinHal::Name slave_mosi,
-                 const PinHal::Name slave_miso,
-                 const PinHal::Name slave_sck,
-                 const PinHal::Name slave_sel,
-                 const SlaveConfig& slave_config) : SpiSlaveHal(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
-       {}
+        using Hal::Hal;
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -741,10 +743,15 @@ class SpiSlave : public SpiSlaveHal
 
 namespace xarmlib
 {
-using SpiMasterHal = hal::SpiMasterHal<targets::lpc81x::SpiDriver>;
-using SpiSlaveHal  = hal::SpiSlaveHal<targets::lpc81x::SpiDriver>;
+namespace hal
+{
 
-class SpiMaster : public SpiMasterHal
+using SpiMaster = SpiMasterBase<targets::lpc81x::SpiDriver>;
+using SpiSlave  = SpiSlaveBase<targets::lpc81x::SpiDriver>;
+
+} // namespace hal
+
+class SpiMaster : public hal::SpiMaster
 {
     public:
 
@@ -752,23 +759,21 @@ class SpiMaster : public SpiMasterHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using SpiMode      = typename SpiMasterHal::SpiMode;
-        using DataBits     = typename SpiMasterHal::DataBits;
-        using DataOrder    = typename SpiMasterHal::DataOrder;
-        using LoopbackMode = typename SpiMasterHal::LoopbackMode;
+        using Hal = hal::SpiMaster;
+
+        using SpiMode      = typename Hal::SpiMode;
+        using DataBits     = typename Hal::DataBits;
+        using DataOrder    = typename Hal::DataOrder;
+        using LoopbackMode = typename Hal::LoopbackMode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMaster(const PinHal::Name  master_mosi,
-                  const PinHal::Name  master_miso,
-                  const PinHal::Name  master_sck,
-                  const MasterConfig& master_config) : SpiMasterHal(master_mosi, master_miso, master_sck, master_config)
-       {}
+        using Hal::Hal;
 };
 
-class SpiSlave : public SpiSlaveHal
+class SpiSlave : public hal::SpiSlave
 {
     public:
 
@@ -776,24 +781,22 @@ class SpiSlave : public SpiSlaveHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using SpiMode      = typename SpiSlaveHal::SpiMode;
-        using DataBits     = typename SpiSlaveHal::DataBits;
-        using DataOrder    = typename SpiSlaveHal::DataOrder;
-        using SselPolarity = typename SpiSlaveHal::SselPolarity;
-        using LoopbackMode = typename SpiSlaveHal::LoopbackMode;
+        using Hal = hal::SpiSlave;
+
+        using SpiMode      = typename Hal::SpiMode;
+        using DataBits     = typename Hal::DataBits;
+        using DataOrder    = typename Hal::DataOrder;
+        using SselPolarity = typename Hal::SselPolarity;
+        using LoopbackMode = typename Hal::LoopbackMode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlave(const PinHal::Name slave_mosi,
-                 const PinHal::Name slave_miso,
-                 const PinHal::Name slave_sck,
-                 const PinHal::Name slave_sel,
-                 const SlaveConfig& slave_config) : SpiSlaveHal(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
-       {}
+        using Hal::Hal;
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -801,11 +804,18 @@ class SpiSlave : public SpiSlaveHal
 
 namespace xarmlib
 {
-using SpiMasterHal = hal::SpiMasterHal<targets::other_target::SpiDriver>;
-using SpiSlaveHal  = hal::SpiSlaveHal<targets::other_target::SpiDriver>;
-using SpiMaster = SpiMasterHal;
-using SpiSlave  = SpiSlaveHal;
-}
+namespace hal
+{
+
+using SpiMaster = SpiMasterBase<targets::other_target::SpiDriver>;
+using SpiSlave  = SpiSlaveBase<targets::other_target::SpiDriver>;
+
+} // namespace hal
+
+using SpiMaster = hal::SpiMaster;
+using SpiSlave  = hal::SpiSlave;
+
+} // namespace xarmlib
 
 #endif
 

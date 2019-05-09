@@ -2,7 +2,7 @@
 // @file    hal_i2c.hpp
 // @brief   I2C Master HAL interface class.
 // @note    Slave mode is not implemented.
-// @date    18 April 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,8 +44,8 @@ namespace hal
 
 
 
-template <typename TargetI2cDriver>
-class I2cMasterHal : protected TargetI2cDriver
+template <typename I2cDriver>
+class I2cMasterBase : protected I2cDriver
 {
     public:
 
@@ -53,53 +53,53 @@ class I2cMasterHal : protected TargetI2cDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using MasterConfig     = typename TargetI2cDriver::MasterConfig;
+        using MasterConfig     = typename I2cDriver::MasterConfig;
 
-        using TransferStatus   = typename TargetI2cDriver::TransferStatus;
+        using TransferStatus   = typename I2cDriver::TransferStatus;
 
-        using Status           = typename TargetI2cDriver::Status;
-        using StatusBitmask    = typename TargetI2cDriver::StatusBitmask;
-        using Interrupt        = typename TargetI2cDriver::Interrupt;
-        using InterruptBitmask = typename TargetI2cDriver::InterruptBitmask;
+        using Status           = typename I2cDriver::Status;
+        using StatusBitmask    = typename I2cDriver::StatusBitmask;
+        using Interrupt        = typename I2cDriver::Interrupt;
+        using InterruptBitmask = typename I2cDriver::InterruptBitmask;
 
-        using IrqHandler       = typename TargetI2cDriver::IrqHandler;
+        using IrqHandler       = typename I2cDriver::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        I2cMasterHal(const xarmlib::PinHal::Name master_sda,
-                     const xarmlib::PinHal::Name master_scl,
-                     const MasterConfig&         master_config) : TargetI2cDriver(master_sda, master_scl, master_config)
+        I2cMasterBase(const hal::Pin::Name master_sda,
+                      const hal::Pin::Name master_scl,
+                      const MasterConfig&  master_config) : I2cDriver(master_sda, master_scl, master_config)
         {}
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
-        inline void enable()           { TargetI2cDriver::master_enable(); }
-        inline void disable()          { TargetI2cDriver::master_disable(); }
-        inline bool is_enabled() const { return TargetI2cDriver::is_master_enabled(); }
+        void enable()           { I2cDriver::master_enable(); }
+        void disable()          { I2cDriver::master_disable(); }
+        bool is_enabled() const { return I2cDriver::is_master_enabled(); }
 
         // -------- STATUS FLAGS ----------------------------------------------
 
-        inline StatusBitmask get_status() const                        { return TargetI2cDriver::get_status(); }
-        inline void          clear_status(const StatusBitmask bitmask) { TargetI2cDriver::clear_status(bitmask); }
+        StatusBitmask get_status() const                        { return I2cDriver::get_status(); }
+        void          clear_status(const StatusBitmask bitmask) { I2cDriver::clear_status(bitmask); }
 
         // -------- INTERRUPTS ------------------------------------------------
 
-        inline void             enable_interrupts (const InterruptBitmask bitmask) { TargetI2cDriver::enable_interrupts(bitmask); }
-        inline void             disable_interrupts(const InterruptBitmask bitmask) { TargetI2cDriver::disable_interrupts(bitmask); }
-        inline InterruptBitmask get_interrupts_enabled() const                     { return TargetI2cDriver::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { I2cDriver::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { I2cDriver::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return I2cDriver::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        inline void enable_irq()     { TargetI2cDriver::enable_irq(); }
-        inline void disable_irq()    { TargetI2cDriver::disable_irq(); }
-        inline bool is_irq_enabled() { return TargetI2cDriver::is_irq_enabled(); }
+        void enable_irq()     { I2cDriver::enable_irq(); }
+        void disable_irq()    { I2cDriver::disable_irq(); }
+        bool is_irq_enabled() { return I2cDriver::is_irq_enabled(); }
 
-        inline void set_irq_priority(const int32_t irq_priority) { TargetI2cDriver::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { I2cDriver::set_irq_priority(irq_priority); }
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { TargetI2cDriver::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler()                              { TargetI2cDriver::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { I2cDriver::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { I2cDriver::remove_irq_handler(); }
 
         // -------- TRANSFER --------------------------------------------------
 
@@ -112,7 +112,7 @@ class I2cMasterHal : protected TargetI2cDriver
         {
             std::array<uint8_t, 0> tx_buffer{};
 
-            return TargetI2cDriver::master_transfer(slave_address, tx_buffer, rx_buffer);
+            return I2cDriver::master_transfer(slave_address, tx_buffer, rx_buffer);
         }
 
         // Polling send transaction
@@ -120,13 +120,13 @@ class I2cMasterHal : protected TargetI2cDriver
         {
             std::array<uint8_t, 0> rx_buffer{};
 
-            return TargetI2cDriver::master_transfer(slave_address, tx_buffer, rx_buffer);
+            return I2cDriver::master_transfer(slave_address, tx_buffer, rx_buffer);
         }
 
         // Polling transfer
         TransferStatus write_read(const uint8_t slave_address, const std::span<uint8_t> command, const std::span<uint8_t> rx_buffer)
         {
-            return TargetI2cDriver::master_transfer(slave_address, command, rx_buffer);
+            return I2cDriver::master_transfer(slave_address, command, rx_buffer);
         }
 };
 
@@ -147,9 +147,16 @@ class I2cMasterHal : protected TargetI2cDriver
 
 namespace xarmlib
 {
-using I2cMasterHal = hal::I2cMasterHal<targets::kv4x::I2cDriver>;
-//using I2cMaster = I2cMasterHal;
-}
+namespace hal
+{
+
+using I2cMaster = I2cMasterBase<targets::kv4x::I2cDriver>;
+
+} // namespace hal
+
+using I2cMaster = hal::I2cMaster;
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -157,19 +164,35 @@ using I2cMasterHal = hal::I2cMasterHal<targets::kv4x::I2cDriver>;
 
 namespace xarmlib
 {
-using I2cMasterHal = hal::I2cMasterHal<targets::lpc84x::I2cDriver>;
-//using I2cMaster = I2cMasterHal;
-}
+namespace hal
+{
+
+using I2cMaster = I2cMasterBase<targets::lpc84x::I2cDriver>;
+
+} // namespace hal
+
+using I2cMaster = hal::I2cMaster;
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
-/*#include "targets/LPC81x/lpc81x_i2c.hpp"
+/*
+#include "targets/LPC81x/lpc81x_i2c.hpp"
 
 namespace xarmlib
 {
-using I2cMasterHal = hal::I2cMasterHal<targets::lpc81x::I2cDriver>;
-//using I2cMaster = I2cMasterHal;
-}*/
+namespace hal
+{
+
+using I2cMaster = I2cMasterBase<targets::lpc81x::I2cDriver>;
+
+} // namespace hal
+
+using I2cMaster = hal::I2cMaster;
+
+} // namespace xarmlib
+*/
 
 #elif defined __OHER_TARGET__
 
@@ -177,9 +200,16 @@ using I2cMasterHal = hal::I2cMasterHal<targets::lpc81x::I2cDriver>;
 
 namespace xarmlib
 {
-using I2cMasterHal = hal::I2cMasterHal<targets::other_target::I2cDriver>;
-using I2cMaster = I2cMasterHal;
-}
+namespace hal
+{
+
+using I2cMaster = I2cMasterBase<targets::other_target::I2cDriver>;
+
+} // namespace hal
+
+using I2cMaster = hal::I2cMaster;
+
+} // namespace xarmlib
 
 #endif
 

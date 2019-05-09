@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer 32-bit HAL interface class.
-// @date    4 March 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -42,8 +42,8 @@ namespace hal
 
 
 
-template <typename TargetTimerDriver>
-class TimerHal : protected TargetTimerDriver
+template <typename TimerDriver>
+class TimerBase : protected TimerDriver
 {
     public:
 
@@ -51,7 +51,7 @@ class TimerHal : protected TargetTimerDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using IrqHandler = typename TargetTimerDriver::IrqHandler;
+        using IrqHandler = typename TimerDriver::IrqHandler;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
@@ -59,32 +59,32 @@ class TimerHal : protected TargetTimerDriver
 
         // -------- START / STOP ----------------------------------------------
 
-        inline void start(const std::chrono::microseconds& rate_us) { TargetTimerDriver::start(rate_us); }
-        inline void reload()                                        { TargetTimerDriver::reload(); }
-        inline void stop()                                          { TargetTimerDriver::stop(); }
-        inline bool is_running() const                              { return TargetTimerDriver::is_running(); }
+        void start(const std::chrono::microseconds& rate_us) { TimerDriver::start(rate_us); }
+        void reload()                                        { TimerDriver::reload(); }
+        void stop()                                          { TimerDriver::stop(); }
+        bool is_running() const                              { return TimerDriver::is_running(); }
 
         // -------- INTERRUPTS ------------------------------------------------
 
-        inline void enable_irq() { TargetTimerDriver::enable_irq(); }
-        inline void disable_irq() { TargetTimerDriver::disable_irq(); }
-        inline bool is_irq_enabled() const { return TargetTimerDriver::is_irq_enabled(); }
+        void enable_irq() { TimerDriver::enable_irq(); }
+        void disable_irq() { TimerDriver::disable_irq(); }
+        bool is_irq_enabled() const { return TimerDriver::is_irq_enabled(); }
 
-        inline bool is_irq_pending() const { return TargetTimerDriver::is_irq_pending(); }
-        inline void clear_irq_pending() { TargetTimerDriver::clear_irq_pending(); }
+        bool is_irq_pending() const { return TimerDriver::is_irq_pending(); }
+        void clear_irq_pending() { TimerDriver::clear_irq_pending(); }
 
 #ifdef TARGET_TIMER_TYPE_MRT
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
-        static inline void set_mrt_irq_priority(const uint32_t irq_priority) { TargetTimerDriver::set_mrt_irq_priority(irq_priority); }
+        static void set_mrt_irq_priority(const uint32_t irq_priority) { TimerDriver::set_mrt_irq_priority(irq_priority); }
 #else
         // NOTE: Timer type is independent timer (multiple individual timers).
         //       Each timer have their own IRQ with different priorities.
-        inline void set_irq_priority(const uint32_t irq_priority) { TargetTimerDriver::set_irq_priority(irq_priority); }
+        void set_irq_priority(const uint32_t irq_priority) { TimerDriver::set_irq_priority(irq_priority); }
 #endif
 
-        inline void assign_irq_handler(const IrqHandler& irq_handler) { TargetTimerDriver::assign_irq_handler(irq_handler); }
-        inline void remove_irq_handler() { TargetTimerDriver::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { TimerDriver::assign_irq_handler(irq_handler); }
+        void remove_irq_handler() { TimerDriver::remove_irq_handler(); }
 };
 
 
@@ -104,9 +104,16 @@ class TimerHal : protected TargetTimerDriver
 
 namespace xarmlib
 {
-using TimerHal = hal::TimerHal<targets::kv4x::TimerDriver>;
-//using Timer = TimerHal;
-}
+namespace hal
+{
+
+using Timer = TimerBase<targets::kv4x::TimerDriver>;
+
+} // namespace hal
+
+using Timer = hal::Timer;
+
+} // namespace xarmlib
 
 #elif defined __LPC84X__
 
@@ -114,35 +121,14 @@ using TimerHal = hal::TimerHal<targets::kv4x::TimerDriver>;
 
 namespace xarmlib
 {
-using TimerHal = hal::TimerHal<targets::lpc84x::TimerDriver>;
-
-//class Timer : public TimerHal
-//{
-//    public:
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC TYPE ALIASES
-//        // --------------------------------------------------------------------
-//
-//        using Mode = typename TimerHal::Mode;
-//
-//        // --------------------------------------------------------------------
-//        // PUBLIC MEMBER FUNCTIONS
-//        // --------------------------------------------------------------------
-//
-//        inline void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING) { TimerHal::TimerDriver::start(rate_us, mode); }
-//};
-}
-
-#elif defined __LPC81X__
-
-#include "targets/LPC81x/lpc81x_timer.hpp"
-
-namespace xarmlib
+namespace hal
 {
-using TimerHal = hal::TimerHal<targets::lpc81x::TimerDriver>;
 
-class Timer : public TimerHal
+using Timer = TimerBase<targets::lpc84x::TimerDriver>;
+
+} // namespace hal
+
+class Timer : public hal::Timer
 {
     public:
 
@@ -150,15 +136,52 @@ class Timer : public TimerHal
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
+        using Hal = hal::Timer;
+
+        using Mode = typename Hal::Mode;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING) { Hal::TimerDriver::start(rate_us, mode); }
+};
+
+} // namespace xarmlib
+
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_timer.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using Timer = TimerBase<targets::lpc81x::TimerDriver>;
+
+} // namespace hal
+
+class Timer : public hal::Timer
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Timer;
+
         using Mode = typename TimerHal::Mode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        inline void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::free_running) { TimerHal::TimerDriver::start(rate_us, mode); }
+        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::free_running) { Hal::TimerDriver::start(rate_us, mode); }
 };
-}
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -166,9 +189,16 @@ class Timer : public TimerHal
 
 namespace xarmlib
 {
-using TimerHal = hal::TimerHal<targets::other_target::TimerDriver>;
-using Timer = TimerHal;
-}
+namespace hal
+{
+
+using Timer = TimerBase<targets::other_target::TimerDriver>;
+
+} // namespace hal
+
+using Timer = hal::Timer;
+
+} // namespace xarmlib
 
 #endif
 
