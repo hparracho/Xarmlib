@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    6 May 2019
+// @date    9 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -180,7 +180,9 @@ BITMASK_DEFINE_VALUE_MASK(ErrorInterrupt,  static_cast<uint32_t>(ErrorInterrupt:
 
 
 
-class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
+static constexpr uint32_t TARGET_UART_MASK  = (1UL << TARGET_UART_COUNT) - 1;
+
+class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, TARGET_UART_MASK>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -199,7 +201,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralUart = PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>;
+        using PeripheralUart = PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, TARGET_UART_MASK>;
 
         // Data length selection
         enum class DataBits
@@ -261,7 +263,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        UartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUart(*this),
+        UartDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralUart(*this, get_peripheral_index(txd, rxd)),
                                                                                                  m_is_9bit { config.data_bits == DataBits::bits_9 }
         {
             const auto pin_config = get_pin_config(txd, rxd);
@@ -608,6 +610,14 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT>
         // --------------------------------------------------------------------
 
         // -------- CONFIGURATION / INITIALIZATION ----------------------------
+
+        // Return the peripheral index according to the pins (constructor helper function):
+        static constexpr int32_t get_peripheral_index(const PinDriver::Name txd, const PinDriver::Name rxd)
+        {
+            const auto pin_config = get_pin_config(txd, rxd);
+
+            return static_cast<int32_t>(pin_config.uart_name);
+        }
 
         // Get the pin config struct if the specified txd and rxd are Uart pins
         static constexpr PinConfig get_pin_config(const PinDriver::Name txd, const PinDriver::Name rxd)
