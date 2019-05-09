@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    6 May 2019
+// @date    8 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -216,7 +216,9 @@ BITMASK_DEFINE_VALUE_MASK(Interrupt,                  static_cast<uint32_t>(Inte
 
 
 
-class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
+static constexpr uint32_t TARGET_CAN_MASK  = (1UL << TARGET_CAN_COUNT) - 1;
+
+class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARGET_CAN_MASK>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -245,7 +247,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralCan = PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>;
+        using PeripheralCan = PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARGET_CAN_MASK>;
 
         // Baudrate selection
         enum class Baudrate : uint32_t
@@ -315,56 +317,92 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
             LoopBackMode loop_back_mode = LoopBackMode::disabled;
         };
 
-        // Frame format (IDE) selection
-        enum class FrameFormat
+        class Frame
         {
-            standard = 0,
-            extended
-        };
+            friend class CanDriver;
 
-        // Frame type (RTR) selection
-        enum class FrameType
-        {
-            data = 0,
-            remote
-        };
+            public:
 
-        // Frame data length (DLC) selection
-        enum class FrameDataBytes
-        {
-            bytes_0 = 0,
-            bytes_1,
-            bytes_2,
-            bytes_3,
-            bytes_4,
-            bytes_5,
-            bytes_6,
-            bytes_7,
-            bytes_8
-        };
+                // Frame format (IDE) selection
+                enum class Format
+                {
+                    standard = 0,
+                    extended
+                };
 
-        struct Frame
-        {
-            FrameFormat    format;
-            FrameType      type;
-            FrameDataBytes data_bytes;
-            //uint16_t       timestamp;   // Internal Free-Running Counter Time Stamp
-            //uint16_t       idhit;       // Identifier Acceptance Filter Hit Indicator
-            uint32_t       id;          // Frame Identifier
-                                        // NOTE: in standard frame format, only the 11 least significant bits are used
-                                        //       in extended frame format, all the 29 bits are used
-            uint32_t data_word_0;
-            uint32_t data_word_1;
+                // Frame type (RTR) selection
+                enum class Type
+                {
+                    data = 0,
+                    remote
+                };
+
+                // Identifier (id) NOTE: in standard frame format, only the 11 least significant bits are used
+                //                       in extended frame format, all the 29 bits are used
+
+                // Default constructor
+                Frame() : m_id { 0 }, m_format { Format::standard }, m_type { Type::data }, m_data_bytes { DataBytes::bytes_0 }, m_data {}
+                {}
+
+                Frame(const uint32_t           id,
+                      const Format             format,
+                      const Type               type,
+                      const std::span<uint8_t> data) : m_id { id }, m_format { format }, m_type { type }, m_data_bytes { DataBytes::bytes_0 }, m_data {}
+                {
+                    set_data(data);
+                }
+
+                uint32_t           get_id()     const { return m_id; }
+                Format             get_format() const { return m_format; }
+                Type               get_type()   const { return m_type; }
+                std::span<uint8_t> get_data()         { return std::span(m_data).subspan(0, static_cast<std::ptrdiff_t>(m_data_bytes)); }
+
+                void set_id(const uint32_t id)               { m_id = id; }
+                void set_format(const Format format)         { m_format = format; }
+                void set_type(const Type type)               { m_type = type; }
+                void set_data(const std::span<uint8_t> data)
+                {
+                    assert(data.size() <= 8);
+
+                    m_data_bytes = static_cast<DataBytes>(data.size());
+
+                    std::copy(data.begin(), data.end(), m_data.begin());
+                }
+
+            private:
+
+                // Frame data length (DLC) selection
+                enum class DataBytes
+                {
+                    bytes_0 = 0,
+                    bytes_1,
+                    bytes_2,
+                    bytes_3,
+                    bytes_4,
+                    bytes_5,
+                    bytes_6,
+                    bytes_7,
+                    bytes_8
+                };
+
+                uint32_t                m_id;
+                Format                  m_format;
+                Type                    m_type;
+                DataBytes               m_data_bytes;
+                std::array<uint8_t, 8>  m_data;
+                //uint16_t                m_timestamp;    // Internal Free-Running Counter Time Stamp
+                //uint16_t                m_idhit;        // Identifier Acceptance Filter Hit Indicator
         };
 
         // Rx FIFO ID filter table element structure
         struct RxFifoFilterElement
         {
-            FrameFormat format;
-            FrameType   type;
-            uint32_t    id;             // Frame Identifier
-                                        // NOTE: in standard frame format, only the 11 least significant bits are used
-                                        //       in extended frame format, all the 29 bits are used
+            // Frame Identifier
+            // NOTE: in standard frame format, only the 11 least significant bits are used
+            //       in extended frame format, all the 29 bits are used
+            uint32_t      id;
+            Frame::Format format;
+            Frame::Type   type;
         };
 
         // Tx Message Buffer selection
@@ -405,7 +443,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        CanDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralCan(*this)
+        CanDriver(const PinDriver::Name txd, const PinDriver::Name rxd, const Config& config) : PeripheralCan(*this, get_peripheral_index(txd, rxd))
         {
             const auto pin_config = get_pin_config(txd, rxd);
 
@@ -464,7 +502,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
             {
                 const auto element = element_array[i];
 
-                rx_fifo_filter[i] = (element.format == FrameFormat::standard) ?
+                rx_fifo_filter[i] = (element.format == Frame::Format::standard) ?
                                     FLEXCAN_RX_FIFO_STD_FILTER_TYPE_A(element.id, element.type, element.format) :
                                     FLEXCAN_RX_FIFO_EXT_FILTER_TYPE_A(element.id, element.type, element.format);
             };
@@ -520,7 +558,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
         // Read a frame from the Rx FIFO
         // NOTE: clear the Rx FIFO frame available flag after reading the frame to update
         //       the output of the FIFO with the next frame, reissuing the interrupt
-        Frame read_rx_fifo_frame() const
+        void read_rx_fifo_frame(Frame& frame) const
         {
             flexcan_frame_t rx_frame;
 
@@ -531,13 +569,18 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
 
             (void)result;
 
-            const FrameFormat    format     = static_cast<FrameFormat>(rx_frame.format);
-            const FrameType      type       = static_cast<FrameType>(rx_frame.type);
-            const FrameDataBytes data_bytes = static_cast<FrameDataBytes>(rx_frame.length);
-
-            const uint32_t id = (format == FrameFormat::standard) ? (rx_frame.id >> CAN_ID_STD_SHIFT) : (rx_frame.id >> CAN_ID_EXT_SHIFT);
-
-            return { format, type, data_bytes, id, rx_frame.dataWord0, rx_frame.dataWord1 };
+            frame.m_format     = static_cast<Frame::Format>(rx_frame.format);
+            frame.m_type       = static_cast<Frame::Type>(rx_frame.type);
+            frame.m_data_bytes = static_cast<Frame::DataBytes>(rx_frame.length);
+            frame.m_id = (frame.m_format == Frame::Format::standard) ? (rx_frame.id >> CAN_ID_STD_SHIFT) : (rx_frame.id >> CAN_ID_EXT_SHIFT);
+            frame.m_data[0] = rx_frame.dataByte0;
+            frame.m_data[1] = rx_frame.dataByte1;
+            frame.m_data[2] = rx_frame.dataByte2;
+            frame.m_data[3] = rx_frame.dataByte3;
+            frame.m_data[4] = rx_frame.dataByte4;
+            frame.m_data[5] = rx_frame.dataByte5;
+            frame.m_data[6] = rx_frame.dataByte6;
+            frame.m_data[7] = rx_frame.dataByte7;
         }
 
         // Write a frame to a free Tx Message Buffer (use get_free_tx_message_buffer method)
@@ -549,12 +592,18 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
 
             flexcan_frame_t tx_frame;
 
-            tx_frame.format    = static_cast<flexcan_frame_format_t>(frame.format);
-            tx_frame.type      = static_cast<flexcan_frame_type_t>(frame.type);
-            tx_frame.length    = static_cast<uint32_t>(frame.data_bytes);
-            tx_frame.id        = (frame.format == FrameFormat::standard) ? FLEXCAN_ID_STD(frame.id) : FLEXCAN_ID_EXT(frame.id);
-            tx_frame.dataWord0 = frame.data_word_0;
-            tx_frame.dataWord1 = frame.data_word_1;
+            tx_frame.format    = static_cast<flexcan_frame_format_t>(frame.m_format);
+            tx_frame.type      = static_cast<flexcan_frame_type_t>(frame.m_type);
+            tx_frame.length    = static_cast<uint32_t>(frame.m_data_bytes);
+            tx_frame.id        = (frame.m_format == Frame::Format::standard) ? FLEXCAN_ID_STD(frame.m_id) : FLEXCAN_ID_EXT(frame.m_id);
+            tx_frame.dataByte0 = frame.m_data[0];
+            tx_frame.dataByte1 = frame.m_data[1];
+            tx_frame.dataByte2 = frame.m_data[2];
+            tx_frame.dataByte3 = frame.m_data[3];
+            tx_frame.dataByte4 = frame.m_data[4];
+            tx_frame.dataByte5 = frame.m_data[5];
+            tx_frame.dataByte6 = frame.m_data[6];
+            tx_frame.dataByte7 = frame.m_data[7];
 
             const int32_t result = FLEXCAN_WriteTxMb(m_can_base, static_cast<uint8_t>(tx_message_buffer), &tx_frame);
 
@@ -1052,6 +1101,14 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT>
         // --------------------------------------------------------------------
 
         // -------- CONFIGURATION / INITIALIZATION ----------------------------
+
+        // Return the peripheral index according to the pins (constructor helper function):
+        static constexpr int32_t get_peripheral_index(const PinDriver::Name txd, const PinDriver::Name rxd)
+        {
+            const auto pin_config = get_pin_config(txd, rxd);
+
+            return static_cast<int32_t>(pin_config.can_name);
+        }
 
         // Get the pin config struct if the specified txd and rxd are CAN pins
         static constexpr PinConfig get_pin_config(const PinDriver::Name txd, const PinDriver::Name rxd)
