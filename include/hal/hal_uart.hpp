@@ -1,12 +1,11 @@
 // ----------------------------------------------------------------------------
-// @file    hal_usart.hpp
-// @brief   USART HAL interface class.
-// @notes   Synchronous mode not implemented.
-// @date    9 May 2019
+// @file    hal_uart.hpp
+// @brief   UART HAL interface class.
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -30,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HAL_USART_HPP
-#define __XARMLIB_HAL_USART_HPP
+#ifndef __XARMLIB_HAL_UART_HPP
+#define __XARMLIB_HAL_UART_HPP
 
 #include "external/span.hpp"
 #include "hal/hal_pin.hpp"
@@ -277,7 +276,7 @@ namespace xarmlib
 namespace hal
 {
 
-using Uart = UartBase<targets::lpc84x::UartDriver>;
+using Uart = UartBase<targets::lpc84x::UsartDriver>;
 
 } // namespace hal
 
@@ -340,7 +339,7 @@ namespace xarmlib
 namespace hal
 {
 
-using Uart = UartBase<targets::lpc81x::UartDriver>;
+using Uart = UartBase<targets::lpc81x::UsartDriver>;
 
 } // namespace hal
 
@@ -352,42 +351,44 @@ class Uart : public hal::Uart
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using DataBits = typename UartHal::DataBits;
-        using StopBits = typename UartHal::StopBits;
-        using Parity   = typename UartHal::Parity;
+        using Hal = hal::Uart;
 
-        using Interrupt        = typename UartHal::Interrupt;
-        using InterruptBitmask = typename UartHal::InterruptBitmask;
+        using DataBits = typename Hal::DataBits;
+        using StopBits = typename Hal::StopBits;
+        using Parity   = typename Hal::Parity;
+
+        using Interrupt        = typename Hal::Interrupt;
+        using InterruptBitmask = typename Hal::InterruptBitmask;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        using UartHal::UartHal;
+        using Hal::Hal;
 
         // -------- FORMAT ----------------------------------------------------
 
-        void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { UartHal::set_format(data_bits, stop_bits, parity); }
-        void set_data_bits(const DataBits data_bits)                                                { UartHal::set_data_bits(data_bits); }
-        void set_stop_bits(const StopBits stop_bits)                                                { UartHal::set_stop_bits(stop_bits); }
-        void set_parity   (const Parity   parity)                                                   { UartHal::set_parity(parity); }
+        void set_format   (const DataBits data_bits, const StopBits stop_bits, const Parity parity) { Hal::set_format(data_bits, stop_bits, parity); }
+        void set_data_bits(const DataBits data_bits)                                                { Hal::set_data_bits(data_bits); }
+        void set_stop_bits(const StopBits stop_bits)                                                { Hal::set_stop_bits(stop_bits); }
+        void set_parity   (const Parity   parity)                                                   { Hal::set_parity(parity); }
 
         // -------- INTERRUPT FLAGS -------------------------------------------
 
-        void             enable_interrupts (const InterruptBitmask bitmask) { UartHal::enable_interrupts(bitmask); }
-        void             disable_interrupts(const InterruptBitmask bitmask) { UartHal::disable_interrupts(bitmask); }
-        InterruptBitmask get_interrupts_enabled() const                     { return UartHal::get_interrupts_enabled(); }
+        void             enable_interrupts (const InterruptBitmask bitmask) { Hal::enable_interrupts(bitmask); }
+        void             disable_interrupts(const InterruptBitmask bitmask) { Hal::disable_interrupts(bitmask); }
+        InterruptBitmask get_interrupts_enabled() const                     { return Hal::get_interrupts_enabled(); }
 
         // -------- IRQ / IRQ HANDLER -----------------------------------------
 
-        void enable_irq()     { UartHal::enable_irq(); }
-        void disable_irq()    { UartHal::disable_irq(); }
-        bool is_irq_enabled() { return UartHal::is_irq_enabled(); }
+        void enable_irq()     { Hal::enable_irq(); }
+        void disable_irq()    { Hal::disable_irq(); }
+        bool is_irq_enabled() { return Hal::is_irq_enabled(); }
 
-        void set_irq_priority(const int32_t irq_priority) { UartHal::set_irq_priority(irq_priority); }
+        void set_irq_priority(const int32_t irq_priority) { Hal::set_irq_priority(irq_priority); }
 
-        void assign_irq_handler(const IrqHandler& irq_handler) { UartHal::assign_irq_handler(irq_handler); }
-        void remove_irq_handler()                              { UartHal::remove_irq_handler(); }
+        void assign_irq_handler(const IrqHandler& irq_handler) { Hal::assign_irq_handler(irq_handler); }
+        void remove_irq_handler()                              { Hal::remove_irq_handler(); }
 };
 
 } // namespace xarmlib
@@ -414,4 +415,4 @@ using Uart = hal::Uart;
 
 
 
-#endif // __XARMLIB_HAL_USART_HPP
+#endif // __XARMLIB_HAL_UART_HPP

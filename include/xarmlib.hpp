@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    17 April 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -57,8 +57,8 @@
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
 #include "hal/hal_timer16.hpp"
+#include "hal/hal_uart.hpp"
 #include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 
