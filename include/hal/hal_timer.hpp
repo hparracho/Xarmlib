@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer 32-bit HAL interface class.
-// @date    9 May 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -144,7 +144,7 @@ class Timer : public hal::Timer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::FREE_RUNNING) { Hal::TimerDriver::start(rate_us, mode); }
+        void start(const std::chrono::microseconds& rate_us, const Mode mode = Mode::free_running) { Hal::TimerDriver::start(rate_us, mode); }
 };
 
 } // namespace xarmlib
@@ -172,7 +172,7 @@ class Timer : public hal::Timer
 
         using Hal = hal::Timer;
 
-        using Mode = typename TimerHal::Mode;
+        using Mode = typename Hal::Mode;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
