@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    9 May 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -127,8 +127,8 @@ class Port : public hal::Port
         static void set_mask(const Name port) { Hal::set_mask(port); }
         static void clear_mask(const Name port) { Hal::clear_mask(port); }
 
-        static void set_mask(const PinHal::Name pin) { Hal::set_mask(pin); }
-        static void clear_mask(const PinHal::Name pin) { Hal::clear_mask(pin); }
+        static void set_mask(const hal::Pin::Name pin) { Hal::set_mask(pin); }
+        static void clear_mask(const hal::Pin::Name pin) { Hal::clear_mask(pin); }
 
         static uint32_t read_masked(const Name port) { return Hal::read_masked(port); }
         static void write_masked(const Name port, const uint32_t value) { Hal::write_masked(port, value); }
@@ -162,8 +162,8 @@ class Port : public hal::Port
         static void set_mask  (const Name port) { Hal::set_mask(port); }
         static void clear_mask(const Name port) { Hal::clear_mask(port); }
 
-        static void set_mask  (const PinHal::Name pin) { Hal::set_mask(pin); }
-        static void clear_mask(const PinHal::Name pin) { Hal::clear_mask(pin); }
+        static void set_mask  (const hal::Pin::Name pin) { Hal::set_mask(pin); }
+        static void clear_mask(const hal::Pin::Name pin) { Hal::clear_mask(pin); }
 
         static uint32_t read_masked (const Name port)                       { return Hal::read_masked(port); }
         static void     write_masked(const Name port, const uint32_t value) { Hal::write_masked(port, value); }
