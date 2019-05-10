@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    9 May 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -101,7 +101,7 @@ class System : public hal::System
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Hal = hal::Spi;
+        using Hal = hal::System;
 
         using Swd = typename Hal::Swd;
 };
