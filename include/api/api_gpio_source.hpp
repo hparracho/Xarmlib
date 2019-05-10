@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_gpio_source.hpp
 // @brief   API GPIO source class.
-// @date    29 November 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -106,12 +106,12 @@ class GpioSource : public PinSource
             m_outputs_mask[port_index] |= pin_mask;
         }
 
-        static constexpr int8_t get_port_index(const PinHal::Name pin_name)
+        static constexpr int8_t get_port_index(const hal::Pin::Name pin_name)
         {
             return static_cast<int8_t>(static_cast<std::size_t>(pin_name) >> 5);    // (pin_name / 32)
         }
 
-        static constexpr int8_t get_pin_bit(const PinHal::Name pin_name)
+        static constexpr int8_t get_pin_bit(const hal::Pin::Name pin_name)
         {
             return static_cast<int8_t>(static_cast<std::size_t>(pin_name) & 0x1F);  // (pin_name % 32)
         }
@@ -126,18 +126,18 @@ class GpioSource : public PinSource
         {
             for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
-                const PortHal::Name port_name = static_cast<PortHal::Name>(port_index);
+                const hal::Port::Name port_name = static_cast<hal::Port::Name>(port_index);
 
                 // NOTE: Ones configure as outputs
                 //       Zeros configure as inputs
-                PortHal::write_direction(port_name, m_outputs_mask[port_index], ~m_outputs[port_index]);
+                hal::Port::write_direction(port_name, m_outputs_mask[port_index], ~m_outputs[port_index]);
 
-                PortHal::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
+                hal::Port::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
 
                 // Clear mask
                 m_outputs_mask[port_index] = 0;
 
-                m_reads[port_index] = PortHal::read(port_name);
+                m_reads[port_index] = hal::Port::read(port_name);
             }
         }
 

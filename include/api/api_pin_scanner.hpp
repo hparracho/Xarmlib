@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer (Timer16 if available)).
-// @date    15 February 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -196,9 +196,9 @@ class PinScanner
         // --------------------------------------------------------------------
 
 #if defined(TARGET_TIMER16_COUNT) && (TARGET_TIMER16_COUNT > 0)
-        using TimerApi = Timer16Hal;
+        using TimerApi = hal::Timer16;
 #else
-        using TimerApi = TimerHal;
+        using TimerApi = hal::Timer;
 #endif
 
         // --------------------------------------------------------------------

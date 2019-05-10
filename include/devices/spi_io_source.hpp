@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    15 February 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -50,14 +50,14 @@ class SpiIoSource : public PinSource
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiIoSource(      SpiMasterHal& spi_master,
-                    const PinHal::Name  latch,
-                    const PinHal::Name  enable,
-                    const std::size_t   port_count) : m_spi_master { spi_master },
-                                                      m_latch(latch, { GpioHal::OutputMode::push_pull_high }),
-                                                      m_enable(enable, { GpioHal::OutputMode::push_pull_high }),
-                                                      m_outputs(port_count, static_cast<uint8_t>(0xFF)),
-                                                      m_reads(port_count, static_cast<uint8_t>(0))
+        SpiIoSource(      hal::SpiMaster& spi_master,
+                    const hal::Pin::Name  latch,
+                    const hal::Pin::Name  enable,
+                    const std::size_t     port_count) : m_spi_master { spi_master },
+                                                        m_latch(latch, { hal::Gpio::OutputMode::push_pull_high }),
+                                                        m_enable(enable, { hal::Gpio::OutputMode::push_pull_high }),
+                                                        m_outputs(port_count, static_cast<uint8_t>(0xFF)),
+                                                        m_reads(port_count, static_cast<uint8_t>(0))
         {
             assert(spi_master.is_enabled() == true);
             assert(port_count > 0);
@@ -167,7 +167,7 @@ class SpiIoSource : public PinSource
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        SpiMasterHal&          m_spi_master;
+        hal::SpiMaster&        m_spi_master;
         DigitalOut             m_latch;
         DigitalOut             m_enable;
 

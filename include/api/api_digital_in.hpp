@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    29 November 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalIn : private GpioHal
+class DigitalIn : private hal::Gpio
 {
     public:
 
@@ -48,25 +48,25 @@ class DigitalIn : private GpioHal
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalIn(const PinHal::Name pin_name, const GpioHal::InputModeConfig& config) : GpioHal(pin_name, config)
+        DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeConfig& config) : hal::Gpio(pin_name, config)
         {}
 
-        DigitalIn(const PinHal::Name pin_name, const GpioHal::InputModeTrueOpenDrainConfig& config) : GpioHal(pin_name, config)
+        DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
         {}
 
         // -------- READ ------------------------------------------------------
 
-        using GpioHal::read;
+        using hal::Gpio::read;
 
         operator uint32_t () const
         {
-            return GpioHal::read();
+            return hal::Gpio::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !GpioHal::read();
+            return !hal::Gpio::read();
         }
 };
 
