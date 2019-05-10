@@ -5,7 +5,7 @@
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -104,7 +104,7 @@ class SpiIoSource : public PinSource
 
             const uint32_t pin_mask = (1UL << pin_bit);
 
-            m_outputs[port_index] = (m_outputs[port_index] & ~pin_mask) | (output_bit & pin_mask);
+            m_outputs[port_index] = static_cast<uint8_t>((m_outputs[port_index] & ~pin_mask) | (output_bit & pin_mask));
         }
 
         static constexpr int8_t get_port_index(const int8_t pin_index)
@@ -134,7 +134,7 @@ class SpiIoSource : public PinSource
 
             for(std::ptrdiff_t port_index = output_buffer.size() - 1; port_index >= 0; --port_index)
             {
-                input_buffer[port_index] = m_spi_master.transfer(output_buffer[port_index]);
+                input_buffer[port_index] = static_cast<uint8_t>(m_spi_master.transfer(output_buffer[port_index]));
             }
 
             m_spi_master.mutex_give();
