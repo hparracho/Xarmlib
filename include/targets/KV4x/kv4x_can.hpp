@@ -474,24 +474,24 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // NOTE: only 16 filter table elements are available
         //       (all as Type A - one full ID (standard and extended) per ID filter element)
         template<std::size_t Size>
-        void config_rx_fifo_id_filter_table(const std::array<const RxFifoFilterElement, Size> element_array)
+        void config_rx_fifo_id_filter_table(const std::array<const RxFifoFilterElement, Size>& element_array)
         {
             static_assert(Size <= 16, "Only up to 16 filter table elements are available");
 
-            uint32_t rx_fifo_filter[Size];
+            std::array<uint32_t , Size> rx_fifo_filter{};
 
-            for(std::size_t i = 0; i < Size; i++)
+            std::size_t count = 0;
+
+            for(const auto& element : element_array)
             {
-                const auto element = element_array[i];
-
-                rx_fifo_filter[i] = (element.format == Frame::Format::standard) ?
-                                    FLEXCAN_RX_FIFO_STD_FILTER_TYPE_A(element.id, element.type, element.format) :
-                                    FLEXCAN_RX_FIFO_EXT_FILTER_TYPE_A(element.id, element.type, element.format);
+                rx_fifo_filter[count++] = (element.format == Frame::Format::standard) ?
+                                          FLEXCAN_RX_FIFO_STD_FILTER_TYPE_A(element.id, element.type, element.format) :
+                                          FLEXCAN_RX_FIFO_EXT_FILTER_TYPE_A(element.id, element.type, element.format);
             };
 
             const flexcan_rx_fifo_config_t rx_fifo_config =
             {
-                rx_fifo_filter,
+                rx_fifo_filter.data(),
                 static_cast<uint8_t>(Size),
                 kFLEXCAN_RxFifoFilterTypeA,
                 kFLEXCAN_RxFifoPrioHigh
