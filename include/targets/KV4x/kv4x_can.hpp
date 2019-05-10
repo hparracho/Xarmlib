@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    8 May 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -324,14 +324,14 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
             public:
 
                 // Frame format (IDE) selection
-                enum class Format
+                enum class Format : uint8_t
                 {
                     standard = 0,
                     extended
                 };
 
                 // Frame type (RTR) selection
-                enum class Type
+                enum class Type : uint8_t
                 {
                     data = 0,
                     remote
@@ -341,13 +341,11 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
                 //                       in extended frame format, all the 29 bits are used
 
                 // Default constructor
-                Frame() : m_id { 0 }, m_format { Format::standard }, m_type { Type::data }, m_data_bytes { DataBytes::bytes_0 }, m_data {}
+                Frame() : m_id { 0 }, m_format { Format::standard }, m_type { Type::data }, m_data_bytes { 0 }, m_data {}
                 {}
 
-                Frame(const uint32_t           id,
-                      const Format             format,
-                      const Type               type,
-                      const std::span<uint8_t> data) : m_id { id }, m_format { format }, m_type { type }, m_data_bytes { DataBytes::bytes_0 }, m_data {}
+                Frame(const uint32_t id, const Format format, const Type type, std::span<const uint8_t> data) :
+                    m_id { id }, m_format { format }, m_type { type }, m_data_bytes { 0 }, m_data {}
                 {
                     set_data(data);
                 }
@@ -355,40 +353,26 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
                 uint32_t           get_id()     const { return m_id; }
                 Format             get_format() const { return m_format; }
                 Type               get_type()   const { return m_type; }
-                std::span<uint8_t> get_data()         { return std::span(m_data).subspan(0, static_cast<std::ptrdiff_t>(m_data_bytes)); }
+                std::span<uint8_t> get_data()         { return std::span(m_data).subspan(0, m_data_bytes); }
 
                 void set_id(const uint32_t id)               { m_id = id; }
                 void set_format(const Format format)         { m_format = format; }
                 void set_type(const Type type)               { m_type = type; }
-                void set_data(const std::span<uint8_t> data)
+                void set_data(std::span<const uint8_t> data)
                 {
-                    assert(data.size() <= 8);
+                    assert(data.size() <= static_cast<std::ptrdiff_t>(m_data.size()));
 
-                    m_data_bytes = static_cast<DataBytes>(data.size());
+                    m_data_bytes = data.size();
 
                     std::copy(data.begin(), data.end(), m_data.begin());
                 }
 
             private:
 
-                // Frame data length (DLC) selection
-                enum class DataBytes
-                {
-                    bytes_0 = 0,
-                    bytes_1,
-                    bytes_2,
-                    bytes_3,
-                    bytes_4,
-                    bytes_5,
-                    bytes_6,
-                    bytes_7,
-                    bytes_8
-                };
-
                 uint32_t                m_id;
                 Format                  m_format;
                 Type                    m_type;
-                DataBytes               m_data_bytes;
+                uint8_t                 m_data_bytes;   // [0 - 8]
                 std::array<uint8_t, 8>  m_data;
                 //uint16_t                m_timestamp;    // Internal Free-Running Counter Time Stamp
                 //uint16_t                m_idhit;        // Identifier Acceptance Filter Hit Indicator
@@ -571,7 +555,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
 
             frame.m_format     = static_cast<Frame::Format>(rx_frame.format);
             frame.m_type       = static_cast<Frame::Type>(rx_frame.type);
-            frame.m_data_bytes = static_cast<Frame::DataBytes>(rx_frame.length);
+            frame.m_data_bytes = rx_frame.length;
             frame.m_id = (frame.m_format == Frame::Format::standard) ? (rx_frame.id >> CAN_ID_STD_SHIFT) : (rx_frame.id >> CAN_ID_EXT_SHIFT);
             frame.m_data[0] = rx_frame.dataByte0;
             frame.m_data[1] = rx_frame.dataByte1;
@@ -594,7 +578,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
 
             tx_frame.format    = static_cast<flexcan_frame_format_t>(frame.m_format);
             tx_frame.type      = static_cast<flexcan_frame_type_t>(frame.m_type);
-            tx_frame.length    = static_cast<uint32_t>(frame.m_data_bytes);
+            tx_frame.length    = frame.m_data_bytes;
             tx_frame.id        = (frame.m_format == Frame::Format::standard) ? FLEXCAN_ID_STD(frame.m_id) : FLEXCAN_ID_EXT(frame.m_id);
             tx_frame.dataByte0 = frame.m_data[0];
             tx_frame.dataByte1 = frame.m_data[1];
