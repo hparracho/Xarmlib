@@ -480,7 +480,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
 
             uint32_t rx_fifo_filter[Size];
 
-            for(std::size_t i = 0; i <= Size; i++)
+            for(std::size_t i = 0; i < Size; i++)
             {
                 const auto element = element_array[i];
 
