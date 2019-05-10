@@ -340,9 +340,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
                 // Identifier (id) NOTE: in standard frame format, only the 11 least significant bits are used
                 //                       in extended frame format, all the 29 bits are used
 
-                // Default constructor
-                Frame() : m_id { 0 }, m_format { Format::standard }, m_type { Type::data }, m_data_bytes { 0 }, m_data {}
-                {}
+                Frame() = default;
 
                 Frame(const uint32_t id, const Format format, const Type type, std::span<const uint8_t> data) :
                     m_id { id }, m_format { format }, m_type { type }, m_data_bytes { 0 }, m_data {}
@@ -350,15 +348,15 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
                     set_data(data);
                 }
 
-                uint32_t           get_id()     const { return m_id; }
-                Format             get_format() const { return m_format; }
-                Type               get_type()   const { return m_type; }
-                std::span<uint8_t> get_data()         { return std::span(m_data).subspan(0, m_data_bytes); }
+                uint32_t           get_id()         const { return m_id; }
+                Format             get_format()     const { return m_format; }
+                Type               get_type()       const { return m_type; }
+                std::span<const uint8_t> get_data() const { return std::span(m_data).subspan(0, m_data_bytes); }
 
                 void set_id(const uint32_t id)               { m_id = id; }
                 void set_format(const Format format)         { m_format = format; }
                 void set_type(const Type type)               { m_type = type; }
-                void set_data(std::span<const uint8_t> data)
+                void set_data(const std::span<const uint8_t> data)
                 {
                     assert(data.size() <= static_cast<std::ptrdiff_t>(m_data.size()));
 
@@ -369,11 +367,11 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
 
             private:
 
-                uint32_t                m_id;
-                Format                  m_format;
-                Type                    m_type;
-                uint8_t                 m_data_bytes;   // [0 - 8]
-                std::array<uint8_t, 8>  m_data;
+                uint32_t                m_id { 0 };
+                Format                  m_format { Format::standard };
+                Type                    m_type { Type::data };
+                uint8_t                 m_data_bytes { 0 };   // [0 - 8]
+                std::array<uint8_t, 8>  m_data {};
                 //uint16_t                m_timestamp;    // Internal Free-Running Counter Time Stamp
                 //uint16_t                m_idhit;        // Identifier Acceptance Filter Hit Indicator
         };
