@@ -2,11 +2,11 @@
 // @file    hal_i2c.hpp
 // @brief   I2C Master HAL interface class.
 // @note    Slave mode is not implemented.
-// @date    9 May 2019
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
