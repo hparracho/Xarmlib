@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    10 May 2019
+// @date    24 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -84,6 +84,25 @@ class SpiMasterBase : protected SpiDriver
             #endif
         }
 
+        // -------- CONFIGURATION ---------------------------------------------
+
+        int32_t get_frequency() const { return SpiDriver::get_frequency(); }
+
+        // NOTE: during the frequency change, the peripheral will be disabled
+        void set_frequency(const int32_t frequency)
+        {
+            const bool enabled = is_enabled();
+
+            disable();
+
+            SpiDriver::set_frequency(frequency);
+
+            if(enabled == true)
+            {
+                enable();
+            }
+        }
+
         // -------- ENABLE / DISABLE ------------------------------------------
 
         void enable()           { SpiDriver::enable(); }
@@ -131,7 +150,7 @@ class SpiMasterBase : protected SpiDriver
         {
             for(auto& frame : buffer)
             {
-                frame = transfer(frame);
+                frame = static_cast<uint8_t>(transfer(frame));
             }
         }
 
@@ -142,7 +161,7 @@ class SpiMasterBase : protected SpiDriver
 
             for(std::ptrdiff_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
             {
-                rx_buffer[frame_index] = transfer(tx_buffer[frame_index]);
+                rx_buffer[frame_index] = static_cast<uint8_t>(transfer(tx_buffer[frame_index]));
             }
         }
 
@@ -365,8 +384,6 @@ class SpiMaster : public hal::SpiMaster
         using ModifiedTransferFormat = typename Hal::ModifiedTransferFormat;
         using SamplePoint            = typename Hal::SamplePoint;
         using RxFifoOverwrite        = typename Hal::RxFifoOverwrite;
-
-        using MasterCtarConfig       = typename Hal::MasterCtarConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC DEFINITIONS
@@ -650,8 +667,6 @@ class SpiSlave : public hal::SpiSlave
         using ModifiedTransferFormat = typename Hal::ModifiedTransferFormat;
         using SamplePoint            = typename Hal::SamplePoint;
         using RxFifoOverwrite        = typename Hal::RxFifoOverwrite;
-
-        using SlaveCtarConfig        = typename Hal::SlaveCtarConfig;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
