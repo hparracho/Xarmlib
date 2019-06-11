@@ -15,6 +15,11 @@ Commit: cb3fb9a70f3de3670bf5523a588c7f63cec48ff6
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
+## FatFs: Generic FAT Filesystem Module Source Files R0.13c
+Date: 14 October 2018
+### http://elm-chan.org/fsw/ff/00index_e.html
+
+---
 ## fsl: Freescale drivers from Kinetis SDK Version 2.4.1
 Date: 30 October 2018
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
