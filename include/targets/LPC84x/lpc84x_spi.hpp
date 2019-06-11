@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.hpp
 // @brief   NXP LPC84x SPI class.
-// @date    9 April 2019
+// @date    24 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -39,8 +39,6 @@
 #include "targets/LPC84x/lpc84x_syscon_power.hpp"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
-
-#include <array>
 
 
 
@@ -190,7 +188,6 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
         struct SlaveConfig
         {
-            int32_t      max_frequency = 500000;
             SpiMode      spi_mode      = SpiMode::mode3;
             DataBits     data_bits     = DataBits::bits_8;
             DataOrder    data_order    = DataOrder::msb_first;
@@ -247,8 +244,9 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             // Configure data format and operating modes
             set_configuration(MasterMode::slave, slave_config.spi_mode, slave_config.data_bits, slave_config.data_order, slave_config.ssel_polarity, slave_config.loopback_mode);
 
+            /* In slave mode, the clock is taken from the SCK input and the SPI clock divider is not used!
             // Set supplied maximum frequency
-            set_frequency(slave_config.max_frequency);
+            set_frequency(slave_config.max_frequency);*/
         }
 
         ~SpiDriver()
@@ -267,95 +265,26 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             }
         }
 
-        // -------- INITIALIZATION / CONFIGURATION ----------------------------
+        // -------- FREQUENCY -------------------------------------------------
 
-        // Initialize SPI peripheral structure and pins (constructor helper function)
-        void initialize(const PinDriver::Name mosi,
-                        const PinDriver::Name miso,
-                        const PinDriver::Name sck,
-                        const PinDriver::Name slave_sel)
+        // NOTE: only in master mode!
+
+        int32_t get_frequency() const
         {
-            const Name name = static_cast<Name>(get_index());
+            assert(is_master() == true);
 
-            switch(name)
-            {
-                case Name::spi0:
-                {
-                    // Set pointer to the available SPI structure
-                    m_spi = LPC_SPI0;
-
-                    ClockDriver::enable(ClockDriver::Peripheral::spi0);
-                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi0);
-
-                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::spi0,
-                                                             ClockDriver::PeripheralClockSource::main_clk);
-
-                    SwmDriver::assign(SwmDriver::PinMovable::spi0_mosi_io, mosi);
-                    SwmDriver::assign(SwmDriver::PinMovable::spi0_miso_io, miso);
-                    SwmDriver::assign(SwmDriver::PinMovable::spi0_sck_io, sck);
-
-                    if(slave_sel != PinDriver::Name::nc)
-                    {
-                        SwmDriver::assign(SwmDriver::PinMovable::spi0_ssel0_io, slave_sel);
-                    }
-                }   break;
-
-                case Name::spi1:
-                {
-                    // Set pointer to the available SPI structure
-                    m_spi = LPC_SPI1;
-
-                    ClockDriver::enable(ClockDriver::Peripheral::spi1);
-                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi1);
-
-                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::spi1,
-                                                             ClockDriver::PeripheralClockSource::main_clk);
-
-                    SwmDriver::assign(SwmDriver::PinMovable::spi1_mosi_io, mosi);
-                    SwmDriver::assign(SwmDriver::PinMovable::spi1_miso_io, miso);
-                    SwmDriver::assign(SwmDriver::PinMovable::spi1_sck_io, sck);
-
-                    if(slave_sel != PinDriver::Name::nc)
-                    {
-                        SwmDriver::assign(SwmDriver::PinMovable::spi1_ssel0_io, slave_sel);
-                    }
-                }   break;
-
-                default: break;
-            }
+            return m_frequency;
         }
 
-        // Configure SPI data format and operating modes (constructor helper function)
-        void set_configuration(const MasterMode   master_mode,
-                               const SpiMode      spi_mode,
-                               const DataBits     data_bits,
-                               const DataOrder    data_order,
-                               const SselPolarity ssel_polarity,
-                               const LoopbackMode loopback_mode)
-        {
-            // Set the MASTER, LSBF, CPHA, CPOL, LOOP and SPOL0 bits
-            m_spi->CFG = static_cast<uint32_t>(master_mode  ) |
-                         static_cast<uint32_t>(data_order   ) |
-                         static_cast<uint32_t>(spi_mode     ) |
-                         static_cast<uint32_t>(loopback_mode) |
-                         static_cast<uint32_t>(ssel_polarity);
-
-            // Set the LEN bits
-            m_spi->TXCTL = static_cast<uint32_t>(data_bits);
-
-            // Configure the SPI delay register (DLY)
-            // Pre-delay = 0 clocks / post-delay = 0 clocks / frame-delay = 0 clocks / transfer-delay = 0 clocks
-            m_spi->DLY = 0x0000;
-
-            // Clear all interrupt flags
-            m_spi->INTENCLR = 0x3F;
-        }
-
-        // Set SPI maximum frequency (constructor helper function)
-        // NOTE: If the maximum frequency cannot be obtained it will set
-        //       the closest frequency that is below the target frequency.
+        // Set SPI maximum frequency
+        // NOTES: - the module must be in the stopped state
+        //        - if the maximum frequency cannot be obtained it will set
+        //          the closest frequency that is below the target frequency
         void set_frequency(const int32_t max_frequency)
         {
+            assert(is_enabled() == false);
+            assert(is_master()  == true);
+
             const int32_t clock_freq = ClockDriver::get_main_clock_frequency();
 
             assert(max_frequency >= (clock_freq / 65536) &&  max_frequency <= clock_freq);
@@ -368,6 +297,8 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             //       value 1 results in PCLK/2, up to the maximum possible divide value
             //       of 0xFFFF, which results in PCLK/65536.
             m_spi->DIV = (divval - 1) & 0xFFFF;
+
+            m_frequency = max_frequency;
         }
 
         // -------- READ / WRITE ----------------------------------------------
@@ -527,6 +458,95 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+        // -------- INITIALIZATION / CONFIGURATION ----------------------------
+
+        // Initialize SPI peripheral structure and pins (constructor helper function)
+        void initialize(const PinDriver::Name mosi,
+                        const PinDriver::Name miso,
+                        const PinDriver::Name sck,
+                        const PinDriver::Name slave_sel)
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::spi0:
+                {
+                    // Set pointer to the available SPI structure
+                    m_spi = LPC_SPI0;
+
+                    ClockDriver::enable(ClockDriver::Peripheral::spi0);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi0);
+
+                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::spi0,
+                                                             ClockDriver::PeripheralClockSource::main_clk);
+
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_mosi_io, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_miso_io, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_sck_io, sck);
+
+                    if(slave_sel != PinDriver::Name::nc)
+                    {
+                        SwmDriver::assign(SwmDriver::PinMovable::spi0_ssel0_io, slave_sel);
+                    }
+                }   break;
+
+                case Name::spi1:
+                {
+                    // Set pointer to the available SPI structure
+                    m_spi = LPC_SPI1;
+
+                    ClockDriver::enable(ClockDriver::Peripheral::spi1);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi1);
+
+                    ClockDriver::set_peripheral_clock_source(ClockDriver::PeripheralClockSelect::spi1,
+                                                             ClockDriver::PeripheralClockSource::main_clk);
+
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_mosi_io, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_miso_io, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_sck_io, sck);
+
+                    if(slave_sel != PinDriver::Name::nc)
+                    {
+                        SwmDriver::assign(SwmDriver::PinMovable::spi1_ssel0_io, slave_sel);
+                    }
+                }   break;
+
+                default: break;
+            }
+        }
+
+        // Configure SPI data format and operating modes (constructor helper function)
+        void set_configuration(const MasterMode   master_mode,
+                               const SpiMode      spi_mode,
+                               const DataBits     data_bits,
+                               const DataOrder    data_order,
+                               const SselPolarity ssel_polarity,
+                               const LoopbackMode loopback_mode)
+        {
+            // Set the MASTER, LSBF, CPHA, CPOL, LOOP and SPOL0 bits
+            m_spi->CFG = static_cast<uint32_t>(master_mode  ) |
+                         static_cast<uint32_t>(data_order   ) |
+                         static_cast<uint32_t>(spi_mode     ) |
+                         static_cast<uint32_t>(loopback_mode) |
+                         static_cast<uint32_t>(ssel_polarity);
+
+            // Set the LEN bits
+            m_spi->TXCTL = static_cast<uint32_t>(data_bits);
+
+            // Configure the SPI delay register (DLY)
+            // Pre-delay = 0 clocks / post-delay = 0 clocks / frame-delay = 0 clocks / transfer-delay = 0 clocks
+            m_spi->DLY = 0x0000;
+
+            // Clear all interrupt flags
+            m_spi->INTENCLR = 0x3F;
+        }
+
+        bool is_master() const
+        {
+            return (m_spi->CFG & cfg_master) != 0;
+        }
+
         // -------- WRITE -----------------------------------------------------
 
         // Write data to be transmitted
@@ -561,6 +581,7 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
+        int32_t    m_frequency { 0 };   // User defined frequency
         LPC_SPI_T* m_spi { nullptr };   // Pointer to the CMSIS SPI structure
         IrqHandler m_irq_handler;       // User defined IRQ handler
 };
