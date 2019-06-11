@@ -3,11 +3,11 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    12 February 2019
+// @date    23 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -54,14 +54,14 @@ namespace kv4x
 
 void SpiDriver::initialize(const MasterConfig& master_config)
 {
-    assert(master_config.ctars_config.baudrate > 0);
+    assert(master_config.frequency > 0);
 
-    const uint32_t baudrate = static_cast<uint32_t>(master_config.ctars_config.baudrate);
+    const uint32_t frequency = static_cast<uint32_t>(master_config.frequency);
 
     // Delay between the negation of the PCS signal at the end of a frame and
     // the assertion of PCS at the beginning of the next frame
     // NOTE: 50 ns is the minimum delay needed by the peripheral @ Clock::xtal_94mhz
-    const uint32_t delay_between_transfer_ns = (500000000 / baudrate) - 50;
+    const uint32_t delay_between_transfer_ns = (500000000 / frequency) - 50;
 
     /*
      * NOTA (Emanuel Pinto @ 26 February 2019):
@@ -88,11 +88,11 @@ void SpiDriver::initialize(const MasterConfig& master_config)
 
     const dspi_master_ctar_config_t spi_master_ctar0_config =
     {
-        baudrate,
-        static_cast<uint32_t>(master_config.ctars_config.data_bits),
-        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) >> 1),
-        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(master_config.ctars_config.spi_mode) & 1),
-        static_cast<dspi_shift_direction_t>(master_config.ctars_config.data_order),
+        frequency,
+        static_cast<uint32_t>(master_config.data_bits),
+        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(master_config.spi_mode) >> 1),
+        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(master_config.spi_mode) & 1),
+        static_cast<dspi_shift_direction_t>(master_config.data_order),
         0,  // Delay between assertion of PCS and the first edge of the SCK in nanoseconds
             // NOTE: 0 sets the minimum delay. It also sets the boundary value if out of range
         0,  // Delay between the last edge of SCK and the negation of PCS in nanoseconds
@@ -127,9 +127,9 @@ void SpiDriver::initialize(const SlaveConfig& slave_config)
 {
     const dspi_slave_ctar_config_t spi_slave_ctar_config =
     {
-        static_cast<uint32_t>(slave_config.ctar_config.data_bits),
-        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(slave_config.ctar_config.spi_mode) >> 1),
-        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(slave_config.ctar_config.spi_mode) & 1)
+        static_cast<uint32_t>(slave_config.data_bits),
+        static_cast<dspi_clock_polarity_t>(static_cast<uint8_t>(slave_config.spi_mode) >> 1),
+        static_cast<dspi_clock_phase_t>(static_cast<uint8_t>(slave_config.spi_mode) & 1)
     };
 
     const dspi_slave_config_t spi_slave_config =
@@ -148,6 +148,23 @@ void SpiDriver::initialize(const SlaveConfig& slave_config)
     // ( DSPI_SlaveInit(...) FSL's function decided to start frame
     // transfers by own initiative -_- )
     disable();
+}
+
+
+
+
+void SpiDriver::set_frequency(const int32_t frequency)
+{
+    assert(is_enabled() == false);
+    assert(is_master()  == true);
+    assert(frequency     > 0);
+
+    DSPI_MasterSetBaudRate(SPI, kDSPI_Ctar0, static_cast<uint32_t>(frequency), SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+    // Copy CTAR1 after CTAR0 was changed
+    SPI->CTAR[kDSPI_Ctar1] = SPI->CTAR[kDSPI_Ctar0];
+
+    m_frequency = frequency;
 }
 
 

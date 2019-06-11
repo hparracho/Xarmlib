@@ -3,11 +3,11 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    26 February 2019
+// @date    23 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -205,28 +205,15 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             enabled         // Incoming data is shifted into the shift register
         };
 
-        // Master CTAR configuration structure
-        struct MasterCtarConfig
+        struct MasterConfig
         {
-            int32_t   baudrate   = 500000;
+            // Master CTAR configurations
+            // NOTE: in master mode both CTARs are configured with the same configurations
+            int32_t   frequency  = 500000;
             SpiMode   spi_mode   = SpiMode::mode3;
             DataBits  data_bits  = DataBits::bits_8;
             DataOrder data_order = DataOrder::msb_first;
-        };
 
-        // Slave CTAR configuration structure
-        // NOTE: DataOrder LSB first is not supported in slave mode
-        struct SlaveCtarConfig
-        {
-            SpiMode  spi_mode  = SpiMode::mode3;
-            DataBits data_bits = DataBits::bits_8;
-        };
-
-        struct MasterConfig
-        {
-            /*CtarSelection          ctar_selection           = CtarSelection::ctar0;*/
-            // NOTE: in master mode both CTARs are configured with the same MasterCtarConfig
-            MasterCtarConfig       ctars_config             = MasterCtarConfig{};
             ContinuousSck          continuous_sck           = ContinuousSck::disabled;
             ModifiedTransferFormat modified_transfer_format = ModifiedTransferFormat::disabled;
             SamplePoint            sample_point             = SamplePoint::sck_to_sin_0_clock;
@@ -235,8 +222,12 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 
         struct SlaveConfig
         {
-            // NOTE: in slave mode only CTAR0 (same register as CTAR0_SLAVE) is used
-            SlaveCtarConfig        ctar_config              = SlaveCtarConfig{};
+            // Slave CTAR configurations
+            // NOTES: - in slave mode only CTAR0 (same register as CTAR0_SLAVE) is used
+            //        - DataOrder LSB first is not supported in slave mode
+            SpiMode  spi_mode  = SpiMode::mode3;
+            DataBits data_bits = DataBits::bits_8;
+
             ContinuousSck          continuous_sck           = ContinuousSck::disabled;
             ModifiedTransferFormat modified_transfer_format = ModifiedTransferFormat::disabled;
             SamplePoint            sample_point             = SamplePoint::sck_to_sin_0_clock;
@@ -276,6 +267,8 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
             PinDriver::set_pin_mux(master_sck,  sck_pin_mux);
 
             initialize(master_config);
+
+            m_frequency = master_config.frequency;
 
             disable_irq();
 
@@ -330,6 +323,19 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         }
 
         // -------- CONFIGURATION ---------------------------------------------
+
+        // NOTE: only in master mode!
+        int32_t get_frequency() const
+        {
+            assert(is_master() == true);
+
+            return m_frequency;
+        }
+
+        // NOTES: - the module must be in the stopped state
+        //        - only in master mode!
+        //        - the frequency will be set in both CTARs
+        void set_frequency(const int32_t frequency);
 
         DataBits get_ctar_data_bits(const CtarSelection ctar_selection) const
         {
@@ -697,7 +703,8 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        IrqHandler m_irq_handler;   // User defined IRQ handler
+        int32_t    m_frequency { 0 };   // User defined frequency
+        IrqHandler m_irq_handler;       // User defined IRQ handler
 };
 
 
