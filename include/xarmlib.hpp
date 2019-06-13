@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    10 May 2019
+// @date    21 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -49,6 +49,7 @@
 #include "hal/hal_can.hpp"
 #include "hal/hal_enc.hpp"
 #include "hal/hal_faim.hpp"
+#include "hal/hal_flash.hpp"
 #include "hal/hal_gpio.hpp"
 #include "hal/hal_i2c.hpp"
 #include "hal/hal_pin.hpp"
