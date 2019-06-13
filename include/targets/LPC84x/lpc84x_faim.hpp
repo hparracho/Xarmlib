@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    9 April 2019
+// @date    21 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 #define __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 
-#include "targets/LPC84x/lpc84x_iap.hpp"
+#include "targets/LPC84x/lpc84x_flash_iap.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
@@ -91,7 +91,7 @@ class FaimDriver
                 uint32_t faim_value {};
 
                 // Read current configuration
-                if(IapDriver::read_faim_word(word_idx, faim_value) == false)
+                if(FlashIapDriver::read_faim_word(word_idx, faim_value) == false)
                 {
                     return false;
                 }
@@ -99,7 +99,7 @@ class FaimDriver
                 // Compare intended with current configuration and update if needed
                 if(faim_value != faim_words[word_idx])
                 {
-                    if(IapDriver::write_faim_word(word_idx, faim_words[word_idx]) == false)
+                    if(FlashIapDriver::write_faim_word(word_idx, faim_words[word_idx]) == false)
                     {
                         return false;
                     }
