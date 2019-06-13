@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    24 May 2019
+// @date    11 June 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,7 +52,7 @@ class SpiMasterBase : protected SpiDriver
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using MasterConfig     = typename SpiDriver::MasterConfig;
+        using Config           = typename SpiDriver::MasterConfig;
 
         using Status           = typename SpiDriver::Status;
         using StatusBitmask    = typename SpiDriver::StatusBitmask;
@@ -65,10 +65,10 @@ class SpiMasterBase : protected SpiDriver
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiMasterBase(const hal::Pin::Name master_mosi,
-                      const hal::Pin::Name master_miso,
-                      const hal::Pin::Name master_sck,
-                      const MasterConfig&  master_config) : SpiDriver(master_mosi, master_miso, master_sck, master_config)
+        SpiMasterBase(const hal::Pin::Name mosi,
+                      const hal::Pin::Name miso,
+                      const hal::Pin::Name sck,
+                      const Config&        config) : SpiDriver(mosi, miso, sck, config)
        {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
@@ -231,7 +231,7 @@ class SpiSlaveBase : protected SpiDriver
         // PUBLIC DEFINITIONS
         // --------------------------------------------------------------------
 
-        using SlaveConfig      = typename SpiDriver::SlaveConfig;
+        using Config           = typename SpiDriver::SlaveConfig;
 
         using Status           = typename SpiDriver::Status;
         using StatusBitmask    = typename SpiDriver::StatusBitmask;
@@ -244,11 +244,11 @@ class SpiSlaveBase : protected SpiDriver
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        SpiSlaveBase(const hal::Pin::Name slave_mosi,
-                     const hal::Pin::Name slave_miso,
-                     const hal::Pin::Name slave_sck,
-                     const hal::Pin::Name slave_sel,
-                     const SlaveConfig&   slave_config) : SpiDriver(slave_mosi, slave_miso, slave_sck, slave_sel, slave_config)
+        SpiSlaveBase(const hal::Pin::Name mosi,
+                     const hal::Pin::Name miso,
+                     const hal::Pin::Name sck,
+                     const hal::Pin::Name ssel,
+                     const Config&        config) : SpiDriver(mosi, miso, sck, ssel, config)
         {
             #ifdef XARMLIB_ENABLE_FREERTOS
             // Create access mutex
