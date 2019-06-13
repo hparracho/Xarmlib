@@ -69,13 +69,28 @@ extern uint32_t SystemCoreClock;
 /*FUNCTION**********************************************************************
  *
  * Function Name : CLOCK_CONFIG_SetSimSafeDivs
- * Description   : This function sets the system clock dividers in SIM to safe 
+ * Description   : This function sets the system clock dividers in SIM to safe
  * value.
  *
  *END**************************************************************************/
 static void CLOCK_CONFIG_SetSimSafeDivs(void)
 {
     SIM->CLKDIV1 = 0x11070000U;
+}
+
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : CLOCK_CONFIG_FllStableDelay
+ * Description   : This function is used to delay for FLL stable.
+ *
+ *END**************************************************************************/
+static void CLOCK_CONFIG_FllStableDelay(void)
+{
+    uint32_t i = 30000U;
+    while (i--)
+    {
+        __NOP();
+    }
 }
 
 /*FUNCTION**********************************************************************
@@ -103,12 +118,12 @@ static void CLOCK_CONFIG_SetWdogClock(uint8_t src)
 }
 
 /*******************************************************************************
- ******************** Configuration clock_config_irc_4mhz **********************
+ ****************** Configuration clock_config_irc_4mhz_vlpr *******************
  ******************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!Configuration
-name: clock_config_irc_4mhz
+name: clock_config_irc_4mhz_vlpr
 outputs:
 - {id: Bus_clock.outFreq, value: 4 MHz}
 - {id: Core_clock.outFreq, value: 4 MHz}
@@ -134,9 +149,9 @@ settings:
 /* clang-format on */
 
 /*******************************************************************************
- * Variables for clock_config_irc_4mhz configuration
+ * Variables for clock_config_irc_4mhz_vlpr configuration
  ******************************************************************************/
-const mcg_config_t mcgConfig_clock_config_irc_4mhz =
+const mcg_config_t mcgConfig_clock_config_irc_4mhz_vlpr =
     {
         .mcgMode = kMCG_ModeBLPI,                 /* BLPI - Bypassed Low Power Internal */
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
@@ -152,12 +167,12 @@ const mcg_config_t mcgConfig_clock_config_irc_4mhz =
                 .vdiv = 0x0U,                     /* VCO divider: multiplied by 16 */
             },
     };
-const sim_clock_config_t simConfig_clock_config_irc_4mhz =
+const sim_clock_config_t simConfig_clock_config_irc_4mhz_vlpr =
     {
         .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
         .clkdiv1 = 0x40000U,                      /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /1, OUTDIV4: /5 */
     };
-const osc_config_t oscConfig_clock_config_irc_4mhz =
+const osc_config_t oscConfig_clock_config_irc_4mhz_vlpr =
     {
         .freq = 0U,                               /* Oscillator frequency: 0Hz */
         .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
@@ -170,18 +185,18 @@ const osc_config_t oscConfig_clock_config_irc_4mhz =
     };
 
 /*******************************************************************************
- * Code for clock_config_irc_4mhz configuration
+ * Code for clock_config_irc_4mhz_vlpr configuration
  ******************************************************************************/
-void clock_config_irc_4mhz(void)
+void clock_config_irc_4mhz_vlpr(void)
 {
     /* Set the system clock dividers in SIM to safe value. */
     CLOCK_CONFIG_SetSimSafeDivs();
     /* Set MCG to BLPI mode. */
-    CLOCK_BootToBlpiMode(mcgConfig_clock_config_irc_4mhz.fcrdiv,
-                         mcgConfig_clock_config_irc_4mhz.ircs,
-                         mcgConfig_clock_config_irc_4mhz.irclkEnableMode);
+    CLOCK_BootToBlpiMode(mcgConfig_clock_config_irc_4mhz_vlpr.fcrdiv,
+                         mcgConfig_clock_config_irc_4mhz_vlpr.ircs,
+                         mcgConfig_clock_config_irc_4mhz_vlpr.irclkEnableMode);
     /* Set the clock configuration in SIM module. */
-    CLOCK_SetSimConfig(&simConfig_clock_config_irc_4mhz);
+    CLOCK_SetSimConfig(&simConfig_clock_config_irc_4mhz_vlpr);
     /* Set VLPR power mode. */
     SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
 #if (defined(FSL_FEATURE_SMC_HAS_LPWUI) && FSL_FEATURE_SMC_HAS_LPWUI)
@@ -193,18 +208,112 @@ void clock_config_irc_4mhz(void)
     {
     }
     /* Set SystemCoreClock variable. */
-    SystemCoreClock = CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK;
+    SystemCoreClock = CLOCK_CONFIG_IRC_4MHZ_VLPR_CORE_CLOCK;
     /* Set WDOG clock source. */
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_80mhz *********************
+ ****************** Configuration clock_config_irc_96mhz_run *******************
  ******************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!Configuration
-name: clock_config_xtal_80mhz
+name: clock_config_irc_96mhz_run
+outputs:
+- {id: Bus_clock.outFreq, value: 95.977472 MHz}
+- {id: Core_clock.outFreq, value: 95.977472 MHz}
+- {id: Flash_clock.outFreq, value: 23.994368 MHz}
+- {id: LPO_clock.outFreq, value: 1 kHz}
+- {id: MCGIRCLK.outFreq, value: 4 MHz}
+- {id: System_clock.outFreq, value: 95.977472 MHz}
+- {id: WDOGCLK.outFreq, value: 4 MHz}
+settings:
+- {id: MCG.FCRDIV.scale, value: '1', locked: true}
+- {id: MCG.FLL_mul.scale, value: '2929', locked: true}
+- {id: MCG.IRCS.sel, value: MCG.FCRDIV}
+- {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
+- {id: MCRFFCLKAllowConfig, value: 'no'}
+- {id: OSC_CR_EREFSTEN_CFG, value: Enabled}
+- {id: OSC_CR_EREFSTEN_UNDIV_CFG, value: Enabled}
+- {id: SIM.CLKOUTSEL.sel, value: MCG.MCGIRCLK}
+- {id: SIM.OUTDIV4.scale, value: '4', locked: true}
+- {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
+- {id: WDOGClkConfig, value: 'yes'}
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+
+/*******************************************************************************
+ * Variables for clock_config_irc_96mhz_run configuration
+ ******************************************************************************/
+const mcg_config_t mcgConfig_clock_config_irc_96mhz_run =
+    {
+        .mcgMode = kMCG_ModeFEI,                  /* FEI - FLL Engaged Internal */
+        .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
+        .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
+        .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
+        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 1 */
+        .drs = kMCG_DrsHigh,                      /* High frequency range */
+        .dmx32 = kMCG_Dmx32Fine,                  /* DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
+        .pll0Config =
+            {
+                .enableMode = MCG_PLL_DISABLE,    /* MCGPLLCLK disabled */
+                .prdiv = 0x0U,                    /* PLL Reference divider: divided by 1 */
+                .vdiv = 0x0U,                     /* VCO divider: multiplied by 16 */
+            },
+    };
+const sim_clock_config_t simConfig_clock_config_irc_96mhz_run =
+    {
+        .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
+        .clkdiv1 = 0x30000U,                      /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /1, OUTDIV4: /4 */
+    };
+const osc_config_t oscConfig_clock_config_irc_96mhz_run =
+    {
+        .freq = 0U,                               /* Oscillator frequency: 0Hz */
+        .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
+        .workMode = kOSC_ModeExt,                 /* Use external clock */
+        .oscerConfig =
+            {
+                .enableMode = kOSC_ErClkEnableInStop,/* Enable external reference clock only in STOP mode */
+                .erclkDiv = 0,                    /* Divider for OSCERCLK: divided by 1 */
+            }
+    };
+
+/*******************************************************************************
+ * Code for clock_config_irc_96mhz_run configuration
+ ******************************************************************************/
+void clock_config_irc_96mhz_run(void)
+{
+    /* Set the system clock dividers in SIM to safe value. */
+    CLOCK_CONFIG_SetSimSafeDivs();
+    /* Set MCG to FEI mode. */
+#if FSL_CLOCK_DRIVER_VERSION >= MAKE_VERSION(2, 2, 0)
+    CLOCK_BootToFeiMode(mcgConfig_clock_config_irc_96mhz_run.dmx32,
+                        mcgConfig_clock_config_irc_96mhz_run.drs,
+                        CLOCK_CONFIG_FllStableDelay);
+#else
+    CLOCK_BootToFeiMode(mcgConfig_clock_config_irc_96mhz_run.drs,
+                        CLOCK_CONFIG_FllStableDelay);
+#endif
+    /* Configure the Internal Reference clock (MCGIRCLK). */
+    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_irc_96mhz_run.irclkEnableMode,
+                                  mcgConfig_clock_config_irc_96mhz_run.ircs,
+                                  mcgConfig_clock_config_irc_96mhz_run.fcrdiv);
+    /* Set the clock configuration in SIM module. */
+    CLOCK_SetSimConfig(&simConfig_clock_config_irc_96mhz_run);
+    /* Set SystemCoreClock variable. */
+    SystemCoreClock = CLOCK_CONFIG_IRC_96MHZ_RUN_CORE_CLOCK;
+    /* Set WDOG clock source. */
+    CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
+}
+
+/*******************************************************************************
+ ***************** Configuration clock_config_xtal_80mhz_run *******************
+ ******************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+!!Configuration
+name: clock_config_xtal_80mhz_run
 called_from_default_init: true
 outputs:
 - {id: Bus_clock.outFreq, value: 80 MHz}
@@ -241,9 +350,9 @@ sources:
 /* clang-format on */
 
 /*******************************************************************************
- * Variables for clock_config_xtal_80mhz configuration
+ * Variables for clock_config_xtal_80mhz_run configuration
  ******************************************************************************/
-const mcg_config_t mcgConfig_clock_config_xtal_80mhz =
+const mcg_config_t mcgConfig_clock_config_xtal_80mhz_run =
     {
         .mcgMode = kMCG_ModePEE,                  /* PEE - PLL Engaged External */
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
@@ -259,12 +368,12 @@ const mcg_config_t mcgConfig_clock_config_xtal_80mhz =
                 .vdiv = 0x18U,                    /* VCO divider: multiplied by 40 */
             },
     };
-const sim_clock_config_t simConfig_clock_config_xtal_80mhz =
+const sim_clock_config_t simConfig_clock_config_xtal_80mhz_run =
     {
         .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
         .clkdiv1 = 0x11070000U,                   /* SIM_CLKDIV1 - OUTDIV1: /2, OUTDIV2: /2, OUTDIV4: /8 */
     };
-const osc_config_t oscConfig_clock_config_xtal_80mhz =
+const osc_config_t oscConfig_clock_config_xtal_80mhz_run =
     {
         .freq = 8000000U,                         /* Oscillator frequency: 8000000Hz */
         .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
@@ -277,40 +386,40 @@ const osc_config_t oscConfig_clock_config_xtal_80mhz =
     };
 
 /*******************************************************************************
- * Code for clock_config_xtal_80mhz configuration
+ * Code for clock_config_xtal_80mhz_run configuration
  ******************************************************************************/
-void clock_config_xtal_80mhz(void)
+void clock_config_xtal_80mhz_run(void)
 {
     /* Set the system clock dividers in SIM to safe value. */
     CLOCK_CONFIG_SetSimSafeDivs();
     /* Initializes OSC0 according to board configuration. */
-    CLOCK_InitOsc0(&oscConfig_clock_config_xtal_80mhz);
-    CLOCK_SetXtal0Freq(oscConfig_clock_config_xtal_80mhz.freq);
+    CLOCK_InitOsc0(&oscConfig_clock_config_xtal_80mhz_run);
+    CLOCK_SetXtal0Freq(oscConfig_clock_config_xtal_80mhz_run.freq);
     /* Configure FLL external reference divider (FRDIV). */
-    CLOCK_CONFIG_SetFllExtRefDiv(mcgConfig_clock_config_xtal_80mhz.frdiv);
+    CLOCK_CONFIG_SetFllExtRefDiv(mcgConfig_clock_config_xtal_80mhz_run.frdiv);
     /* Set MCG to PEE mode. */
     CLOCK_BootToPeeMode(kMCG_OscselOsc,
                         kMCG_PllClkSelPll0,
-                        &mcgConfig_clock_config_xtal_80mhz.pll0Config);
+                        &mcgConfig_clock_config_xtal_80mhz_run.pll0Config);
     /* Configure the Internal Reference clock (MCGIRCLK). */
-    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_80mhz.irclkEnableMode,
-                                  mcgConfig_clock_config_xtal_80mhz.ircs, 
-                                  mcgConfig_clock_config_xtal_80mhz.fcrdiv);
+    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_80mhz_run.irclkEnableMode,
+                                  mcgConfig_clock_config_xtal_80mhz_run.ircs,
+                                  mcgConfig_clock_config_xtal_80mhz_run.fcrdiv);
     /* Set the clock configuration in SIM module. */
-    CLOCK_SetSimConfig(&simConfig_clock_config_xtal_80mhz);
+    CLOCK_SetSimConfig(&simConfig_clock_config_xtal_80mhz_run);
     /* Set SystemCoreClock variable. */
-    SystemCoreClock = CLOCK_CONFIG_XTAL_80MHZ_CORE_CLOCK;
+    SystemCoreClock = CLOCK_CONFIG_XTAL_80MHZ_RUN_CORE_CLOCK;
     /* Set WDOG clock source. */
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_160mhz ********************
+ **************** Configuration clock_config_xtal_160mhz_hsrun *****************
  ******************************************************************************/
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!Configuration
-name: clock_config_xtal_160mhz
+name: clock_config_xtal_160mhz_hsrun
 outputs:
 - {id: Bus_clock.outFreq, value: 80 MHz}
 - {id: Core_clock.outFreq, value: 160 MHz}
@@ -346,9 +455,9 @@ sources:
 /* clang-format on */
 
 /*******************************************************************************
- * Variables for clock_config_xtal_160mhz configuration
+ * Variables for clock_config_xtal_160mhz_hsrun configuration
  ******************************************************************************/
-const mcg_config_t mcgConfig_clock_config_xtal_160mhz =
+const mcg_config_t mcgConfig_clock_config_xtal_160mhz_hsrun =
     {
         .mcgMode = kMCG_ModePEE,                  /* PEE - PLL Engaged External */
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
@@ -364,12 +473,12 @@ const mcg_config_t mcgConfig_clock_config_xtal_160mhz =
                 .vdiv = 0x18U,                    /* VCO divider: multiplied by 40 */
             },
     };
-const sim_clock_config_t simConfig_clock_config_xtal_160mhz =
+const sim_clock_config_t simConfig_clock_config_xtal_160mhz_hsrun =
     {
         .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
         .clkdiv1 = 0x1070000U,                    /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /2, OUTDIV4: /8 */
     };
-const osc_config_t oscConfig_clock_config_xtal_160mhz =
+const osc_config_t oscConfig_clock_config_xtal_160mhz_hsrun =
     {
         .freq = 8000000U,                         /* Oscillator frequency: 8000000Hz */
         .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
@@ -382,9 +491,9 @@ const osc_config_t oscConfig_clock_config_xtal_160mhz =
     };
 
 /*******************************************************************************
- * Code for clock_config_xtal_160mhz configuration
+ * Code for clock_config_xtal_160mhz_hsrun configuration
  ******************************************************************************/
-void clock_config_xtal_160mhz(void)
+void clock_config_xtal_160mhz_hsrun(void)
 {
     /* Set HSRUN power mode */
     SMC_SetPowerModeProtection(SMC, kSMC_AllowPowerModeAll);
@@ -395,22 +504,22 @@ void clock_config_xtal_160mhz(void)
     /* Set the system clock dividers in SIM to safe value. */
     CLOCK_CONFIG_SetSimSafeDivs();
     /* Initializes OSC0 according to board configuration. */
-    CLOCK_InitOsc0(&oscConfig_clock_config_xtal_160mhz);
-    CLOCK_SetXtal0Freq(oscConfig_clock_config_xtal_160mhz.freq);
+    CLOCK_InitOsc0(&oscConfig_clock_config_xtal_160mhz_hsrun);
+    CLOCK_SetXtal0Freq(oscConfig_clock_config_xtal_160mhz_hsrun.freq);
     /* Configure FLL external reference divider (FRDIV). */
-    CLOCK_CONFIG_SetFllExtRefDiv(mcgConfig_clock_config_xtal_160mhz.frdiv);
+    CLOCK_CONFIG_SetFllExtRefDiv(mcgConfig_clock_config_xtal_160mhz_hsrun.frdiv);
     /* Set MCG to PEE mode. */
     CLOCK_BootToPeeMode(kMCG_OscselOsc,
                         kMCG_PllClkSelPll0,
-                        &mcgConfig_clock_config_xtal_160mhz.pll0Config);
+                        &mcgConfig_clock_config_xtal_160mhz_hsrun.pll0Config);
     /* Configure the Internal Reference clock (MCGIRCLK). */
-    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_160mhz.irclkEnableMode,
-                                  mcgConfig_clock_config_xtal_160mhz.ircs, 
-                                  mcgConfig_clock_config_xtal_160mhz.fcrdiv);
+    CLOCK_SetInternalRefClkConfig(mcgConfig_clock_config_xtal_160mhz_hsrun.irclkEnableMode,
+                                  mcgConfig_clock_config_xtal_160mhz_hsrun.ircs,
+                                  mcgConfig_clock_config_xtal_160mhz_hsrun.fcrdiv);
     /* Set the clock configuration in SIM module. */
-    CLOCK_SetSimConfig(&simConfig_clock_config_xtal_160mhz);
+    CLOCK_SetSimConfig(&simConfig_clock_config_xtal_160mhz_hsrun);
     /* Set SystemCoreClock variable. */
-    SystemCoreClock = CLOCK_CONFIG_XTAL_160MHZ_CORE_CLOCK;
+    SystemCoreClock = CLOCK_CONFIG_XTAL_160MHZ_HSRUN_CORE_CLOCK;
     /* Set WDOG clock source. */
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }

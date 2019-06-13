@@ -14,25 +14,25 @@
 #define BOARD_XTAL0_CLK_HZ                          8000000U  /*!< Board xtal0 frequency in Hz */
 
 /*******************************************************************************
- ******************** Configuration clock_config_irc_4mhz **********************
+ ****************** Configuration clock_config_irc_4mhz_vlpr *******************
  ******************************************************************************/
 /*******************************************************************************
- * Definitions for clock_config_irc_4mhz configuration
+ * Definitions for clock_config_irc_4mhz_vlpr configuration
  ******************************************************************************/
-#define CLOCK_CONFIG_IRC_4MHZ_CORE_CLOCK            4000000U  /*!< Core clock frequency: 4000000Hz */
+#define CLOCK_CONFIG_IRC_4MHZ_VLPR_CORE_CLOCK       4000000U  /*!< Core clock frequency: 4000000Hz */
 
-/*! @brief MCG set for clock_config_irc_4mhz configuration.
+/*! @brief MCG set for clock_config_irc_4mhz_vlpr configuration.
  */
-extern const mcg_config_t mcgConfig_clock_config_irc_4mhz;
-/*! @brief SIM module set for clock_config_irc_4mhz configuration.
+extern const mcg_config_t mcgConfig_clock_config_irc_4mhz_vlpr;
+/*! @brief SIM module set for clock_config_irc_4mhz_vlpr configuration.
  */
-extern const sim_clock_config_t simConfig_clock_config_irc_4mhz;
-/*! @brief OSC set for clock_config_irc_4mhz configuration.
+extern const sim_clock_config_t simConfig_clock_config_irc_4mhz_vlpr;
+/*! @brief OSC set for clock_config_irc_4mhz_vlpr configuration.
  */
-extern const osc_config_t oscConfig_clock_config_irc_4mhz;
+extern const osc_config_t oscConfig_clock_config_irc_4mhz_vlpr;
 
 /*******************************************************************************
- * API for clock_config_irc_4mhz configuration
+ * API for clock_config_irc_4mhz_vlpr configuration
  ******************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
@@ -42,32 +42,32 @@ extern "C" {
  * @brief This function executes configuration of clocks.
  *
  */
-void clock_config_irc_4mhz(void);
+void clock_config_irc_4mhz_vlpr(void);
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus*/
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_80mhz *********************
+ ****************** Configuration clock_config_irc_96mhz_run *******************
  ******************************************************************************/
 /*******************************************************************************
- * Definitions for clock_config_xtal_80mhz configuration
+ * Definitions for clock_config_irc_96mhz_run configuration
  ******************************************************************************/
-#define CLOCK_CONFIG_XTAL_80MHZ_CORE_CLOCK         80000000U  /*!< Core clock frequency: 80000000Hz */
+#define CLOCK_CONFIG_IRC_96MHZ_RUN_CORE_CLOCK      95977472U  /*!< Core clock frequency: 95977472Hz */
 
-/*! @brief MCG set for clock_config_xtal_80mhz configuration.
+/*! @brief MCG set for clock_config_irc_96mhz_run configuration.
  */
-extern const mcg_config_t mcgConfig_clock_config_xtal_80mhz;
-/*! @brief SIM module set for clock_config_xtal_80mhz configuration.
+extern const mcg_config_t mcgConfig_clock_config_irc_96mhz_run;
+/*! @brief SIM module set for clock_config_irc_96mhz_run configuration.
  */
-extern const sim_clock_config_t simConfig_clock_config_xtal_80mhz;
-/*! @brief OSC set for clock_config_xtal_80mhz configuration.
+extern const sim_clock_config_t simConfig_clock_config_irc_96mhz_run;
+/*! @brief OSC set for clock_config_irc_96mhz_run configuration.
  */
-extern const osc_config_t oscConfig_clock_config_xtal_80mhz;
+extern const osc_config_t oscConfig_clock_config_irc_96mhz_run;
 
 /*******************************************************************************
- * API for clock_config_xtal_80mhz configuration
+ * API for clock_config_irc_96mhz_run configuration
  ******************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
@@ -77,32 +77,32 @@ extern "C" {
  * @brief This function executes configuration of clocks.
  *
  */
-void clock_config_xtal_80mhz(void);
+void clock_config_irc_96mhz_run(void);
 
 #if defined(__cplusplus)
 }
 #endif /* __cplusplus*/
 
 /*******************************************************************************
- ******************* Configuration clock_config_xtal_160mhz ********************
+ ***************** Configuration clock_config_xtal_80mhz_run *******************
  ******************************************************************************/
 /*******************************************************************************
- * Definitions for clock_config_xtal_160mhz configuration
+ * Definitions for clock_config_xtal_80mhz_run configuration
  ******************************************************************************/
-#define CLOCK_CONFIG_XTAL_160MHZ_CORE_CLOCK       160000000U  /*!< Core clock frequency: 160000000Hz */
+#define CLOCK_CONFIG_XTAL_80MHZ_RUN_CORE_CLOCK     80000000U  /*!< Core clock frequency: 80000000Hz */
 
-/*! @brief MCG set for clock_config_xtal_160mhz configuration.
+/*! @brief MCG set for clock_config_xtal_80mhz_run configuration.
  */
-extern const mcg_config_t mcgConfig_clock_config_xtal_160mhz;
-/*! @brief SIM module set for clock_config_xtal_160mhz configuration.
+extern const mcg_config_t mcgConfig_clock_config_xtal_80mhz_run;
+/*! @brief SIM module set for clock_config_xtal_80mhz_run configuration.
  */
-extern const sim_clock_config_t simConfig_clock_config_xtal_160mhz;
-/*! @brief OSC set for clock_config_xtal_160mhz configuration.
+extern const sim_clock_config_t simConfig_clock_config_xtal_80mhz_run;
+/*! @brief OSC set for clock_config_xtal_80mhz_run configuration.
  */
-extern const osc_config_t oscConfig_clock_config_xtal_160mhz;
+extern const osc_config_t oscConfig_clock_config_xtal_80mhz_run;
 
 /*******************************************************************************
- * API for clock_config_xtal_160mhz configuration
+ * API for clock_config_xtal_80mhz_run configuration
  ******************************************************************************/
 #if defined(__cplusplus)
 extern "C" {
@@ -112,7 +112,42 @@ extern "C" {
  * @brief This function executes configuration of clocks.
  *
  */
-void clock_config_xtal_160mhz(void);
+void clock_config_xtal_80mhz_run(void);
+
+#if defined(__cplusplus)
+}
+#endif /* __cplusplus*/
+
+/*******************************************************************************
+ **************** Configuration clock_config_xtal_160mhz_hsrun *****************
+ ******************************************************************************/
+/*******************************************************************************
+ * Definitions for clock_config_xtal_160mhz_hsrun configuration
+ ******************************************************************************/
+#define CLOCK_CONFIG_XTAL_160MHZ_HSRUN_CORE_CLOCK 160000000U  /*!< Core clock frequency: 160000000Hz */
+
+/*! @brief MCG set for clock_config_xtal_160mhz_hsrun configuration.
+ */
+extern const mcg_config_t mcgConfig_clock_config_xtal_160mhz_hsrun;
+/*! @brief SIM module set for clock_config_xtal_160mhz_hsrun configuration.
+ */
+extern const sim_clock_config_t simConfig_clock_config_xtal_160mhz_hsrun;
+/*! @brief OSC set for clock_config_xtal_160mhz_hsrun configuration.
+ */
+extern const osc_config_t oscConfig_clock_config_xtal_160mhz_hsrun;
+
+/*******************************************************************************
+ * API for clock_config_xtal_160mhz_hsrun configuration
+ ******************************************************************************/
+#if defined(__cplusplus)
+extern "C" {
+#endif /* __cplusplus*/
+
+/*!
+ * @brief This function executes configuration of clocks.
+ *
+ */
+void clock_config_xtal_160mhz_hsrun(void);
 
 #if defined(__cplusplus)
 }
