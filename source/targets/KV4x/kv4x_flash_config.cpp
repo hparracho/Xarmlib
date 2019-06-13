@@ -7,13 +7,16 @@
 //          Placed at address 0x400 by the linker script.
 // @notes   Flash is not secure, flash backdoor is enabled/disabled are the
 //          only options implemented for now.
+//          All program flash region is not protected, otherwise the application
+//          will not be able to erase any of the protected flash regions, even
+//          the configuration field!
 //          For more details:
 //          https://www.nxp.com/docs/en/application-note/AN4507.pdf
-// @date    5 November 2018
+// @date    16 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -105,10 +108,11 @@ const struct
     unsigned int word2;
     unsigned int word3;
     unsigned int word4;
-} FlashConfig = { (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY),
-                  (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 32),
-                  0xFFFFFFFF,
-                  CURRENT_FLASH_CONFIG_SETTING };
+} FlashConfig = { (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY),        // Backdoor comparison key
+                  (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 32),  // Backdoor comparison key
+                  0xFFFFFFFF,                                           // All program flash region is not protected (FPROT[0-3])
+                  CURRENT_FLASH_CONFIG_SETTING };                       // 0xFF (reserved) | 0xFF (reserved) | 0xFF (FOPT) | FSEC -> mass erase are always enabled
+                                                                        //                                                        -> factory security level access are always granted
 
 
 
