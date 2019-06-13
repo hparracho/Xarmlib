@@ -2,7 +2,7 @@
 // @file    spi_sd_card.hpp
 // @brief   SPI SD card class.
 // @note    Exclusive to use in FatFs.
-// @date    4 June 2019
+// @date    11 June 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,9 @@
 
 #ifndef __XARMLIB_DEVICES_SPI_SD_CARD_HPP
 #define __XARMLIB_DEVICES_SPI_SD_CARD_HPP
+
+// Based on Physical Layer Simplified Specification v6.00 from 29 August 2018
+// available in the following URL: https://www.sdcard.org/downloads/pls/index.html
 
 #include "diskio.h"
 #include "api/api_digital_out.hpp"
@@ -66,6 +69,8 @@ class SpiSdCard
 
             m_spi_master.mutex_take();
 
+            m_cs = 1;
+
             // Saves the current SPI frequency
             const int32_t user_frequency = m_spi_master.get_frequency();
 
@@ -85,7 +90,8 @@ class SpiSdCard
             // Send CMD0 with CS low to enter SPI mode and reset the card. The card will enter
             // SPI mode if CS is low during the reception of CMD0. Since the CMD0 (and CMD8)
             // must be sent as a native command, the CRC field must have a valid value.
-            if(send_command(CMD_GO_IDLE_STATE, 0, nullptr, 0) == R1_IN_IDLE_STATE) // CMD0
+            //if(send_command(CMD_GO_IDLE_STATE, 0, nullptr, 0) == R1_IN_IDLE_STATE) // CMD0
+            if(enter_idle_state() == R1_IN_IDLE_STATE)
             {
                 // Now the card enters IDLE state.
                 // Card type identification Start...
@@ -542,21 +548,15 @@ class SpiSdCard
         void select()
         {
             m_spi_master.mutex_take();
-
+            m_spi_master.transfer(0xFF);	// Dummy clock (force DO enabled)
             m_cs = 0;
-
-            // Dummy clock (force DO enabled)
-            m_spi_master.transfer(0xFF);
         }
 
         // De-assert memory card (chip select)
         void deselect()
         {
             m_cs = 1;
-
-            // Dummy clock (force DO hi-z for multiple slave SPI)
-            m_spi_master.transfer(0xFF);
-
+            m_spi_master.transfer(0xFF);	// Dummy clock (force DO hi-z for multiple slave SPI)
             m_spi_master.mutex_give();
         }
 
@@ -580,6 +580,23 @@ class SpiSdCard
             }while(UsTicker::is_timeout(start, std::chrono::milliseconds(500)) == false);
 
             return false;
+        }
+
+        uint8_t enter_idle_state()
+        {
+            uint8_t r1;
+
+            for(int n = 0; n < 5; n++)
+            {
+                r1 = send_command(CMD_GO_IDLE_STATE, 0, nullptr, 0);
+                if(r1 == R1_IN_IDLE_STATE)
+                {
+                    break;
+                }
+                UsTicker::wait(std::chrono::milliseconds(1));
+            }
+
+            return r1;
         }
 
         // Receive a data block with specified length from memory card
