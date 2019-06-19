@@ -62,15 +62,9 @@ class Crc
 
         static constexpr Type calculate(const std::span<const uint8_t> buffer)
         {
-            Type remainder = InitialRemainder;
+            const Type remainder = update(buffer);
 
-            for(auto& elem : buffer)
-            {
-                const uint8_t data = static_cast<uint8_t>(reflect_input(elem) ^ (remainder >> (WIDTH - 8)));
-                remainder = static_cast<Type>(m_lookup_table[data] ^ (remainder << 8));
-            }
-
-            return reflect_output(remainder) ^ FinalXorValue;
+            return final(remainder);
         }
 
         // --- Two step calculation -------------------------------------------
@@ -82,7 +76,7 @@ class Crc
                 const uint8_t data = static_cast<uint8_t>(reflect_input(elem) ^ (remainder >> (WIDTH - 8)));
                 remainder = static_cast<Type>(m_lookup_table[data] ^ (remainder << 8));
             }
-            
+
             return remainder;
         }
 
