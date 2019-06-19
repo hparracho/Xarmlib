@@ -4,11 +4,11 @@
 //          available). Specializations for some common types of 8, 16 and
 //          32 bits. Formulas taken from:
 //          https://barrgroup.com/Embedded-Systems/How-To/CRC-Calculation-C-Code
-// @date    6 February 2019
+// @date    19 June 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -70,6 +70,24 @@ class Crc
                 remainder = static_cast<Type>(m_lookup_table[data] ^ (remainder << 8));
             }
 
+            return reflect_output(remainder) ^ FinalXorValue;
+        }
+
+        // --- Two step calculation -------------------------------------------
+
+        static constexpr Type update(const std::span<const uint8_t> buffer, Type remainder = InitialRemainder)
+        {
+            for(auto& elem : buffer)
+            {
+                const uint8_t data = static_cast<uint8_t>(reflect_input(elem) ^ (remainder >> (WIDTH - 8)));
+                remainder = static_cast<Type>(m_lookup_table[data] ^ (remainder << 8));
+            }
+            
+            return remainder;
+        }
+
+        static constexpr Type final(Type remainder)
+        {
             return reflect_output(remainder) ^ FinalXorValue;
         }
 
@@ -143,7 +161,7 @@ class Crc
             for(int32_t bit = 8; bit > 0; --bit)
             {
                 // Try to divide the current data bit
-                if ((remainder & (1 << (WIDTH - 1))) != 0)
+                if((remainder & (1U << (WIDTH - 1))) != 0)
                 {
                     remainder = static_cast<Type>((remainder << 1) ^ Polynomial);
                 }
