@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_flash.hpp
 // @brief   Flash HAL interface class.
-// @date    21 May 2019
+// @date    14 June 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -86,7 +86,41 @@ using Flash = FlashBase<targets::kv4x::FlashIapDriver, targets::kv4x::FlashBootD
 
 } // namespace hal
 
-using Flash = hal::Flash;
+class Flash : public hal::Flash
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        // Enumeration for the three possible FTFx security states
+        using SecurityState = typename hal::Flash::SecurityState;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Retrieves the current flash security status, including the
+        // security enabling state and the backdoor key enabling state
+        static bool get_security_state(SecurityState& security_state) { return hal::Flash::get_security_state(security_state); }
+
+        // Bypass security with a backdoor key
+        // If the MCU is in secured state AND the key is enable, this function
+        // unsecures the MCU by comparing the provided backdoor key with ones
+        // in the Flash Configuration Field.
+        // NOTES: - the entire 8-byte key cannot be all 0s or all 1s;
+        //        - a reset of the chip is the only method to re-enable the
+        //          Verify Backdoor Access Key command when a comparison fails;
+        //        - after the next reset of the chip, the security state of the
+        //          flash memory module reverts back to the flash security byte
+        //          in the Flash Configuration Field.
+        static bool set_security_bypass(const uint64_t backdoor_key) { return hal::Flash::set_security_bypass(backdoor_key); }
+
+        // Reset system
+        // (Useful to re-enable the Verify Backdoor Access Key command when a comparison fails)
+        static void reset_system() { hal::Flash::reset_system(); }
+};
 
 } // namespace xarmlib
 
