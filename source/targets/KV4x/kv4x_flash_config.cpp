@@ -12,7 +12,7 @@
 //          the configuration field!
 //          For more details:
 //          https://www.nxp.com/docs/en/application-note/AN4507.pdf
-// @date    16 May 2019
+// @date    17 June 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -100,19 +100,33 @@ extern "C"
 // default protection settings (loaded on reset) and security information that
 // allows the MCU to restrict access to the Flash Memory module.
 // Placed at address 0x400 by the linker script.
+// NOTE: the flash was originally designed for big-endian architectures, but
+//       Kinetis is little-endian.
 // ----------------------------------------------------------------------------
 __attribute__ ((used, section(".FlashConfig")))
 const struct
 {
-    unsigned int word1;
-    unsigned int word2;
-    unsigned int word3;
-    unsigned int word4;
-} FlashConfig = { (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY),        // Backdoor comparison key
-                  (uint32_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 32),  // Backdoor comparison key
-                  0xFFFFFFFF,                                           // All program flash region is not protected (FPROT[0-3])
-                  CURRENT_FLASH_CONFIG_SETTING };                       // 0xFF (reserved) | 0xFF (reserved) | 0xFF (FOPT) | FSEC -> mass erase are always enabled
-                                                                        //                                                        -> factory security level access are always granted
+    uint8_t  key_byte3;
+    uint8_t  key_byte2;
+    uint8_t  key_byte1;
+    uint8_t  key_byte0;
+    uint8_t  key_byte7;
+    uint8_t  key_byte6;
+    uint8_t  key_byte5;
+    uint8_t  key_byte4;
+    uint32_t fprot;
+    uint32_t reserved_fopt_fsec;
+} FlashConfig = { (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 24),   // Swap LSB Backdoor comparison key
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 16),
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 8),
+                  (uint8_t) CURRENT_FLASH_CONFIG_BACKDOOR_KEY,
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 56),   // Swap MSB Backdoor comparison key
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 48),
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 40),
+                  (uint8_t)(CURRENT_FLASH_CONFIG_BACKDOOR_KEY >> 32),
+                  0xFFFFFFFF,                       // All program flash region is not protected (FPROT[0-3])
+                  CURRENT_FLASH_CONFIG_SETTING };   // 0xFF (reserved) | 0xFF (reserved) | 0xFF (FOPT) | FSEC -> mass erase are always enabled
+                                                    //                                                        -> factory security level access are always granted
 
 
 
