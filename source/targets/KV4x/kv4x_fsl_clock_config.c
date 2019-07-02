@@ -33,11 +33,11 @@
 /* clang-format off */
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!GlobalInfo
-product: Clocks v5.0
+product: Clocks v6.0
 processor: MKV46F256xxx16
 package_id: MKV46F256VLL16
 mcu_data: ksdk2_0
-processor_version: 5.0.0
+processor_version: 6.0.1
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
@@ -314,7 +314,6 @@ void clock_config_irc_96mhz_run(void)
 /* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 !!Configuration
 name: clock_config_xtal_80mhz_run
-called_from_default_init: true
 outputs:
 - {id: Bus_clock.outFreq, value: 80 MHz}
 - {id: Core_clock.outFreq, value: 80 MHz}
