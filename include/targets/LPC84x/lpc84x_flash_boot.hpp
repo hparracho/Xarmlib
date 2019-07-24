@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_flash_boot.hpp
 // @brief   NXP LPC84x flash boot class.
-// @date    5 June 2019
+// @date    17 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -58,16 +58,13 @@ class FlashBootDriver
         {
             system_cleanup();
 
-            // NOTE: static variables are needed since changed the stack pointer out from under the compiler
-            //       we need to ensure the values we are using are not stored on the previous stack
-
             // Get the application stack pointer (first entry in the application vector table)
-            static uint32_t app_stack = *((uint32_t *)flash_address);
+            uint32_t app_stack = *((uint32_t *)flash_address);
 
             typedef void (*app)(void);
 
             // Get the application entry point (second entry in the application vector table)
-            static app app_entry = (app) *((uint32_t *)(flash_address + 4));
+            app app_entry = (app) *((uint32_t *)(flash_address + 4));
 
             // Reconfigure vector table offset register to match the application location
             SCB->VTOR = (flash_address & SCB_VTOR_TBLOFF_Msk);
@@ -111,6 +108,9 @@ class FlashBootDriver
 
             // Power-down system PLL
             PowerDriver::power_down(PowerDriver::Peripheral::syspll);
+
+            // Restore global interrupt (needed to debug)
+            //__enable_irq(); @TODO: test if this is really needed
 
             // Memory barriers for good measure
             __ISB();
