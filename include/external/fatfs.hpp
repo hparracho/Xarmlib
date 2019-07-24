@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    fatfs.hpp
 // @brief   FatFs - Generic FAT Filesystem Module header include file.
-// @date    24 May 2019
+// @date    22 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,6 +34,7 @@
 
 #include "ff.h"
 #include "ff_util.hpp"
+#include "devices/spi_nor_flash.hpp"
 #include "devices/spi_sd_card.hpp"
 
 #endif // __XARMLIB_EXTERNAL_FATFS_HPP

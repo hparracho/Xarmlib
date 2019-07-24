@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    diskio.cpp
 // @brief   Low level disk I/O functions for FatFs.
-// @date    29 May 2019
+// @date    22 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,6 +30,7 @@
 // ----------------------------------------------------------------------------
 
 #include "diskio.h"
+#include "devices/spi_nor_flash.hpp"
 #include "devices/spi_sd_card.hpp"
 
 namespace xarmlib
@@ -47,8 +48,7 @@ extern "C"
 // ----------------------------------------------------------------------------
 
 // Disk status
-/*static DSTATUS g_disk_status[2] = {STA_NOINIT, STA_NOINIT};*/
-static DSTATUS g_disk_status[1] = { STA_NOINIT };
+static DSTATUS g_disk_status[2] = { STA_NOINIT, STA_NOINIT };
 
 
 
@@ -63,13 +63,13 @@ DSTATUS disk_initialize(BYTE pdrv /* Physical drive number (0..) */)
 {
     switch(pdrv)
     {
-        /*case FLASH:
-            if(SpiFlashS25_FatFsIsInitialized() == true)
+        case FLASH:
+            if(SpiNorFlash_read_configuration() == true)
             {
                 // Start up OK!
                 g_disk_status[FLASH] &= ~STA_NOINIT;
 
-                if (SpiFlashS25_FatFsIsReadOnly() == true)
+                if (SpiNorFlash_is_readonly() == true)
                 {
                     // Write protected
                     g_disk_status[FLASH] |= STA_PROTECT;
@@ -80,14 +80,14 @@ DSTATUS disk_initialize(BYTE pdrv /* Physical drive number (0..) */)
                     g_disk_status[FLASH] &= ~STA_PROTECT;
                 }
             }
-            else if(SpiFlashAt45_IsInitialized() == true)
+            /*else if(SpiFlashAt45_IsInitialized() == true)
             {
                 // Start up OK!
                 g_disk_status[FLASH] &= ~STA_NOINIT;
 
                 // @TODO: IMPLEMENTAR VERIFICAÇÃO DO WRITE PROTECT!!
-            }
-            return g_disk_status[FLASH];*/
+            }*/
+            return g_disk_status[FLASH];
 
         case SDCARD:
             if(SpiSdCard_start() == true && SpiSdCard_read_configuration() == true)
@@ -111,7 +111,7 @@ DSTATUS disk_status(BYTE pdrv /* Physical drive number (0..) */)
 {
     switch(pdrv)
     {
-        /*case FLASH:  return g_disk_status[FLASH];*/
+        case FLASH:  return g_disk_status[FLASH];
         case SDCARD: return g_disk_status[SDCARD];
     }
 
@@ -129,7 +129,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive number (0..) */
                   DWORD sector, /* Sector address (LBA) */
                   UINT  count   /* Number of sectors to read (1..128) */)
 {
-    if(pdrv > /*1*/0 || count == 0)
+    if(pdrv > 1 || count == 0)
     {
         return RES_PARERR;
     }
@@ -141,16 +141,16 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive number (0..) */
 
     switch(pdrv)
     {
-        /*case FLASH:
-            if(SpiFlashS25_FatFsReadSector(sector, buff, count) == true)
+        case FLASH:
+            if(SpiNorFlash_read_sector(sector, buff, count) == true)
             {
                 return RES_OK;
             }
-            else if(SpiFlashAt45_ReadSector(sector, buff, count) == true)
+            /*else if(SpiFlashAt45_ReadSector(sector, buff, count) == true)
             {
                 return RES_OK;
-            }
-            break;*/
+            }*/
+            break;
 
         case SDCARD:
             if(SpiSdCard_read_sector(sector, buff, count) == true)
@@ -175,7 +175,7 @@ DRESULT disk_write(      BYTE  pdrv,   /* Physical drive number (0..) */
                          DWORD sector, /* Sector address (LBA) */
                          UINT  count   /* Number of sectors to write (1..128) */)
 {
-    if(pdrv > /*1*/0 || count == 0)
+    if(pdrv > 1 || count == 0)
     {
         return RES_PARERR;
     }
@@ -192,16 +192,16 @@ DRESULT disk_write(      BYTE  pdrv,   /* Physical drive number (0..) */
 
     switch(pdrv)
     {
-        /*case FLASH:
-            if(SpiFlashS25_FatFsWriteSector(sector, buff, count) == true)
+        case FLASH:
+            if(SpiNorFlash_write_sector(sector, buff, count) == true)
             {
                 return RES_OK;
             }
-            else if(SpiFlashAt45_WriteSector(sector, buff, count) == true)
+            /*else if(SpiFlashAt45_WriteSector(sector, buff, count) == true)
             {
                 return RES_OK;
-            }
-            break;*/
+            }*/
+            break;
 
         case SDCARD:
             if(SpiSdCard_write_sector(sector, buff, count) == true)
@@ -225,7 +225,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive number (0..) */
                    BYTE  cmd,  /* Control code */
                    void *buff  /* Buffer to send/receive control data */)
 {
-    if(pdrv > /*1*/0)
+    if(pdrv > 1)
     {
         return RES_PARERR;
     }
@@ -237,8 +237,8 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive number (0..) */
 
     switch(pdrv)
     {
-        /*case FLASH:
-            if(SpiFlashS25_FatFsControl(cmd, buff) == true)
+        case FLASH:
+            if(SpiNorFlash_control(cmd, buff) == true)
             {
                 if(cmd == CTRL_PROTECT)
                 {
@@ -258,7 +258,7 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive number (0..) */
 
                 return RES_OK;
             }
-            else if(SpiFlashAt45_Control(cmd, buff) == true)
+            /*else if(SpiFlashAt45_Control(cmd, buff) == true)
             {
                 if(cmd == CTRL_PROTECT)
                 {
@@ -277,8 +277,8 @@ DRESULT disk_ioctl(BYTE  pdrv, /* Physical drive number (0..) */
                 }
 
                 return RES_OK;
-            }
-            break;*/
+            }*/
+            break;
 
         case SDCARD:
             if(SpiSdCard_control(cmd, buff) == true)
