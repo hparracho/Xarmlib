@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    syscall.cpp
 // @brief   Dependent OS functions for FatFs.
-// @date    21 May 2019
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ extern "C"
 // PUBLIC FUNCTIONS
 // ----------------------------------------------------------------------------
 
-#if _FS_REENTRANT
+#if FF_FS_REENTRANT
 /*------------------------------------------------------------------------*/
 /* Create a Synchronization Object                                        */
 /*------------------------------------------------------------------------*/
@@ -119,7 +119,7 @@ void ff_rel_grant (
 
 
 
-#endif  // _FS_REENTRANT
+#endif  // FF_FS_REENTRANT
 
 
 
