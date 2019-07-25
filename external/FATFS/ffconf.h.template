@@ -168,7 +168,7 @@
 
 
 #define FF_STR_VOLUME_ID	1
-#define FF_VOLUME_STRS		"FLASH", "SDCARD"
+#define FF_VOLUME_STRS		"SDCARD", "FLASH"
 /* FF_STR_VOLUME_ID switches support for volume ID in arbitrary strings.
 /  When FF_STR_VOLUME_ID is set to 1 or 2, arbitrary strings can be used as drive
 /  number in the path name. FF_VOLUME_STRS defines the volume ID strings for each
@@ -265,7 +265,7 @@
 #define FF_FS_REENTRANT	0
 #define FF_FS_TIMEOUT	1000
 
-#if _FS_REENTRANT && defined(XARMLIB_ENABLE_FREERTOS)
+#if FF_FS_REENTRANT && defined(XARMLIB_ENABLE_FREERTOS)
 #include "FreeRTOS.h"
 #include "semphr.h"
 #define FF_SYNC_t       SemaphoreHandle_t
