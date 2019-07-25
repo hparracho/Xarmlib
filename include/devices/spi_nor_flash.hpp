@@ -4,8 +4,9 @@
 // @notes   Implemented at least according to the families:
 //          - Spansion/Cypress' S25FL2xx [4Mb - 16Mb];
 //          - Winbond's W25X and W25Q [512Kb - 256Mb].
-//          Exclusive to use in FatFs.
-// @date    22 July 2019
+//          For FatFs use should be included "external/fatfs.hpp" header file
+//          instead of this one (setting XARMLIB_ENABLE_FATFS == 1).
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,7 +37,6 @@
 #ifndef __XARMLIB_DEVICES_SPI_NOR_FLASH_HPP
 #define __XARMLIB_DEVICES_SPI_NOR_FLASH_HPP
 
-#include "diskio.h"
 #include "api/api_digital_out.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_us_ticker.hpp"
@@ -53,6 +53,8 @@ namespace private_spi_nor_flash
 // Memory organizations                                             512Kb  1Mb   2Mb   4Mb   8Mb  16Mb   32Mb   64Mb  128Mb   256Mb
 static constexpr std::array<std::size_t, 10> lookup_table_sectors = {  16,  32,   64,  128,  256,  512,  1024,  2048,  4096,   8192 };
 //static constexpr std::array<std::size_t, 10> lookup_table_pages   = { 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072 };
+
+} // namespace private_spi_nor_flash
 
 
 
@@ -73,7 +75,9 @@ class SpiNorFlash
                                                      m_wp(wp, { hal::Gpio::OutputMode::push_pull_low }),
                                                      m_readonly { readonly }
         {
+#if (XARMLIB_ENABLE_FATFS == 1)
             assert(m_sector_size == FF_MAX_SS);
+#endif
         }
 
         // Read the flash configuration
@@ -101,8 +105,8 @@ class SpiNorFlash
 
             assert(id <= 9);
 
-            m_sectors = lookup_table_sectors[id];
-            //m_pages   = lookup_table_pages[id];
+            m_sectors = private_spi_nor_flash::lookup_table_sectors[id];
+            //m_pages   = private_spi_nor_flash::lookup_table_pages[id];
 
             //                                    SRP | BP1 | BP0                   :  SRP | BP3/TB | BP2 | BP1 | BP0
             m_status_block_protect = (id <= 1) ? (1 << STATUS_REGISTER_PROTECT_BIT) |
@@ -136,42 +140,6 @@ class SpiNorFlash
 
             return success;
         }
-
-        /*
-        void DumpToSdCard()
-        {
-            // Work area (file system object) for logical drive
-            FATFS fs;
-
-            // Forced mount the flash memory drive
-            if(f_mount(&fs, "1:", 1) == FR_OK)
-            {
-                // File object
-                FIL file;
-
-                // Open the file
-                if(f_open(&file, "1:dump.dat", FA_CREATE_ALWAYS | FA_WRITE) == FR_OK)
-                {
-                    for(int32_t sector = 0; sector < m_sectors; sector++)
-                    {
-                        uint8_t buffer[4096];
-
-                        Read(sector, buffer, 1);
-
-                        uint32_t bytes = 0;
-
-                        f_write(&file, buffer, 4096, &bytes);
-                    }
-
-                    // Close the file
-                    f_close(&file);
-                }
-            }
-
-            // Unmount memory flash file system
-            f_mount(NULL, "1:", 0);
-        }
-        */
 
         // Get the read-only status
         bool is_readonly()
@@ -355,6 +323,7 @@ class SpiNorFlash
             return success;
         }
 
+#if (XARMLIB_ENABLE_FATFS == 1)
         // Control device specific features and miscellaneous functions other than generic read/write (FatFs specific)
         bool control(const uint8_t code, void* data)
         {
@@ -415,6 +384,7 @@ class SpiNorFlash
 
             return success;
         }
+#endif // (XARMLIB_ENABLE_FATFS == 1)
 
     private:
 
@@ -619,47 +589,6 @@ class SpiNorFlash
 
         uint8_t           m_status_block_protect { 0 };
 };
-
-} // namespace private_spi_nor_flash
-
-
-
-
-// ----------------------------------------------------------------------------
-// PUBLIC FUNCTIONS
-// ----------------------------------------------------------------------------
-
-// Class initialization
-// NOTE: should be called by the user
-void SpiNorFlash_initialize(hal::SpiMaster& spi_master, const hal::Pin::Name cs, const hal::Pin::Name wp, const bool readonly);
-
-
-
-
-// ----------------------------------------------------------------------------
-// FATFS DISK I/O FUNCTIONS
-// ----------------------------------------------------------------------------
-
-// Read the flash configuration
-// NOTE: to be used inside disk_initialize function
-bool SpiNorFlash_read_configuration();
-
-// Check if flash is read-only
-// NOTE: to be used inside disk_initialize function
-bool SpiNorFlash_is_readonly();
-
-// Read a single or multiple sectors from memory flash
-// NOTE: to be used inside disk_read function
-bool SpiNorFlash_read_sector(uint32_t starting_sector, uint8_t* data_array, std::size_t sector_count);
-
-// Write a single or multiple sectors to memory flash
-// NOTES: to be used inside disk_write function
-//        a reading and comparison is done after each sector written, returning its result
-bool SpiNorFlash_write_sector(uint32_t starting_sector, const uint8_t* data_array, std::size_t sector_count);
-
-// Control device specific features and miscellaneous functions other than generic read/write
-// NOTE: to be used inside disk_ioctl function
-bool SpiNorFlash_control(const uint8_t code, void* data);
 
 
 

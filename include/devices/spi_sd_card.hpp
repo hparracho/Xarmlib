@@ -1,8 +1,9 @@
 // ----------------------------------------------------------------------------
 // @file    spi_sd_card.hpp
 // @brief   SPI SD card class.
-// @note    Exclusive to use in FatFs.
-// @date    11 June 2019
+// @note    For FatFs use should be included "external/fatfs.hpp" header file
+//          instead of this one (setting XARMLIB_ENABLE_FATFS == 1).
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,7 +37,6 @@
 // Based on Physical Layer Simplified Specification v6.00 from 29 August 2018
 // available in the following URL: https://www.sdcard.org/downloads/pls/index.html
 
-#include "diskio.h"
 #include "api/api_digital_out.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_us_ticker.hpp"
@@ -46,9 +46,6 @@ namespace xarmlib
 
 
 
-
-namespace private_spi_sd_card
-{
 
 class SpiSdCard
 {
@@ -385,6 +382,7 @@ class SpiSdCard
             return flag;
         }
 
+#if (XARMLIB_ENABLE_FATFS == 1)
         // Control device specific features and miscellaneous functions other than generic read/write
         bool control(const uint8_t code, void* data)
         {
@@ -459,6 +457,7 @@ class SpiSdCard
 
             return res;
         }
+#endif // (XARMLIB_ENABLE_FATFS == 1)
 
     private:
 
@@ -767,46 +766,6 @@ class SpiSdCard
         CardConfig      m_config {};   	                // Card configuration structure
         CardType        m_type { CardType::unknown };   // Card type
 };
-
-} // namespace private_spi_sd_card
-
-
-
-
-// ----------------------------------------------------------------------------
-// PUBLIC FUNCTIONS
-// ----------------------------------------------------------------------------
-
-// Class initialization
-// NOTE: should be called by the user
-void SpiSdCard_initialize(hal::SpiMaster& spi_master, const hal::Pin::Name cs);
-
-
-
-
-// ----------------------------------------------------------------------------
-// FATFS DISK I/O FUNCTIONS
-// ----------------------------------------------------------------------------
-
-// Second stage card initialization
-// NOTE: to be used inside disk_initialize function
-bool SpiSdCard_start();
-
-// Read the card configuration
-// NOTE: to be used inside disk_initialize function
-bool SpiSdCard_read_configuration();
-
-// Read a single or multiple sectors from memory card
-// NOTE: to be used inside disk_read function
-bool SpiSdCard_read_sector(uint32_t starting_sector, uint8_t* data_array, std::size_t sector_count);
-
-// Write a single or multiple sectors to memory card
-// NOTE: to be used inside disk_write function
-bool SpiSdCard_write_sector(uint32_t starting_sector, const uint8_t* data_array, std::size_t sector_count);
-
-// Control device specific features and miscellaneous functions other than generic read/write
-// NOTE: to be used inside disk_ioctl function
-bool SpiSdCard_control(const uint8_t code, void* data);
 
 
 
