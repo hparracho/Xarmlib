@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib demo configuration header file for NXP LPC84x targets.
-// @date    24 May 2019
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -82,5 +82,9 @@ constexpr std::size_t XARMLIB_CONFIG_PIN_SCANNER_DEBOUNCER_COUNT { 3 }; // Maxim
 
 
 } // namespace xarmlib
+
+#if (XARMLIB_ENABLE_FATFS == 1)
+#include "external/fatfs.hpp"
+#endif
 
 #endif // __XARMLIB_CONFIG_HPP
