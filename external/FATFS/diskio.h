@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    diskio.h
 // @brief   Low level disk I/O functions for FatFs.
-// @date    16 July 2019
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,8 +46,8 @@ extern "C" {
 // ----------------------------------------------------------------------------
 
 // Definitions of physical drive number for each media
-#define FLASH       0
-#define SDCARD      1
+#define SDCARD      0
+#define FLASH       1
 
 
 
