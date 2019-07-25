@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    ff_util.hpp
 // @brief   Utility functions for FatFs.
-// @date    23 May 2019
+// @date    25 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,8 +32,6 @@
 #ifndef __XARMLIB_EXTERNAL_FATFS_FF_UTIL_HPP
 #define __XARMLIB_EXTERNAL_FATFS_FF_UTIL_HPP
 
-#include "diskio.h"
-
 namespace xarmlib
 {
 
@@ -47,101 +45,18 @@ extern "C"
 // PUBLIC FUNCTIONS
 // ----------------------------------------------------------------------------
 
-#if !_FS_READONLY
+#if (FF_FS_READONLY == 0)
 
-DRESULT f_readonly(BYTE drive, /* Physical drive number */
-                   bool protect)
-{
-    return disk_ioctl(drive, CTRL_PROTECT, &protect);
-}
+DRESULT f_readonly(BYTE drive, /* Physical drive number */ bool protect);
 
+FRESULT f_copy(const TCHAR *path_dst, const TCHAR *path_src);
 
-
-
-FRESULT f_copy(const TCHAR *path_dst, const TCHAR *path_src)
-{
-    // File objects
-    FIL fp_src, fp_dst;
-
-    // Open the source file
-    if(f_open(&fp_src, path_src, FA_OPEN_EXISTING | FA_READ) != FR_OK)
-    {
-        return FR_DISK_ERR;
-    }
-
-    // Open/create the destination file
-    if(f_open(&fp_dst, path_dst, FA_CREATE_ALWAYS | FA_WRITE) != FR_OK)
-    {
-        // Close the source file
-        f_close(&fp_src);
-
-        return FR_DISK_ERR;
-    }
-
-    uint8_t buffer[512];
-
-    UINT bytes_read, bytes_write;
-
-    // Copy the source file to destination file 512 in 512 bytes
-    do
-    {
-        if(f_read(&fp_src, buffer, 512, &bytes_read) != FR_OK)
-        {
-            // Close both files
-            f_close(&fp_src);
-            f_close(&fp_dst);
-
-            // Delete destination file
-            f_unlink(path_dst);
-
-            return FR_DISK_ERR;
-        }
-        if((f_write(&fp_dst, buffer, bytes_read, &bytes_write) != FR_OK) || (bytes_read != bytes_write))
-        {
-            // Close both files
-            f_close(&fp_src);
-            f_close(&fp_dst);
-
-            // Delete destination file
-            f_unlink(path_dst);
-
-            return FR_DISK_ERR;
-        }
-    } while(bytes_read == 512);
-
-    // Close both files
-    f_close(&fp_src);
-    f_close(&fp_dst);
-
-    return FR_OK;
-}
-
-#endif  // !_FS_READONLY
+#endif  // (FF_FS_READONLY == 0)
 
 
 
 
-FRESULT f_file_exists(const TCHAR *path)
-{
-    FIL file;
-
-    if(f_open(&file, path, FA_OPEN_EXISTING | FA_READ) == FR_OK)
-    {
-        f_close(&file);
-        return FR_OK;
-    }
-
-    return FR_NO_FILE;
-
-    /*FILINFO fno;
-
-    if(f_stat(path, &fno) == FR_OK && (fno.fattrib & AM_DIR) == 0)
-    {
-        return FR_OK;
-    }
-
-    return FR_NO_FILE;*/
-}
+FRESULT f_file_exists(const TCHAR *path);
 
 
 
