@@ -125,7 +125,7 @@ class SpiNorFlash
             {
                 m_spi_master.mutex_take();
 
-                success = enable_readonly();
+                success = set_readonly(true);
 
                 m_spi_master.mutex_give();
             }
@@ -133,7 +133,7 @@ class SpiNorFlash
             {
                 m_spi_master.mutex_take();
 
-                success = disable_readonly();
+                success = set_readonly(false);
 
                 m_spi_master.mutex_give();
             }
@@ -423,24 +423,9 @@ class SpiNorFlash
                 // Enable/Disable write protect
                 case CTRL_PROTECT:
                     const bool protect = *(bool *)data;
-
-                    if(protect == true)
-                    {
-                        m_spi_master.mutex_take();
-
-                        enable_readonly();
-
-                        m_spi_master.mutex_give();
-                    }
-                    else
-                    {
-                        m_spi_master.mutex_take();
-
-                        disable_readonly();
-
-                        m_spi_master.mutex_give();
-                    }
-
+                    m_spi_master.mutex_take();
+                    success = set_readonly(protect);
+                    m_spi_master.mutex_give();
                     break;
             }
 
@@ -529,7 +514,11 @@ class SpiNorFlash
                 {
                     return true;
                 }
+#if (XARMLIB_ENABLE_FATFS == 1)
+            }while(UsTicker::is_timeout(start, std::chrono::milliseconds(FF_FS_TIMEOUT)) == false);
+#else
             }while(UsTicker::is_timeout(start, std::chrono::milliseconds(500)) == false);
+#endif
 
             return false;
         }
@@ -546,37 +535,14 @@ class SpiNorFlash
             //m_wp = 0;
         }
 
-        // Enable read-only
-        bool enable_readonly()
+        // Enable/Disable read-only
+        bool set_readonly(const bool enable)
         {
             if(wait_for_ready() == true)
             {
-                enable_write();
-
-                // Unprotect status register and Select flash
-                m_wp = 1;
-                m_cs = 0;
-
-                m_spi_master.transfer(CMD_STATUS_REGISTER_WRITE);   // Send command
-                m_spi_master.transfer(m_status_block_protect);      // Write status block protect
-
-                // Deselect flash and Protect status register
-                m_cs = 1;
-                m_wp = 0;
-
-                return true;
-            }
-
-            return false;
-        }
-
-        // Disable read-only
-        bool disable_readonly()
-        {
-            if(wait_for_ready() == true)
-            {
-                // Set SRP and clear [BP3, BP2,] BP1 and BP0
-                const uint8_t status_block_protect = (1 << STATUS_REGISTER_PROTECT_BIT);
+                // case enable:  set SRP and set   [BP3, BP2,] BP1 and BP0
+                // case disable: set SRP and clear [BP3, BP2,] BP1 and BP0
+                const uint8_t status_block_protect = (enable == true) ? m_status_block_protect : (1 << STATUS_REGISTER_PROTECT_BIT);
 
                 enable_write();
 
