@@ -2,16 +2,16 @@
 
 ---
 ## bitmask class v1.1.2
-Date: 8 May 2018
+Date: 23 April 2019
 Branch: master  
-Commit: 5905df1b82968c7c9d3f3b19bcf11f3115a15ced
+Commit: fa56bcbcf7613359931de8e05c65b21b94daccef
 ### https://github.com/oliora/bitmask
 
 ---
 ## CMSIS-Core(M) Version 5
-Date: 3 September 2018
+Date: 10 July 2019
 Branch: master  
-Commit: cb3fb9a70f3de3670bf5523a588c7f63cec48ff6
+Commit: b5f0603d6a584d1724d952fd8b0737458b90d62b
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
@@ -23,6 +23,13 @@ Date: 14 October 2018
 ## fsl: Freescale drivers from Kinetis SDK Version 2.6.0
 Date: 14 June 2019
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
+
+---
+## lfs: Little fail-safe filesystem v2.1.0
+Date: 29 July 2019
+Branch: master  
+Commit: db054684a67956c5b86101dd70018accf284be2f
+### https://github.com/ARMmbed/littlefs
 
 ---
 ## span: std::span implementation for C++11 and later
