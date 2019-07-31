@@ -263,7 +263,7 @@
 
 
 #define FF_FS_REENTRANT	0
-#define FF_FS_TIMEOUT	1000
+#define FF_FS_TIMEOUT	500 // Timeout (in ms) also used in SpiNorFlash::wait_for_ready()
 
 #if FF_FS_REENTRANT && defined(XARMLIB_ENABLE_FREERTOS)
 #include "FreeRTOS.h"
