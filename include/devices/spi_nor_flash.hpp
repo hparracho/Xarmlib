@@ -6,7 +6,7 @@
 //          - Winbond's W25X and W25Q [512Kb - 256Mb].
 //          For FatFs use should be included "external/fatfs.hpp" header file
 //          instead of this one (setting XARMLIB_ENABLE_FATFS == 1).
-// @date    25 July 2019
+// @date    31 July 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -141,6 +141,10 @@ class SpiNorFlash
             return success;
         }
 
+        static constexpr std::size_t get_sector_size()   { return m_sector_size; }
+        static constexpr std::size_t get_page_size()     { return m_page_size; }
+                         std::size_t get_sectors() const { return m_sectors; }
+
         // Get the read-only status
         bool is_readonly()
         {
@@ -226,6 +230,15 @@ class SpiNorFlash
         // Perform a continuous memory read (sector by sector)
         bool read_sector(const uint32_t starting_sector, uint8_t* data_array, const std::size_t sector_count)
         {
+            const uint32_t    address         = starting_sector * m_sector_size;
+            const std::size_t data_array_size = sector_count    * m_sector_size;
+
+            return read(address, data_array, data_array_size);
+        }
+
+        // Perform a continuous memory read
+        bool read(const uint32_t address, uint8_t *data_array, std::size_t data_array_size)
+        {
             assert(data_array != nullptr);
 
             m_spi_master.mutex_take();
@@ -234,16 +247,13 @@ class SpiNorFlash
 
             if(success == true)
             {
-                const uint32_t address = starting_sector * m_sector_size;
-                std::size_t    size    = sector_count    * m_sector_size;
-
                 m_cs = 0;
 
                 m_spi_master.transfer(CMD_DATA_READ);
 
                 send_address(address);
 
-                while(size-- > 0)
+                while(data_array_size-- > 0)
                 {
                     // Read data
                     *data_array++ = m_spi_master.transfer(0xFF);
@@ -269,7 +279,7 @@ class SpiNorFlash
 
             while(page_count-- > 0)
             {
-                if(program_page(address, data_array) == false)
+                if(program_page(address, data_array, m_page_size) == false)
                 {
                     m_spi_master.mutex_give();
 
@@ -278,6 +288,53 @@ class SpiNorFlash
 
                 address    += m_page_size;
                 data_array += m_page_size;
+            }
+
+            m_spi_master.mutex_give();
+
+            return true;
+        }
+
+        // Perform a continuous memory program
+        bool program(uint32_t address, const uint8_t* data_array, const std::size_t data_array_size)
+        {
+            assert(data_array != nullptr);
+
+            // Calculate the byte within the first page
+            const std::size_t byte = address % m_page_size;
+
+            const std::size_t first_page_size = (data_array_size > (m_page_size - byte)) ? m_page_size - byte : data_array_size;
+
+            m_spi_master.mutex_take();
+
+            // First page, partial or complete
+            if(program_page(address, data_array, first_page_size) == false)
+            {
+                m_spi_master.mutex_give();
+
+                return false;
+            }
+
+            address    += first_page_size;
+            data_array += first_page_size;
+
+            std::ptrdiff_t size = data_array_size - first_page_size;
+
+            while(size > 0)
+            {
+                const std::size_t program_size = (static_cast<std::size_t>(size) > m_page_size) ? m_page_size : size;
+
+                // Remaining pages...
+                if(program_page(address, data_array, program_size) == false)
+                {
+                    m_spi_master.mutex_give();
+
+                    return false;
+                }
+
+                address    += program_size;
+                data_array += program_size;
+                size       -= program_size;
             }
 
             m_spi_master.mutex_give();
@@ -323,6 +380,18 @@ class SpiNorFlash
             return success;
         }
 
+        // Make sure that no pending write process
+        bool sync()
+        {
+            m_spi_master.mutex_take();
+
+            const bool success = wait_for_ready();
+
+            m_spi_master.mutex_give();
+
+            return success;
+        }
+
 #if (XARMLIB_ENABLE_FATFS == 1)
         // Control device specific features and miscellaneous functions other than generic read/write (FatFs specific)
         bool control(const uint8_t code, void* data)
@@ -333,14 +402,7 @@ class SpiNorFlash
             {
                 // Make sure that no pending write process
                 case CTRL_SYNC:
-                    m_spi_master.mutex_take();
-
-                    if(wait_for_ready() == false)
-                    {
-                        success = false;
-                    }
-
-                    m_spi_master.mutex_give();
+                    success = sync();
                     break;
 
                 // Get number of sectors on the disk (DWORD)
@@ -544,8 +606,14 @@ class SpiNorFlash
         }
 
         // Perform a page program
-        bool program_page(const uint32_t address, const uint8_t* data_array)
+        bool program_page(const uint32_t address, const uint8_t* data_array, std::size_t data_array_size)
         {
+            // Truncate the data array size so it won't overflow the page size
+            if(data_array_size > (m_page_size - (address & (m_page_size - 1))))
+            {
+                data_array_size = (m_page_size - (address & (m_page_size - 1)));
+            }
+
             if(wait_for_ready() == true)
             {
                 enable_write();
@@ -557,7 +625,7 @@ class SpiNorFlash
 
                 send_address(address);
 
-                for(std::size_t byte = 0; byte < m_page_size; byte++)
+                while(data_array_size-- > 0)
                 {
                     m_spi_master.transfer(*data_array++);
                 }
@@ -581,8 +649,8 @@ class SpiNorFlash
 
         const bool        m_readonly;
 
-        const std::size_t m_sector_size { 4096 };
-        const std::size_t m_page_size { 256 };
+        static constexpr std::size_t m_sector_size { 4096 };
+        static constexpr std::size_t m_page_size { 256 };
 
         std::size_t       m_sectors { 0 };
         //std::size_t       m_pages { 0 };
