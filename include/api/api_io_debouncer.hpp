@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    10 May 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -268,7 +268,7 @@ class IoDebouncer
 
                 m_filtered_bus = m_last_read_bus;
 
-                m_input_error_bus = ~m_last_read_bus & static_cast<uint32_t>((1UL << m_ios.size()) - 1);
+                m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
 
                 return true;
             }
