@@ -5,11 +5,11 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    10 May 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -358,7 +358,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
                 void set_type(const Type type)               { m_type = type; }
                 void set_data(const std::span<const uint8_t> data)
                 {
-                    assert(data.size() <= static_cast<std::ptrdiff_t>(m_data.size()));
+                    assert(data.size() <= m_data.size());
 
                     m_data_bytes = data.size();
 

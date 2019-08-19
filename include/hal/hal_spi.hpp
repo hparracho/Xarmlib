@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    11 June 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -159,7 +159,7 @@ class SpiMasterBase : protected SpiDriver
         {
             assert(tx_buffer.size() == rx_buffer.size());
 
-            for(std::ptrdiff_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
+            for(std::size_t frame_index = 0; frame_index < tx_buffer.size(); ++frame_index)
             {
                 rx_buffer[frame_index] = static_cast<uint8_t>(transfer(tx_buffer[frame_index]));
             }

@@ -2,11 +2,11 @@
 // @file    kv4x_i2c.hpp
 // @brief   Kinetis KV4x I2C class.
 // @note    Only master mode is implemented.
-// @date    30 April 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -228,7 +228,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT>
                 // NOTE: subaddress variable is an uint32_t type!
                 assert(tx_buffer.size() <= 4);
 
-                for(std::ptrdiff_t byte_count = 0; byte_count < tx_buffer.size(); byte_count++)
+                for(std::size_t byte_count = 0; byte_count < tx_buffer.size(); byte_count++)
                 {
                     subaddress = (subaddress << 8) | tx_buffer[byte_count];
                 }
@@ -244,7 +244,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT>
                 subaddress,
                 subaddress_size,
                 (direction == kI2C_Write) ? tx_buffer.data() : rx_buffer.data(),
-                static_cast<size_t>((direction == kI2C_Write) ? tx_buffer.size() : rx_buffer.size())
+                (direction == kI2C_Write) ? tx_buffer.size() : rx_buffer.size()
             };
 
             const int32_t result = I2C_MasterTransferBlocking(I2C, &i2c_master_transfer);

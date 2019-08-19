@@ -288,7 +288,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
 
             assert(direction == TransferDirection::master_read && rx_buffer.size() > 0);
 
-            std::ptrdiff_t buffer_count = 0;
+            std::size_t buffer_count = 0;
 
             // Write slave address and RW bit to data register
             master_write_data(static_cast<uint8_t>((slave_address << 1)) | static_cast<uint8_t>(direction));

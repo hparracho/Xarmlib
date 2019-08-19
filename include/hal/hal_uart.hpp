@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_uart.hpp
 // @brief   UART HAL interface class.
-// @date    10 May 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -108,10 +108,10 @@ class UartBase : protected UartDriver
         }
 
         // Read buffer with timeout, returning the number of actual read bytes
-        int32_t read_buffer(const std::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
+        std::size_t read_buffer(const std::span<uint8_t> buffer, const std::chrono::microseconds timeout_us) const
         {
             const auto start = UsTicker::now();
-            int32_t count = 0;
+            std::size_t count = 0;
 
             while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
             {
@@ -145,10 +145,10 @@ class UartBase : protected UartDriver
         }
 
         // Write buffer with timeout, returning the number of actual written bytes
-        int32_t write_buffer(const std::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
+        std::size_t write_buffer(const std::span<const uint8_t> buffer, const std::chrono::microseconds timeout_us)
         {
             const auto start = UsTicker::now();
-            int32_t count = 0;
+            std::size_t count = 0;
 
             while(count < buffer.size() && UsTicker::is_timeout(start, timeout_us) == false)
             {
