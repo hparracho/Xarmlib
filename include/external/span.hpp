@@ -3,11 +3,11 @@
 // @brief   std::span implementation for C++11 and later (SPAN) configuration
 //          and main header file to use in the library. This should be the only
 //          header file included when SPAN functionality is required.
-// @date    6 February 2019
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -39,7 +39,6 @@
 #else
 #  define TCB_SPAN_NAMESPACE_NAME std
 #  define TCB_SPAN_NO_EXCEPTIONS
-#  define TCB_SPAN_STD_COMPLIANT_MODE
 #  define TCB_SPAN_TERMINATE_ON_CONTRACT_VIOLATION
 #  include "tcb/span.hpp"
 #endif
