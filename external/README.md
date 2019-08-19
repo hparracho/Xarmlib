@@ -26,16 +26,16 @@ Date: 14 June 2019
 
 ---
 ## lfs: Little fail-safe filesystem v2.1.0
-Date: 29 July 2019
+Date: 9 August 2019
 Branch: master  
-Commit: db054684a67956c5b86101dd70018accf284be2f
+Commit: 494dd6673d008c03e3199b24af7bff0fe82017f1
 ### https://github.com/ARMmbed/littlefs
 
 ---
 ## span: std::span implementation for C++11 and later
-Date: 3 December 2018
+Date: 14 August 2019
 Branch: master  
-Commit: e9cf0809c9b8b9ecd06db782dc631f138fab4ee8
+Commit: 12251508c0ff0c1ddbc7870331dcbc136e87597b
 ### https://github.com/tcbrindle/span
 
 ---
