@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    18 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,8 +40,8 @@ namespace hal
 
 
 
-template <class TargetPort>
-class Port : private TargetPort
+template <typename PortDriver>
+class PortBase : protected PortDriver
 {
     public:
 
@@ -49,24 +49,28 @@ class Port : private TargetPort
         // PUBLIC TYPE ALIASES
         // --------------------------------------------------------------------
 
-        using Name = typename TargetPort::Name;
+        using Name = typename PortDriver::Name;
 
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        using TargetPort::set_direction;
-        using TargetPort::clear_direction;
-        using TargetPort::write_direction;
+        static void set_direction  (const Name port) { PortDriver::set_direction(port); }
+        static void clear_direction(const Name port) { PortDriver::clear_direction(port); }
 
-        using TargetPort::set_mask;
-        using TargetPort::clear_mask;
+        static void set_direction  (const Name port, const uint32_t mask) { PortDriver::set_direction(port, mask); }
+        static void clear_direction(const Name port, const uint32_t mask) { PortDriver::clear_direction(port, mask); }
 
-        using TargetPort::read;
-        using TargetPort::read_masked;
+        static void set_direction  (const hal::Pin::Name pin) { PortDriver::set_direction(pin); }
+        static void clear_direction(const hal::Pin::Name pin) { PortDriver::clear_direction(pin); }
 
-        using TargetPort::write;
-        using TargetPort::write_masked;
+        static void write_direction(const Name port, const uint32_t mask, const uint32_t value) { PortDriver::write_direction(port, mask, value); }
+
+        static uint32_t read(const Name port)                      { return PortDriver::read(port); }
+        static uint32_t read(const Name port, const uint32_t mask) { return PortDriver::read(port, mask); }
+
+        static void write(const Name port, const uint32_t value)                      { PortDriver::write(port, value); }
+        static void write(const Name port, const uint32_t mask, const uint32_t value) { PortDriver::write(port, mask, value); }
 };
 
 
@@ -80,14 +84,57 @@ class Port : private TargetPort
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_port.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using Port = PortBase<targets::kv4x::PortDriver>;
+
+} // namespace hal
+
+using Port = hal::Port;
+
+} // namespace xarmlib
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_port.hpp"
 
 namespace xarmlib
 {
-using Port = hal::Port<targets::lpc84x::Port>;
-}
+namespace hal
+{
+
+using Port = PortBase<targets::lpc84x::PortDriver>;
+
+} // namespace hal
+
+class Port : public hal::Port
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Port;
+
+        static void set_mask(const Name port) { Hal::set_mask(port); }
+        static void clear_mask(const Name port) { Hal::clear_mask(port); }
+
+        static void set_mask(const hal::Pin::Name pin) { Hal::set_mask(pin); }
+        static void clear_mask(const hal::Pin::Name pin) { Hal::clear_mask(pin); }
+
+        static uint32_t read_masked(const Name port) { return Hal::read_masked(port); }
+        static void write_masked(const Name port, const uint32_t value) { Hal::write_masked(port, value); }
+};
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -95,8 +142,34 @@ using Port = hal::Port<targets::lpc84x::Port>;
 
 namespace xarmlib
 {
-using Port = hal::Port<targets::lpc81x::Port>;
-}
+namespace hal
+{
+
+using Port = PortBase<targets::lpc81x::PortDriver>;
+
+} // namespace hal
+
+class Port : public hal::Port
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Port;
+
+        static void set_mask  (const Name port) { Hal::set_mask(port); }
+        static void clear_mask(const Name port) { Hal::clear_mask(port); }
+
+        static void set_mask  (const hal::Pin::Name pin) { Hal::set_mask(pin); }
+        static void clear_mask(const hal::Pin::Name pin) { Hal::clear_mask(pin); }
+
+        static uint32_t read_masked (const Name port)                       { return Hal::read_masked(port); }
+        static void     write_masked(const Name port, const uint32_t value) { Hal::write_masked(port, value); }
+};
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -104,8 +177,16 @@ using Port = hal::Port<targets::lpc81x::Port>;
 
 namespace xarmlib
 {
-using Port = hal::Port<targets::other_target::Port>;
-}
+namespace hal
+{
+
+using Port = PortBase<targets::other_target::PortDriver>;
+
+} // namespace hal
+
+using Port = hal::Port;
+
+} // namespace xarmlib
 
 #endif
 

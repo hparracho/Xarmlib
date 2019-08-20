@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC81x MCU.
-// @date    16 July 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -60,39 +60,39 @@ extern "C"
 
 static inline void mcu_startup_set_irc_clock()
 {
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::OSC_12MHZ)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK == SystemDriver::Clock::osc_12mhz)
     {
         // Set the main clock divide by 1
-        Clock::set_system_clock_divider(1);
+        ClockDriver::set_system_clock_divider(1);
 
         // Set main clock source directly to the IRC oscillator
-        Clock::set_main_clock_source(Clock::MainClockSource::IRC);
+        ClockDriver::set_main_clock_source(ClockDriver::MainClockSource::irc);
     }
     else
     {
         // Set IRC oscillator source for system PLL clock select
-        Clock::set_system_pll_source(Clock::SystemPllSource::IRC);
+        ClockDriver::set_system_pll_source(ClockDriver::SystemPllSource::irc);
 
         // Configure the PLL subsystem according to the system configuration
         switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
         {
-            case System::Clock::OSC_30MHZ: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
-                                           Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
-                                           break;
-            case System::Clock::OSC_24MHZ:
-            default:                       Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
-                                           Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
-                                           break;
+            case SystemDriver::Clock::osc_30mhz: ClockDriver::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
+                                                 ClockDriver::set_system_clock_divider(2);  // Divide the main_clock by 2
+                                                 break;
+            case SystemDriver::Clock::osc_24mhz:
+            default:                             ClockDriver::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
+                                                 ClockDriver::set_system_clock_divider(1);  // Divide the main_clock by 1
+                                                 break;
         }
 
         // Power-up system PLL *ONLY* after setting the dividers
-        Power::power_up(Power::Peripheral::SYSPLL);
+        PowerDriver::power_up(PowerDriver::Peripheral::syspll);
 
         // Wait for the system PLL to lock
-        Clock::wait_system_pll_lock();
+        ClockDriver::wait_system_pll_lock();
 
         // Set system PLL out source for main clock select
-        Clock::set_main_clock_source(Clock::MainClockSource::SYS_PLL_OUT_CLK);
+        ClockDriver::set_main_clock_source(ClockDriver::MainClockSource::sys_pll_out_clk);
     }
 }
 
@@ -105,20 +105,20 @@ static inline void mcu_startup_set_irc_clock()
 static inline void mcu_startup_set_xtal_clock()
 {
     // Disable pull-up and pull-down for XTALIN and XTALOUT pin
-    Pin::set_mode(Pin::Name::P0_8, Pin::FunctionMode::HIZ);
-    Pin::set_mode(Pin::Name::P0_9, Pin::FunctionMode::HIZ);
+    PinDriver::set_mode(PinDriver::Name::p0_8, PinDriver::FunctionMode::hiz);
+    PinDriver::set_mode(PinDriver::Name::p0_9, PinDriver::FunctionMode::hiz);
 
     // Use Switch Matrix to enable XTALIN/XTALOUT functions
-    Swm::enable(Swm::PinFixed::XTALIN);
-    Swm::enable(Swm::PinFixed::XTALOUT);
+    SwmDriver::enable(SwmDriver::PinFixed::xtalin);
+    SwmDriver::enable(SwmDriver::PinFixed::xtalout);
 
     // Use crystal oscillator with 1-20 MHz frequency range
     const bool bypass_osc = false;
     const bool high_freq  = false;
-    Clock::set_system_oscillator(bypass_osc, high_freq);
+    ClockDriver::set_system_oscillator(bypass_osc, high_freq);
 
     // Power-up crystal oscillator
-    Power::power_up(Power::Peripheral::SYSOSC);
+    PowerDriver::power_up(PowerDriver::Peripheral::sysosc);
 
     // Wait 500 us for system oscillator to stabilize (typical time from datasheet). The for
     // loop takes 7 clocks per iteration and executes at a maximum of 30 MHz (33.333 ns),
@@ -126,44 +126,44 @@ static inline void mcu_startup_set_xtal_clock()
     for(uint32_t i = 0; i < 2143; i++) __NOP();
 
     // Set system oscillator source for system PLL clock select
-    Clock::set_system_pll_source(Clock::SystemPllSource::SYS_OSC_CLK);
+    ClockDriver::set_system_pll_source(ClockDriver::SystemPllSource::sys_osc_clk);
 
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK == System::Clock::XTAL_12MHZ)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK == SystemDriver::Clock::xtal_12mhz)
     {
         // Set the main clock divide by 1
-        Clock::set_system_clock_divider(1);
+        ClockDriver::set_system_clock_divider(1);
 
         // Set system PLL in source for main clock select
-        Clock::set_main_clock_source(Clock::MainClockSource::SYS_PLL_IN_CLK);
+        ClockDriver::set_main_clock_source(ClockDriver::MainClockSource::sys_pll_in_clk);
     }
     else
     {
         // Configure the PLL subsystem according to the system configuration
         switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
         {
-            case System::Clock::XTAL_30MHZ: Clock::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
-                                            Clock::set_system_clock_divider(2);  // Divide the main_clock by 2
-                                            break;
-            case System::Clock::XTAL_24MHZ:
-            default:                        Clock::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
-                                            Clock::set_system_clock_divider(1);  // Divide the main_clock by 1
-                                            break;
+            case SystemDriver::Clock::xtal_30mhz: ClockDriver::set_system_pll_divider(4, 1); // 30 MHz => M=5; P=2; DIV=2
+                                                  ClockDriver::set_system_clock_divider(2);  // Divide the main_clock by 2
+                                                  break;
+            case SystemDriver::Clock::xtal_24mhz:
+            default:                              ClockDriver::set_system_pll_divider(1, 2); // 24 MHz => M=2; P=3; DIV=1
+                                                  ClockDriver::set_system_clock_divider(1);  // Divide the main_clock by 1
+                                                  break;
         }
 
         // Power-up system PLL *ONLY* after setting the dividers
-        Power::power_up(Power::Peripheral::SYSPLL);
+        PowerDriver::power_up(PowerDriver::Peripheral::syspll);
 
         // Wait for the system PLL to lock
-        Clock::wait_system_pll_lock();
+        ClockDriver::wait_system_pll_lock();
 
         // Set system PLL out source for main clock select
-        Clock::set_main_clock_source(Clock::MainClockSource::SYS_PLL_OUT_CLK);
+        ClockDriver::set_main_clock_source(ClockDriver::MainClockSource::sys_pll_out_clk);
     }
 
 #if defined (NDEBUG) && defined (XARMLIB_CONFIG_CRP_SETTING) && (XARMLIB_CONFIG_CRP_SETTING != CRP_NO_CRP)
     // Disable the unused IRC oscillator when compiling a final application
-    Power::power_down(Power::Peripheral::IRC);
-    Power::power_down(Power::Peripheral::IRCOUT);
+    PowerDriver::power_down(PowerDriver::Peripheral::irc);
+    PowerDriver::power_down(PowerDriver::Peripheral::ircout);
 #endif
 }
 
@@ -208,24 +208,24 @@ void mcu_startup_initialize_hardware()
     // ------------------------------------------------------------------------
 
     // Enable brown-out detection with reset level 3 (2.63V ~ 2.71V)
-    BrownOut::enable_reset(BrownOut::Level::LEVEL_3);
+    BrownOutDriver::enable_reset(BrownOutDriver::Level::level_3);
 
     // Enable Switch Matrix clock
-    Clock::enable(Clock::Peripheral::SWM);
+    ClockDriver::enable(ClockDriver::Peripheral::swm);
     // Enable IOCON clock
-    Clock::enable(Clock::Peripheral::IOCON);
+    ClockDriver::enable(ClockDriver::Peripheral::iocon);
 
 #ifdef NDEBUG
     // DISABLE SWD WHEN COMPILING IN RELEASE!!!
     // NOTE: The boot loader assigns the SWD functions to pins PIO0_2 and PIO0_3.
     //       If the user code disables the SWD functions through the switch matrix
     //       to use the pins for other functions, the SWD port is disabled.
-    Swm::disable(Swm::PinFixed::SWCLK);
-    Swm::disable(Swm::PinFixed::SWDIO);
+    SwmDriver::disable(SwmDriver::PinFixed::swclk);
+    SwmDriver::disable(SwmDriver::PinFixed::swdio);
 #endif
 
 #if (TARGET_PACKAGE_PIN_COUNT > 8)
-    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= System::Clock::OSC_30MHZ)
+    if(XARMLIB_CONFIG_SYSTEM_CLOCK <= SystemDriver::Clock::osc_30mhz)
     {
         mcu_startup_set_irc_clock();
     }

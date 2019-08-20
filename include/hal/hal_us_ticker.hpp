@@ -1,11 +1,12 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @date    6 July 2018
+// @note    Target KV4x takes control of one available Timer (PIT)
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -42,8 +43,8 @@ namespace hal
 
 
 
-template <class TargetUsTicker>
-class UsTicker : private TargetUsTicker
+template <typename UsTickerDriver>
+class UsTickerBase : protected UsTickerDriver
 {
     public:
 
@@ -52,10 +53,10 @@ class UsTicker : private TargetUsTicker
         // --------------------------------------------------------------------
 
         // Read the current ticker value
-        using TargetUsTicker::now;
+        static std::chrono::microseconds now() { return UsTickerDriver::now(); }
 
         // Wait for the supplied duration time
-        static void wait(const std::chrono::microseconds duration)
+        static void wait(const std::chrono::microseconds& duration)
         {
             const auto start = now();
 
@@ -64,8 +65,8 @@ class UsTicker : private TargetUsTicker
             {}
         }
 
-        static bool is_timeout(const std::chrono::microseconds start,
-                               const std::chrono::microseconds duration)
+        static bool is_timeout(const std::chrono::microseconds& start,
+                               const std::chrono::microseconds& duration)
         {
             return static_cast<uint32_t>((now() - start).count()) >=
                    static_cast<uint32_t>(duration.count());
@@ -83,14 +84,39 @@ class UsTicker : private TargetUsTicker
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_us_ticker.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using UsTicker = UsTickerBase<targets::kv4x::UsTickerDriver>;
+
+} // namespace hal
+
+using UsTicker = hal::UsTicker;
+
+} // namespace xarmlib
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_us_ticker.hpp"
 
 namespace xarmlib
 {
-using UsTicker = hal::UsTicker<targets::lpc84x::UsTicker>;
-}
+namespace hal
+{
+
+using UsTicker = UsTickerBase<targets::lpc84x::UsTickerDriver>;
+
+} // namespace hal
+
+using UsTicker = hal::UsTicker;
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -98,8 +124,16 @@ using UsTicker = hal::UsTicker<targets::lpc84x::UsTicker>;
 
 namespace xarmlib
 {
-using UsTicker = hal::UsTicker<targets::lpc81x::UsTicker>;
-}
+namespace hal
+{
+
+using UsTicker = UsTickerBase<targets::lpc81x::UsTickerDriver>;
+
+} // namespace hal
+
+using UsTicker = hal::UsTicker;
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -107,8 +141,16 @@ using UsTicker = hal::UsTicker<targets::lpc81x::UsTicker>;
 
 namespace xarmlib
 {
-using UsTicker = hal::UsTicker<targets::other_target::UsTicker>;
-}
+namespace hal
+{
+
+using UsTicker = UsTickerBase<targets::other_target::UsTickerDriver>;
+
+} // namespace hal
+
+using UsTicker = hal::UsTicker;
+
+} // namespace xarmlib
 
 #endif
 

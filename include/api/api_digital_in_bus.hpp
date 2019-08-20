@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in_bus.hpp
 // @brief   API digital input bus class.
-// @date    6 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -53,28 +53,21 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalInBus(const PinNameBus&           pin_name_bus,
-                     const Gpio::InputMode       input_mode,
-                     const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
-                     const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
-                     const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_bus(pin_name_bus.get_size())
+        DigitalInBus(const PinNameBus& pin_name_bus, const hal::Gpio::InputModeConfig& config) : m_bus(pin_name_bus.get_size())
         {
             std::size_t index = 0;
             for(auto pin_name : pin_name_bus)
             {
-                m_bus[index++] = std::make_unique<Gpio>(pin_name, input_mode, input_filter, input_invert, input_hysteresis);
+                m_bus[index++] = std::make_unique<hal::Gpio>(pin_name, config);
             }
         }
 
-        DigitalInBus(const PinNameBus&                  pin_name_bus,
-                     const Gpio::InputModeTrueOpenDrain input_mode,
-                     const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
-                     const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_bus(pin_name_bus.get_size())
+        DigitalInBus(const PinNameBus& pin_name_bus, const hal::Gpio::InputModeTrueOpenDrainConfig& config) : m_bus(pin_name_bus.get_size())
         {
             std::size_t index = 0;
             for(auto pin_name : pin_name_bus)
             {
-                m_bus[index++] = std::make_unique<Gpio>(pin_name, input_mode, input_filter, input_invert);
+                m_bus[index++] = std::make_unique<hal::Gpio>(pin_name, config);
             }
         }
 
@@ -109,7 +102,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        std::dynarray<std::unique_ptr<Gpio>> m_bus;
+        std::dynarray<std::unique_ptr<hal::Gpio>> m_bus;
 };
 
 

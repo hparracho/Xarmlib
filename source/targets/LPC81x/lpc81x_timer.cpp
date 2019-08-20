@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.cpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    10 July 2018
+// @date    30 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,7 +46,7 @@ using namespace xarmlib::targets::lpc81x;
 
 extern "C" void MRT_IRQHandler(void)
 {
-    const int32_t yield = Timer::irq_handler();
+    const int32_t yield = TimerDriver::irq_handler();
 
 #ifdef XARMLIB_ENABLE_FREERTOS
     portEND_SWITCHING_ISR(yield);

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    18 July 2018
+// @date    28 February 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace lpc81x
 
 
 
-class Port
+class PortDriver
 {
     public:
 
@@ -56,7 +56,7 @@ class Port
         // Port names (all packages have 1 port)
         enum class Name
         {
-            PORT0 = 0
+            port0 = 0
         };
 
         // --------------------------------------------------------------------
@@ -87,17 +87,17 @@ class Port
             LPC_GPIO->DIR[static_cast<std::size_t>(port)] &= ~mask;
         }
 
-        static void set_direction(const Pin::Name pin)
+        static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Ones configure as outputs
             LPC_GPIO->DIR0 |= 1UL << static_cast<uint32_t>(pin);
         }
 
-        static void clear_direction(const Pin::Name pin)
+        static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeros configure as inputs
             LPC_GPIO->DIR0 &= ~(1UL << static_cast<uint32_t>(pin));
@@ -124,9 +124,9 @@ class Port
             LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0;
         }
 
-        static void set_mask(const Pin::Name pin)
+        static void set_mask(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
@@ -134,9 +134,9 @@ class Port
             LPC_GPIO->MASK0 |= 1UL << static_cast<uint32_t>(pin);
         }
 
-        static void clear_mask(const Pin::Name pin)
+        static void clear_mask(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding

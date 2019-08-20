@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_system.hpp
 // @brief   NXP LPC84x system level configuration class.
-// @date    18 May 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc84x
 
 
 
-class System
+class SystemDriver
 {
     public:
 
@@ -55,30 +55,30 @@ class System
         // SWD interface availability selection
         enum class Swd
         {
-            ENABLED = 0,
-            DISABLED
+            enabled = 0,
+            disabled
         };
 
         // Possible clock frequencies selection
         enum class Clock
         {
-            OSC_LOW_POWER_1125KHZ = 0,  // Low power boot using internal oscillator set @ 1.125MHz
-            OSC_LOW_POWER_1500KHZ,      // Low power boot using internal oscillator set @ 1.500MHz
-            OSC_LOW_POWER_1875KHZ,      // Low power boot using internal oscillator set @ 1.875MHz
+            osc_low_power_1125khz = 0,  // Low power boot using internal oscillator set @ 1.125MHz
+            osc_low_power_1500khz,      // Low power boot using internal oscillator set @ 1.500MHz
+            osc_low_power_1875khz,      // Low power boot using internal oscillator set @ 1.875MHz
 
-            OSC_9MHZ,                   // Normal boot using internal oscillator set @  9MHz
-            OSC_12MHZ,                  // Normal boot using internal oscillator set @ 12MHz
-            OSC_15MHZ,                  // Normal boot using internal oscillator set @ 15MHz
-            OSC_18MHZ,                  // Normal boot using internal oscillator set @ 18MHz
-            OSC_24MHZ,                  // Normal boot using internal oscillator set @ 24MHz
-            OSC_30MHZ,                  // Normal boot using internal oscillator set @ 30MHz
+            osc_9mhz,                   // Normal boot using internal oscillator set @  9MHz
+            osc_12mhz,                  // Normal boot using internal oscillator set @ 12MHz
+            osc_15mhz,                  // Normal boot using internal oscillator set @ 15MHz
+            osc_18mhz,                  // Normal boot using internal oscillator set @ 18MHz
+            osc_24mhz,                  // Normal boot using internal oscillator set @ 24MHz
+            osc_30mhz,                  // Normal boot using internal oscillator set @ 30MHz
 
-            XTAL_9MHZ,                  // Normal boot using external crystal and PPL set @  9MHz
-            XTAL_12MHZ,                 // Normal boot using external crystal and PPL set @ 12MHz
-            XTAL_15MHZ,                 // Normal boot using external crystal and PPL set @ 15MHz
-            XTAL_18MHZ,                 // Normal boot using external crystal and PPL set @ 18MHz
-            XTAL_24MHZ,                 // Normal boot using external crystal and PPL set @ 24MHz
-            XTAL_30MHZ                  // Normal boot using external crystal and PPL set @ 30MHz
+            xtal_9mhz,                  // Normal boot using external crystal and PPL set @  9MHz
+            xtal_12mhz,                 // Normal boot using external crystal and PPL set @ 12MHz
+            xtal_15mhz,                 // Normal boot using external crystal and PPL set @ 15MHz
+            xtal_18mhz,                 // Normal boot using external crystal and PPL set @ 18MHz
+            xtal_24mhz,                 // Normal boot using external crystal and PPL set @ 24MHz
+            xtal_30mhz                  // Normal boot using external crystal and PPL set @ 30MHz
         };
 
         // Crystal frequency (12MHz fixed)
@@ -94,23 +94,23 @@ class System
         {
             switch(clock)
             {
-                case Clock::OSC_LOW_POWER_1125KHZ: return  1125000; break;
-                case Clock::OSC_LOW_POWER_1500KHZ: return  1500000; break;
-                case Clock::OSC_LOW_POWER_1875KHZ: return  1875000; break;
+                case Clock::osc_low_power_1125khz: return  1125000; break;
+                case Clock::osc_low_power_1500khz: return  1500000; break;
+                case Clock::osc_low_power_1875khz: return  1875000; break;
 
-                case Clock::OSC_9MHZ:              return  9000000; break;
-                case Clock::OSC_12MHZ:             return 12000000; break;
-                case Clock::OSC_15MHZ:             return 15000000; break;
-                case Clock::OSC_18MHZ:             return 18000000; break;
-                case Clock::OSC_24MHZ:             return 24000000; break;
-                case Clock::OSC_30MHZ:             return 30000000; break;
+                case Clock::osc_9mhz:              return  9000000; break;
+                case Clock::osc_12mhz:             return 12000000; break;
+                case Clock::osc_15mhz:             return 15000000; break;
+                case Clock::osc_18mhz:             return 18000000; break;
+                case Clock::osc_24mhz:             return 24000000; break;
+                case Clock::osc_30mhz:             return 30000000; break;
 
-                case Clock::XTAL_9MHZ:             return  9000000; break;
-                case Clock::XTAL_12MHZ:            return 12000000; break;
-                case Clock::XTAL_15MHZ:            return 15000000; break;
-                case Clock::XTAL_18MHZ:            return 18000000; break;
-                case Clock::XTAL_24MHZ:            return 24000000; break;
-                case Clock::XTAL_30MHZ:            return 30000000; break;
+                case Clock::xtal_9mhz:             return  9000000; break;
+                case Clock::xtal_12mhz:            return 12000000; break;
+                case Clock::xtal_15mhz:            return 15000000; break;
+                case Clock::xtal_18mhz:            return 18000000; break;
+                case Clock::xtal_24mhz:            return 24000000; break;
+                case Clock::xtal_30mhz:            return 30000000; break;
                 default:                           return        0; break;
             }
         }
@@ -119,23 +119,23 @@ class System
         {
             switch(clock)
             {
-                case Clock::OSC_LOW_POWER_1125KHZ: return  1125000; break;
-                case Clock::OSC_LOW_POWER_1500KHZ: return  1500000; break;
-                case Clock::OSC_LOW_POWER_1875KHZ: return  1875000; break;
+                case Clock::osc_low_power_1125khz: return  1125000; break;
+                case Clock::osc_low_power_1500khz: return  1500000; break;
+                case Clock::osc_low_power_1875khz: return  1875000; break;
 
-                case Clock::OSC_9MHZ:              return  9000000; break;
-                case Clock::OSC_12MHZ:             return 12000000; break;
-                case Clock::OSC_15MHZ:             return 15000000; break;
-                case Clock::OSC_18MHZ:             return 18000000; break;
-                case Clock::OSC_24MHZ:             return 24000000; break;
-                case Clock::OSC_30MHZ:             return 30000000; break;
+                case Clock::osc_9mhz:              return  9000000; break;
+                case Clock::osc_12mhz:             return 12000000; break;
+                case Clock::osc_15mhz:             return 15000000; break;
+                case Clock::osc_18mhz:             return 18000000; break;
+                case Clock::osc_24mhz:             return 24000000; break;
+                case Clock::osc_30mhz:             return 30000000; break;
 
-                case Clock::XTAL_9MHZ:             return 36000000; break;
-                case Clock::XTAL_12MHZ:            return 24000000; break;
-                case Clock::XTAL_15MHZ:            return 60000000; break;
-                case Clock::XTAL_18MHZ:            return 36000000; break;
-                case Clock::XTAL_24MHZ:            return 24000000; break;
-                case Clock::XTAL_30MHZ:            return 60000000; break;
+                case Clock::xtal_9mhz:             return 36000000; break;
+                case Clock::xtal_12mhz:            return 24000000; break;
+                case Clock::xtal_15mhz:            return 60000000; break;
+                case Clock::xtal_18mhz:            return 36000000; break;
+                case Clock::xtal_24mhz:            return 24000000; break;
+                case Clock::xtal_30mhz:            return 60000000; break;
                 default:                           return        0; break;
             }
         }

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    16 July 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,8 +36,6 @@
 #include "targets/LPC81x/lpc81x_syscon_clock.hpp"
 #include "targets/LPC81x/lpc81x_syscon_power.hpp"
 
-#include <cassert>
-
 namespace xarmlib
 {
 namespace targets
@@ -48,7 +46,7 @@ namespace lpc81x
 
 
 
-class Gpio
+class GpioDriver
 {
     protected:
 
@@ -59,38 +57,57 @@ class Gpio
         // Input pin modes
         enum class InputMode
         {
-            HIZ = 0,
-            PULL_DOWN,
-            PULL_UP,
-            REPEATER
+            hiz = 0,
+            pull_down,
+            pull_up,
+            repeater
         };
 
         // Output pin modes
         enum class OutputMode
         {
-            PUSH_PULL_LOW = 0,
-            PUSH_PULL_HIGH,
-            OPEN_DRAIN_LOW,
-            OPEN_DRAIN_HIZ
-        };
-
-        // True open-drain input pin modes
-        enum class InputModeTrueOpenDrain
-        {
-            HIZ = 0
+            push_pull_low = 0,
+            push_pull_high,
+            open_drain_low,
+            open_drain_hiz
         };
 
         // True open-drain output pin modes
         enum class OutputModeTrueOpenDrain
         {
-            LOW = 0,
-            HIZ
+            low = 0,
+            hiz
         };
 
-        using InputFilterClockDivider = Clock::IoconClockDividerSelect;
-        using InputFilter             = Pin::InputFilter;
-        using InputInvert             = Pin::InputInvert;
-        using InputHysteresis         = Pin::InputHysteresis;
+        using InputFilterClockDivider = ClockDriver::IoconClockDividerSelect;
+        using InputFilter             = PinDriver::InputFilter;
+        using InputInvert             = PinDriver::InputInvert;
+        using InputHysteresis         = PinDriver::InputHysteresis;
+
+        struct InputModeConfig
+        {
+            InputMode       input_mode       = InputMode::pull_up;
+            InputFilter     input_filter     = InputFilter::bypass;
+            InputInvert     input_invert     = InputInvert::normal;
+            InputHysteresis input_hysteresis = InputHysteresis::enable;
+        };
+
+        struct OutputModeConfig
+        {
+            OutputMode output_mode = OutputMode::push_pull_low;
+        };
+
+        struct InputModeTrueOpenDrainConfig
+        {
+            // input mode: HIZ
+            InputFilter input_filter = InputFilter::bypass;
+            InputInvert input_invert = InputInvert::normal;
+        };
+
+        struct OutputModeTrueOpenDrainConfig
+        {
+            OutputModeTrueOpenDrain output_mode = OutputModeTrueOpenDrain::low;
+        };
 
         // --------------------------------------------------------------------
         // PROTECTED MEMBER FUNCTIONS
@@ -99,66 +116,56 @@ class Gpio
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Default constructor (assign a NC pin)
-        Gpio() : m_pin_name { Pin::Name::NC }
+        GpioDriver() : m_pin_name { PinDriver::Name::nc }
         {}
 
         // Normal input pin constructor
-        Gpio(const Pin::Name       pin_name,
-             const InputMode       input_mode,
-             const InputFilter     input_filter,
-             const InputInvert     input_invert,
-             const InputHysteresis input_hysteresis) : m_pin_name {pin_name}
+        GpioDriver(const PinDriver::Name pin_name, const InputModeConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name != Pin::Name::NC)
+            if(pin_name != PinDriver::Name::nc)
             {
                 config_port();
-                set_mode(input_mode, input_filter, input_invert, input_hysteresis);
+                set_mode(config);
             }
         }
 
         // Normal output pin constructor
-        Gpio(const Pin::Name  pin_name,
-             const OutputMode output_mode) : m_pin_name {pin_name}
+        GpioDriver(const PinDriver::Name pin_name, const OutputModeConfig& config) : m_pin_name { pin_name }
         {
-            if(pin_name != Pin::Name::NC)
+            if(pin_name != PinDriver::Name::nc)
             {
                 config_port();
-                set_mode(output_mode);
+                set_mode(config);
             }
         }
 
         // True open-drain input pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name              pin_name,
-             const InputModeTrueOpenDrain input_mode,
-             const InputFilter            input_filter,
-             const InputInvert            input_invert) : m_pin_name {pin_name}
+        GpioDriver(const PinDriver::Name pin_name, const InputModeTrueOpenDrainConfig& config) : m_pin_name { pin_name }
         {
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
-            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
+            if(pin_name == PinDriver::Name::p0_10 || pin_name == PinDriver::Name::p0_11)
             {
                 config_port();
-                set_mode(input_mode, input_filter, input_invert);
+                set_mode(config);
             }
 #else
-            (void)input_mode;
-            (void)input_filter;
-            (void)input_invert;
+            (void)config.input_filter;
+            (void)config.input_invert;
             assert(TARGET_PACKAGE_PIN_COUNT >= 16 /* Invalid function on packages without true open-drain pins */);
 #endif
         }
 
         // True open-drain output pin constructor (only available on P0_10 and P0_11)
-        Gpio(const Pin::Name               pin_name,
-             const OutputModeTrueOpenDrain output_mode) : m_pin_name {pin_name}
+        GpioDriver(const PinDriver::Name pin_name, const OutputModeTrueOpenDrainConfig config) : m_pin_name { pin_name }
         {
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
-            if(pin_name == Pin::Name::P0_10 || pin_name == Pin::Name::P0_11)
+            if(pin_name == PinDriver::Name::p0_10 || pin_name == PinDriver::Name::p0_11)
             {
                 config_port();
-                set_mode(output_mode);
+                set_mode(config);
             }
 #else
-            (void)output_mode;
+            (void)config.output_mode;
             assert(TARGET_PACKAGE_PIN_COUNT >= 16 /* Invalid function on packages without true open-drain pins */);
 #endif
         }
@@ -166,100 +173,93 @@ class Gpio
         // -------- CONFIGURATION ---------------------------------------------
 
         // Set normal input pin mode
-        void set_mode(const InputMode       input_mode,
-                      const InputFilter     input_filter     = InputFilter::BYPASS,
-                      const InputInvert     input_invert     = InputInvert::NORMAL,
-                      const InputHysteresis input_hysteresis = InputHysteresis::ENABLE)
+        void set_mode(const InputModeConfig& config)
         {
             // Exclude NC
-            assert(m_pin_name != Pin::Name::NC);
+            assert(m_pin_name != PinDriver::Name::nc);
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
             // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
+            assert(m_pin_name != PinDriver::Name::p0_10 && m_pin_name != PinDriver::Name::p0_11);
 #endif
 
-            Pin::FunctionMode function_mode;
+            PinDriver::FunctionMode function_mode;
 
-            switch(input_mode)
+            switch(config.input_mode)
             {
-                case InputMode::HIZ:       function_mode = Pin::FunctionMode::HIZ;       break;
-                case InputMode::PULL_DOWN: function_mode = Pin::FunctionMode::PULL_DOWN; break;
-                case InputMode::REPEATER:  function_mode = Pin::FunctionMode::REPEATER;  break;
-                case InputMode::PULL_UP:
-                default:                   function_mode = Pin::FunctionMode::PULL_UP;   break;
+                case InputMode::hiz:       function_mode = PinDriver::FunctionMode::hiz;       break;
+                case InputMode::pull_down: function_mode = PinDriver::FunctionMode::pull_down; break;
+                case InputMode::repeater:  function_mode = PinDriver::FunctionMode::repeater;  break;
+                case InputMode::pull_up:
+                default:                   function_mode = PinDriver::FunctionMode::pull_up;   break;
             }
 
             write(0);
-            set_direction(Direction::INPUT);
+            set_direction(Direction::input);
 
-            Pin::set_mode(m_pin_name, function_mode,
-                                      Pin::OpenDrain::DISABLE,
-                                      input_filter,
-                                      input_invert,
-                                      input_hysteresis);
+            PinDriver::set_mode(m_pin_name, function_mode,
+                                            PinDriver::OpenDrain::disable,
+                                            config.input_filter,
+                                            config.input_invert,
+                                            config.input_hysteresis);
         }
 
         // Set normal output pin mode
-        void set_mode(const OutputMode output_mode)
+        void set_mode(const OutputModeConfig& config)
         {
             // Exclude NC
-            assert(m_pin_name != Pin::Name::NC);
+            assert(m_pin_name != PinDriver::Name::nc);
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
             // Exclude true open-drain pins
-            assert(m_pin_name != Pin::Name::P0_10 && m_pin_name != Pin::Name::P0_11);
+            assert(m_pin_name != PinDriver::Name::p0_10 && m_pin_name != PinDriver::Name::p0_11);
 #endif
 
-            uint32_t       pin_value;
-            Pin::OpenDrain open_drain;
+            uint32_t             pin_value;
+            PinDriver::OpenDrain open_drain;
 
-            switch(output_mode)
+            switch(config.output_mode)
             {
-                case OutputMode::PUSH_PULL_LOW:  pin_value = 0; open_drain = Pin::OpenDrain::DISABLE; break;
-                case OutputMode::OPEN_DRAIN_LOW: pin_value = 0; open_drain = Pin::OpenDrain::ENABLE;  break;
-                case OutputMode::OPEN_DRAIN_HIZ: pin_value = 1; open_drain = Pin::OpenDrain::ENABLE;  break;
-                case OutputMode::PUSH_PULL_HIGH:
-                default:                         pin_value = 1; open_drain = Pin::OpenDrain::DISABLE; break;
+                case OutputMode::push_pull_low:  pin_value = 0; open_drain = PinDriver::OpenDrain::disable; break;
+                case OutputMode::open_drain_low: pin_value = 0; open_drain = PinDriver::OpenDrain::enable;  break;
+                case OutputMode::open_drain_hiz: pin_value = 1; open_drain = PinDriver::OpenDrain::enable;  break;
+                case OutputMode::push_pull_high:
+                default:                         pin_value = 1; open_drain = PinDriver::OpenDrain::disable; break;
             }
 
             write(pin_value);
-            set_direction(Direction::OUTPUT);
+            set_direction(Direction::output);
 
-            Pin::set_mode(m_pin_name, Pin::FunctionMode::HIZ,
-                                      open_drain,
-                                      Pin::InputFilter::BYPASS,
-                                      Pin::InputInvert::NORMAL,
-                                      Pin::InputHysteresis::ENABLE);
+            PinDriver::set_mode(m_pin_name, PinDriver::FunctionMode::hiz,
+                                            open_drain,
+                                            PinDriver::InputFilter::bypass,
+                                            PinDriver::InputInvert::normal,
+                                            PinDriver::InputHysteresis::enable);
         }
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
         // Set true open-drain input pin mode (only available on P0_10 and P0_11)
-        void set_mode(const InputModeTrueOpenDrain input_mode,
-                      const InputFilter            input_filter = InputFilter::BYPASS,
-                      const InputInvert            input_invert = InputInvert::NORMAL)
+        void set_mode(const InputModeTrueOpenDrainConfig& config)
         {
-            (void)input_mode; // Input mode only used to identify the type of pin
-
             // Available only on true open-drain pins
-            assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
+            assert(m_pin_name == PinDriver::Name::p0_10 || m_pin_name == PinDriver::Name::p0_11);
 
             write(0);
-            set_direction(Direction::INPUT);
+            set_direction(Direction::input);
 
-            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, input_filter, input_invert);
+            PinDriver::set_mode(m_pin_name, PinDriver::I2cMode::standard_gpio, config.input_filter, config.input_invert);
         }
 
         // Set true open-drain output pin mode (only available on P0_10 and P0_11)
-        void set_mode(const OutputModeTrueOpenDrain output_mode)
+        void set_mode(const OutputModeTrueOpenDrainConfig config)
         {
             // Available only on true open-drain pins
-            assert(m_pin_name == Pin::Name::P0_10 || m_pin_name == Pin::Name::P0_11);
+            assert(m_pin_name == PinDriver::Name::p0_10 || m_pin_name == PinDriver::Name::p0_11);
 
-            write((output_mode == OutputModeTrueOpenDrain::LOW) ? 0 : 1);
-            set_direction(Direction::OUTPUT);
+            write((config.output_mode == OutputModeTrueOpenDrain::low) ? 0 : 1);
+            set_direction(Direction::output);
 
-            Pin::set_mode(m_pin_name, Pin::I2cMode::STANDARD_GPIO, Pin::InputFilter::BYPASS, Pin::InputInvert::NORMAL);
+            PinDriver::set_mode(m_pin_name, PinDriver::I2cMode::standard_gpio, PinDriver::InputFilter::bypass, PinDriver::InputInvert::normal);
         }
 #endif
 
@@ -289,7 +289,7 @@ class Gpio
         // NOTE: The input filter source (where the divider is applied) is the MAIN clock
         static void set_input_filter_clock_divider(const InputFilterClockDivider clock_div, const uint8_t div)
         {
-            Clock::set_iocon_clock_divider(clock_div, div);
+            ClockDriver::set_iocon_clock_divider(clock_div, div);
         }
 
     private:
@@ -301,8 +301,8 @@ class Gpio
         // Pin direction
         enum class Direction
         {
-            INPUT = 0,
-            OUTPUT
+            input = 0,
+            output
         };
 
         // --------------------------------------------------------------------
@@ -316,11 +316,11 @@ class Gpio
             reg_w   = &LPC_GPIO->W0[static_cast<uint32_t>(m_pin_name)];
             reg_dir = &LPC_GPIO->DIR0;
 
-            if(Clock::is_enabled(Clock::Peripheral::GPIO) == false)
+            if(ClockDriver::is_enabled(ClockDriver::Peripheral::gpio) == false)
             {
                 // Enable GPIO
-                Clock::enable(Clock::Peripheral::GPIO);
-                Power::reset(Power::ResetPeripheral::GPIO);
+                ClockDriver::enable(ClockDriver::Peripheral::gpio);
+                PowerDriver::reset(PowerDriver::ResetPeripheral::gpio);
             }
         }
 
@@ -331,8 +331,8 @@ class Gpio
             {
                 switch(direction)
                 {
-                    case Direction::INPUT:  *reg_dir &= ~m_pin_mask; break;
-                    case Direction::OUTPUT: *reg_dir |=  m_pin_mask; break;
+                    case Direction::input:  *reg_dir &= ~m_pin_mask; break;
+                    case Direction::output: *reg_dir |=  m_pin_mask; break;
                 }
             }
         }
@@ -341,10 +341,10 @@ class Gpio
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        const Pin::Name     m_pin_name;
-             uint32_t       m_pin_mask { 0 };
-        __IO uint32_t*      reg_w      { nullptr };
-        __IO uint32_t*      reg_dir    { nullptr };
+        const PinDriver::Name m_pin_name;
+             uint32_t         m_pin_mask { 0 };
+        __IO uint32_t*        reg_w      { nullptr };
+        __IO uint32_t*        reg_dir    { nullptr };
 };
 
 

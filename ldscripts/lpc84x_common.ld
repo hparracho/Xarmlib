@@ -2,7 +2,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_common.ld
 // @brief   Linker Script common part for NXP LPC84x MCUs.
-// @date    23 May 2018
+// @date    16 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,10 +36,10 @@
 
 GROUP
 (
-    libgcc.a
-    libc_nano.a
-    libstdc++_nano.a
-    libm.a
+    "libgcc.a"
+    "libc_nano.a"
+    "libstdc++_nano.a"
+    "libm.a"
 )
 
 

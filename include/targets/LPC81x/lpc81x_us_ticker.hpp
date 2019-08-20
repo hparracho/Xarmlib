@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_us_ticker.hpp
 // @brief   NXP LPC81x SysTick timer class (microsecond resolution).
-// @date    9 July 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,7 +47,7 @@ namespace lpc81x
 
 
 
-class UsTicker
+class UsTickerDriver
 {
     protected:
 
@@ -76,8 +76,8 @@ class UsTicker
             m_initialized = true;
 
             // Enable and reset the SCT clock
-            Clock::enable(Clock::Peripheral::SCT);
-            Power::reset(Power::ResetPeripheral::SCT);
+            ClockDriver::enable(ClockDriver::Peripheral::sct);
+            PowerDriver::reset(PowerDriver::ResetPeripheral::sct);
 
             // Unified counter (32 bits)
             LPC_SCT->CONFIG |= 1;

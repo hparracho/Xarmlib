@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    6 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -46,8 +46,8 @@ template <class Type, class Enable = void>
 class PinBus;
 
 template <class Type>
-class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value == true
-                                        || std::is_same<Type, int8_t   >::value == true>::type>
+class PinBus<Type, typename std::enable_if<std::is_same<Type, hal::Pin::Name>::value == true
+                                        || std::is_same<Type, int8_t        >::value == true>::type>
 {
     public:
 
@@ -64,9 +64,9 @@ class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value 
 
             for(const auto pin : pin_list)
             {
-                if constexpr(std::is_same<Type, Pin::Name>::value == true)
+                if constexpr(std::is_same<Type, hal::Pin::Name>::value == true)
                 {
-                    assert(pin != Pin::Name::NC);
+                    assert(pin != hal::Pin::Name::nc);
                 }
 
                 if constexpr(std::is_same<Type, int8_t>::value == true)
@@ -109,7 +109,7 @@ class PinBus<Type, typename std::enable_if<std::is_same<Type, Pin::Name>::value 
 
 
 
-using PinNameBus  = PinBus<Pin::Name>;
+using PinNameBus  = PinBus<hal::Pin::Name>;
 using PinIndexBus = PinBus<int8_t>;
 
 

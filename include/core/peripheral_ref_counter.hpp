@@ -2,11 +2,11 @@
 // @file    peripheral_ref_counter.hpp
 // @brief   Peripheral reference counter class (helper class to keep a record
 //          of the peripherals objects that are created and destructed).
-// @date    6 July 2018
+// @date    16 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -44,8 +44,8 @@ namespace xarmlib
 
 
 
-template<class Peripheral, std::size_t PERIPHERAL_COUNT>
-class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT>>
+template<class Peripheral, std::size_t PERIPHERAL_COUNT, uint32_t FIXED_MASK = 0>
+class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT, FIXED_MASK>>
 {
     protected:
 
@@ -53,9 +53,9 @@ class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        explicit PeripheralRefCounter(Peripheral& peripheral)
+        explicit PeripheralRefCounter(Peripheral& peripheral, int32_t index = -1)
         {
-            const int32_t index = get_available_index(m_used_mask);
+            index = get_available_index(m_used_mask, index);
             assert(index >= 0);
 
             m_index = static_cast<std::size_t>(index);
@@ -101,13 +101,23 @@ class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        static constexpr int32_t get_available_index(const uint32_t used_mask)
+        static constexpr int32_t get_available_index(const uint32_t used_mask, const int32_t index)
         {
-            for(std::size_t p = 0; p < PERIPHERAL_COUNT; ++p)
+            if(index <= -1)
             {
-                if((used_mask & (1 << p)) == 0)
+                for(std::size_t p = 0; p < PERIPHERAL_COUNT; ++p)
                 {
-                    return p;
+                    if((used_mask & (1 << p)) == 0 && (FIXED_MASK & (1 << p)) == 0)
+                    {
+                        return p;
+                    }
+                }
+            }
+            else
+            {
+                if(static_cast<std::size_t>(index) < PERIPHERAL_COUNT && (used_mask & (1 << index)) == 0 && (FIXED_MASK & (1 << index)) != 0)
+                {
+                    return index;
                 }
             }
 
@@ -128,11 +138,11 @@ class PeripheralRefCounter : private NonCopyable<PeripheralRefCounter<Peripheral
 
 
 // Static initialization
-template <class Peripheral, std::size_t PERIPHERAL_COUNT>
-std::array<Peripheral*, PERIPHERAL_COUNT> PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT>::m_peripherals { nullptr };
+template <class Peripheral, std::size_t PERIPHERAL_COUNT, uint32_t FIXED_MASK>
+std::array<Peripheral*, PERIPHERAL_COUNT> PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT, FIXED_MASK>::m_peripherals { nullptr };
 
-template <class Peripheral, std::size_t PERIPHERAL_COUNT>
-uint32_t PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT>::m_used_mask { 0 };
+template <class Peripheral, std::size_t PERIPHERAL_COUNT, uint32_t FIXED_MASK>
+uint32_t PeripheralRefCounter<Peripheral, PERIPHERAL_COUNT, FIXED_MASK>::m_used_mask { 0 };
 
 
 

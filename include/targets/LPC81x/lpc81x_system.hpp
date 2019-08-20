@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_system.hpp
 // @brief   NXP LPC81x system level configuration class.
-// @date    14 July 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -46,7 +46,7 @@ namespace lpc81x
 
 
 
-class System
+class SystemDriver
 {
     public:
 
@@ -57,15 +57,15 @@ class System
         // Possible clock frequencies selection
         enum class Clock
         {
-            OSC_12MHZ,                  // Using direct 12 MHz internal RC oscillator
-            OSC_24MHZ,                  // Using 12 MHz internal RC oscillator and PLL
-            OSC_30MHZ,                  // Using 12 MHz internal RC oscillator and PLL
+            osc_12mhz,                  // Using direct 12 MHz internal RC oscillator
+            osc_24mhz,                  // Using 12 MHz internal RC oscillator and PLL
+            osc_30mhz,                  // Using 12 MHz internal RC oscillator and PLL
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
 			// The use of an external crystal is not possible in DIP8 packages
-            XTAL_12MHZ,                 // Using direct external crystal
-            XTAL_24MHZ,                 // Using external crystal and PPL
-            XTAL_30MHZ                  // Using external crystal and PPL
+            xtal_12mhz,                 // Using direct external crystal
+            xtal_24mhz,                 // Using external crystal and PPL
+            xtal_30mhz                  // Using external crystal and PPL
 #endif
         };
 
@@ -84,14 +84,14 @@ class System
         {
             switch(clock)
             {
-                case Clock::OSC_12MHZ:  return 12000000; break;
-                case Clock::OSC_24MHZ:  return 24000000; break;
-                case Clock::OSC_30MHZ:  return 30000000; break;
+                case Clock::osc_12mhz:  return 12000000; break;
+                case Clock::osc_24mhz:  return 24000000; break;
+                case Clock::osc_30mhz:  return 30000000; break;
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
-                case Clock::XTAL_12MHZ: return 12000000; break;
-                case Clock::XTAL_24MHZ: return 24000000; break;
-                case Clock::XTAL_30MHZ: return 30000000; break;
+                case Clock::xtal_12mhz: return 12000000; break;
+                case Clock::xtal_24mhz: return 24000000; break;
+                case Clock::xtal_30mhz: return 30000000; break;
 #endif
                 default:                return        0; break;
             }
@@ -101,14 +101,14 @@ class System
         {
             switch(clock)
             {
-                case Clock::OSC_12MHZ:  return 12000000; break;
-                case Clock::OSC_24MHZ:  return 24000000; break;
-                case Clock::OSC_30MHZ:  return 60000000; break;
+                case Clock::osc_12mhz:  return 12000000; break;
+                case Clock::osc_24mhz:  return 24000000; break;
+                case Clock::osc_30mhz:  return 60000000; break;
 
 #if (TARGET_PACKAGE_PIN_COUNT >= 16)
-                case Clock::XTAL_12MHZ: return 12000000; break;
-                case Clock::XTAL_24MHZ: return 24000000; break;
-                case Clock::XTAL_30MHZ: return 60000000; break;
+                case Clock::xtal_12mhz: return 12000000; break;
+                case Clock::xtal_24mhz: return 24000000; break;
+                case Clock::xtal_30mhz: return 60000000; break;
 #endif
                 default:                return        0; break;
             }

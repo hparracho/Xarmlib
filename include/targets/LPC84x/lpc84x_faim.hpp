@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    26 July 2018
+// @date    21 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 #define __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 
-#include "targets/LPC84x/lpc84x_iap.hpp"
+#include "targets/LPC84x/lpc84x_flash_iap.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
@@ -45,7 +45,7 @@ namespace lpc84x
 
 
 
-class Faim
+class FaimDriver
 {
     public:
 
@@ -56,12 +56,12 @@ class Faim
         // Boot type selection
         enum class Boot
         {
-            NORMAL = 0,
-            LOW_POWER
+            normal = 0,
+            low_power
         };
 
         // Pin configuration type
-        using PinConfig = std::pair<Pin::Name, Pin::FunctionMode>;
+        using PinConfig = std::pair<PinDriver::Name, PinDriver::FunctionMode>;
 
         // Pin configuration array type
         template <std::size_t Size>
@@ -74,12 +74,12 @@ class Faim
         // Make sure the supplied parameters are the ones saved into FAIM
         // NOTE: If the configuration is updated a system reset is
         //       performed immediately after the FAIM Memory is written.
-        template<std::size_t SIZE>
-        static bool ensures(const System::Swd           swd_config,
+        template<std::size_t Size>
+        static bool ensures(const SystemDriver::Swd     swd_config,
                             const Boot                  boot_config,
-                            const Pin::Name             isp_uart0_tx,
-                            const Pin::Name             isp_uart0_rx,
-                            const PinConfigArray<SIZE>& pin_config)
+                            const PinDriver::Name       isp_uart0_tx,
+                            const PinDriver::Name       isp_uart0_rx,
+                            const PinConfigArray<Size>& pin_config)
         {
             // Get intended configuration words
             const auto faim_words = get_config_words(swd_config, boot_config, isp_uart0_tx, isp_uart0_rx, pin_config);
@@ -91,7 +91,7 @@ class Faim
                 uint32_t faim_value {};
 
                 // Read current configuration
-                if(Iap::read_faim_word(word_idx, faim_value) == false)
+                if(FlashIapDriver::read_faim_word(word_idx, faim_value) == false)
                 {
                     return false;
                 }
@@ -99,7 +99,7 @@ class Faim
                 // Compare intended with current configuration and update if needed
                 if(faim_value != faim_words[word_idx])
                 {
-                    if(Iap::write_faim_word(word_idx, faim_words[word_idx]) == false)
+                    if(FlashIapDriver::write_faim_word(word_idx, faim_words[word_idx]) == false)
                     {
                         return false;
                     }
@@ -125,17 +125,17 @@ class Faim
         // --------------------------------------------------------------------
 
         // Make and return the 8 words of FAIM accordingly to the supplied parameters
-        template<std::size_t SIZE>
-        static constexpr auto get_config_words(const System::Swd           swd_config,
+        template<std::size_t Size>
+        static constexpr auto get_config_words(const SystemDriver::Swd     swd_config,
                                                const Boot                  boot_config,
-                                               const Pin::Name             isp_uart0_tx,
-                                               const Pin::Name             isp_uart0_rx,
-                                               const PinConfigArray<SIZE>& pin_config)
+                                               const PinDriver::Name       isp_uart0_tx,
+                                               const PinDriver::Name       isp_uart0_rx,
+                                               const PinConfigArray<Size>& pin_config)
         {
             std::array<uint32_t, 8> faim_data   // FAIM 8 words
             {
-                /* WORD0 */ (static_cast<uint32_t>(swd_config)  << WORD0_SWD_BIT)  |
-                            (static_cast<uint32_t>(boot_config) << WORD0_BOOT_BIT) | WORD0_CONTENT_VALID | WORD0_ISP_UART0,
+                /* WORD0 */ (static_cast<uint32_t>(swd_config)  << word0_swd_bit)  |
+                            (static_cast<uint32_t>(boot_config) << word0_boot_bit) | word0_content_valid | word0_isp_uart0,
                 /* WORD1 */ get_isp_uart0_word1(isp_uart0_tx, isp_uart0_rx),
                 /* WORD2 */ 0x00000000,     // RESERVED
                 /* WORD3 */ 0x00000000,     // RESERVED
@@ -147,9 +147,9 @@ class Faim
 
             for(std::size_t i = 0; i < pin_config.size(); ++i)
             {
-                const Pin::Name pin_name = std::get<0>(pin_config[i]);
+                const PinDriver::Name pin_name = std::get<0>(pin_config[i]);
 
-                if(pin_name != Pin::Name::NC)
+                if(pin_name != PinDriver::Name::nc)
                 {
                     const int32_t pin_word = ((63 - static_cast<int32_t>(pin_name)) / 16) + 4;
                     const int32_t pin_bit  = ((63 - static_cast<int32_t>(pin_name)) % 16) * 2;
@@ -158,7 +158,7 @@ class Faim
                     faim_data[pin_word] &= ~(0x03 << pin_bit);
 
                     // Set new value
-                    const Pin::FunctionMode pin_mode = std::get<1>(pin_config[i]);
+                    const PinDriver::FunctionMode pin_mode = std::get<1>(pin_config[i]);
                     faim_data[pin_word] |= static_cast<int32_t>(pin_mode) << pin_bit;
                 }
             }
@@ -167,18 +167,18 @@ class Faim
         }
 
         // Make and return the word1 of FAIM accordingly to the supplied parameters
-        static constexpr uint32_t get_isp_uart0_word1(const Pin::Name isp_uart0_tx,
-                                                      const Pin::Name isp_uart0_rx)
+        static constexpr uint32_t get_isp_uart0_word1(const PinDriver::Name isp_uart0_tx,
+                                                      const PinDriver::Name isp_uart0_rx)
         {
-            uint32_t pin_tx = static_cast<uint32_t>(Pin::Name::P0_25); // Default ISP USART0 TX pin: PIO0_25
-            uint32_t pin_rx = static_cast<uint32_t>(Pin::Name::P0_24); // Default ISP USART0 RX pin: PIO0_24
+            uint32_t pin_tx = static_cast<uint32_t>(PinDriver::Name::p0_25); // Default ISP USART0 TX pin: PIO0_25
+            uint32_t pin_rx = static_cast<uint32_t>(PinDriver::Name::p0_24); // Default ISP USART0 RX pin: PIO0_24
 
-            if(isp_uart0_tx != Pin::Name::NC)
+            if(isp_uart0_tx != PinDriver::Name::nc)
             {
                 pin_tx = static_cast<uint32_t>(isp_uart0_tx);
             }
 
-            if(isp_uart0_rx != Pin::Name::NC)
+            if(isp_uart0_rx != PinDriver::Name::nc)
             {
                 pin_rx = static_cast<uint32_t>(isp_uart0_rx);
             }
@@ -190,23 +190,23 @@ class Faim
             if(pin_tx < 32)
             {
                 // PORT0
-                word1 = (pin_tx << WORD1_ISP_UART0_TX_PIN_BIT) | (0 << WORD1_ISP_UART0_TX_PORT_BIT);
+                word1 = (pin_tx << word1_isp_uart0_tx_pin_bit) | (0 << word1_isp_uart0_tx_port_bit);
             }
             else
             {
                 // PORT1
-                word1 = ((pin_tx - 32) << WORD1_ISP_UART0_TX_PIN_BIT) | (1 << WORD1_ISP_UART0_TX_PORT_BIT);
+                word1 = ((pin_tx - 32) << word1_isp_uart0_tx_pin_bit) | (1 << word1_isp_uart0_tx_port_bit);
             }
 
             if(pin_rx < 32)
             {
                 // PORT0
-                word1 |= (pin_rx << WORD1_ISP_UART0_RX_PIN_BIT) | (0 << WORD1_ISP_UART0_RX_PORT_BIT);
+                word1 |= (pin_rx << word1_isp_uart0_rx_pin_bit) | (0 << word1_isp_uart0_rx_port_bit);
             }
             else
             {
                 // PORT1
-                word1 |= ((pin_rx - 32) << WORD1_ISP_UART0_RX_PIN_BIT) | (1 << WORD1_ISP_UART0_RX_PORT_BIT);
+                word1 |= ((pin_rx - 32) << word1_isp_uart0_rx_pin_bit) | (1 << word1_isp_uart0_rx_port_bit);
             }
 
             return word1;
@@ -219,29 +219,29 @@ class Faim
         // FAIM word0 bits
         enum WORD0 : uint32_t
         {
-            WORD0_SWD_BIT               = (0),          // 0 => SWD disabled
+            word0_swd_bit               = (0),          // 0 => SWD disabled
                                                         // 1 => SWD enabled
 
-            WORD0_BOOT_BIT              = (1),          // 0 => FRO/2 (12 MHz by default)
+            word0_boot_bit              = (1),          // 0 => FRO/2 (12 MHz by default)
                                                         // 1 => FRO/16 (1.5 MHz by default)
 
-            WORD0_CONTENT_VALID         = (5UL << 27),  // Bits 27 and 29 (28 is reserved; always zero)
+            word0_content_valid         = (5UL << 27),  // Bits 27 and 29 (28 is reserved; always zero)
                                                         // 101       => content valid
                                                         // Any other => content invalid
 
-            WORD0_ISP_UART0             = (0UL << 30),  // ISP interface: UART
-            WORD0_ISP_I2C0              = (1UL << 30),  // ISP interface: I2C (not implemented)
-            WORD0_ISP_SPI0              = (2UL << 30)   // ISP interface: SPI (not implemented)
+            word0_isp_uart0             = (0UL << 30),  // ISP interface: UART
+            word0_isp_i2c0              = (1UL << 30),  // ISP interface: I2C (not implemented)
+            word0_isp_spi0              = (2UL << 30)   // ISP interface: SPI (not implemented)
         };
 
         // FAIM word1 bits
         enum WORD1 : uint32_t
         {
-            WORD1_ISP_UART0_RX_PIN_BIT  = 0,            // ISP UART0 Rx pin location within word
-            WORD1_ISP_UART0_RX_PORT_BIT = 5,            // ISP UART0 Rx port location within word
+            word1_isp_uart0_rx_pin_bit  = 0,            // ISP UART0 Rx pin location within word
+            word1_isp_uart0_rx_port_bit = 5,            // ISP UART0 Rx port location within word
 
-            WORD1_ISP_UART0_TX_PIN_BIT  = 8,            // ISP UART0 Tx pin location within word
-            WORD1_ISP_UART0_TX_PORT_BIT = 13            // ISP UART0 Tx port location within word
+            word1_isp_uart0_tx_pin_bit  = 8,            // ISP UART0 Tx pin location within word
+            word1_isp_uart0_tx_port_bit = 13            // ISP UART0 Tx port location within word
         };
 };
 

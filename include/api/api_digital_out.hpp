@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    3 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalOut : private Gpio
+class DigitalOut : private hal::Gpio
 {
     public:
 
@@ -48,40 +48,40 @@ class DigitalOut : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputMode output_mode) : Gpio(pin_name, output_mode)
+        DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeConfig& config) : hal::Gpio(pin_name, config)
         {}
 
-        DigitalOut(const Pin::Name pin_name, const Gpio::OutputModeTrueOpenDrain output_mode) : Gpio(pin_name, output_mode)
+        DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
         {}
 
         // -------- READ ------------------------------------------------------
 
-        using Gpio::read;
+        using hal::Gpio::read;
 
         operator uint32_t () const
         {
-            return Gpio::read();
+            return hal::Gpio::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !Gpio::read();
+            return !hal::Gpio::read();
         }
 
         // -------- WRITE -----------------------------------------------------
 
-        using Gpio::write;
+        using hal::Gpio::write;
 
         DigitalOut& operator = (const uint32_t value)
         {
-            Gpio::write(value);
+            hal::Gpio::write(value);
             return (*this);
         }
 
         DigitalOut& operator = (const DigitalOut &rhs)
         {
-            Gpio::write(rhs.read());
+            hal::Gpio::write(rhs.read());
             return (*this);
         }
 };

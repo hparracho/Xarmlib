@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_spi.hpp
 // @brief   NXP LPC81x SPI class.
-// @date    29 August 2018
+// @date    23 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,8 +40,6 @@
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
 
-#include <array>
-
 
 
 
@@ -72,43 +70,40 @@ namespace private_spi
 // SPI Status Register (STAT) bits
 enum class Status
 {
-    RX_READY          = (1 << 0), // Receiver Ready flag
-    TX_READY          = (1 << 1), // Transmitter Ready flag
-    RX_OVERRUN        = (1 << 2), // Receiver Overrun interrupt flag (applies only to slave mode)
-    TX_UNDERRUN       = (1 << 3), // Transmitter Underrun interrupt flag (applies only to slave mode)
-    SSEL_ASSERT       = (1 << 4), // Slave Select Assert flag
-    SSEL_DEASSERT     = (1 << 5), // Slave Select Deassert flag
-    STALLED           = (1 << 6), // Stalled status flag
-    END_TRANSFER      = (1 << 7), // End Transfer control bit
-    MASTER_IDLE       = (1 << 8), // Master idle status flag
-    CLEAR_ALL_BITMASK = 0x0BC,    // Clear all bitmask (0'1011'1100)
-    BITMASK           = 0x1FF     // Full bitmask (1'1111'1111)
+    rx_ready          = (1 << 0), // Receiver Ready flag
+    tx_ready          = (1 << 1), // Transmitter Ready flag
+    rx_overrun        = (1 << 2), // Receiver Overrun interrupt flag (applies only to slave mode)
+    tx_underrun       = (1 << 3), // Transmitter Underrun interrupt flag (applies only to slave mode)
+    ssel_assert       = (1 << 4), // Slave Select Assert flag
+    ssel_deassert     = (1 << 5), // Slave Select Deassert flag
+    stalled           = (1 << 6), // Stalled status flag
+    end_transfer      = (1 << 7), // End Transfer control bit
+    master_idle       = (1 << 8), // Master idle status flag
+    clear_all_bitmask = 0x0BC,    // Clear all bitmask (0'1011'1100)
+    bitmask           = 0x1FF     // Full bitmask (1'1111'1111)
 };
 
 // SPI Interrupt Register (INTENSET and INTENCLR) bits
 enum class Interrupt
 {
-    RX_READY      = (1 << 0), // Receiver data is available
-    TX_READY      = (1 << 1), // Transmitter holding register is available
-    RX_OVERRUN    = (1 << 2), // Receiver overrun occurs (applies only to slave mode)
-    TX_UNDERRUN   = (1 << 3), // Transmitter underrun occurs (applies only to slave mode)
-    SSEL_ASSERT   = (1 << 4), // Slave Select is asserted
-    SSEL_DEASSERT = (1 << 5), // Slave Select is deasserted
-    BITMASK       = 0x3F      // Full bitmask (11'1111)
+    rx_ready      = (1 << 0), // Receiver data is available
+    tx_ready      = (1 << 1), // Transmitter holding register is available
+    rx_overrun    = (1 << 2), // Receiver overrun occurs (applies only to slave mode)
+    tx_underrun   = (1 << 3), // Transmitter underrun occurs (applies only to slave mode)
+    ssel_assert   = (1 << 4), // Slave Select is asserted
+    ssel_deassert = (1 << 5), // Slave Select is deasserted
+    bitmask       = 0x3F      // Full bitmask (11'1111)
 };
 
-BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::BITMASK))
-BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::BITMASK))
+BITMASK_DEFINE_VALUE_MASK(Status,    static_cast<uint32_t>(Status::bitmask))
+BITMASK_DEFINE_VALUE_MASK(Interrupt, static_cast<uint32_t>(Interrupt::bitmask))
 
 } // namespace private_spi
 
 
 
 
-// Number of available SPI peripherals
-static constexpr std::size_t SPI_COUNT { TARGET_SPI_COUNT };
-
-class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
+class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
 {
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
@@ -127,74 +122,83 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         // --------------------------------------------------------------------
 
         // Base class alias
-        using PeripheralSpi = PeripheralRefCounter<Spi, SPI_COUNT>;
-
-        // SPI peripheral names selection
-        enum class Name
-        {
-            SPI0 = 0,
-#if (TARGET_SPI_COUNT == 2)
-            SPI1
-#endif
-        };
+        using PeripheralSpi = PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>;
 
         // Master modes selection (defined to map the CFG register directly)
         enum class MasterMode
         {
-            SLAVE  = (0 << 2),
-            MASTER = (1 << 2)
+            slave  = (0 << 2),
+            master = (1 << 2)
         };
 
         // Numbered operating mode selection (defined to map the CFG register directly)
         enum class SpiMode
         {
             //        CPOL   |   CPHA
-            MODE0 = (0 << 5) | (0 << 4),    // CPOL = 0 | CPHA = 0
-            MODE1 = (0 << 5) | (1 << 4),    // CPOL = 0 | CPHA = 1
-            MODE2 = (1 << 5) | (0 << 4),    // CPOL = 1 | CPHA = 0
-            MODE3 = (1 << 5) | (1 << 4)     // CPOL = 1 | CPHA = 1
+            mode0 = (0 << 5) | (0 << 4),    // CPOL = 0 | CPHA = 0
+            mode1 = (0 << 5) | (1 << 4),    // CPOL = 0 | CPHA = 1
+            mode2 = (1 << 5) | (0 << 4),    // CPOL = 1 | CPHA = 0
+            mode3 = (1 << 5) | (1 << 4)     // CPOL = 1 | CPHA = 1
         };
 
         // Data length selection (defined to map the TXCTL register directly)
         enum class DataBits
         {
-            BIT_1   = (0x00 << 24),
-            BITS_2  = (0x01 << 24),
-            BITS_3  = (0x02 << 24),
-            BITS_4  = (0x03 << 24),
-            BITS_5  = (0x04 << 24),
-            BITS_6  = (0x05 << 24),
-            BITS_7  = (0x06 << 24),
-            BITS_8  = (0x07 << 24),
-            BITS_9  = (0x08 << 24),
-            BITS_10 = (0x09 << 24),
-            BITS_11 = (0x0A << 24),
-            BITS_12 = (0x0B << 24),
-            BITS_13 = (0x0C << 24),
-            BITS_14 = (0x0D << 24),
-            BITS_15 = (0x0E << 24),
-            BITS_16 = (0x0F << 24)
+            bit_1   = (0x00 << 24),
+            bits_2  = (0x01 << 24),
+            bits_3  = (0x02 << 24),
+            bits_4  = (0x03 << 24),
+            bits_5  = (0x04 << 24),
+            bits_6  = (0x05 << 24),
+            bits_7  = (0x06 << 24),
+            bits_8  = (0x07 << 24),
+            bits_9  = (0x08 << 24),
+            bits_10 = (0x09 << 24),
+            bits_11 = (0x0a << 24),
+            bits_12 = (0x0b << 24),
+            bits_13 = (0x0c << 24),
+            bits_14 = (0x0d << 24),
+            bits_15 = (0x0e << 24),
+            bits_16 = (0x0f << 24)
         };
 
         // Data order selection (defined to map the CFG register directly)
         enum class DataOrder
         {
-            MSB_FIRST = (0 << 3),
-            LSB_FIRST = (1 << 3)
+            msb_first = (0 << 3),
+            lsb_first = (1 << 3)
         };
 
         // Slave select polarity selection (defined to map the CFG register directly)
         enum class SselPolarity
         {
-            LOW  = (0 << 8),
-            HIGH = (1 << 8)
+            low  = (0 << 8),
+            high = (1 << 8)
         };
 
         // Loopback mode selection (defined to map the CFG register directly)
         enum class LoopbackMode
         {
-            DISABLED = (0 << 7),
-            ENABLED  = (1 << 7)
+            disabled = (0 << 7),
+            enabled  = (1 << 7)
+        };
+
+        struct MasterConfig
+        {
+            int32_t      max_frequency = 500000;
+            SpiMode      spi_mode      = SpiMode::mode3;
+            DataBits     data_bits     = DataBits::bits_8;
+            DataOrder    data_order    = DataOrder::msb_first;
+            LoopbackMode loopback_mode = LoopbackMode::disabled;
+        };
+
+        struct SlaveConfig
+        {
+            SpiMode      spi_mode      = SpiMode::mode3;
+            DataBits     data_bits     = DataBits::bits_8;
+            DataOrder    data_order    = DataOrder::msb_first;
+            SselPolarity ssel_polarity = SselPolarity::low;
+            LoopbackMode loopback_mode = LoopbackMode::disabled;
         };
 
         // Type safe accessor to STAT register
@@ -215,10 +219,43 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
 
         // -------- CONSTRUCTOR / DESTRUCTOR ----------------------------------
 
-        Spi() : PeripheralSpi(*this)
-        {}
+        // Master mode constructor
+        SpiDriver(const PinDriver::Name master_mosi,
+                  const PinDriver::Name master_miso,
+                  const PinDriver::Name master_sck,
+                  const MasterConfig&   master_config) : PeripheralSpi(*this)
+       {
+            // Initialize peripheral structure and pins
+            initialize(master_mosi, master_miso, master_sck, PinDriver::Name::nc);
 
-        ~Spi()
+            // Configure data format and operating modes
+            set_configuration(MasterMode::master, master_config.spi_mode, master_config.data_bits, master_config.data_order, SselPolarity::low, master_config.loopback_mode);
+
+            // Set supplied maximum frequency
+            set_frequency(master_config.max_frequency);
+        }
+
+        // Slave mode constructor
+        SpiDriver(const PinDriver::Name slave_mosi,
+                  const PinDriver::Name slave_miso,
+                  const PinDriver::Name slave_sck,
+                  const PinDriver::Name slave_sel,
+                  const SlaveConfig&    slave_config) : PeripheralSpi(*this)
+        {
+            assert(slave_sel != PinDriver::Name::nc);
+
+            // Initialize peripheral structure and pins
+            initialize(slave_mosi, slave_miso, slave_sck, slave_sel);
+
+            // Configure data format and operating modes
+            set_configuration(MasterMode::slave, slave_config.spi_mode, slave_config.data_bits, slave_config.data_order, slave_config.ssel_polarity, slave_config.loopback_mode);
+
+            /* In slave mode, the clock is taken from the SCK input and the SPI clock divider is not used!
+            // Set supplied maximum frequency
+            set_frequency(slave_config.max_frequency);*/
+        }
+
+        ~SpiDriver()
         {
             // Disable peripheral
             disable();
@@ -228,60 +265,285 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             // Disable peripheral clock sources and interrupts
             switch(name)
             {
-                case Name::SPI0: Clock::disable(Clock::Peripheral::SPI0); NVIC_DisableIRQ(SPI0_IRQn); break;
+                case Name::spi0: ClockDriver::disable(ClockDriver::Peripheral::spi0); NVIC_DisableIRQ(SPI0_IRQn); break;
 #if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1: Clock::disable(Clock::Peripheral::SPI1); NVIC_DisableIRQ(SPI1_IRQn); break;
+                case Name::spi1: ClockDriver::disable(ClockDriver::Peripheral::spi1); NVIC_DisableIRQ(SPI1_IRQn); break;
 #endif
-                default:                                                                              break;
+                default:                                                                                          break;
             }
         }
 
-        // -------- INITIALIZATION / CONFIGURATION ----------------------------
+        // -------- FREQUENCY -------------------------------------------------
 
-        // Initialize SPI peripheral structure and pins (constructor helper function)
-        void initialize(const Pin::Name mosi,
-                        const Pin::Name miso,
-                        const Pin::Name sck,
-                        const Pin::Name slave_sel)
+        // NOTE: only in master mode!
+
+        int32_t get_frequency() const
+        {
+            assert(is_master() == true);
+
+            return m_frequency;
+        }
+
+        // Set SPI maximum frequency
+        // NOTES: - the module must be in the stopped state
+        //        - if the maximum frequency cannot be obtained it will set
+        //          the closest frequency that is below the target frequency
+        void set_frequency(const int32_t max_frequency)
+        {
+            assert(is_enabled() == false);
+            assert(is_master()  == true);
+
+            const int32_t clock_freq = ClockDriver::get_system_clock_frequency();
+
+            assert(max_frequency >= (clock_freq / 65536) &&  max_frequency <= clock_freq);
+
+            // Integer ceiling of clock_freq / max_frequency
+            const int32_t divval = (clock_freq / max_frequency) + ((clock_freq % max_frequency) != 0);
+
+            // Configure the SPI clock divider
+            // NOTE: DIVVAL is -1 encoded such that the value 0 results in PCLK/1, the
+            //       value 1 results in PCLK/2, up to the maximum possible divide value
+            //       of 0xFFFF, which results in PCLK/65536.
+            m_spi->DIV = (divval - 1) & 0xFFFF;
+
+            m_frequency = max_frequency;
+        }
+
+        // -------- READ / WRITE ----------------------------------------------
+
+        // Read data that has been received
+        uint32_t read_data() const
+        {
+            return m_spi->RXDAT & 0x0000FFFF;
+        }
+
+        // Write data to be transmitted in master mode
+        void master_write_data(const uint32_t value)
+        {
+            write_data(value);
+        }
+
+        // Write data to be transmitted in slave mode
+        void slave_write_data(const uint32_t value)
+        {
+            write_data(value);
+        }
+
+        // -------- ENABLE / DISABLE ------------------------------------------
+
+        // Enable peripheral
+        void enable() { m_spi->CFG |= cfg_enable; }
+
+        // Disable peripheral
+        void disable() { m_spi->CFG &= ~cfg_enable; }
+
+        // Gets the enable state
+        bool is_enabled() const { return (m_spi->CFG & cfg_enable) != 0; }
+
+        // -------- STATUS FLAGS ----------------------------------------------
+
+        bool is_writable() const { return (get_status() & Status::tx_ready) != 0; }
+        bool is_readable() const { return (get_status() & Status::rx_ready) != 0; }
+
+        StatusBitmask get_status() const
+        {
+            return static_cast<Status>(m_spi->STAT);
+        }
+
+        void clear_status(const StatusBitmask bitmask)
+        {
+            m_spi->STAT = (bitmask & Status::clear_all_bitmask).bits();
+        }
+
+        // -------- INTERRUPTS ------------------------------------------------
+
+        void enable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_spi->INTENSET = bitmask.bits();
+        }
+
+        void disable_interrupts(const InterruptBitmask bitmask)
+        {
+            m_spi->INTENCLR = bitmask.bits();
+        }
+
+        InterruptBitmask get_interrupts_enabled() const
+        {
+            return static_cast<Interrupt>(m_spi->INTSTAT);
+        }
+
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
+
+        void enable_irq()
         {
             const Name name = static_cast<Name>(get_index());
 
             switch(name)
             {
-                case Name::SPI0:
+                case Name::spi0: NVIC_EnableIRQ(SPI0_IRQn); break;
+#if (TARGET_SPI_COUNT == 2)
+                case Name::spi1: NVIC_EnableIRQ(SPI1_IRQn); break;
+#endif
+                default:                                    break;
+            }
+        }
+
+        void disable_irq()
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::spi0: NVIC_DisableIRQ(SPI0_IRQn); break;
+#if (TARGET_SPI_COUNT == 2)
+                case Name::spi1: NVIC_DisableIRQ(SPI1_IRQn); break;
+#endif
+                default:                                     break;
+            }
+        }
+
+        bool is_irq_enabled()
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::spi0: return (__NVIC_GetEnableIRQ(SPI0_IRQn) != 0); break;
+#if (TARGET_SPI_COUNT == 2)
+                case Name::spi1: return (__NVIC_GetEnableIRQ(SPI1_IRQn) != 0); break;
+#endif
+                default:         return false;                                 break;
+            }
+        }
+
+        void set_irq_priority(const int32_t irq_priority)
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::spi0: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
+#if (TARGET_SPI_COUNT == 2)
+                case Name::spi1: NVIC_SetPriority(SPI1_IRQn, irq_priority); break;
+#endif
+                default:                                                    break;
+            }
+        }
+
+        void assign_irq_handler(const IrqHandler& irq_handler)
+        {
+            assert(irq_handler != nullptr);
+
+            m_irq_handler = irq_handler;
+        }
+
+        void remove_irq_handler()
+        {
+            m_irq_handler = nullptr;
+        }
+
+    private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE DEFINITIONS
+        // --------------------------------------------------------------------
+
+        // SPI peripheral names selection
+        enum class Name
+        {
+            spi0 = 0,
+#if (TARGET_SPI_COUNT == 2)
+            spi1
+#endif
+        };
+
+        // SPI Configuration Register (CFG) bits
+        enum CFG : uint32_t
+        {
+            cfg_enable = (1 << 0),
+            cfg_master = (1 << 2),
+            cfg_lsbf   = (1 << 3),
+            cfg_cpha   = (1 << 4),
+            cfg_cpol   = (1 << 5),
+            cfg_loop   = (1 << 7),
+            cfg_spol   = (1 << 8)
+        };
+
+        // SPI Status Register (STAT) bits
+        enum STAT : uint32_t
+        {
+            stat_rxrdy       = (1 << 0),    // Receiver Ready flag
+            stat_txrdy       = (1 << 1),    // Transmitter Ready flag
+            stat_rxov        = (1 << 2),    // Receiver Overrun interrupt flag (applies only to slave mode)
+            stat_txur        = (1 << 3),    // Transmitter Underrun interrupt flag (applies only to slave mode)
+            stat_ssa         = (1 << 4),    // Slave Select Assert flag
+            stat_ssd         = (1 << 5),    // Slave Select Deassert flag
+            stat_stalled     = (1 << 6),    // Stalled status flag
+            stat_endtransfer = (1 << 7),    // End Transfer control bit
+            stat_mstidle     = (1 << 8)     // Master idle status flag
+        };
+
+        // SPI Interrupt Enable get, set and clear bits (defined to map INTENSET and INTENCLR registers directly)
+        enum INTEN : uint32_t
+        {
+            inten_rxrdy = (1 << 0),         // Receiver data is available
+            inten_txrdy = (1 << 1),         // Transmitter holding register is available
+            inten_rxov  = (1 << 2),         // Receiver overrun occurs (applies only to slave mode)
+            inten_txur  = (1 << 3),         // Transmitter underrun occurs (applies only to slave mode)
+            inten_ssa   = (1 << 4),         // Slave Select is asserted
+            inten_ssd   = (1 << 5)          // Slave Select is deasserted
+        };
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // -------- INITIALIZATION / CONFIGURATION ----------------------------
+
+        // Initialize SPI peripheral structure and pins (constructor helper function)
+        void initialize(const PinDriver::Name mosi,
+                        const PinDriver::Name miso,
+                        const PinDriver::Name sck,
+                        const PinDriver::Name slave_sel)
+        {
+            const Name name = static_cast<Name>(get_index());
+
+            switch(name)
+            {
+                case Name::spi0:
                 {
                     // Set pointer to the available SPI structure
                     m_spi = LPC_SPI0;
 
-                    Clock::enable(Clock::Peripheral::SPI0);
-                    Power::reset(Power::ResetPeripheral::SPI0);
+                    ClockDriver::enable(ClockDriver::Peripheral::spi0);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi0);
 
-                    Swm::assign(Swm::PinMovable::SPI0_MOSI_IO, mosi);
-                    Swm::assign(Swm::PinMovable::SPI0_MISO_IO, miso);
-                    Swm::assign(Swm::PinMovable::SPI0_SCK_IO, sck);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_mosi_io, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_miso_io, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi0_sck_io, sck);
 
-                    if(slave_sel != Pin::Name::NC)
+                    if(slave_sel != PinDriver::Name::nc)
                     {
-                        Swm::assign(Swm::PinMovable::SPI0_SSEL_IO, slave_sel);
+                        SwmDriver::assign(SwmDriver::PinMovable::spi0_ssel_io, slave_sel);
                     }
                 }   break;
 
 #if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1:
+                case Name::spi1:
                 {
                     // Set pointer to the available SPI structure
                     m_spi = LPC_SPI1;
 
-                    Clock::enable(Clock::Peripheral::SPI1);
-                    Power::reset(Power::ResetPeripheral::SPI1);
+                    ClockDriver::enable(ClockDriver::Peripheral::spi1);
+                    PowerDriver::reset(PowerDriver::ResetPeripheral::spi1);
 
-                    Swm::assign(Swm::PinMovable::SPI1_MOSI_IO, mosi);
-                    Swm::assign(Swm::PinMovable::SPI1_MISO_IO, miso);
-                    Swm::assign(Swm::PinMovable::SPI1_SCK_IO, sck);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_mosi_io, mosi);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_miso_io, miso);
+                    SwmDriver::assign(SwmDriver::PinMovable::spi1_sck_io, sck);
 
-                    if(slave_sel != Pin::Name::NC)
+                    if(slave_sel != PinDriver::Name::nc)
                     {
-                        Swm::assign(Swm::PinMovable::SPI1_SSEL_IO, slave_sel);
+                        SwmDriver::assign(SwmDriver::PinMovable::spi1_ssel_io, slave_sel);
                     }
                 }   break;
 #endif
@@ -316,198 +578,18 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
             m_spi->INTENCLR = 0x3F;
         }
 
-        // Set SPI maximum frequency (constructor helper function)
-        // NOTE: If the maximum frequency cannot be obtained it will set
-        //       the closest frequency that is below the target frequency.
-        void set_frequency(const int32_t max_frequency)
+        bool is_master() const
         {
-            const int32_t clock_freq = Clock::get_system_clock_frequency();
-
-            assert(max_frequency >= (clock_freq / 65536) &&  max_frequency <= clock_freq);
-
-            // Integer ceiling of clock_freq / max_frequency
-            const int32_t divval = (clock_freq / max_frequency) + ((clock_freq % max_frequency) != 0);
-
-            // Configure the SPI clock divider
-            // NOTE: DIVVAL is -1 encoded such that the value 0 results in PCLK/1, the
-            //       value 1 results in PCLK/2, up to the maximum possible divide value
-            //       of 0xFFFF, which results in PCLK/65536.
-            m_spi->DIV = (divval - 1) & 0xFFFF;
+            return (m_spi->CFG & cfg_master) != 0;
         }
 
-        // -------- READ / WRITE ----------------------------------------------
-
-        // Read data that has been received
-        uint32_t read_data() const
-        {
-            return m_spi->RXDAT & 0x0000FFFF;
-        }
+        // -------- WRITE -----------------------------------------------------
 
         // Write data to be transmitted
         void write_data(const uint32_t value)
         {
             m_spi->TXDAT = value & 0x0000FFFF;
         }
-
-        // -------- ENABLE / DISABLE ------------------------------------------
-
-        // Enable peripheral
-        void enable() { m_spi->CFG |= CFG_ENABLE; }
-
-        // Disable peripheral
-        void disable() { m_spi->CFG &= ~CFG_ENABLE; }
-
-        // Gets the enable state
-        bool is_enabled() const { return (m_spi->CFG & CFG_ENABLE) != 0; }
-
-        // -------- STATUS FLAGS ----------------------------------------------
-
-        bool is_writable() const { return (get_status() & Status::TX_READY) != 0; }
-        bool is_readable() const { return (get_status() & Status::RX_READY) != 0; }
-
-        StatusBitmask get_status() const
-        {
-            return static_cast<Status>(m_spi->STAT);
-        }
-
-        void clear_status(const StatusBitmask bitmask)
-        {
-            m_spi->STAT = (bitmask & Status::CLEAR_ALL_BITMASK).bits();
-        }
-
-        // -------- INTERRUPTS ------------------------------------------------
-
-        void enable_interrupts(const InterruptBitmask bitmask)
-        {
-            m_spi->INTENSET = bitmask.bits();
-        }
-
-        void disable_interrupts(const InterruptBitmask bitmask)
-        {
-            m_spi->INTENCLR = bitmask.bits();
-        }
-
-        InterruptBitmask get_interrupts_enabled() const
-        {
-            return static_cast<Interrupt>(m_spi->INTSTAT);
-        }
-
-        // -------- IRQ / IRQ HANDLER -----------------------------------------
-
-        void enable_irq()
-        {
-            const Name name = static_cast<Name>(get_index());
-
-            switch(name)
-            {
-                case Name::SPI0: NVIC_EnableIRQ(SPI0_IRQn); break;
-#if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1: NVIC_EnableIRQ(SPI1_IRQn); break;
-#endif
-                default:                                    break;
-            }
-        }
-
-        void disable_irq()
-        {
-            const Name name = static_cast<Name>(get_index());
-
-            switch(name)
-            {
-                case Name::SPI0: NVIC_DisableIRQ(SPI0_IRQn); break;
-#if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1: NVIC_DisableIRQ(SPI1_IRQn); break;
-#endif
-                default:                                     break;
-            }
-        }
-
-        bool is_irq_enabled()
-        {
-            const Name name = static_cast<Name>(get_index());
-
-            switch(name)
-            {
-                case Name::SPI0: return (__NVIC_GetEnableIRQ(SPI0_IRQn) != 0); break;
-#if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1: return (__NVIC_GetEnableIRQ(SPI1_IRQn) != 0); break;
-#endif
-                default:         return false;                                 break;
-            }
-        }
-
-        void set_irq_priority(const int32_t irq_priority)
-        {
-            const Name name = static_cast<Name>(get_index());
-
-            switch(name)
-            {
-                case Name::SPI0: NVIC_SetPriority(SPI0_IRQn, irq_priority); break;
-#if (TARGET_SPI_COUNT == 2)
-                case Name::SPI1: NVIC_SetPriority(SPI1_IRQn, irq_priority); break;
-#endif
-                default:                                                    break;
-            }
-        }
-
-        void assign_irq_handler(const IrqHandler& irq_handler)
-        {
-            assert(irq_handler != nullptr);
-
-            m_irq_handler = irq_handler;
-        }
-
-        void remove_irq_handler()
-        {
-            m_irq_handler = nullptr;
-        }
-
-    private:
-
-        // --------------------------------------------------------------------
-        // PRIVATE DEFINITIONS
-        // --------------------------------------------------------------------
-
-        // SPI Configuration Register (CFG) bits
-        enum CFG : uint32_t
-        {
-            CFG_ENABLE = (1 << 0),
-            CFG_MASTER = (1 << 2),
-            CFG_LSBF   = (1 << 3),
-            CFG_CPHA   = (1 << 4),
-            CFG_CPOL   = (1 << 5),
-            CFG_LOOP   = (1 << 7),
-            CFG_SPOL   = (1 << 8)
-        };
-
-        // SPI Status Register (STAT) bits
-        enum STAT : uint32_t
-        {
-            STAT_RXRDY       = (1 << 0),    // Receiver Ready flag
-            STAT_TXRDY       = (1 << 1),    // Transmitter Ready flag
-            STAT_RXOV        = (1 << 2),    // Receiver Overrun interrupt flag (applies only to slave mode)
-            STAT_TXUR        = (1 << 3),    // Transmitter Underrun interrupt flag (applies only to slave mode)
-            STAT_SSA         = (1 << 4),    // Slave Select Assert flag
-            STAT_SSD         = (1 << 5),    // Slave Select Deassert flag
-            STAT_STALLED     = (1 << 6),    // Stalled status flag
-            STAT_ENDTRANSFER = (1 << 7),    // End Transfer control bit
-            STAT_MSTIDLE     = (1 << 8)     // Master idle status flag
-        };
-
-        // SPI Interrupt Enable get, set and clear bits (defined to map INTENSET and INTENCLR registers directly)
-        enum INTEN : uint32_t
-        {
-            INTEN_RXRDY = (1 << 0),         // Receiver data is available
-            INTEN_TXRDY = (1 << 1),         // Transmitter holding register is available
-            INTEN_RXOV  = (1 << 2),         // Receiver overrun occurs (applies only to slave mode)
-            INTEN_TXUR  = (1 << 3),         // Transmitter underrun occurs (applies only to slave mode)
-            INTEN_SSA   = (1 << 4),         // Slave Select is asserted
-            INTEN_SSD   = (1 << 5)          // Slave Select is deasserted
-        };
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER FUNCTIONS
-        // --------------------------------------------------------------------
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 
@@ -528,13 +610,14 @@ class Spi : private PeripheralRefCounter<Spi, SPI_COUNT>
         {
             const auto index = static_cast<std::size_t>(name);
 
-            return Spi::get_reference(index).irq_handler();
+            return SpiDriver::get_reference(index).irq_handler();
         }
 
         // --------------------------------------------------------------------
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
+        int32_t    m_frequency { 0 };   // User defined frequency
         LPC_SPI_T* m_spi { nullptr };   // Pointer to the CMSIS SPI structure
         IrqHandler m_irq_handler;       // User defined IRQ handler
 };

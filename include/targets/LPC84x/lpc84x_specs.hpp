@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_specs.hpp
 // @brief   NXP LPC84x specification definitions.
-// @date    16 July 2018
+// @date    16 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -42,6 +42,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (64)
 #   define TARGET_GPIO_COUNT                (54)
+#   define TARGET_I2C_COUNT                 (4)
 #   define TARGET_PORT_COUNT                (2)
 #   define TARGET_USART_COUNT               (5)
 #elif defined (LPC845M301JBD48) || defined (LPC845M301JHI48)
@@ -49,6 +50,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (48)
 #   define TARGET_GPIO_COUNT                (42)
+#   define TARGET_I2C_COUNT                 (4)
 #   define TARGET_PORT_COUNT                (2)
 #   define TARGET_USART_COUNT               (5)
 #elif defined (LPC845M301JHI33)
@@ -56,6 +58,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (33)
 #   define TARGET_GPIO_COUNT                (29)
+#   define TARGET_I2C_COUNT                 (4)
 #   define TARGET_PORT_COUNT                (1)
 #   define TARGET_USART_COUNT               (5)
 #elif defined (LPC844M201JBD64)
@@ -63,6 +66,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (64)
 #   define TARGET_GPIO_COUNT                (54)
+#   define TARGET_I2C_COUNT                 (2)
 #   define TARGET_PORT_COUNT                (2)
 #   define TARGET_USART_COUNT               (2)
 #elif defined (LPC844M201JBD48) || defined (LPC844M201JHI48)
@@ -70,6 +74,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (48)
 #   define TARGET_GPIO_COUNT                (42)
+#   define TARGET_I2C_COUNT                 (2)
 #   define TARGET_PORT_COUNT                (2)
 #   define TARGET_USART_COUNT               (2)
 #elif defined (LPC844M201JHI33)
@@ -77,6 +82,7 @@
 #   define __LPC84X__
 #   define TARGET_PACKAGE_PIN_COUNT         (33)
 #   define TARGET_GPIO_COUNT                (29)
+#   define TARGET_I2C_COUNT                 (2)
 #   define TARGET_PORT_COUNT                (1)
 #   define TARGET_USART_COUNT               (2)
 #endif

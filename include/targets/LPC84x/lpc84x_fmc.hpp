@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_fmc.hpp
 // @brief   NXP LPC84x Flash Memory Controller (FMC) class.
-// @date    29 June 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc84x
 
 
 
-class Fmc
+class FmcDriver
 {
     public:
 
@@ -55,9 +55,9 @@ class Fmc
         // Flash access time
         enum class AccessTime
         {
-            TIME_1_SYSCLK = 0,      // Flash accesses use 1 system clock
-            TIME_2_SYSCLK,          // Flash accesses use 2 system clocks
-            TIME_3_SYSCLK           // Flash accesses use 3 system clocks
+            time_1_sysclk = 0,      // Flash accesses use 1 system clock
+            time_2_sysclk,          // Flash accesses use 2 system clocks
+            time_3_sysclk           // Flash accesses use 3 system clocks
         };
 
         // --------------------------------------------------------------------

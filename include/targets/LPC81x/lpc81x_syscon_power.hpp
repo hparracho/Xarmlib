@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_power.hpp
 // @brief   NXP LPC81x SYSCON power control / brown-out classes.
-// @date    28 May 2018
+// @date    4 March 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -44,7 +44,7 @@ namespace lpc81x
 
 
 
-class Power
+class PowerDriver
 {
     public:
 
@@ -56,32 +56,32 @@ class Power
         enum class Peripheral
         {
             // PDRUNCFG, Power configuration register
-            IRCOUT = 0,
-            IRC    = 1,
-            FLASH  = 2,
-            BOD    = 3,
-            SYSOSC = 5,
-            WDTOSC = 6,
-            SYSPLL = 7,
-            ACMP   = 15
+            ircout = 0,
+            irc    = 1,
+            flash  = 2,
+            bod    = 3,
+            sysosc = 5,
+            wdtosc = 6,
+            syspll = 7,
+            acmp   = 15
         };
 
         // Peripheral reset
         enum class ResetPeripheral
         {
-            SPI0 = 0,
-            SPI1,
-            USARTFRG,
-            USART0,
-            USART1,
-            USART2,
-            I2C,
-            MRT,
-            SCT,
-            WKT,
-            GPIO,
-            FLASH,
-            ACMP
+            spi0 = 0,
+            spi1,
+            usartfrg,
+            usart0,
+            usart1,
+            usart2,
+            i2c,
+            mrt,
+            sct,
+            wkt,
+            gpio,
+            flash,
+            acmp
         };
 
         // --------------------------------------------------------------------
@@ -115,7 +115,7 @@ class Power
 
 
 
-class BrownOut
+class BrownOutDriver
 {
     public:
 
@@ -127,9 +127,9 @@ class BrownOut
         enum class Level
         {
          // RESERVED        // Brown-out reset at 1.46V ~ 1.63V / interrupt at 1.65V ~ 1.80V (RESERVED?)
-            LEVEL_1 = 1,    // Brown-out reset at 2.06V ~ 2.15V / interrupt at 2.22V ~ 2.35V
-            LEVEL_2,        // Brown-out reset at 2.35V ~ 2.43V / interrupt at 2.52V ~ 2.66V
-            LEVEL_3,        // Brown-out reset at 2.63V ~ 2.71V / interrupt at 2.80V ~ 2.90V
+            level_1 = 1,    // Brown-out reset at 2.06V ~ 2.15V / interrupt at 2.22V ~ 2.35V
+            level_2,        // Brown-out reset at 2.35V ~ 2.43V / interrupt at 2.52V ~ 2.66V
+            level_3,        // Brown-out reset at 2.63V ~ 2.71V / interrupt at 2.80V ~ 2.90V
         };
 
         // --------------------------------------------------------------------

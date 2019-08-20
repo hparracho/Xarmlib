@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    1 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -40,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalIn : private Gpio
+class DigitalIn : private hal::Gpio
 {
     public:
 
@@ -48,44 +48,26 @@ class DigitalIn : private Gpio
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalIn(const Pin::Name             pin_name,
-                  const Gpio::InputMode       input_mode,
-                  const Gpio::InputFilter     input_filter     = Gpio::InputFilter::BYPASS,
-                  const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
-                  const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : Gpio(pin_name,
-                                                                                                       input_mode,
-                                                                                                       input_filter,
-                                                                                                       input_invert,
-                                                                                                       input_hysteresis)
+        DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeConfig& config) : hal::Gpio(pin_name, config)
         {}
 
-        DigitalIn(const Pin::Name                    pin_name,
-                  const Gpio::InputModeTrueOpenDrain input_mode,
-                  const Gpio::InputFilter            input_filter = Gpio::InputFilter::BYPASS,
-                  const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : Gpio(pin_name,
-                                                                                                      input_mode,
-                                                                                                      input_filter,
-                                                                                                      input_invert)
+        DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
         {}
 
         // -------- READ ------------------------------------------------------
 
-        using Gpio::read;
+        using hal::Gpio::read;
 
         operator uint32_t () const
         {
-            return Gpio::read();
+            return hal::Gpio::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !Gpio::read();
+            return !hal::Gpio::read();
         }
-
-        // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
-
-        using Gpio::set_input_filter_clock_divider;
 };
 
 

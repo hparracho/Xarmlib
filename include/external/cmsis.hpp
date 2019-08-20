@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    cmsis.hpp
 // @brief   CMSIS Core generic header include file.
-// @date    6 July 2018
+// @date    26 October 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,7 +34,9 @@
 
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+#include "targets/KV4x/kv4x_cmsis.hpp"
+#elif defined __LPC84X__
 #include "targets/LPC84x/lpc84x_cmsis.hpp"
 #elif defined __LPC81X__
 #include "targets/LPC81x/lpc81x_cmsis.hpp"

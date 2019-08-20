@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    9 October 2018
+// @date    21 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -46,15 +46,20 @@
 #include "api/api_pin_scanner.hpp"
 
 // Targets HAL interface
+#include "hal/hal_can.hpp"
+#include "hal/hal_enc.hpp"
 #include "hal/hal_faim.hpp"
+#include "hal/hal_flash.hpp"
 #include "hal/hal_gpio.hpp"
+#include "hal/hal_i2c.hpp"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_port.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
+#include "hal/hal_timer16.hpp"
+#include "hal/hal_uart.hpp"
 #include "hal/hal_us_ticker.hpp"
-#include "hal/hal_usart.hpp"
 #include "hal/hal_watchdog.hpp"
 
 

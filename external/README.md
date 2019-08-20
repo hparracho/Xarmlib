@@ -2,22 +2,45 @@
 
 ---
 ## bitmask class v1.1.2
-Date: 6 July 2018  
-Branch: development  
-Commit: 5905df1b82968c7c9d3f3b19bcf11f3115a15ced..
+Date: 23 April 2019
+Branch: master  
+Commit: fa56bcbcf7613359931de8e05c65b21b94daccef
 ### https://github.com/oliora/bitmask
 
 ---
 ## CMSIS-Core(M) Version 5
-Date: 6 July 2018  
-Branch: development  
-Commit: da10f2e1d74c39fbc068d228c495da199d4b0651  
+Date: 10 July 2019
+Branch: master  
+Commit: b5f0603d6a584d1724d952fd8b0737458b90d62b
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
-## GSL: Guideline Support Library
+## FatFs: Generic FAT Filesystem Module Source Files R0.13c
+Date: 14 October 2018
+### http://elm-chan.org/fsw/ff/00index_e.html
 
-Date: 15 June 2018  
+---
+## fsl: Freescale drivers from Kinetis SDK Version 2.6.0
+Date: 14 June 2019
+### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
+
+---
+## lfs: Little fail-safe filesystem v2.1.0
+Date: 9 August 2019
 Branch: master  
-Commit: 0cebbd77bfc21acbf1cc05983ad626539eeeb8e0  
-### https://github.com/Microsoft/GSL
+Commit: 494dd6673d008c03e3199b24af7bff0fe82017f1
+### https://github.com/ARMmbed/littlefs
+
+---
+## span: std::span implementation for C++11 and later
+Date: 14 August 2019
+Branch: master  
+Commit: 12251508c0ff0c1ddbc7870331dcbc136e87597b
+### https://github.com/tcbrindle/span
+
+---
+## usflib: Micro String Format (μSF) library
+Date: 14 January 2019
+Branch: master  
+Commit: 282b3475d55bbaa3290d6768fb4bbb19bd3ba561
+### https://github.com/hparracho/usflib

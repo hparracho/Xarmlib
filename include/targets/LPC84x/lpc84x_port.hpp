@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_port.hpp
 // @brief   NXP LPC84x port class.
-// @date    18 July 2018
+// @date    9 April 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -45,7 +45,7 @@ namespace lpc84x
 
 
 
-class Port
+class PortDriver
 {
     public:
 
@@ -56,9 +56,9 @@ class Port
         // Port names according to the target package
         enum class Name
         {
-            PORT0 = 0,
+            port0 = 0,
 #if (TARGET_PORT_COUNT  == 2)
-            PORT1
+            port1
 #endif
         };
 
@@ -90,9 +90,9 @@ class Port
             LPC_GPIO->DIR[static_cast<std::size_t>(port)] &= ~mask;
         }
 
-        static void set_direction(const Pin::Name pin)
+        static void set_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Ones configure as outputs
 
@@ -106,9 +106,9 @@ class Port
             }
         }
 
-        static void clear_direction(const Pin::Name pin)
+        static void clear_direction(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeros configure as inputs
 
@@ -143,9 +143,9 @@ class Port
             LPC_GPIO->MASK[static_cast<std::size_t>(port)] = 0;
         }
 
-        static void set_mask(const Pin::Name pin)
+        static void set_mask(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding
@@ -161,9 +161,9 @@ class Port
             }
         }
 
-        static void clear_mask(const Pin::Name pin)
+        static void clear_mask(const PinDriver::Name pin)
         {
-            assert(pin >= Pin::Name::NC);
+            assert(pin >= PinDriver::Name::nc);
 
             // NOTE: Zeroes in these registers enable reading and writing.
             //       Ones disable writing and result in zeros in corresponding

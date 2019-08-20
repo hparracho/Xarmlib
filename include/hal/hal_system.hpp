@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_system.hpp
 // @brief   HAL system level configuration class.
-// @date    6 July 2018
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,16 +32,81 @@
 #ifndef __XARMLIB_HAL_SYSTEM_HPP
 #define __XARMLIB_HAL_SYSTEM_HPP
 
+namespace xarmlib
+{
+namespace hal
+{
+
+
+
+
+template <typename SystemDriver>
+class SystemBase : protected SystemDriver
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Clock = typename SystemDriver::Clock;
+};
+
+
+
+
+} // namespace hal
+} // namespace xarmlib
+
+
+
+
 #include "core/target_specs.hpp"
 
-#if defined __LPC84X__
+#if defined __KV4X__
+
+#include "targets/KV4x/kv4x_system.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using System = SystemBase<targets::kv4x::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
+
+#elif defined __LPC84X__
 
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
 {
-using System = targets::lpc84x::System;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::lpc84x::SystemDriver>;
+
+} // namespace hal
+
+class System : public hal::System
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::System;
+
+        using Swd = typename Hal::Swd;
+};
+
+} // namespace xarmlib
 
 #elif defined __LPC81X__
 
@@ -49,8 +114,16 @@ using System = targets::lpc84x::System;
 
 namespace xarmlib
 {
-using System = targets::lpc81x::System;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::lpc81x::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
 
 #elif defined __OHER_TARGET__
 
@@ -58,8 +131,16 @@ using System = targets::lpc81x::System;
 
 namespace xarmlib
 {
-using System = targets::other_target::System;
-}
+namespace hal
+{
+
+using System = SystemBase<targets::other_target::SystemDriver>;
+
+} // namespace hal
+
+using System = hal::System;
+
+} // namespace xarmlib
 
 #endif
 

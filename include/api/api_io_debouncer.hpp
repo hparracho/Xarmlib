@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    9 October 2018
+// @date    14 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,7 +32,7 @@
 #ifndef __XARMLIB_API_IO_DEBOUNCER_HPP
 #define __XARMLIB_API_IO_DEBOUNCER_HPP
 
-#include "spi_io_source.hpp"
+#include "devices/spi_io_source.hpp"
 #include "api/api_gpio_source.hpp"
 #include "api/api_pin_bus.hpp"
 #include "hal/hal_gpio.hpp"
@@ -51,54 +51,51 @@ class IoDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        IoDebouncer(      GpioSource&           gpio_source,
-                    const PinNameBus&           pin_name_bus,
-                    const int16_t               scan_time_low_samples,
-                    const int16_t               scan_time_high_samples,
-                    const int16_t               scan_time_output_error_samples,
-                    const Gpio::InputMode       input_mode,
-                    const Gpio::InputInvert     input_invert     = Gpio::InputInvert::NORMAL,
-                    const Gpio::InputHysteresis input_hysteresis = Gpio::InputHysteresis::ENABLE) : m_pin_source { gpio_source },
-                                                                                                    m_ios(pin_name_bus.get_size()),
-                                                                                                    m_low_samples { scan_time_low_samples },
-                                                                                                    m_high_samples { scan_time_high_samples },
-                                                                                                    m_output_error_samples { scan_time_output_error_samples },
-                                                                                                    m_last_read_bus { 0 },
-                                                                                                    m_filtered_bus { 0 },
-                                                                                                    m_sampling_bus { 0 },
-                                                                                                    m_input_error_bus { 0 },
-                                                                                                    m_output_error_bus { 0 },
-                                                                                                    m_output_bus { pin_name_bus.get_mask() }
+        IoDebouncer(      GpioSource&                 gpio_source,
+                    const PinNameBus&                 pin_name_bus,
+                    const hal::Gpio::InputModeConfig& pin_bus_config,
+                    const int16_t                     scan_time_low_samples,
+                    const int16_t                     scan_time_high_samples,
+                    const int16_t                     scan_time_output_error_samples) : m_pin_source { gpio_source },
+                                                                                        m_ios(pin_name_bus.get_size()),
+                                                                                        m_low_samples { scan_time_low_samples },
+                                                                                        m_high_samples { scan_time_high_samples },
+                                                                                        m_output_error_samples { scan_time_output_error_samples },
+                                                                                        m_last_read_bus { 0 },
+                                                                                        m_filtered_bus { 0 },
+                                                                                        m_sampling_bus { 0 },
+                                                                                        m_input_error_bus { 0 },
+                                                                                        m_output_error_bus { 0 },
+                                                                                        m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
-                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert, input_hysteresis);
+                hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
             config_pins<GpioSource>(pin_name_bus);
         }
 
-        IoDebouncer(      GpioSource&                  gpio_source,
-                    const PinNameBus&                  pin_name_bus,
-                    const int16_t                      scan_time_low_samples,
-                    const int16_t                      scan_time_high_samples,
-                    const int16_t                      scan_time_output_error_samples,
-                    const Gpio::InputModeTrueOpenDrain input_mode,
-                    const Gpio::InputInvert            input_invert = Gpio::InputInvert::NORMAL) : m_pin_source { gpio_source },
-                                                                                                   m_ios(pin_name_bus.get_size()),
-                                                                                                   m_low_samples { scan_time_low_samples },
-                                                                                                   m_high_samples { scan_time_high_samples },
-                                                                                                   m_output_error_samples { scan_time_output_error_samples },
-                                                                                                   m_last_read_bus { 0 },
-                                                                                                   m_filtered_bus { 0 },
-                                                                                                   m_sampling_bus { 0 },
-                                                                                                   m_input_error_bus { 0 },
-                                                                                                   m_output_error_bus { 0 },
-                                                                                                   m_output_bus { pin_name_bus.get_mask() }
+        IoDebouncer(      GpioSource&                              gpio_source,
+                    const PinNameBus&                              pin_name_bus,
+                    const hal::Gpio::InputModeTrueOpenDrainConfig& pin_bus_config,
+                    const int16_t                                  scan_time_low_samples,
+                    const int16_t                                  scan_time_high_samples,
+                    const int16_t                                  scan_time_output_error_samples) : m_pin_source { gpio_source },
+                                                                                                     m_ios(pin_name_bus.get_size()),
+                                                                                                     m_low_samples { scan_time_low_samples },
+                                                                                                     m_high_samples { scan_time_high_samples },
+                                                                                                     m_output_error_samples { scan_time_output_error_samples },
+                                                                                                     m_last_read_bus { 0 },
+                                                                                                     m_filtered_bus { 0 },
+                                                                                                     m_sampling_bus { 0 },
+                                                                                                     m_input_error_bus { 0 },
+                                                                                                     m_output_error_bus { 0 },
+                                                                                                     m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
-                Gpio gpio(pin_name, input_mode, Gpio::InputFilter::BYPASS, input_invert);
+                hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
             config_pins<GpioSource>(pin_name_bus);
@@ -271,7 +268,7 @@ class IoDebouncer
 
                 m_filtered_bus = m_last_read_bus;
 
-                m_input_error_bus = ~m_last_read_bus & static_cast<uint32_t>((1UL << m_ios.size()) - 1);
+                m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
 
                 return true;
             }

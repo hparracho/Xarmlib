@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.cpp
 // @brief   CMSIS Core Peripheral Access Layer source file for NXP LPC81x MCUs.
-// @date    9 July 2018
+// @date    29 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,7 +53,7 @@ uint32_t SystemCoreClock;
 void SystemCoreClockUpdate()
 {
     // Store the clock frequency in the SystemCoreClock global RAM location
-    SystemCoreClock = xarmlib::targets::lpc81x::Clock::get_system_clock_frequency();
+    SystemCoreClock = xarmlib::targets::lpc81x::ClockDriver::get_system_clock_frequency();
 }
 
 

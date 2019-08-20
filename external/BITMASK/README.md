@@ -1,5 +1,5 @@
 # bitmask
-A generic implementation of the [BitmaskType](http://en.cppreference.com/w/cpp/concept/BitmaskType) C++ concept.
+A generic implementation of the [BitmaskType](https://en.cppreference.com/w/cpp/named_req/BitmaskType) C++ concept.
 
 The library is a tiny single header without any dependencies except the standard library. And yes, it's pure C++11 and constexpr.
 
@@ -24,7 +24,7 @@ enum class open_mode {
 };
 
 // 3. Enable bitmask features for the enum
-BITMASK_DEFINE(open_mode);
+BITMASK_DEFINE(open_mode)
 
 // 4. Now you can use defined bitmask:
 File open_file(const char *filename, bitmask::bitmask<open_mode> mode);
@@ -56,7 +56,7 @@ enum class open_mode: unsigned char {
     _bitmask_value_mask = 0x0B // = 0x01 | 0x02 | 0x08
 };
 
-BITMASK_DEFINE(open_mode);
+BITMASK_DEFINE(open_mode)
 
 auto open_mode_flags = ~open_mode::app | open_mode::out;
     // open_mode_flags set to 0x03 (i.e. open_mode::binary | open_mode::out) rather than 0xF7 which would be
@@ -183,7 +183,7 @@ enum class flags {
     in     = 0x04,
     out    = 0x08,
 };
-BITMASK_DEFINE_MAX_ELEMENT(flags, out);
+BITMASK_DEFINE_MAX_ELEMENT(flags, out)
 
 auto x = flags::binary | flags::app & (~flags::in ^ flags::out);
 auto y = ~x ^ flags::binary;
@@ -264,7 +264,7 @@ git clone https://github.com/oliora/bitmask.git
 cd bitmask
 mkdir build
 cd build
-cmake .. [-DCMAKE_INSTALL_PREFIX=<prefix>]
+cmake [-DCMAKE_INSTALL_PREFIX=<prefix>] ..
 make
 make install
 ```

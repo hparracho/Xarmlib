@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
-// @brief   API pin scanner class (takes control of one available Timer).
-// @date    26 July 2018
+// @brief   API pin scanner class (takes control of one available Timer (Timer16 if available)).
+// @date    10 May 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,8 +32,13 @@
 #ifndef __XARMLIB_API_PIN_SCANNER_HPP
 #define __XARMLIB_API_PIN_SCANNER_HPP
 
+#if defined(TARGET_TIMER16_COUNT) && (TARGET_TIMER16_COUNT > 0)
+#include "hal/hal_timer16.hpp"
+#else
 #include "hal/hal_timer.hpp"
+#endif
 
+#include <algorithm>
 #include <dynarray>
 
 namespace xarmlib
@@ -131,13 +136,13 @@ class PinScanner
         {
             if(m_timer.is_running() == false)
             {
-                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                const auto handler = TimerApi::IrqHandler::create<&timer_irq_handler>();
                 m_timer.assign_irq_handler(handler);
                 m_timer.enable_irq();
             }
 
             // Start or restart the timer with the new specified scan time
-            m_timer.start(scan_time, Timer::Mode::FREE_RUNNING);
+            m_timer.start(scan_time);
         }
 
         static void stop()
@@ -156,7 +161,7 @@ class PinScanner
         {
             if(m_timer.is_running() == false)
             {
-                const auto handler = Timer::IrqHandler::create<&timer_irq_handler>();
+                const auto handler = TimerApi::IrqHandler::create<&timer_irq_handler>();
                 m_timer.assign_irq_handler(handler);
                 m_timer.enable_irq();
                 m_timer.reload();
@@ -173,7 +178,7 @@ class PinScanner
         //       Only one IRQ and one priority available for all channels.
         static void set_mrt_irq_priority(const int32_t irq_priority)
         {
-            Timer::set_mrt_irq_priority(irq_priority);
+            TimerApi::set_mrt_irq_priority(irq_priority);
         }
 #else
         // NOTE: Timer type is an independent timer (multiple individual timers).
@@ -185,6 +190,20 @@ class PinScanner
 #endif
 
     private:
+
+        // --------------------------------------------------------------------
+        // PRIVATE TYPE ALIASES
+        // --------------------------------------------------------------------
+
+#if defined(TARGET_TIMER16_COUNT) && (TARGET_TIMER16_COUNT > 0)
+        using TimerApi = hal::Timer16;
+#else
+        using TimerApi = hal::Timer;
+#endif
+
+        // --------------------------------------------------------------------
+        // PRIVATE MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
 
         static int32_t timer_irq_handler()
         {
@@ -224,7 +243,7 @@ class PinScanner
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        static Timer                           m_timer;
+        static TimerApi                        m_timer;
         static std::dynarray<PinSourceHandler> m_pin_source_handlers;
         static std::dynarray<DebouncerHandler> m_debouncer_handlers;
         static std::dynarray<PinChangeHandler> m_pin_change_handlers;
