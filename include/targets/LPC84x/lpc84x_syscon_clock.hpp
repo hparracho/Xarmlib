@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_clock.hpp
 // @brief   NXP LPC84x SYSCON clock control class.
-// @date    21 May 2019
+// @date    21 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -273,7 +273,7 @@ class ClockDriver
         // Enable system or peripheral clock
         static void enable(const Peripheral peripheral)
         {
-            if(static_cast<const uint32_t>(peripheral) < 32)
+            if(static_cast<uint32_t>(peripheral) < 32)
             {
                 LPC_SYSCON->SYSAHBCLKCTRL0 |= (1 << static_cast<uint32_t>(peripheral));
             }
@@ -286,7 +286,7 @@ class ClockDriver
         // Disable system or peripheral clock
         static void disable(const Peripheral peripheral)
         {
-            if(static_cast<const uint32_t>(peripheral) < 32)
+            if(static_cast<uint32_t>(peripheral) < 32)
             {
                 LPC_SYSCON->SYSAHBCLKCTRL0 &= ~(1 << static_cast<uint32_t>(peripheral));
             }
@@ -299,7 +299,7 @@ class ClockDriver
         // Get the system or peripheral clock state
         static bool is_enabled(const Peripheral peripheral)
         {
-            if(static_cast<const uint32_t>(peripheral) < 32)
+            if(static_cast<uint32_t>(peripheral) < 32)
             {
                 return (LPC_SYSCON->SYSAHBCLKCTRL0 & (1 << static_cast<uint32_t>(peripheral))) != 0;
             }
@@ -342,7 +342,7 @@ class ClockDriver
         //       The system clock rate is the main system clock divided by this value.
         static void set_system_clock_divider(const uint8_t div)
         {
-            LPC_SYSCON->SYSAHBCLKDIV = static_cast<const uint32_t>(div);
+            LPC_SYSCON->SYSAHBCLKDIV = static_cast<uint32_t>(div);
         }
 
         // Get system clock frequency

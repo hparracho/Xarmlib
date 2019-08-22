@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_syscon_power.hpp
 // @brief   NXP LPC84x SYSCON power control / brown-out classes.
-// @date    9 April 2019
+// @date    21 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -130,7 +130,7 @@ class PowerDriver
         // Resets a peripheral
         static void reset(const ResetPeripheral peripheral)
         {
-            if(static_cast<const uint32_t>(peripheral) < 32)
+            if(static_cast<uint32_t>(peripheral) < 32)
             {
                 // Assert reset for a peripheral (the peripheral will stay in reset until reset is de-asserted)
                 LPC_SYSCON->PRESETCTRL0 &= ~(1 << static_cast<uint32_t>(peripheral));
