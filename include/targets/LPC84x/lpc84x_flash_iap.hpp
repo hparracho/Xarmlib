@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_flash_iap.hpp
 // @brief   NXP LPC84x flash In-Application Programming (IAP) class.
-// @date    21 May 2019
+// @date    21 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -119,7 +119,7 @@ class FlashIapDriver
             // Get the page of the flash address
             int32_t flash_page = get_page(flash_address);
 
-            for(int32_t p = 0; p < buffer.size(); p += TARGET_FLASH_PAGE_SIZE)
+            for(std::size_t p = 0; p < buffer.size(); p += TARGET_FLASH_PAGE_SIZE)
             {
                 // Write buffer one page at a time -> {0,63}, {64,127}, ...
                 if(write_flash_page(flash_page++, buffer.subspan(p, TARGET_FLASH_PAGE_SIZE)) == false)
