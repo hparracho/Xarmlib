@@ -8,7 +8,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 ## Supported Targets:
 - NXP LPC81x
 - NXP LPC84x
-- NXP KV4x *(work in progress...)*
+- NXP KV4x
 
 ## Supported Toolchains:
 - [GNU Arm Embedded Toolchain 7-2017q4-major or greater](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm)
@@ -16,9 +16,11 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ## External Dependencies:
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
-- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using master commit as of 3 September 2018
-- [fsl: Freescale drivers from Kinetis SDK Version 2.4.1](https://www.nxp.com/support/developer-resources/evaluation-and-development-boards/freedom-development-boards/mcu-boards/software-development-kit-for-kinetis-mcus:KINETIS-SDK)
-- [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 3 December 2018
+- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using master commit as of 10 July 2019
+- [FatFs: Generic FAT Filesystem Module Source Files R0.13c](http://elm-chan.org/fsw/ff/00index_e.html)
+- [fsl: Freescale drivers from Kinetis SDK Version 2.6.0](https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html)
+- [lfs: Little fail-safe filesystem v2.1.0](https://github.com/ARMmbed/littlefs) - currently using master commit as of 9 August 2019
+- [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 14 August 2019
 - [usflib: Micro String Format (μSF) library](https://github.com/hparracho/usflib) - currently using master commit as of 14 January 2019
 
 ---
