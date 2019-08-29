@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_port.hpp
 // @brief   Kinetis KV4x port class.
-// @date    10 December 2018
+// @date    28 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -151,6 +151,20 @@ class PortDriver
             GPIO_Type* gpio_base = get_gpio_base(port);
 
             gpio_base->PDOR = (gpio_base->PDOR & ~mask) | (value & mask);
+        }
+
+        static void set(const Name port, const uint32_t mask)
+        {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
+            gpio_base->PSOR = mask;
+        }
+
+        static void clear(const Name port, const uint32_t mask)
+        {
+            GPIO_Type* gpio_base = get_gpio_base(port);
+
+            gpio_base->PCOR = mask;
         }
 
     private:

@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_port.hpp
 // @brief   NXP LPC81x port class.
-// @date    28 February 2019
+// @date    28 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -172,6 +172,16 @@ class PortDriver
         static void write_masked(const Name port, const uint32_t value)
         {
             LPC_GPIO->MPIN[static_cast<std::size_t>(port)] = value;
+        }
+
+        static void set(const Name port, const uint32_t mask)
+        {
+            LPC_GPIO->SET[static_cast<std::size_t>(port)] = mask;
+        }
+
+        static void clear(const Name port, const uint32_t mask)
+        {
+            LPC_GPIO->CLR[static_cast<std::size_t>(port)] = mask;
         }
 };
 

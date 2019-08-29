@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    10 May 2019
+// @date    28 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -71,6 +71,9 @@ class PortBase : protected PortDriver
 
         static void write(const Name port, const uint32_t value)                      { PortDriver::write(port, value); }
         static void write(const Name port, const uint32_t mask, const uint32_t value) { PortDriver::write(port, mask, value); }
+
+        static void set  (const Name port, const uint32_t mask) { PortDriver::set(port, mask); }
+        static void clear(const Name port, const uint32_t mask) { PortDriver::clear(port, mask); }
 };
 
 
