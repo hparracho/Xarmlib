@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_gpio.hpp
 // @brief   NXP LPC84x GPIO class.
-// @date    9 April 2019
+// @date    29 August 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -244,20 +244,16 @@ class GpioDriver
 
         uint32_t read() const
         {
-            if(reg_w != nullptr)
-            {
-                return (*reg_w != 0) ? 1 : 0;
-            }
+            assert(reg_w != nullptr);
 
-            return 0;
+            return (*reg_w != 0) ? 1 : 0;
         }
 
         void write(const uint32_t value)
         {
-            if(reg_w != nullptr)
-            {
-                *reg_w = value;
-            }
+            assert(reg_w != nullptr);
+
+            *reg_w = value;
         }
 
         // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
@@ -321,13 +317,12 @@ class GpioDriver
         // Set pin direction
         void set_direction(const Direction direction)
         {
-            if(reg_dir != nullptr)
+            assert(reg_dir != nullptr);
+
+            switch(direction)
             {
-                switch(direction)
-                {
-                    case Direction::input:  *reg_dir &= ~m_pin_mask; break;
-                    case Direction::output: *reg_dir |=  m_pin_mask; break;
-                }
+                case Direction::input:  *reg_dir &= ~m_pin_mask; break;
+                case Direction::output: *reg_dir |=  m_pin_mask; break;
             }
         }
 
