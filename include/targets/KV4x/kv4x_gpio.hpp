@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_gpio.hpp
 // @brief   Kinetis KV4x GPIO class.
-// @date    29 August 2019
+// @date    3 September 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -259,16 +259,20 @@ class GpioDriver
 
         uint32_t read() const
         {
-            assert(m_gpio_base != nullptr);
+            if(m_gpio_base != nullptr)
+            {
+                return GPIO_PinRead(m_gpio_base, m_pin);
+            }
 
-            return GPIO_PinRead(m_gpio_base, m_pin);
+            return 0;
         }
 
         void write(const uint32_t value)
         {
-            assert(m_gpio_base != nullptr);
-
-            GPIO_PinWrite(m_gpio_base, m_pin, value);
+            if(m_gpio_base != nullptr)
+            {
+                GPIO_PinWrite(m_gpio_base, m_pin, value);
+            }
         }
 
     private:

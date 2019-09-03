@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    29 August 2019
+// @date    3 September 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -267,16 +267,20 @@ class GpioDriver
 
         uint32_t read() const
         {
-            assert(reg_w != nullptr);
+            if(reg_w != nullptr)
+            {
+                return (*reg_w != 0) ? 1 : 0;
+            }
 
-            return (*reg_w != 0) ? 1 : 0;
+            return 0;
         }
 
         void write(const uint32_t value)
         {
-            assert(reg_w != nullptr);
-
-            *reg_w = value;
+            if(reg_w != nullptr)
+            {
+                *reg_w = value;
+            }
         }
 
         // -------- INPUT FILTER CLOCK DIVIDER SELECTION ----------------------
