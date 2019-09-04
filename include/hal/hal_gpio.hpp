@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_gpio.hpp
 // @brief   GPIO HAL interface class.
-// @date    10 May 2019
+// @date    4 September 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -91,6 +91,8 @@ class GpioBase : protected GpioDriver
         void set_mode(const OutputModeConfig& config)              { GpioDriver::set_mode(config); }
         void set_mode(const InputModeTrueOpenDrainConfig& config)  { GpioDriver::set_mode(config); }
         void set_mode(const OutputModeTrueOpenDrainConfig& config) { GpioDriver::set_mode(config); }
+
+        hal::Pin::Name get_pin_name() const { return GpioDriver::get_pin_name(); }
 
         // -------- READ / WRITE ----------------------------------------------
 

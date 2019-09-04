@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_gpio.hpp
 // @brief   Kinetis KV4x GPIO class.
-// @date    3 September 2019
+// @date    4 September 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -254,6 +254,8 @@ class GpioDriver
 
             initialize(Direction::output, (config.output_mode == OutputModeTrueOpenDrain::low) ? 0 : 1);
         }
+
+        PinDriver::Name get_pin_name() const { return m_pin_name; }
 
         // -------- READ / WRITE ----------------------------------------------
 

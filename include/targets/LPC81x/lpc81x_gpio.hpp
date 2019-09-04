@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    3 September 2019
+// @date    4 September 2019
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -262,6 +262,8 @@ class GpioDriver
             PinDriver::set_mode(m_pin_name, PinDriver::I2cMode::standard_gpio, PinDriver::InputFilter::bypass, PinDriver::InputInvert::normal);
         }
 #endif
+
+        PinDriver::Name get_pin_name() const { return m_pin_name; }
 
         // -------- READ / WRITE ----------------------------------------------
 
