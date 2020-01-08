@@ -174,7 +174,7 @@ class IoDebouncer
                     m_pin_source.write_output_bit(io.port_index, io.pin_bit, output_bit);
 
                     m_output_bus   |=  io_mask;
-                    m_filtered_bus |=  io_mask;;
+                    m_filtered_bus |=  io_mask;
                     m_sampling_bus &= ~io_mask;
 
                     io.counter = m_output_error_samples;
@@ -197,7 +197,7 @@ class IoDebouncer
                     m_pin_source.write_output_bit(io.port_index, io.pin_bit, 0);
 
                     m_output_bus   &= ~io_mask;
-                    m_filtered_bus &= ~io_mask;;
+                    m_filtered_bus &= ~io_mask;
                     m_sampling_bus &= ~io_mask;
 
                     io.counter = m_output_error_samples;
