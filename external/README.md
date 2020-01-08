@@ -25,10 +25,10 @@ Date: 19 December 2019
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
 
 ---
-## lfs: Little fail-safe filesystem v2.1.0
-Date: 9 August 2019
+## lfs: Little fail-safe filesystem v2.1.4
+Date: 2 December 2019
 Branch: master  
-Commit: 494dd6673d008c03e3199b24af7bff0fe82017f1
+Commit: ce2c01f098f4d2b9479de5a796c3bb531f1fe14c
 ### https://github.com/ARMmbed/littlefs
 
 ---
