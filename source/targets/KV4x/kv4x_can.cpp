@@ -5,11 +5,11 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    22 March 2019
+// @date    8 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -72,13 +72,15 @@ void CanDriver::initialize(const Config& config)
     const flexcan_config_t can_config =
     {
         static_cast<uint32_t>(config.baudrate),
-        kFLEXCAN_ClkSrcPeri,
+        kFLEXCAN_ClkSrc1,
         kFLEXCAN_WakeupSrcUnfiltered,
         16,     // Maximum number of Message Buffers
         static_cast<bool>(config.loop_back_mode),
         true,   // Enable timer synchronization
         false,  // Disable Self Wakeup Mode
         true,   // Enable Rx Individual Mask
+        false,  // Disable Self Reflection
+        false,  // Disable Listen Only Mode
         false,  // Disable Doze Mode
         timing_config
     };
