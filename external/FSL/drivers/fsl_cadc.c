@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2015, Freescale Semiconductor, Inc.
- * Copyright 2016-2017 NXP
+ * Copyright 2016-2019 NXP
  * All rights reserved.
  *
  * SPDX-License-Identifier: BSD-3-Clause
@@ -21,13 +21,13 @@
  * Define the MACROs to help calculating the position of register field from sample index.
  */
 /* ADC_ZXCTRL1 & ADC_ZXCTRL2. */
-#define ADC_ZXCTRL_ZCE_MASK(index) (uint16_t)(3U << (2U * ((uint16_t)(index))))
+#define ADC_ZXCTRL_ZCE_MASK(index) (uint16_t)(3UL << (2U * ((uint16_t)(index))))
 #define ADC_ZXCTRL_ZCE(index, value) (uint16_t)(((uint16_t)(value)) << (2U * ((uint16_t)(index))))
 /* ADC_CLIST1 & ADC_CLIST2 & ADC_CLIST3 & ADC_CLIST4 */
-#define ADC_CLIST_SAMPLE_MASK(index) (uint16_t)(0xFU << (4U * ((uint16_t)(index))))
+#define ADC_CLIST_SAMPLE_MASK(index) (uint16_t)(0xFUL << (4U * ((uint16_t)(index))))
 #define ADC_CLIST_SAMPLE(index, value) (uint16_t)(((uint16_t)(value)) << (4U * ((uint16_t)(index))))
 /* ADC_GC1 & ADC_GC2. */
-#define ADC_GC_GAIN_MASK(index) (uint16_t)(0x3U << (2U * ((uint16_t)(index))))
+#define ADC_GC_GAIN_MASK(index) (uint16_t)(0x3UL << (2U * ((uint16_t)(index))))
 #define ADC_GC_GAIN(index, value) (uint16_t)(((uint16_t)(value)) << (2U * ((uint16_t)(index))))
 
 /*******************************************************************************
@@ -117,7 +117,7 @@ void CADC_Init(ADC_Type *base, const cadc_config_t *config)
 #endif /* FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL */
 
     /* ADC_CTRL1. */
-    tmp16 = base->CTRL1 & ~(ADC_CTRL1_SMODE_MASK);
+    tmp16 = (uint16_t)(base->CTRL1 & ~(ADC_CTRL1_SMODE_MASK));
     tmp16 |= ADC_CTRL1_SMODE(config->dualConverterScanMode);
     base->CTRL1 = tmp16;
 
@@ -128,11 +128,11 @@ void CADC_Init(ADC_Type *base, const cadc_config_t *config)
     }
     else
     {
-        base->CTRL2 &= ~ADC_CTRL2_SIMULT_MASK;
+        base->CTRL2 &= ~(uint16_t)ADC_CTRL2_SIMULT_MASK;
     }
 
     /* ADC_PWR. */
-    tmp16 = base->PWR & ~(ADC_PWR_ASB_MASK | ADC_PWR_PUDELAY_MASK | ADC_PWR_APD_MASK);
+    tmp16 = (uint16_t)(base->PWR & ~(ADC_PWR_ASB_MASK | ADC_PWR_PUDELAY_MASK | ADC_PWR_APD_MASK));
 
     tmp16 |= ADC_PWR_PUDELAY(config->powerUpDelay);
     if (kCADC_IdleAutoStandby == config->idleWorkMode)
@@ -156,7 +156,7 @@ void CADC_Init(ADC_Type *base, const cadc_config_t *config)
     }
     else /* kCADCDmaTriggerSourceAsEndOfScan. */
     {
-        base->CTRL3 &= ~ADC_CTRL3_DMASRC_MASK;
+        base->CTRL3 &= ~(uint16_t)ADC_CTRL3_DMASRC_MASK;
     }
 }
 
@@ -179,7 +179,7 @@ void CADC_GetDefaultConfig(cadc_config_t *config)
     assert(NULL != config);
 
     /* Initializes the configure structure to zero. */
-    memset(config, 0, sizeof(*config));
+    (void)memset(config, 0, sizeof(*config));
 
     /* The default values are from power up reset state. */
     config->dualConverterScanMode  = kCADC_DualConverterWorkAsTriggeredParallel;
@@ -202,9 +202,9 @@ void CADC_GetDefaultConfig(cadc_config_t *config)
 void CADC_Deinit(ADC_Type *base)
 {
     /* Stop both converter. */
-    CADC_EnableConverter(base, kCADC_ConverterA | kCADC_ConverterB, false);
+    CADC_EnableConverter(base, (uint16_t)kCADC_ConverterA | (uint16_t)kCADC_ConverterB, false);
     /* Power done both converter. */
-    CADC_EnableConverterPower(base, kCADC_ConverterA | kCADC_ConverterB, false);
+    CADC_EnableConverterPower(base, (uint16_t)kCADC_ConverterA | (uint16_t)kCADC_ConverterB, false);
 #if !(defined(FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL) && FSL_SDK_DISABLE_DRIVER_CLOCK_CONTROL)
     /* Disable the clock. */
     CLOCK_DisableClock(s_cadcClocks[CADC_GetInstance(base)]);
@@ -218,12 +218,12 @@ static void CADC_SetConverterAConfig(ADC_Type *base, const cadc_converter_config
     uint16_t tmp16;
 
     /* ADC_CTRL2. */
-    tmp16 = base->CTRL2 & ~(ADC_CTRL2_DIV0_MASK);
+    tmp16 = base->CTRL2 & ~(uint16_t)(ADC_CTRL2_DIV0_MASK);
     tmp16 |= ADC_CTRL2_DIV0(config->clockDivisor);
     base->CTRL2 = tmp16;
 
     /* ADC_CAL. */
-    tmp16 = base->CAL & ~(ADC_CAL_SEL_VREFH_A_MASK | ADC_CAL_SEL_VREFLO_A_MASK);
+    tmp16 = base->CAL & ~(uint16_t)(ADC_CAL_SEL_VREFH_A_MASK | ADC_CAL_SEL_VREFLO_A_MASK);
     if (kCADC_ReferenceVoltageChannelPad == config->highReferenceVoltageSource)
     {
         tmp16 |= ADC_CAL_SEL_VREFH_A_MASK;
@@ -235,12 +235,12 @@ static void CADC_SetConverterAConfig(ADC_Type *base, const cadc_converter_config
     base->CAL = tmp16;
 
     /* ADC_PWR2. */
-    tmp16 = base->PWR2 & ~(ADC_PWR2_SPEEDA_MASK);
+    tmp16 = base->PWR2 & ~(uint16_t)(ADC_PWR2_SPEEDA_MASK);
     tmp16 |= ADC_PWR2_SPEEDA((uint16_t)(config->speedMode));
     base->PWR2 = tmp16;
 
     /* ADC_CTRL3. */
-    tmp16 = base->CTRL3 & ~(ADC_CTRL3_SCNT0_MASK);
+    tmp16 = base->CTRL3 & ~(uint16_t)(ADC_CTRL3_SCNT0_MASK);
     tmp16 |= ADC_CTRL3_SCNT0(config->sampleWindowCount);
     base->CTRL3 = tmp16;
 }
@@ -252,7 +252,7 @@ static void CADC_SetConverterBConfig(ADC_Type *base, const cadc_converter_config
     uint16_t tmp16;
 
     /* ADC_CAL. */
-    tmp16 = base->CAL & ~(ADC_CAL_SEL_VREFH_B_MASK | ADC_CAL_SEL_VREFLO_B_MASK);
+    tmp16 = base->CAL & ~(uint16_t)(ADC_CAL_SEL_VREFH_B_MASK | ADC_CAL_SEL_VREFLO_B_MASK);
     if (kCADC_ReferenceVoltageChannelPad == config->highReferenceVoltageSource)
     {
         tmp16 |= ADC_CAL_SEL_VREFH_B_MASK;
@@ -264,12 +264,12 @@ static void CADC_SetConverterBConfig(ADC_Type *base, const cadc_converter_config
     base->CAL = tmp16;
 
     /* ADC_PWR2. */
-    tmp16 = base->PWR2 & ~(ADC_PWR2_DIV1_MASK | ADC_PWR2_SPEEDB_MASK);
+    tmp16 = base->PWR2 & ~(uint16_t)(ADC_PWR2_DIV1_MASK | ADC_PWR2_SPEEDB_MASK);
     tmp16 |= ADC_PWR2_DIV1(config->clockDivisor) | ADC_PWR2_SPEEDB((uint16_t)(config->speedMode));
     base->PWR2 = tmp16;
 
     /* ADC_CTRL3. */
-    tmp16 = base->CTRL3 & ~(ADC_CTRL3_SCNT1_MASK);
+    tmp16 = base->CTRL3 & ~(uint16_t)(ADC_CTRL3_SCNT1_MASK);
     tmp16 |= ADC_CTRL3_SCNT1(config->sampleWindowCount);
     base->CTRL3 = tmp16;
 }
@@ -286,12 +286,12 @@ void CADC_SetConverterConfig(ADC_Type *base, uint16_t converterMask, const cadc_
     assert(NULL != config);
 
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         CADC_SetConverterAConfig(base, config);
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         CADC_SetConverterBConfig(base, config);
     }
@@ -316,7 +316,7 @@ void CADC_GetDefaultConverterConfig(cadc_converter_config_t *config)
     assert(NULL != config);
 
     /* Initializes the configure structure to zero. */
-    memset(config, 0, sizeof(*config));
+    (void)memset(config, 0, sizeof(*config));
 
     /* The default values are from power up reset state. */
     config->clockDivisor               = 4U;
@@ -340,11 +340,11 @@ void CADC_GetDefaultConverterConfig(cadc_converter_config_t *config)
 void CADC_EnableConverter(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         if (enable)
         {
-            base->CTRL1 &= ~ADC_CTRL1_STOP0_MASK; /* Clear STOP to enable. */
+            base->CTRL1 &= ~(uint16_t)ADC_CTRL1_STOP0_MASK; /* Clear STOP to enable. */
         }
         else
         {
@@ -352,11 +352,11 @@ void CADC_EnableConverter(ADC_Type *base, uint16_t converterMask, bool enable)
         }
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         if (enable)
         {
-            base->CTRL2 &= ~ADC_CTRL2_STOP1_MASK; /* Clear STOP to enable. */
+            base->CTRL2 &= ~(uint16_t)ADC_CTRL2_STOP1_MASK; /* Clear STOP to enable. */
         }
         else
         {
@@ -380,7 +380,7 @@ void CADC_EnableConverter(ADC_Type *base, uint16_t converterMask, bool enable)
 void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         if (enable)
         {
@@ -388,11 +388,11 @@ void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool 
         }
         else
         {
-            base->CTRL1 &= ~ADC_CTRL1_SYNC0_MASK;
+            base->CTRL1 &= ~(uint16_t)ADC_CTRL1_SYNC0_MASK;
         }
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         if (enable)
         {
@@ -400,7 +400,7 @@ void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool 
         }
         else
         {
-            base->CTRL2 &= ~ADC_CTRL2_SYNC1_MASK;
+            base->CTRL2 &= ~(uint16_t)ADC_CTRL2_SYNC1_MASK;
         }
     }
 }
@@ -419,11 +419,11 @@ void CADC_EnableConverterSyncInput(ADC_Type *base, uint16_t converterMask, bool 
 void CADC_EnableConverterPower(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         if (enable)
         {
-            base->PWR &= ~ADC_PWR_PD0_MASK; /* Clear PowerDown to enable. */
+            base->PWR &= ~(uint16_t)ADC_PWR_PD0_MASK; /* Clear PowerDown to enable. */
         }
         else
         {
@@ -431,11 +431,11 @@ void CADC_EnableConverterPower(ADC_Type *base, uint16_t converterMask, bool enab
         }
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         if (enable)
         {
-            base->PWR &= ~ADC_PWR_PD1_MASK; /* Clear PowerDown to enable. */
+            base->PWR &= ~(uint16_t)ADC_PWR_PD1_MASK; /* Clear PowerDown to enable. */
         }
         else
         {
@@ -456,12 +456,12 @@ void CADC_EnableConverterPower(ADC_Type *base, uint16_t converterMask, bool enab
 void CADC_DoSoftwareTriggerConverter(ADC_Type *base, uint16_t converterMask)
 {
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         base->CTRL1 |= ADC_CTRL1_START0_MASK;
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         base->CTRL2 |= ADC_CTRL2_START1_MASK;
     }
@@ -477,7 +477,7 @@ void CADC_DoSoftwareTriggerConverter(ADC_Type *base, uint16_t converterMask)
 void CADC_EnableConverterDMA(ADC_Type *base, uint16_t converterMask, bool enable)
 {
     /* For converter A. */
-    if (kCADC_ConverterA == (kCADC_ConverterA & converterMask))
+    if ((uint16_t)kCADC_ConverterA == ((uint16_t)kCADC_ConverterA & converterMask))
     {
         if (enable)
         {
@@ -485,11 +485,11 @@ void CADC_EnableConverterDMA(ADC_Type *base, uint16_t converterMask, bool enable
         }
         else
         {
-            base->CTRL1 &= ~ADC_CTRL1_DMAEN0_MASK;
+            base->CTRL1 &= ~(uint16_t)ADC_CTRL1_DMAEN0_MASK;
         }
     }
     /* For converter B. */
-    if (kCADC_ConverterB == (kCADC_ConverterB & converterMask))
+    if ((uint16_t)kCADC_ConverterB == ((uint16_t)kCADC_ConverterB & converterMask))
     {
         if (enable)
         {
@@ -497,7 +497,7 @@ void CADC_EnableConverterDMA(ADC_Type *base, uint16_t converterMask, bool enable
         }
         else
         {
-            base->CTRL2 &= ~ADC_CTRL2_DMAEN1_MASK;
+            base->CTRL2 &= ~(uint16_t)ADC_CTRL2_DMAEN1_MASK;
         }
     }
 }
@@ -513,26 +513,28 @@ void CADC_EnableInterrupts(ADC_Type *base, uint16_t mask)
     uint16_t tmp16 = 0U;
 
     /* ADCx_CTRL1. */
-    if (kCADC_ConverterAEndOfScanInterruptEnable == (kCADC_ConverterAEndOfScanInterruptEnable & mask))
+    if ((uint16_t)kCADC_ConverterAEndOfScanInterruptEnable ==
+        ((uint16_t)kCADC_ConverterAEndOfScanInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_EOSIE0_MASK;
     }
-    if (kCADC_ZeroCrossingInterruptEnable == (kCADC_ZeroCrossingInterruptEnable & mask))
+    if ((uint16_t)kCADC_ZeroCrossingInterruptEnable == ((uint16_t)kCADC_ZeroCrossingInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_ZCIE_MASK;
     }
-    if (kCADC_LowLimitInterruptEnable == (kCADC_LowLimitInterruptEnable & mask))
+    if ((uint16_t)kCADC_LowLimitInterruptEnable == ((uint16_t)kCADC_LowLimitInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_LLMTIE_MASK;
     }
-    if (kCADC_HighLimitInterruptEnable == (kCADC_HighLimitInterruptEnable & mask))
+    if ((uint16_t)kCADC_HighLimitInterruptEnable == ((uint16_t)kCADC_HighLimitInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_HLMTIE_MASK;
     }
     base->CTRL1 |= tmp16;
 
     /* ADCx_CTRL2. */
-    if (kCADC_ConverterBEndOfScanInterruptEnable == (kCADC_ConverterBEndOfScanInterruptEnable & mask))
+    if ((uint16_t)kCADC_ConverterBEndOfScanInterruptEnable ==
+        ((uint16_t)kCADC_ConverterBEndOfScanInterruptEnable & mask))
     {
         base->CTRL2 |= ADC_CTRL2_EOSIE1_MASK;
     }
@@ -548,28 +550,30 @@ void CADC_DisableInterrupts(ADC_Type *base, uint16_t mask)
     uint16_t tmp16 = 0U;
 
     /* ADCx_CTRL1. */
-    if (kCADC_ConverterAEndOfScanInterruptEnable == (kCADC_ConverterAEndOfScanInterruptEnable & mask))
+    if ((uint16_t)kCADC_ConverterAEndOfScanInterruptEnable ==
+        ((uint16_t)kCADC_ConverterAEndOfScanInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_EOSIE0_MASK;
     }
-    if (kCADC_ZeroCrossingInterruptEnable == (kCADC_ZeroCrossingInterruptEnable & mask))
+    if ((uint16_t)kCADC_ZeroCrossingInterruptEnable == ((uint16_t)kCADC_ZeroCrossingInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_ZCIE_MASK;
     }
-    if (kCADC_LowLimitInterruptEnable == (kCADC_LowLimitInterruptEnable & mask))
+    if ((uint16_t)kCADC_LowLimitInterruptEnable == ((uint16_t)kCADC_LowLimitInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_LLMTIE_MASK;
     }
-    if (kCADC_HighLimitInterruptEnable == (kCADC_HighLimitInterruptEnable & mask))
+    if ((uint16_t)kCADC_HighLimitInterruptEnable == ((uint16_t)kCADC_HighLimitInterruptEnable & mask))
     {
         tmp16 |= ADC_CTRL1_HLMTIE_MASK;
     }
     base->CTRL1 &= (uint16_t)(~tmp16);
 
     /* ADCx_CTRL2. */
-    if (kCADC_ConverterBEndOfScanInterruptEnable == (kCADC_ConverterBEndOfScanInterruptEnable & mask))
+    if ((uint16_t)kCADC_ConverterBEndOfScanInterruptEnable ==
+        ((uint16_t)kCADC_ConverterBEndOfScanInterruptEnable & mask))
     {
-        base->CTRL2 &= ~ADC_CTRL2_EOSIE1_MASK;
+        base->CTRL2 &= ~(uint16_t)ADC_CTRL2_EOSIE1_MASK;
     }
 }
 
@@ -587,40 +591,40 @@ uint16_t CADC_GetStatusFlags(ADC_Type *base)
     /* ADC_STAT. */
     if (ADC_STAT_CIP0_MASK == (ADC_STAT_CIP0_MASK & base->STAT))
     {
-        tmp16 |= kCADC_ConverterAInProgressFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterAInProgressFlag;
     }
     if (ADC_STAT_CIP1_MASK == (ADC_STAT_CIP1_MASK & base->STAT))
     {
-        tmp16 |= kCADC_ConverterBInProgressFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterBInProgressFlag;
     }
     if (ADC_STAT_EOSI0_MASK == (ADC_STAT_EOSI0_MASK & base->STAT))
     {
-        tmp16 |= kCADC_ConverterAEndOfScanFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterAEndOfScanFlag;
     }
     if (ADC_STAT_EOSI1_MASK == (ADC_STAT_EOSI1_MASK & base->STAT))
     {
-        tmp16 |= kCADC_ConverterBEndOfScanFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterBEndOfScanFlag;
     }
     if (ADC_STAT_ZCI_MASK == (ADC_STAT_ZCI_MASK & base->STAT))
     {
-        tmp16 |= kCADC_ZeroCrossingFlag;
+        tmp16 |= (uint16_t)kCADC_ZeroCrossingFlag;
     }
     if (ADC_STAT_LLMTI_MASK == (ADC_STAT_LLMTI_MASK & base->STAT))
     {
-        tmp16 |= kCADC_LowLimitFlag;
+        tmp16 |= (uint16_t)kCADC_LowLimitFlag;
     }
     if (ADC_STAT_HLMTI_MASK == (ADC_STAT_HLMTI_MASK & base->STAT))
     {
-        tmp16 |= kCADC_HighLimitFlag;
+        tmp16 |= (uint16_t)kCADC_HighLimitFlag;
     }
     /* ADC_PWR. */
     if (ADC_PWR_PSTS0_MASK == (ADC_PWR_PSTS0_MASK & base->PWR))
     {
-        tmp16 |= kCADC_ConverterAPowerDownFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterAPowerDownFlag;
     }
     if (ADC_PWR_PSTS1_MASK == (ADC_PWR_PSTS1_MASK & base->PWR))
     {
-        tmp16 |= kCADC_ConverterBPowerDownFlag;
+        tmp16 |= (uint16_t)kCADC_ConverterBPowerDownFlag;
     }
 
     return tmp16;
@@ -636,11 +640,11 @@ void CADC_ClearStatusFlags(ADC_Type *base, uint16_t flags)
 {
     uint16_t tmp16 = 0U;
 
-    if (kCADC_ConverterAEndOfScanFlag == (kCADC_ConverterAEndOfScanFlag & flags))
+    if ((uint16_t)kCADC_ConverterAEndOfScanFlag == ((uint16_t)kCADC_ConverterAEndOfScanFlag & flags))
     {
         tmp16 |= ADC_STAT_EOSI0_MASK;
     }
-    if (kCADC_ConverterBEndOfScanFlag == (kCADC_ConverterBEndOfScanFlag & flags))
+    if ((uint16_t)kCADC_ConverterBEndOfScanFlag == ((uint16_t)kCADC_ConverterBEndOfScanFlag & flags))
     {
         tmp16 |= ADC_STAT_EOSI1_MASK;
     }
@@ -788,10 +792,10 @@ void CADC_SetSampleConfig(ADC_Type *base, uint16_t sampleIndex, const cadc_sampl
     /* ADC_SCTRL. */
     if (config->enableWaitSync)
     {
-        base->SCTRL |= (1U << sampleIndex);
+        base->SCTRL |= (uint16_t)(1UL << sampleIndex);
     }
     else
     {
-        base->SCTRL &= ~(1U << sampleIndex);
+        base->SCTRL &= ~(uint16_t)(1UL << sampleIndex);
     }
 }

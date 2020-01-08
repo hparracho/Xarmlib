@@ -20,8 +20,8 @@ Date: 14 October 2018
 ### http://elm-chan.org/fsw/ff/00index_e.html
 
 ---
-## fsl: Freescale drivers from Kinetis SDK Version 2.6.0
-Date: 14 June 2019
+## fsl: Freescale drivers from Kinetis SDK Version 2.7.0
+Date: 19 December 2019
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
 
 ---

@@ -248,7 +248,7 @@ typedef enum IRQn {
 
 #include "core_cm4.h"                  /* Core Peripheral Access Layer */
 //#include "system_MKV46F16.h"           /* Device specific configuration file */
-#include "fsl_mkv4xf16_cmsis.h"
+#include "fsl_mkvxxfxx_cmsis.h"
 
 /*!
  * @}
