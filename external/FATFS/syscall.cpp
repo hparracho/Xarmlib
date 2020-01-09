@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    syscall.cpp
 // @brief   Dependent OS functions for FatFs.
-// @date    25 July 2019
+// @date    8 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -29,7 +29,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "ffconf.h"
+#include "ff.h"
 
 namespace xarmlib
 {
@@ -48,14 +48,14 @@ extern "C"
 /*------------------------------------------------------------------------*/
 /* Create a Synchronization Object                                        */
 /*------------------------------------------------------------------------*/
-/* This function is called by f_mount() function to create a new
-/  synchronization object, such as semaphore and mutex. When a 0 is
-/  returned, the f_mount() function fails with FR_INT_ERR.
+/* This function is called in f_mount() function to create a new
+/  synchronization object for the volume, such as semaphore and mutex.
+/  When a 0 is returned, the f_mount() function fails with FR_INT_ERR.
 */
 
-int ff_cre_syncobj (    /* 1:Function succeeded, 0:Could not create due to any error */
-    BYTE vol,           /* Corresponding logical drive being processed */
-    _SYNC_t* sobj       /* Pointer to return the created sync object */
+int ff_cre_syncobj (    /* 1:Function succeeded, 0:Could not create the sync object */
+	BYTE vol,           /* Corresponding volume (logical drive number) */
+	FF_SYNC_t* sobj	    /* Pointer to return the created sync object */
 )
 {
     *sobj = xSemaphoreCreateMutex();    /* FreeRTOS */
@@ -70,15 +70,15 @@ int ff_cre_syncobj (    /* 1:Function succeeded, 0:Could not create due to any e
 /* Delete a Synchronization Object                                        */
 /*------------------------------------------------------------------------*/
 /* This function is called in f_mount() function to delete a synchronization
-/  object that created with ff_cre_syncobj() function. When a 0 is
-/  returned, the f_mount() function fails with FR_INT_ERR.
+/  object that created with ff_cre_syncobj() function. When a 0 is returned,
+/  the f_mount() function fails with FR_INT_ERR.
 */
 
 int ff_del_syncobj (    /* 1:Function succeeded, 0:Could not delete due to any error */
-    _SYNC_t sobj        /* Sync object tied to the logical drive to be deleted */
+    FF_SYNC_t sobj      /* Sync object tied to the logical drive to be deleted */
 )
 {
-    vSemaphoreDelete(sobj);     /* FreeRTOS */
+    vSemaphoreDelete(sobj);    /* FreeRTOS */
 
     return 1;
 }
@@ -90,14 +90,14 @@ int ff_del_syncobj (    /* 1:Function succeeded, 0:Could not delete due to any e
 /* Request Grant to Access the Volume                                     */
 /*------------------------------------------------------------------------*/
 /* This function is called on entering file functions to lock the volume.
-/  When a FALSE is returned, the file function fails with FR_TIMEOUT.
+/  When a 0 is returned, the file function fails with FR_TIMEOUT.
 */
 
-int ff_req_grant (  /* TRUE:Got a grant to access the volume, FALSE:Could not get a grant */
-    _SYNC_t sobj    /* Sync object to wait */
+int ff_req_grant (    /* 1:Got a grant to access the volume, 0:Could not get a grant */
+    FF_SYNC_t sobj    /* Sync object to wait */
 )
 {
-    return (int)(xSemaphoreTake(sobj, _FS_TIMEOUT) == pdTRUE);  /* FreeRTOS */
+    return (int)(xSemaphoreTake(sobj, FF_FS_TIMEOUT) == pdTRUE);    /* FreeRTOS */
 }
 
 
@@ -110,10 +110,10 @@ int ff_req_grant (  /* TRUE:Got a grant to access the volume, FALSE:Could not ge
 */
 
 void ff_rel_grant (
-    _SYNC_t sobj    /* Sync object to be signaled */
+    FF_SYNC_t sobj    /* Sync object to be signaled */
 )
 {
-    xSemaphoreGive(sobj);   /* FreeRTOS */
+    xSemaphoreGive(sobj);    /* FreeRTOS */
 }
 
 

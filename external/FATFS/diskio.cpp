@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    diskio.cpp
 // @brief   Low level disk I/O functions for FatFs.
-// @date    25 July 2019
+// @date    8 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -287,7 +287,7 @@ DSTATUS disk_status(BYTE pdrv /* Physical drive number (0..) */)
 
 DRESULT disk_read(BYTE  pdrv,   /* Physical drive number (0..) */
                   BYTE *buff,   /* Data buffer to store read data */
-                  DWORD sector, /* Sector address (LBA) */
+                  LBA_t sector, /* Start sector address (in LBA) */
                   UINT  count   /* Number of sectors to read (1..128) */)
 {
 #if defined(FF_VOLUMES) && (FF_VOLUMES > 1)
@@ -335,7 +335,7 @@ DRESULT disk_read(BYTE  pdrv,   /* Physical drive number (0..) */
 
 DRESULT disk_write(      BYTE  pdrv,   /* Physical drive number (0..) */
                    const BYTE *buff,   /* Data to be written */
-                         DWORD sector, /* Sector address (LBA) */
+                         LBA_t sector, /* Start sector address (in LBA) */
                          UINT  count   /* Number of sectors to write (1..128) */)
 {
 #if defined(FF_VOLUMES) && (FF_VOLUMES > 1)

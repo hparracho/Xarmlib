@@ -15,8 +15,8 @@ Commit: b5f0603d6a584d1724d952fd8b0737458b90d62b
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
-## FatFs: Generic FAT Filesystem Module Source Files R0.13c
-Date: 14 October 2018
+## FatFs: Generic FAT Filesystem Module Source Files R0.14
+Date: 14 October 2019
 ### http://elm-chan.org/fsw/ff/00index_e.html
 
 ---

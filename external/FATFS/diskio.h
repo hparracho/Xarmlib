@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    diskio.h
 // @brief   Low level disk I/O functions for FatFs.
-// @date    25 July 2019
+// @date    8 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -113,8 +113,8 @@ typedef enum
 
 DSTATUS disk_initialize(BYTE pdrv);
 DSTATUS disk_status    (BYTE pdrv);
-DRESULT disk_read      (BYTE pdrv, BYTE* buff, DWORD sector, UINT count);
-DRESULT disk_write     (BYTE pdrv, const BYTE* buff, DWORD sector, UINT count);
+DRESULT disk_read      (BYTE pdrv, BYTE* buff, LBA_t sector, UINT count);
+DRESULT disk_write     (BYTE pdrv, const BYTE* buff, LBA_t sector, UINT count);
 DRESULT disk_ioctl     (BYTE pdrv, BYTE cmd, void* buff);
 
 
