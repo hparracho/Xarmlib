@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    target_specs.hpp
 // @brief   Core level target configuration header file.
-// @date    25 October 2018
+// @date    10 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -35,6 +35,7 @@
 #include "targets/LPC81x/lpc81x_specs.hpp"
 #include "targets/LPC84x/lpc84x_specs.hpp"
 #include "targets/KV4x/kv4x_specs.hpp"
+#include "targets/KV5x/kv5x_specs.hpp"
 
 
 
