@@ -54,7 +54,6 @@ processor_version: 7.0.1
 #define MCG_PLL_DISABLE                                   0U  /*!< MCGPLLCLK disabled */
 #define OSC_CAP0P                                         0U  /*!< Oscillator 0pF capacitor load */
 #define OSC_ER_CLK_DISABLE                                0U  /*!< Disable external reference clock */
-#define SIM_OSC32KSEL_LPO_CLK                             3U  /*!< OSC32KSEL select: LPO clock */
 #define SIM_OSC32KSEL_OSC32KCLK_CLK                       0U  /*!< OSC32KSEL select: OSC32KCLK clock */
 #define SIM_PLLFLLSEL_MCGFLLCLK_CLK                       0U  /*!< PLLFLL select: MCGFLLCLK clock */
 #define SIM_WDOG_CLK_SEL_MCGIRCLK_CLK                     1U  /*!< WDOG clock select: MCGIRCLK clock */
@@ -129,7 +128,6 @@ name: clock_config_irc_4mhz_vlpr
 outputs:
 - {id: Bus_clock.outFreq, value: 4 MHz}
 - {id: Core_clock.outFreq, value: 4 MHz}
-- {id: ERCLK32K.outFreq, value: 1 kHz}
 - {id: Flash_clock.outFreq, value: 500 kHz}
 - {id: FlexBus_clock.outFreq, value: 4 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
@@ -153,7 +151,6 @@ settings:
 - {id: OSC_CR_ERCLKEN_CFG, value: Enabled}
 - {id: OSC_CR_ERCLKEN_UNDIV_CFG, value: Enabled}
 - {id: RMIISrcConfig, value: 'yes'}
-- {id: SIM.OSC32KSEL.sel, value: PMC.LPOCLK}
 - {id: SIM.OUTDIV3.scale, value: '1', locked: true}
 - {id: SIM.OUTDIV4.scale, value: '8', locked: true}
 - {id: SIM.RMIICLKSEL.sel, value: SIM.ENET_1588_CLK_EXT}
@@ -188,7 +185,7 @@ const mcg_config_t mcgConfig_clock_config_irc_4mhz_vlpr =
 const sim_clock_config_t simConfig_clock_config_irc_4mhz_vlpr =
     {
         .pllFllSel = SIM_PLLFLLSEL_MCGFLLCLK_CLK, /* PLLFLL select: MCGFLLCLK clock */
-        .er32kSrc = SIM_OSC32KSEL_LPO_CLK,        /* OSC32KSEL select: LPO clock */
+        .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
         .clkdiv1 = 0x70000U,                      /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /1, OUTDIV3: /1, OUTDIV4: /8 */
     };
 const osc_config_t oscConfig_clock_config_irc_4mhz_vlpr =
@@ -442,7 +439,7 @@ outputs:
 - {id: Bus_clock.outFreq, value: 94 MHz}
 - {id: Core_clock.outFreq, value: 188 MHz}
 - {id: Flash_clock.outFreq, value: 23.5 MHz}
-- {id: FlexBus_clock.outFreq, value: 188/7 MHz}
+- {id: FlexBus_clock.outFreq, value: 47 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
 - {id: System_clock.outFreq, value: 188 MHz}
@@ -459,7 +456,7 @@ settings:
 - {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
 - {id: MCRFFCLKAllowConfig, value: 'no'}
 - {id: SIM.OUTDIV2.scale, value: '2'}
-- {id: SIM.OUTDIV3.scale, value: '7'}
+- {id: SIM.OUTDIV3.scale, value: '4', locked: true}
 - {id: SIM.OUTDIV4.scale, value: '8', locked: true}
 - {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
 - {id: WDOGClkConfig, value: 'yes'}
@@ -491,7 +488,7 @@ const sim_clock_config_t simConfig_clock_config_xtal_188mhz_hsrun =
     {
         .pllFllSel = SIM_PLLFLLSEL_MCGFLLCLK_CLK, /* PLLFLL select: MCGFLLCLK clock */
         .er32kSrc = SIM_OSC32KSEL_OSC32KCLK_CLK,  /* OSC32KSEL select: OSC32KCLK clock */
-        .clkdiv1 = 0x1670000U,                    /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /2, OUTDIV3: /7, OUTDIV4: /8 */
+        .clkdiv1 = 0x1370000U,                    /* SIM_CLKDIV1 - OUTDIV1: /1, OUTDIV2: /2, OUTDIV3: /4, OUTDIV4: /8 */
     };
 const osc_config_t oscConfig_clock_config_xtal_188mhz_hsrun =
     {
