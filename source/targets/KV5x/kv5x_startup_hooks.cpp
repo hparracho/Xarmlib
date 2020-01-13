@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for Kinetis KV5x MCUs.
-// @date    10 January 2020
+// @date    13 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -76,23 +76,23 @@ void mcu_startup_initialize_hardware_early()
 
 void mcu_startup_initialize_hardware()
 {
-//    const pmc_low_volt_detect_config_t lvd_config =
-//    {
-//        false,                      // Interrupt disabled
-//        true,                       // System reset enabled
-//        kPMC_LowVoltDetectHighTrip  // LVDH: 2.48 ~ 2.64 (typ. 2.56) V
-//    };
-//
-//    PMC_ConfigureLowVoltDetect(PMC, &lvd_config);
-//
-//    switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
-//    {
-//        case SystemDriver::Clock::irc_4mhz_vlpr:     clock_config_irc_4mhz_vlpr();     break;
-//        case SystemDriver::Clock::xtal_80mhz_run:    clock_config_xtal_80mhz_run();    break;
-//        case SystemDriver::Clock::xtal_160mhz_hsrun: clock_config_xtal_160mhz_hsrun(); break;
-//        case SystemDriver::Clock::irc_96mhz_run:
-//        default:                                     clock_config_irc_96mhz_run();     break;
-//    }
+    const pmc_low_volt_detect_config_t lvd_config =
+    {
+        false,                      // Interrupt disabled
+        true,                       // System reset enabled
+        kPMC_LowVoltDetectHighTrip  // LVDH: 2.48 ~ 2.64 (typ. 2.56) V
+    };
+
+    PMC_ConfigureLowVoltDetect(PMC, &lvd_config);
+
+    switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
+    {
+        case SystemDriver::Clock::irc_4mhz_vlpr:     clock_config_irc_4mhz_vlpr();     break;
+        case SystemDriver::Clock::xtal_160mhz_run:   clock_config_xtal_160mhz_run();   break;
+        case SystemDriver::Clock::xtal_188mhz_hsrun: clock_config_xtal_188mhz_hsrun(); break;
+        case SystemDriver::Clock::irc_96mhz_run:
+        default:                                     clock_config_irc_96mhz_run();     break;
+    }
 }
 
 
