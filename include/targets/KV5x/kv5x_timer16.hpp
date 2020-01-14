@@ -44,7 +44,7 @@
 
 
 // Forward declaration of IRQ handler
-extern "C" void LPTMR_IRQHandler(void);
+extern "C" void LPTMR0_IRQHandler(void);
 
 
 
@@ -66,7 +66,7 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
         // --------------------------------------------------------------------
 
         // Friend IRQ handler C function to give access to private IRQ handler member function
-        friend void ::LPTMR_IRQHandler(void);
+        friend void ::LPTMR0_IRQHandler(void);
 
     protected:
 
@@ -101,7 +101,7 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
                 kLPTMR_Prescale_Glitch_1        // Prescaler divide 4
             };
 
-            LPTMR_Init(LPTMR, &lptmr_config);
+            LPTMR_Init(LPTMR0, &lptmr_config);
 
             disable_irq();
             set_period(0);
@@ -113,7 +113,7 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
             set_period(0);
 
             // Deinitialize LPTMR
-            LPTMR_Deinit(LPTMR);
+            LPTMR_Deinit(LPTMR0);
         }
 
         // -------- START / STOP ----------------------------------------------
@@ -158,38 +158,38 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
         {
             clear_irq_pending();
 
-            LPTMR_EnableInterrupts(LPTMR, kLPTMR_TimerInterruptEnable);
+            LPTMR_EnableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
 
-            NVIC_EnableIRQ(LPTMR_IRQn);
+            NVIC_EnableIRQ(LPTMR0_IRQn);
         }
 
         void disable_irq()
         {
-            LPTMR_DisableInterrupts(LPTMR, kLPTMR_TimerInterruptEnable);
+            LPTMR_DisableInterrupts(LPTMR0, kLPTMR_TimerInterruptEnable);
 
-            NVIC_DisableIRQ(LPTMR_IRQn);
+            NVIC_DisableIRQ(LPTMR0_IRQn);
 
             clear_irq_pending();
         }
 
         bool is_irq_enabled() const
         {
-            return (LPTMR_GetEnabledInterrupts(LPTMR) != 0);
+            return (LPTMR_GetEnabledInterrupts(LPTMR0) != 0);
         }
 
         bool is_irq_pending() const
         {
-            return (LPTMR_GetStatusFlags(LPTMR) != 0);
+            return (LPTMR_GetStatusFlags(LPTMR0) != 0);
         }
 
         void clear_irq_pending()
         {
-            LPTMR_ClearStatusFlags(LPTMR, kLPTMR_TimerCompareFlag);
+            LPTMR_ClearStatusFlags(LPTMR0, kLPTMR_TimerCompareFlag);
         }
 
         void set_irq_priority(const uint32_t irq_priority)
         {
-            NVIC_SetPriority(LPTMR_IRQn, irq_priority);
+            NVIC_SetPriority(LPTMR0_IRQn, irq_priority);
         }
 
         void assign_irq_handler(const IrqHandler& irq_handler)
@@ -212,19 +212,19 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
-        void enable() { LPTMR_StartTimer(LPTMR); }
+        void enable() { LPTMR_StartTimer(LPTMR0); }
 
-        void disable() { LPTMR_StopTimer(LPTMR); }
+        void disable() { LPTMR_StopTimer(LPTMR0); }
 
-        bool is_enabled() const { return ((LPTMR->CSR & LPTMR_CSR_TEN_MASK) != 0); }
+        bool is_enabled() const { return ((LPTMR0->CSR & LPTMR_CSR_TEN_MASK) != 0); }
 
         // -------- PERIOD CONFIGURATION --------------------------------------
 
         // Set timer period value
-        void set_period(const uint32_t timer_period) { LPTMR->CMR = timer_period; }
+        void set_period(const uint32_t timer_period) { LPTMR0->CMR = timer_period; }
 
         // Get timer period value
-        uint32_t get_period() const { return LPTMR->CMR; }
+        uint32_t get_period() const { return LPTMR0->CMR; }
 
         // Get timer period value (ready to load into CMR register) based on supplied rate in microseconds
         static uint16_t convert_us_to_period(const int64_t rate_us)

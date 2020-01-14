@@ -45,7 +45,7 @@ using namespace xarmlib::targets::kv5x;
 // IRQ HANDLER
 // ----------------------------------------------------------------------------
 
-extern "C" void LPTMR_IRQHandler(void)
+extern "C" void LPTMR0_IRQHandler(void)
 {
     const int32_t yield = Timer16Driver::irq_handler();
 
