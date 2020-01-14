@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    14 August 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -76,6 +76,7 @@ class IoDebouncer
             config_pins<GpioSource>(pin_name_bus);
         }
 
+#if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         IoDebouncer(      GpioSource&                              gpio_source,
                     const PinNameBus&                              pin_name_bus,
                     const hal::Gpio::InputModeTrueOpenDrainConfig& pin_bus_config,
@@ -100,6 +101,7 @@ class IoDebouncer
 
             config_pins<GpioSource>(pin_name_bus);
         }
+#endif
 
         IoDebouncer(      SpiIoSource& spi_io_source,
                     const PinIndexBus& pin_index_bus,

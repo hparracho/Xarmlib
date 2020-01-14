@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_out.hpp
 // @brief   API digital output class.
-// @date    4 September 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -51,8 +51,10 @@ class DigitalOut : private hal::Gpio
         DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeConfig& config) : hal::Gpio(pin_name, config)
         {}
 
+#if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
         {}
+#endif
 
         // -------- CONFIGURATION ---------------------------------------------
 
