@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_specs.hpp
 // @brief   Kinetis KV5x specification definitions.
-// @date    10 January 2020
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -65,6 +65,7 @@
 
 #if defined (__KV5X__)
 #   define TARGET_DEFINED                   (__KV5X__)
+#   define TARGET_PORT_HAS_TRUE_OPEN_DRAIN  (0)
 #   define TARGET_CAN_COUNT                 (FSL_FEATURE_SOC_FLEXCAN_COUNT)
 #   define TARGET_DAC_COUNT                 (FSL_FEATURE_SOC_DAC_COUNT)
 #   define TARGET_ENC_COUNT                 (FSL_FEATURE_SOC_ENC_COUNT)

@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_specs.hpp
 // @brief   NXP LPC84x specification definitions.
-// @date    16 April 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -95,6 +95,7 @@
 #   define TARGET_FLASH_PAGE_COUNT          (1024)
 #   define TARGET_FLASH_PAGE_SIZE           (64)
 #   define TARGET_FLASH_SIZE                (TARGET_FLASH_PAGE_COUNT * TARGET_FLASH_PAGE_SIZE)
+#   define TARGET_PORT_HAS_TRUE_OPEN_DRAIN  (1)
 #   define TARGET_SPI_COUNT                 (2)
 #   define TARGET_TIMER_COUNT               (4)
 #   define TARGET_TIMER_TYPE_MRT
