@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_enc.hpp
 // @brief   Quadrature Encoder/Decoder (ENC) HAL interface class.
-// @date    10 May 2019
+// @date    16 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -227,7 +227,51 @@ class EncBase : protected EncDriver
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
+
+#include "targets/KV5x/kv5x_enc.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using Enc = EncBase<targets::kv5x::EncDriver>;
+
+} // namespace hal
+
+class Enc : public hal::Enc
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Enc;
+
+        using HomeTriggerMode          = typename Hal::HomeTriggerMode;
+        using DirectionCounting        = typename Hal::DirectionCounting;
+        using PhaseCountMode           = typename Hal::PhaseCountMode;
+        using IndexTriggerMode         = typename Hal::IndexTriggerMode;
+        using Watchdog                 = typename Hal::Watchdog;
+        using InputFilterSampleCount   = typename Hal::InputFilterSampleCount;
+        using OutputControl            = typename Hal::OutputControl;
+        using RevolutionCounterModulus = typename Hal::RevolutionCounterModulus;
+        using ModulusCounting          = typename Hal::ModulusCounting;
+        using UpdatePositionRegisters  = typename Hal::UpdatePositionRegisters;
+        using UpdateHoldRegisters      = typename Hal::UpdateHoldRegisters;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal::Hal;
+};
+
+} // namespace xarmlib
+
+#elif defined __KV4X__
 
 #include "targets/KV4x/kv4x_enc.hpp"
 
