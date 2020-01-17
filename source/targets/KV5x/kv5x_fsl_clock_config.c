@@ -54,6 +54,7 @@ processor_version: 7.0.1
 #define MCG_PLL_DISABLE                                   0U  /*!< MCGPLLCLK disabled */
 #define OSC_CAP0P                                         0U  /*!< Oscillator 0pF capacitor load */
 #define OSC_ER_CLK_DISABLE                                0U  /*!< Disable external reference clock */
+#define SIM_ENET_RMII_CLK_SEL_CLKIN_CLK                   1U  /*!< SDHC clock select: CLKIN (External bypass clock) */
 #define SIM_OSC32KSEL_OSC32KCLK_CLK                       0U  /*!< OSC32KSEL select: OSC32KCLK clock */
 #define SIM_PLLFLLSEL_MCGFLLCLK_CLK                       0U  /*!< PLLFLL select: MCGFLLCLK clock */
 #define SIM_WDOG_CLK_SEL_MCGIRCLK_CLK                     1U  /*!< WDOG clock select: MCGIRCLK clock */
@@ -118,6 +119,18 @@ static void CLOCK_CONFIG_SetWdogClock(uint8_t src)
     SIM->WDOGC = ((SIM->WDOGC & ~SIM_WDOGC_WDOGCLKS_MASK) | SIM_WDOGC_WDOGCLKS(src));
 }
 
+/*FUNCTION**********************************************************************
+ *
+ * Function Name : CLOCK_CONFIG_SetRmii0Clock
+ * Description   : Set RMII clock source.
+ * Param src     : The value to set RMII clock source.
+ *
+ *END**************************************************************************/
+static void CLOCK_CONFIG_SetRmii0Clock(uint32_t src)
+{
+    SIM->SOPT2 = ((SIM->SOPT2 & ~SIM_SOPT2_RMIISRC_MASK) | SIM_SOPT2_RMIISRC(src));
+}
+
 /*******************************************************************************
  ****************** Configuration clock_config_irc_4mhz_vlpr *******************
  ******************************************************************************/
@@ -139,20 +152,16 @@ settings:
 - {id: powerMode, value: VLPR}
 - {id: ENETTimeSrcConfig, value: 'yes'}
 - {id: MCG.CLKS.sel, value: MCG.IRCS}
-- {id: MCG.FCRDIV.scale, value: '1', locked: true}
-- {id: MCG.FLL_mul.scale, value: '2560', locked: true}
-- {id: MCG.FRDIV.scale, value: '32'}
+- {id: MCG.FCRDIV.scale, value: '1'}
+- {id: MCG.FLL_mul.scale, value: '2929'}
 - {id: MCG.IRCS.sel, value: MCG.FCRDIV}
 - {id: MCG.PRDIV.scale, value: '4'}
 - {id: MCG.VDIV.scale, value: '32'}
 - {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
-- {id: MCG_C2_RANGE0_CFG, value: High}
-- {id: MCG_C2_RANGE0_FRDIV_CFG, value: High}
 - {id: OSC_CR_ERCLKEN_CFG, value: Enabled}
 - {id: OSC_CR_ERCLKEN_UNDIV_CFG, value: Enabled}
 - {id: RMIISrcConfig, value: 'yes'}
-- {id: SIM.OUTDIV3.scale, value: '1', locked: true}
-- {id: SIM.OUTDIV4.scale, value: '8', locked: true}
+- {id: SIM.OUTDIV4.scale, value: '8'}
 - {id: SIM.RMIICLKSEL.sel, value: SIM.ENET_1588_CLK_EXT}
 - {id: SIM.TIMESRCSEL.sel, value: SIM.ENET_1588_CLK_EXT}
 - {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
@@ -172,9 +181,9 @@ const mcg_config_t mcgConfig_clock_config_irc_4mhz_vlpr =
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
-        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 32 */
+        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 1 */
         .drs = kMCG_DrsHigh,                      /* High frequency range */
-        .dmx32 = kMCG_Dmx32Default,               /* DCO has a default range of 25% */
+        .dmx32 = kMCG_Dmx32Fine,                  /* DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
         .pll0Config =
             {
                 .enableMode = MCG_PLL_DISABLE,    /* MCGPLLCLK disabled */
@@ -247,12 +256,12 @@ outputs:
 - {id: System_clock.outFreq, value: 95.977472 MHz}
 - {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
-- {id: MCG.FCRDIV.scale, value: '1', locked: true}
-- {id: MCG.FLL_mul.scale, value: '2929', locked: true}
+- {id: MCG.FCRDIV.scale, value: '1'}
+- {id: MCG.FLL_mul.scale, value: '2929'}
 - {id: MCG.IRCS.sel, value: MCG.FCRDIV}
 - {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
 - {id: MCRFFCLKAllowConfig, value: 'no'}
-- {id: SIM.OUTDIV3.scale, value: '2', locked: true}
+- {id: SIM.OUTDIV3.scale, value: '2'}
 - {id: SIM.OUTDIV4.scale, value: '4'}
 - {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
 - {id: WDOGClkConfig, value: 'yes'}
@@ -338,28 +347,33 @@ outputs:
 - {id: FlexBus_clock.outFreq, value: 40 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
+- {id: RMIICLK.outFreq, value: 50 MHz}
 - {id: System_clock.outFreq, value: 160 MHz}
 - {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: PEE}
-- {id: MCG.FCRDIV.scale, value: '1', locked: true}
-- {id: MCG.FLL_mul.scale, value: '2929', locked: true}
-- {id: MCG.FRDIV.scale, value: '1', locked: true}
+- {id: MCG.FCRDIV.scale, value: '1'}
+- {id: MCG.FLL_mul.scale, value: '2929'}
+- {id: MCG.FRDIV.scale, value: '32'}
 - {id: MCG.IRCS.sel, value: MCG.FCRDIV}
 - {id: MCG.IREFS.sel, value: MCG.FRDIV}
 - {id: MCG.PLLS.sel, value: MCG.PLL_DIV2}
-- {id: MCG.PRDIV.scale, value: '1', locked: true}
-- {id: MCG.VDIV.scale, value: '40', locked: true}
+- {id: MCG.VDIV.scale, value: '40'}
 - {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
+- {id: MCG_C2_OSC_MODE_CFG, value: ModeOscLowPower}
+- {id: MCG_C2_RANGE0_CFG, value: High}
+- {id: MCG_C2_RANGE0_FRDIV_CFG, value: High}
 - {id: MCRFFCLKAllowConfig, value: 'no'}
-- {id: SIM.OUTDIV1.scale, value: '1', locked: true}
-- {id: SIM.OUTDIV2.scale, value: '2', locked: true}
-- {id: SIM.OUTDIV3.scale, value: '4', locked: true}
-- {id: SIM.OUTDIV4.scale, value: '8', locked: true}
+- {id: RMIISrcConfig, value: 'yes'}
+- {id: SIM.OUTDIV2.scale, value: '2'}
+- {id: SIM.OUTDIV3.scale, value: '4'}
+- {id: SIM.OUTDIV4.scale, value: '8'}
+- {id: SIM.RMIICLKSEL.sel, value: SIM.ENET_1588_CLK_EXT}
 - {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
 - {id: WDOGClkConfig, value: 'yes'}
 sources:
 - {id: OSC.OSC.outFreq, value: 8 MHz, enabled: true}
+- {id: SIM.ENET_1588_CLK_EXT.outFreq, value: 50 MHz, enabled: true}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
@@ -372,7 +386,7 @@ const mcg_config_t mcgConfig_clock_config_xtal_160mhz_run =
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
-        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 1 */
+        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 32 */
         .drs = kMCG_DrsHigh,                      /* High frequency range */
         .dmx32 = kMCG_Dmx32Fine,                  /* DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
         .pll0Config =
@@ -392,7 +406,7 @@ const osc_config_t oscConfig_clock_config_xtal_160mhz_run =
     {
         .freq = 8000000U,                         /* Oscillator frequency: 8000000Hz */
         .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
-        .workMode = kOSC_ModeExt,                 /* Use external clock */
+        .workMode = kOSC_ModeOscLowPower,         /* Oscillator low power */
         .oscerConfig =
             {
                 .enableMode = OSC_ER_CLK_DISABLE, /* Disable external reference clock */
@@ -424,6 +438,8 @@ void clock_config_xtal_160mhz_run(void)
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_160mhz_run);
     /* Set SystemCoreClock variable. */
     SystemCoreClock = CLOCK_CONFIG_XTAL_160MHZ_RUN_CORE_CLOCK;
+    /* Set RMII clock source. */
+    CLOCK_CONFIG_SetRmii0Clock(SIM_ENET_RMII_CLK_SEL_CLKIN_CLK);
     /* Set WDOG clock source. */
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
@@ -442,26 +458,34 @@ outputs:
 - {id: FlexBus_clock.outFreq, value: 47 MHz}
 - {id: LPO_clock.outFreq, value: 1 kHz}
 - {id: MCGIRCLK.outFreq, value: 4 MHz}
+- {id: RMIICLK.outFreq, value: 50 MHz}
 - {id: System_clock.outFreq, value: 188 MHz}
 - {id: WDOGCLK.outFreq, value: 4 MHz}
 settings:
 - {id: MCGMode, value: PEE}
 - {id: powerMode, value: HSRUN}
-- {id: MCG.FCRDIV.scale, value: '1', locked: true}
+- {id: MCG.FCRDIV.scale, value: '1'}
+- {id: MCG.FLL_mul.scale, value: '2929'}
+- {id: MCG.FRDIV.scale, value: '32'}
 - {id: MCG.IRCS.sel, value: MCG.FCRDIV}
 - {id: MCG.IREFS.sel, value: MCG.FRDIV}
 - {id: MCG.PLLS.sel, value: MCG.PLL_DIV2}
-- {id: MCG.PRDIV.scale, value: '1', locked: true}
-- {id: MCG.VDIV.scale, value: '47', locked: true}
+- {id: MCG.VDIV.scale, value: '47'}
 - {id: MCG_C1_IRCLKEN_CFG, value: Enabled}
+- {id: MCG_C2_OSC_MODE_CFG, value: ModeOscLowPower}
+- {id: MCG_C2_RANGE0_CFG, value: High}
+- {id: MCG_C2_RANGE0_FRDIV_CFG, value: High}
 - {id: MCRFFCLKAllowConfig, value: 'no'}
+- {id: RMIISrcConfig, value: 'yes'}
 - {id: SIM.OUTDIV2.scale, value: '2'}
-- {id: SIM.OUTDIV3.scale, value: '4', locked: true}
-- {id: SIM.OUTDIV4.scale, value: '8', locked: true}
+- {id: SIM.OUTDIV3.scale, value: '4'}
+- {id: SIM.OUTDIV4.scale, value: '8'}
+- {id: SIM.RMIICLKSEL.sel, value: SIM.ENET_1588_CLK_EXT}
 - {id: SIM.WDOGCLKS.sel, value: MCG.MCGIRCLK}
 - {id: WDOGClkConfig, value: 'yes'}
 sources:
 - {id: OSC.OSC.outFreq, value: 8 MHz, enabled: true}
+- {id: SIM.ENET_1588_CLK_EXT.outFreq, value: 50 MHz, enabled: true}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 
@@ -474,9 +498,9 @@ const mcg_config_t mcgConfig_clock_config_xtal_188mhz_hsrun =
         .irclkEnableMode = kMCG_IrclkEnable,      /* MCGIRCLK enabled, MCGIRCLK disabled in STOP mode */
         .ircs = kMCG_IrcFast,                     /* Fast internal reference clock selected */
         .fcrdiv = 0x0U,                           /* Fast IRC divider: divided by 1 */
-        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 1 */
-        .drs = kMCG_DrsLow,                       /* Low frequency range */
-        .dmx32 = kMCG_Dmx32Default,               /* DCO has a default range of 25% */
+        .frdiv = 0x0U,                            /* FLL reference clock divider: divided by 32 */
+        .drs = kMCG_DrsHigh,                      /* High frequency range */
+        .dmx32 = kMCG_Dmx32Fine,                  /* DCO is fine-tuned for maximum frequency with 32.768 kHz reference */
         .pll0Config =
             {
                 .enableMode = MCG_PLL_DISABLE,    /* MCGPLLCLK disabled */
@@ -494,7 +518,7 @@ const osc_config_t oscConfig_clock_config_xtal_188mhz_hsrun =
     {
         .freq = 8000000U,                         /* Oscillator frequency: 8000000Hz */
         .capLoad = (OSC_CAP0P),                   /* Oscillator capacity load: 0pF */
-        .workMode = kOSC_ModeExt,                 /* Use external clock */
+        .workMode = kOSC_ModeOscLowPower,         /* Oscillator low power */
         .oscerConfig =
             {
                 .enableMode = OSC_ER_CLK_DISABLE, /* Disable external reference clock */
@@ -532,6 +556,8 @@ void clock_config_xtal_188mhz_hsrun(void)
     CLOCK_SetSimConfig(&simConfig_clock_config_xtal_188mhz_hsrun);
     /* Set SystemCoreClock variable. */
     SystemCoreClock = CLOCK_CONFIG_XTAL_188MHZ_HSRUN_CORE_CLOCK;
+    /* Set RMII clock source. */
+    CLOCK_CONFIG_SetRmii0Clock(SIM_ENET_RMII_CLK_SEL_CLKIN_CLK);
     /* Set WDOG clock source. */
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
