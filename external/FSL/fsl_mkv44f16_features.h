@@ -195,6 +195,9 @@
 
 /* FLEXCAN module features */
 
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
+
 #if defined(CPU_MKV44F128VLF16) || defined(CPU_MKV44F64VLF16)
     /* @brief Message buffer size */
     #define FSL_FEATURE_FLEXCAN_HAS_MESSAGE_BUFFER_MAX_NUMBERn(x) (16)

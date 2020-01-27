@@ -271,6 +271,8 @@
 #define FSL_FEATURE_FLEXCAN_INTERRUPT_COUNT (6)
 /* @brief Is affected by errata with ID 5641 (Module does not transmit a message that is enabled to be transmitted at a specific moment during the arbitration process). */
 #define FSL_FEATURE_FLEXCAN_HAS_ERRATA_5641 (0)
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 /* CMP module features */
 
