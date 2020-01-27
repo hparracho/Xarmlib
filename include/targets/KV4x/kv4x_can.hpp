@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    24 January 2020
+// @date    27 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -619,12 +619,10 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         //        - all Rx FIFO status flags must be cleared before execute this method
         void clear_rx_fifo()
         {
-            //enter_freeze_mode();
             FLEXCAN_EnterFreezeMode(m_can_base);
 
             FLEXCAN_ClearMbStatusFlags(m_can_base, CAN_IFLAG1_BUF0I_MASK);
 
-            //exit_freeze_mode();
             FLEXCAN_ExitFreezeMode(m_can_base);
         }
 
@@ -1131,26 +1129,6 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
 
             return ((m_can_base->MB[mb].CS & CAN_CS_CODE_MASK) != CAN_CS_CODE(code_tx_mb_data_or_remote)) ? true : false;
         }
-
-        /*void enter_freeze_mode()
-        {
-            // Set Freeze, halt bits
-            m_can_base->MCR |= CAN_MCR_FRZ_MASK;
-            m_can_base->MCR |= CAN_MCR_HALT_MASK;
-
-            // Wait until the CAN Module enter freeze mode
-            while((m_can_base->MCR & CAN_MCR_FRZACK_MASK) == 0);
-        }
-
-        void exit_freeze_mode()
-        {
-            // Clear Freeze, halt bits
-            m_can_base->MCR &= ~CAN_MCR_HALT_MASK;
-            m_can_base->MCR &= ~CAN_MCR_FRZ_MASK;
-
-            // Wait until the CAN Module exit freeze mode
-            while((m_can_base->MCR & CAN_MCR_FRZACK_MASK) != 0);
-        }*/
 
         // -------- PRIVATE OR'ED MESSAGE BUFFER IRQ HANDLERS -----------------
 
