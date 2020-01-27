@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_specs.hpp
 // @brief   Kinetis KV4x specification definitions.
-// @date    4 April 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -86,6 +86,7 @@
 
 #if defined (__KV4X__)
 #   define TARGET_DEFINED                   (__KV4X__)
+#   define TARGET_PORT_HAS_TRUE_OPEN_DRAIN  (1)
 #   define TARGET_CAN_COUNT                 (FSL_FEATURE_SOC_FLEXCAN_COUNT)
 #   define TARGET_DAC_COUNT                 (FSL_FEATURE_SOC_DAC_COUNT)
 #   define TARGET_ENC_COUNT                 (FSL_FEATURE_SOC_ENC_COUNT)

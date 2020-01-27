@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_port.hpp
 // @brief   Port HAL interface class.
-// @date    28 August 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -87,7 +87,24 @@ class PortBase : protected PortDriver
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
+
+#include "targets/KV5x/kv5x_port.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using Port = PortBase<targets::kv5x::PortDriver>;
+
+} // namespace hal
+
+using Port = hal::Port;
+
+} // namespace xarmlib
+
+#elif defined __KV4X__
 
 #include "targets/KV4x/kv4x_port.hpp"
 

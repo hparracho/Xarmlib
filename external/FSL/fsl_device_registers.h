@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    fsl_device_registers.h
 // @brief   Freescale drivers generic header include file.
-// @date    31 October 2018
+// @date    9 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -39,8 +39,24 @@
 
 
 
-#if defined (CPU_MKV46F256VLL16) || defined (CPU_MKV46F256VLH16) || \
-    defined (CPU_MKV46F128VLL16) || defined (CPU_MKV46F128VLH16)
+#if defined (CPU_MKV58F1M0VLL24) || defined (CPU_MKV58F1M0VLQ24) || defined (CPU_MKV58F1M0VMD24) || \
+    defined (CPU_MKV58F512VLL24) || defined (CPU_MKV58F512VLQ24) || defined (CPU_MKV58F512VMD24)
+
+// CMSIS-style register definitions
+#include "fsl_mkv58F24_cmsis.h"
+// CPU specific feature definitions
+#include "fsl_mkv58F24_features.h"
+
+#elif defined (CPU_MKV56F1M0VLL24) || defined (CPU_MKV56F1M0VLQ24) || defined (CPU_MKV56F1M0VMD24) || \
+      defined (CPU_MKV56F512VLL24) || defined (CPU_MKV56F512VLQ24) || defined (CPU_MKV56F512VMD24)
+
+// CMSIS-style register definitions
+#include "fsl_mkv56F24_cmsis.h"
+// CPU specific feature definitions
+#include "fsl_mkv56F24_features.h"
+
+#elif defined (CPU_MKV46F256VLL16) || defined (CPU_MKV46F256VLH16) || \
+      defined (CPU_MKV46F128VLL16) || defined (CPU_MKV46F128VLH16)
 
 // CMSIS-style register definitions
 #include "fsl_mkv46f16_cmsis.h"

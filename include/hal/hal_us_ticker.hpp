@@ -1,12 +1,12 @@
 // ----------------------------------------------------------------------------
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
-// @note    Target KV4x takes control of one available Timer (PIT)
-// @date    10 May 2019
+// @note    Target KV5x and KV4x takes control of one available Timer (PIT)
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -84,7 +84,24 @@ class UsTickerBase : protected UsTickerDriver
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
+
+#include "targets/KV5x/kv5x_us_ticker.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using UsTicker = UsTickerBase<targets::kv5x::UsTickerDriver>;
+
+} // namespace hal
+
+using UsTicker = hal::UsTicker;
+
+} // namespace xarmlib
+
+#elif defined __KV4X__
 
 #include "targets/KV4x/kv4x_us_ticker.hpp"
 

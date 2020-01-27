@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_uart.hpp
 // @brief   UART HAL interface class.
-// @date    14 August 2019
+// @date    21 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -182,7 +182,92 @@ class UartBase : protected UartDriver
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
+
+#include "targets/KV5x/kv5x_uart.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using Uart = UartBase<targets::kv5x::UartDriver>;
+
+} // namespace hal
+
+class Uart : public hal::Uart
+{
+    public:
+
+        // --------------------------------------------------------------------
+        // PUBLIC TYPE ALIASES
+        // --------------------------------------------------------------------
+
+        using Hal = hal::Uart;
+
+        using DataBits = typename Hal::DataBits;
+        using StopBits = typename Hal::StopBits;
+        using Parity   = typename Hal::Parity;
+        using IdleType = typename Hal::IdleType;
+
+        using StatusInterrupt        = typename Hal::StatusInterrupt;
+        using StatusInterruptBitmask = typename Hal::StatusInterruptBitmask;
+        using ErrorInterrupt         = typename Hal::ErrorInterrupt;
+        using ErrorInterruptBitmask  = typename Hal::ErrorInterruptBitmask;
+
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        using Hal::Hal;
+
+        // -------- FLUSH FIFOS -----------------------------------------------
+
+        // NOTE: Reading an empty data register to clear one of the flags of
+        //       the S1 register causes the FIFO pointers to become misaligned.
+        //       A receive FIFO flush reinitializes the pointers.
+
+        void flush_rx_fifo() { Hal::flush_rx_fifo(); }
+        void flush_tx_fifo() { Hal::flush_tx_fifo(); }
+
+        // -------- STATUS INTERRUPTS -----------------------------------------
+
+        void                   enable_status_interrupts (const StatusInterruptBitmask bitmask) { Hal::enable_status_interrupts(bitmask); }
+        void                   disable_status_interrupts(const StatusInterruptBitmask bitmask) { Hal::disable_status_interrupts(bitmask); }
+        StatusInterruptBitmask get_status_interrupts_enabled() const                           { return Hal::get_status_interrupts_enabled(); }
+
+        // -------- ERROR INTERRUPTS ------------------------------------------
+
+        void                  enable_error_interrupts (const ErrorInterruptBitmask bitmask) { Hal::enable_error_interrupts(bitmask); }
+        void                  disable_error_interrupts(const ErrorInterruptBitmask bitmask) { Hal::disable_error_interrupts(bitmask); }
+        ErrorInterruptBitmask get_error_interrupts_enabled() const                          { return Hal::get_error_interrupts_enabled(); }
+
+        // -------- STATUS IRQ / IRQ HANDLER ----------------------------------
+
+        void enable_status_irq()     { Hal::enable_status_irq(); }
+        void disable_status_irq()    { Hal::disable_status_irq(); }
+        bool is_status_irq_enabled() { return Hal::is_status_irq_enabled(); }
+
+        void set_status_irq_priority(const int32_t irq_priority) { Hal::set_status_irq_priority(irq_priority); }
+
+        void assign_status_irq_handler(const IrqHandler& irq_handler) { Hal::assign_status_irq_handler(irq_handler); }
+        void remove_status_irq_handler()                              { Hal::remove_status_irq_handler(); }
+
+        // -------- ERROR IRQ / IRQ HANDLER -----------------------------------
+
+        void enable_error_irq()     { Hal::enable_error_irq(); }
+        void disable_error_irq()    { Hal::disable_error_irq(); }
+        bool is_error_irq_enabled() { return Hal::is_error_irq_enabled(); }
+
+        void set_error_irq_priority(const int32_t irq_priority) { Hal::set_error_irq_priority(irq_priority); }
+
+        void assign_error_irq_handler(const IrqHandler& irq_handler) { Hal::assign_error_irq_handler(irq_handler); }
+        void remove_error_irq_handler()                              { Hal::remove_error_irq_handler(); }
+};
+
+} // namespace xarmlib
+
+#elif defined __KV4X__
 
 #include "targets/KV4x/kv4x_uart.hpp"
 

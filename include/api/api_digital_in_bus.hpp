@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in_bus.hpp
 // @brief   API digital input bus class.
-// @date    10 May 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -62,6 +62,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
             }
         }
 
+#if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         DigitalInBus(const PinNameBus& pin_name_bus, const hal::Gpio::InputModeTrueOpenDrainConfig& config) : m_bus(pin_name_bus.get_size())
         {
             std::size_t index = 0;
@@ -70,6 +71,7 @@ class DigitalInBus : private NonCopyable<DigitalInBus>
                 m_bus[index++] = std::make_unique<hal::Gpio>(pin_name, config);
             }
         }
+#endif
 
         // -------- READ ------------------------------------------------------
 

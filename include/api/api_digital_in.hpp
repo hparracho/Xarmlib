@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_digital_in.hpp
 // @brief   API digital input class.
-// @date    4 September 2019
+// @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -51,8 +51,10 @@ class DigitalIn : private hal::Gpio
         DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeConfig& config) : hal::Gpio(pin_name, config)
         {}
 
+#if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         DigitalIn(const hal::Pin::Name pin_name, const hal::Gpio::InputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
         {}
+#endif
 
         // -------- CONFIGURATION ---------------------------------------------
 
