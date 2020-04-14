@@ -33,9 +33,9 @@ Commit: 4c9146ea539f72749d6cc3ea076372a81b12cb11
 
 ---
 ## span: std::span implementation for C++11 and later
-Date: 7 January 2020
+Date: 31 January 2020
 Branch: master  
-Commit: f17749c88cca9a3455cfdc9d907cc84850fd2423
+Commit: 08cb4bf0e06c0e36f7e2b64e488ede711a8bb5ad
 ### https://github.com/tcbrindle/span
 
 ---
