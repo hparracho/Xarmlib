@@ -9,9 +9,9 @@ Commit: fa56bcbcf7613359931de8e05c65b21b94daccef
 
 ---
 ## CMSIS-Core(M) Version 5
-Date: 10 July 2019
+Date: 9 April 2020
 Branch: master  
-Commit: b5f0603d6a584d1724d952fd8b0737458b90d62b
+Commit: a65b7c9a3e6502127fdb80eb288d8cbdf251a6f4
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
