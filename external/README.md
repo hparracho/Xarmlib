@@ -39,6 +39,13 @@ Commit: 08cb4bf0e06c0e36f7e2b64e488ede711a8bb5ad
 ### https://github.com/tcbrindle/span
 
 ---
+## usbhost: USB Host Library Rev.2.0
+Date: 13 September 2019
+Branch: master  
+Commit: cd87628af4a693eeafe1bf04486cf86ba01d29b8
+### https://github.com/felis/USB_Host_Shield_2.0
+
+---
 ## usflib: Micro String Format (μSF) library
 Date: 14 January 2019
 Branch: master  
