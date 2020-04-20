@@ -4,7 +4,7 @@
 // @notes   Strongly based on Usb.h and UsbCore.h files from
 //          https://github.com/felis/USB_Host_Shield_2.0
 //          (commit as of 13 September 2019)
-// @date    17 April 2020
+// @date    20 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -211,15 +211,15 @@ public:
 
 class USB : public MAX3421E
 {
-        using SpiMaster = xarmlib::SpiMaster;
-        using Pin       = xarmlib::Pin;
+        using SpiMaster = xarmlib::hal::SpiMaster;
+        using Pin       = xarmlib::hal::Pin;
 
         AddressPoolImpl<USB_NUMDEVICES> addrPool;
         USBDeviceConfig* devConfig[USB_NUMDEVICES];
         uint8_t bmHubPre;
 
 public:
-        USB(SpiMaster *spi_master, const Pin::Name spi_ss, const Pin::Name intr);
+        USB(SpiMaster *spi_master, const Pin::Name spi_ss, const Pin::Name max_int);
 
         void SetHubPreMask() {
                 bmHubPre |= bmHUBPRE;

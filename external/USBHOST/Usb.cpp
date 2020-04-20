@@ -4,7 +4,7 @@
 // @notes   Strongly based on Usb.cpp file from
 //          https://github.com/felis/USB_Host_Shield_2.0
 //          (commit as of 13 September 2019)
-// @date    17 April 2020
+// @date    20 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -38,8 +38,8 @@ static uint8_t usb_error = 0;
 static uint8_t usb_task_state;
 
 /* constructor */
-USB::USB(SpiMaster *spi_master, const Pin::Name spi_ss, const Pin::Name intr) :
-    MAX3421E(spi_master, spi_ss, intr),
+USB::USB(SpiMaster *spi_master, const Pin::Name spi_ss, const Pin::Name max_int) :
+    MAX3421E(spi_master, spi_ss, max_int),
     bmHubPre(0)
 {
         usb_task_state = USB_DETACHED_SUBSTATE_INITIALIZE; //set up state machine
