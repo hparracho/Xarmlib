@@ -4,7 +4,7 @@
 // @notes   Strongly based on max3421e.h and usbhost.h files from
 //          https://github.com/felis/USB_Host_Shield_2.0
 //          (commit as of 13 September 2019)
-// @date    20 April 2020
+// @date    21 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -413,36 +413,27 @@ public:
     // returns 0 if success, -1 if not
     int8_t Init()
     {
-        XMEM_ACQUIRE_SPI();
-        // Moved here.
-        // you really should not init hardware in the constructor when it involves locks.
-        // Also avoids the vbus flicker issue confusing some devices.
-        /* pin and peripheral setup */
-        SPI_SS::SetDirWrite();
-        SPI_SS::Set();
-        spi::init();
-        INTR::SetDirRead();
-        XMEM_RELEASE_SPI();
         /* MAX3421E - full-duplex SPI, level interrupt */
         // GPX pin on. Moved here, otherwise we flicker the vbus.
         regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
 
-        if(reset() == 0) { //OSCOKIRQ hasn't asserted in time
-                return -1;
+        if(reset() == 0) // OSCOKIRQ hasn't asserted in time
+        {
+            return -1;
         }
 
         regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
 
-        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); //connection detection
+        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); // connection detection
 
         /* check if device is connected */
         regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-        while(!(regRd(rHCTL) & bmSAMPLEBUS)); //wait for sample operation to finish
+        while(!(regRd(rHCTL) & bmSAMPLEBUS)); // wait for sample operation to finish
 
-        busprobe(); //check if anything is connected
+        busprobe(); // check if anything is connected
 
-        regWr(rHIRQ, bmCONDETIRQ); //clear connection detect interrupt
-        regWr(rCPUCTL, 0x01); //enable interrupt pin
+        regWr(rHIRQ, bmCONDETIRQ); // clear connection detect interrupt
+        regWr(rCPUCTL, 0x01); // enable interrupt pin
 
         return 0;
     }
@@ -452,21 +443,12 @@ public:
     // returns 0 if success, -1 if not
     int8_t Init(int mseconds)
     {
-        XMEM_ACQUIRE_SPI();
-        // Moved here.
-        // you really should not init hardware in the constructor when it involves locks.
-        // Also avoids the vbus flicker issue confusing some devices.
-        /* pin and peripheral setup */
-        SPI_SS::SetDirWrite();
-        SPI_SS::Set();
-        spi::init();
-        INTR::SetDirRead();
-        XMEM_RELEASE_SPI();
         /* MAX3421E - full-duplex SPI, level interrupt, vbus off */
         regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL | GPX_VBDET));
 
-        if(reset() == 0) { //OSCOKIRQ hasn't asserted in time
-                return -1;
+        if(reset() == 0) // OSCOKIRQ hasn't asserted in time
+        {
+            return -1;
         }
 
         // Delay a minimum of 1 second to ensure any capacitors are drained.
@@ -476,16 +458,16 @@ public:
 
         regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
 
-        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); //connection detection
+        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); // connection detection
 
         /* check if device is connected */
         regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-        while(!(regRd(rHCTL) & bmSAMPLEBUS)); //wait for sample operation to finish
+        while(!(regRd(rHCTL) & bmSAMPLEBUS)); // wait for sample operation to finish
 
-        busprobe(); //check if anything is connected
+        busprobe(); // check if anything is connected
 
-        regWr(rHIRQ, bmCONDETIRQ); //clear connection detect interrupt
-        regWr(rCPUCTL, 0x01); //enable interrupt pin
+        regWr(rHIRQ, bmCONDETIRQ); // clear connection detect interrupt
+        regWr(rCPUCTL, 0x01); // enable interrupt pin
 
         // GPX pin on. This is done here so that busprobe will fail if we have a switch connected.
         regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
@@ -542,26 +524,27 @@ public:
                 regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST | bmSEPIRQ);
                 vbusState = SE0;
                 break;
-        } // end switch(bus_sample)
+        }
     }
 
-    uint8_t GpxHandler();
     uint8_t IntHandler()
     {
         uint8_t HIRQ;
         uint8_t HIRQ_sendback = 0x00;
 
         HIRQ = regRd(rHIRQ); // determine interrupt source
-        //if( HIRQ & bmFRAMEIRQ ) {               //->1ms SOF interrupt handler
-        //    HIRQ_sendback |= bmFRAMEIRQ;
-        //}//end FRAMEIRQ handling
-        if(HIRQ & bmCONDETIRQ) {
-                busprobe();
-                HIRQ_sendback |= bmCONDETIRQ;
+
+        if(HIRQ & bmCONDETIRQ)
+        {
+            busprobe();
+
+            HIRQ_sendback |= bmCONDETIRQ;
         }
-        /* End HIRQ interrupts handling, clear serviced IRQs    */
+
+        // End HIRQ interrupts handling, clear serviced IRQs
         regWr(rHIRQ, HIRQ_sendback);
-        return ( HIRQ_sendback);
+
+        return HIRQ_sendback;
     }
 
     // MAX3421E state change task and interrupt handler
@@ -584,19 +567,5 @@ public:
         return ( rcode);
     }
 };
-
-
-//template< typename SPI_SS, typename INTR >
-//uint8_t MAX3421e< SPI_SS, INTR >::GpxHandler()
-//{
-//    uint8_t GPINIRQ = regRd( rGPINIRQ );          //read GPIN IRQ register
-////    if( GPINIRQ & bmGPINIRQ7 ) {            //vbus overload
-////        vbusPwr( OFF );                     //attempt powercycle
-////        delay( 1000 );
-////        vbusPwr( ON );
-////        regWr( rGPINIRQ, bmGPINIRQ7 );
-////    }
-//    return( GPINIRQ );
-//}
 
 #endif // __SPI_MAX3421E_H__
