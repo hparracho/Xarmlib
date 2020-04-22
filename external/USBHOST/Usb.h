@@ -4,7 +4,7 @@
 // @notes   Strongly based on Usb.h and UsbCore.h files from
 //          https://github.com/felis/USB_Host_Shield_2.0
 //          (commit as of 13 September 2019)
-// @date    20 April 2020
+// @date    22 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,7 +53,7 @@
 #include "spi_max3421e.h"// "usbhost.h"
 //#include "UsbCore.h"
 //#include "parsetools.h"
-//#include "confdescparser.h"
+#include "confdescparser.h"
 
 
 

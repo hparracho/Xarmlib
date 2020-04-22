@@ -2,7 +2,7 @@
 // @file    usb_host.hpp
 // @brief   USB Host header file to use in the library. This should be the only
 //          header file included when USB Host functionality is required.
-// @date    17 April 2020
+// @date    22 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,6 +33,7 @@
 #ifndef __XARMLIB_EXTERNAL_USB_HOST_HPP
 #define __XARMLIB_EXTERNAL_USB_HOST_HPP
 
-#include "Usb.h"
+#include "usbhub.h"
+#include "hiduniversal.h"
 
 #endif // __XARMLIB_EXTERNAL_USB_HOST_HPP

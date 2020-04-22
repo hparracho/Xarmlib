@@ -4,7 +4,7 @@
 // @notes   Strongly based on max3421e.h and usbhost.h files from
 //          https://github.com/felis/USB_Host_Shield_2.0
 //          (commit as of 13 September 2019)
-// @date    21 April 2020
+// @date    22 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -40,7 +40,6 @@
 #include "api/api_digital_in.hpp"
 #include "api/api_digital_out.hpp"
 #include "hal/hal_spi.hpp"
-#include "hal/hal_us_ticker.hpp"
 
 
 
@@ -260,7 +259,6 @@ class MAX3421E
     using SpiMaster  = xarmlib::hal::SpiMaster;
     using Pin        = xarmlib::hal::Pin;
     using Gpio       = xarmlib::hal::Gpio;
-    using UsTicker   = xarmlib::hal::UsTicker;
 
     inline static uint8_t vbusState = 0;
 
@@ -366,9 +364,9 @@ public:
     {
         uint8_t gpin = 0;
 
-        gpin = regRd(rIOPINS2); //pins 4-7
-        gpin &= 0xf0; //clean lower nibble
-        gpin |= (regRd(rIOPINS1) >> 4); //shift low bits and OR with upper from previous operation
+        gpin  = regRd(rIOPINS2);        // pins 4-7
+        gpin &= 0xf0;                   // clean lower nibble
+        gpin |= (regRd(rIOPINS1) >> 4); // shift low bits and OR with upper from previous operation
 
         return gpin;
     }
@@ -380,9 +378,9 @@ public:
     {
         uint8_t gpout = 0;
 
-        gpout = regRd(rIOPINS1); //pins 0-3
-        gpout &= 0x0f; //clean upper nibble
-        gpout |= (regRd(rIOPINS2) << 4); //shift high bits and OR with lower from previous operation
+        gpout  = regRd(rIOPINS1);       // pins 0-3
+        gpout &= 0x0f;                  // clean upper nibble
+        gpout |= (regRd(rIOPINS2) << 4);// shift high bits and OR with lower from previous operation
 
         return gpout;
     }
@@ -409,12 +407,10 @@ public:
     }
 
     // Initialize MAX3421E
-    // set Host mode, pullups, and stuff
     // returns 0 if success, -1 if not
     int8_t Init()
     {
-        /* MAX3421E - full-duplex SPI, level interrupt */
-        // GPX pin on. Moved here, otherwise we flicker the vbus.
+        // Set full-duplex SPI and INT output pin to level-active
         regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
 
         if(reset() == 0) // OSCOKIRQ hasn't asserted in time
@@ -422,55 +418,26 @@ public:
             return -1;
         }
 
-        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
+        // Set pull-downs and Host mode
+        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
+        // Peripheral Connect/Disconnect Interrupt Enable & Frame Generator Interrupt Enable
+        regWr(rHIEN, bmCONDETIE | bmFRAMEIE);
 
-        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); // connection detection
+        // Check if device is connected...
 
-        /* check if device is connected */
-        regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-        while(!(regRd(rHCTL) & bmSAMPLEBUS)); // wait for sample operation to finish
+        // Sample the state of the USB bus
+        regWr(rHCTL, bmSAMPLEBUS);
 
-        busprobe(); // check if anything is connected
+        // Wait for sample operation to finish
+        while(!(regRd(rHCTL) & bmSAMPLEBUS));
 
-        regWr(rHIRQ, bmCONDETIRQ); // clear connection detect interrupt
-        regWr(rCPUCTL, 0x01); // enable interrupt pin
+        // Check if anything is connected
+        busprobe();
 
-        return 0;
-    }
-
-    // Initialize MAX3421E
-    // set Host mode, pullups, and stuff
-    // returns 0 if success, -1 if not
-    int8_t Init(int mseconds)
-    {
-        /* MAX3421E - full-duplex SPI, level interrupt, vbus off */
-        regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL | GPX_VBDET));
-
-        if(reset() == 0) // OSCOKIRQ hasn't asserted in time
-        {
-            return -1;
-        }
-
-        // Delay a minimum of 1 second to ensure any capacitors are drained.
-        // 1 second is required to make sure we do not smoke a Microdrive!
-        if(mseconds < 1000) mseconds = 1000;
-        delay(mseconds);
-
-        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
-
-        regWr(rHIEN, bmCONDETIE | bmFRAMEIE); // connection detection
-
-        /* check if device is connected */
-        regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-        while(!(regRd(rHCTL) & bmSAMPLEBUS)); // wait for sample operation to finish
-
-        busprobe(); // check if anything is connected
-
-        regWr(rHIRQ, bmCONDETIRQ); // clear connection detect interrupt
-        regWr(rCPUCTL, 0x01); // enable interrupt pin
-
-        // GPX pin on. This is done here so that busprobe will fail if we have a switch connected.
-        regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
+        // Clear Peripheral Connect/Disconnect Interrupt Request
+        regWr(rHIRQ, bmCONDETIRQ);
+        // Enable the INT pin
+        regWr(rCPUCTL, bmIE);
 
         return 0;
     }
@@ -488,8 +455,10 @@ public:
     // Probe bus to determine device presence and speed and switch host to this speed
     void busprobe()
     {
-        uint8_t bus_sample = regRd(rHRSL); // Get J,K status
-        bus_sample &= (bmJSTATUS | bmKSTATUS); // zero the rest of the byte
+        // Get J,K status
+        uint8_t bus_sample = regRd(rHRSL);
+        // Zero the rest of the byte
+        bus_sample &= (bmJSTATUS | bmKSTATUS);
 
         switch(bus_sample)  // start full-speed or low-speed host
         {
@@ -529,11 +498,17 @@ public:
 
     uint8_t IntHandler()
     {
-        uint8_t HIRQ;
         uint8_t HIRQ_sendback = 0x00;
 
-        HIRQ = regRd(rHIRQ); // determine interrupt source
+        // Determine interrupt source
+        uint8_t HIRQ = regRd(rHIRQ);
 
+        /*
+        if(HIRQ & bmFRAMEIRQ) // -> 1ms SOF interrupt handler
+        {
+            HIRQ_sendback |= bmFRAMEIRQ;
+        }
+        */
         if(HIRQ & bmCONDETIRQ)
         {
             busprobe();
@@ -547,24 +522,17 @@ public:
         return HIRQ_sendback;
     }
 
-    // MAX3421E state change task and interrupt handler
+    // State change task and interrupt handler
     uint8_t Task()
     {
         uint8_t rcode = 0;
-        uint8_t pinvalue;
-        //USB_HOST_SERIAL.print("Vbus state: ");
-        //USB_HOST_SERIAL.println( vbusState, HEX );
-        pinvalue = INTR::IsSet(); //Read();
-        //pinvalue = digitalRead( MAX_INT );
-        if(pinvalue == 0) {
-                rcode = IntHandler();
+
+        if(maxInt == 0)
+        {
+            rcode = IntHandler();
         }
-        //    pinvalue = digitalRead( MAX_GPX );
-        //    if( pinvalue == LOW ) {
-        //        GpxHandler();
-        //    }
-        //    usbSM();                                //USB state machine
-        return ( rcode);
+
+        return rcode;
     }
 };
 
