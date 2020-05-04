@@ -16,8 +16,8 @@ Circuits At Home, LTD
 Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
-#if !defined(USB_HOST_SHIELD_H) || defined(_max3421e_h_)
-#error "Never include UHS_max3421e.h directly; include USB_HOST_SHIELD.h instead"
+#if !defined(SPI_MAX3421E_H) || defined(_max3421e_h_)
+#error "Never include UHS_max3421e.h directly; include SPI_MAX3421E_H.h instead"
 #else
 
 #define _max3421e_h_
