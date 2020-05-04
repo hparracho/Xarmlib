@@ -33,6 +33,7 @@
 #if !defined(MACROS_H)
 #define MACROS_H
 #include "macro_logic.h"
+#include "hal/hal_us_ticker.hpp"
 
 #define delay(ms) xarmlib::hal::UsTicker::wait(std::chrono::milliseconds(ms))
 #define millis() std::chrono::duration_cast<std::chrono::milliseconds>(xarmlib::hal::UsTicker::now()).count()
