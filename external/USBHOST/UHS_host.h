@@ -1,29 +1,35 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
+// ----------------------------------------------------------------------------
+// @file    UHS_host.h
+// @brief   UHS host definitions.
+// @notes   Based on UHS30 UHS_host.h file with minor changes
+// @date    4 May 2020
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
 
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-Contact information
--------------------
-
-Circuits At Home, LTD
-Web      :  http://www.circuitsathome.com
-e-mail   :  support@circuitsathome.com
- */
-/* USB functions */
 #ifndef _UHS_host_h_
 #define _UHS_host_h_
 
@@ -56,16 +62,8 @@ e-mail   :  support@circuitsathome.com
 #include "UHS_host_INLINE.h"
 #include "UHS_printf_HELPER.h"
 
-#if defined(LOAD_USB_HOST_SHIELD)
-#include "USB_HOST_SHIELD/USB_HOST_SHIELD.h"
-#endif
-
-#if defined(LOAD_UHS_KINETIS_FS_HOST) && !defined(UHS_KINETIS_FS_HOST_LOADED)
-#include "UHS_KINETIS_FS_HOST/UHS_KINETIS_FS_HOST.h"
-#endif
-
-#if defined(LOAD_UHS_KINETIS_EHCI) && !defined(UHS_KINETIS_EHCI_LOADED)
-#include "UHS_KINETIS_EHCI/UHS_KINETIS_EHCI.h"
+#if defined(LOAD_MAX3421E)
+#include "MAX3421E/spi_max3421e.h"
 #endif
 
 // Load USB drivers and multiplexers
@@ -74,35 +72,10 @@ e-mail   :  support@circuitsathome.com
 #include "UHS_HUB/UHS_HUB.h"
 #endif // HUB loaded
 
-#if defined(LOAD_UHS_BULK_STORAGE)
-#include "UHS_BULK_STORAGE/UHS_BULK_STORAGE.h"
-#endif
-
-#if defined(LOAD_GENERIC_STORAGE)
-#include "../UHS_FS/UHS_FS.h"
-#endif
-// Add BT and optionally HID if directed to do so
-#if defined(LOAD_UHS_BT)
-#include "UHS_BT/UHS_BT.h"
-#endif // BT and optionally HID loaded
-
 // Add HID
 #if defined(LOAD_UHS_HID)
 #include "UHS_HID/UHS_HID.h"
 #endif // HID loaded
-
-// Add CDC multiplexers (currently only ACM)
-#if defined(LOAD_UHS_CDC_ACM) || defined(LOAD_UHS_CDC_ACM_FTDI) || defined(LOAD_UHS_CDC_ACM_PROLIFIC) || defined(LOAD_UHS_CDC_ACM_XR21B1411)
-#include "UHS_CDC/UHS_CDC.h"
-#endif // CDC loaded
-
-#if defined(LOAD_UHS_ADK)
-#include "UHS_ADK/UHS_ADK.h"
-#endif
-
-#if defined(LOAD_UHS_MIDI)
-#include "UHS_MIDI/UHS_MIDI.h"
-#endif
 
 #endif // System code loaded
 
