@@ -1,25 +1,37 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
+// ----------------------------------------------------------------------------
+// @file    spi_max3421e_INLINE.h
+// @brief   SPI MAX3421E driver class implementation.
+// @notes   Based on UHS30 USB_HOST_SHIELD_INLINE.h file suitable for Xarmlib
+// @date    5 May 2020
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
 
-This software may be distributed and modified under the terms of the GNU
-General Public License version 2 (GPL2) as publishe7d by the Free Software
-Foundation and appearing in the file GPL2.TXT included in the packaging of
-this file. Please note that GPL2 Section 2[b] requires that all works based
-on this software must also be made publicly available under the terms of
-the GPL2 ("Copyleft").
-
-Contact information
--------------------
-
-Circuits At Home, LTD
-Web      :  http://www.circuitsathome.com
-e-mail   :  support@circuitsathome.com
- */
-
-#if defined(USB_HOST_SHIELD_H) && !defined(USB_HOST_SHIELD_LOADED)
+#if defined(SPI_MAX3421E_H) && !defined(USB_HOST_SHIELD_LOADED)
 #define USB_HOST_SHIELD_LOADED
-#include <Arduino.h>
 
 #if !defined(digitalPinToInterrupt)
 #error digitalPinToInterrupt not defined, complain to your board maintainer.
@@ -45,266 +57,259 @@ static void UHS_NI call_ISRodd(void) {
 #endif
 
 
-void UHS_NI MAX3421E_HOST::resume_host(void) {
-                // Used on MCU that lack control of IRQ priority (AVR).
-                // Resumes ISRs.
-                // NOTE: you must track the state yourself!
-#if defined(__AVR__)
-                noInterrupts();
-                if(irq_pin & 1) {
-                        ISRodd = this;
-                        attachInterrupt(UHS_GET_DPI(irq_pin), call_ISRodd, IRQ_SENSE);
-                } else {
-                        ISReven = this;
-                        attachInterrupt(UHS_GET_DPI(irq_pin), call_ISReven, IRQ_SENSE);
+// Write single byte into MAX3421e register
+void UHS_NI MAX3421E_HOST::regWr(uint8_t reg, uint8_t data)
+{
+    pSpi->mutex_take();
+    ss_pin = 0;
+
+    pSpi->transfer(reg | 0x02);
+    pSpi->transfer(data);
+
+    ss_pin = 1;
+    pSpi->mutex_give();
+}
+
+
+// Multiple-byte write
+// returns a pointer to memory position after last written
+uint8_t* UHS_NI MAX3421E_HOST::bytesWr(uint8_t reg, uint8_t nbytes, uint8_t* data_p)
+{
+    pSpi->mutex_take();
+    ss_pin = 0;
+
+    pSpi->transfer(reg | 0x02);
+
+    while(nbytes)
+    {
+        pSpi->transfer(*data_p);
+        nbytes--;
+        data_p++; // advance data pointer
+    }
+
+    ss_pin = 1;
+    pSpi->mutex_give();
+
+    return data_p;
+}
+
+
+// GPIO Write
+// GPIO byte is split between 2 registers, so two writes are needed to write one byte
+// GPOUT bits are in the low nibble. 0-3 in IOPINS1, 4-7 in IOPINS2
+void UHS_NI MAX3421E_HOST::gpioWr(uint8_t data)
+{
+    regWr(rIOPINS1, data);
+    data >>= 4;
+    regWr(rIOPINS2, data);
+}
+
+
+// Single host register read
+uint8_t UHS_NI MAX3421E_HOST::regRd(uint8_t reg)
+{
+    pSpi->mutex_take();
+    ss_pin = 0;
+
+    pSpi->transfer(reg);
+    uint8_t rv = pSpi->transfer(0); // send empty byte
+
+    ss_pin = 1;
+    pSpi->mutex_give();
+
+    return rv;
+}
+
+
+// Multiple-byte register read
+// returns a pointer to a memory position after last read
+uint8_t* UHS_NI MAX3421E_HOST::bytesRd(uint8_t reg, uint8_t nbytes, uint8_t* data_p)
+{
+    pSpi->mutex_take();
+    ss_pin = 0;
+
+    pSpi->transfer(reg);
+
+    while(nbytes)
+    {
+        *data_p++ = pSpi->transfer(0);
+        nbytes--;
+    }
+
+    ss_pin = 1;
+    pSpi->mutex_give();
+
+    return data_p;
+}
+
+
+// GPIO read
+// (see gpioWr for explanation)
+// GPIN pins are in high nibbles of IOPINS1, IOPINS2
+uint8_t UHS_NI MAX3421E_HOST::gpioRd(void)
+{
+    uint8_t gpin = 0;
+
+    gpin  = regRd(rIOPINS2);        // pins 4-7
+    gpin &= 0xf0;                   // clean lower nibble
+    gpin |= (regRd(rIOPINS1) >> 4); // shift low bits and OR with upper from previous operation.
+
+    return gpin;
+}
+
+
+// Reset MAX3421E
+// returns number of microseconds it took for PLL to stabilize after reset
+// or zero if PLL haven't stabilized in 65535 cycles
+uint16_t UHS_NI MAX3421E_HOST::reset(void)
+{
+    // Initiate chip reset
+    regWr(rUSBCTL, bmCHIPRES);
+    regWr(rUSBCTL, 0x00);
+
+    uint32_t expires = micros() + 65535;
+
+    // Enable full-duplex SPI so we can read rUSBIRQ
+    regWr(rPINCTL, bmFDUPSPI);
+
+    while((int32_t)(micros() - expires) < 0L)
+    {
+        if((regRd(rUSBIRQ) & bmOSCOKIRQ))
+        {
+            break;
+        }
+    }
+
+    uint16_t i = 0;
+
+    int32_t now = (int32_t)(micros() - expires);
+
+    if(now < 0L)
+    {
+        i = 65535 + now; // note this subtracts, as now is negative
+    }
+
+    return i;
+}
+
+
+void UHS_NI MAX3421E_HOST::VBUS_changed(void)
+{
+    // Modify USB task state because Vbus changed or unknown
+
+    uint8_t speed = 1;
+
+    switch(vbusState)
+    {
+        case LSHOST: // low speed
+            speed = 0;
+            // Intentional fall-through
+        case FSHOST: // full speed
+            // Start device initialization if we are not initializing
+            // Resets to the device cause an IRQ
+            // usb_task_state == UHS_USB_HOST_STATE_RESET_NOT_COMPLETE;
+            //if((usb_task_state & UHS_USB_HOST_STATE_MASK) != UHS_USB_HOST_STATE_DETACHED) {
+            ReleaseChildren();
+            if(!doingreset)
+            {
+                if(usb_task_state == UHS_USB_HOST_STATE_RESET_NOT_COMPLETE)
+                {
+                    usb_task_state = UHS_USB_HOST_STATE_WAIT_BUS_READY;
                 }
-                interrupts();
-#endif
-
-}
-/* write single byte into MAX3421e register */
-void UHS_NI MAX3421E_HOST::regWr(uint8_t reg, uint8_t data) {
-        SPIclass.beginTransaction(MAX3421E_SPI_Settings);
-
-        UHS_PIN_WRITE(ss_pin, LOW);
-        SPIclass.transfer(reg | 0x02);
-        SPIclass.transfer(data);
-        UHS_PIN_WRITE(ss_pin, HIGH);
-        SPIclass.endTransaction();
-}
-
-
-/* multiple-byte write                            */
-
-/* returns a pointer to memory position after last written */
-uint8_t* UHS_NI MAX3421E_HOST::bytesWr(uint8_t reg, uint8_t nbytes, uint8_t* data_p) {
-        SPIclass.beginTransaction(MAX3421E_SPI_Settings);
-        UHS_PIN_WRITE(ss_pin, LOW);
-        SPIclass.transfer(reg | 0x02);
-        //printf("%2.2x :", reg);
-
-        while(nbytes) {
-                SPIclass.transfer(*data_p);
-                //printf("%2.2x ", *data_p);
-                nbytes--;
-                data_p++; // advance data pointer
-        }
-        UHS_PIN_WRITE(ss_pin, HIGH);
-        SPIclass.endTransaction();
-        //printf("\r\n");
-        return (data_p);
-}
-/* GPIO write                                           */
-/*GPIO byte is split between 2 registers, so two writes are needed to write one byte */
-
-/* GPOUT bits are in the low nibble. 0-3 in IOPINS1, 4-7 in IOPINS2 */
-void UHS_NI MAX3421E_HOST::gpioWr(uint8_t data) {
-        regWr(rIOPINS1, data);
-        data >>= 4;
-        regWr(rIOPINS2, data);
-        return;
-}
-
-/* single host register read    */
-uint8_t UHS_NI MAX3421E_HOST::regRd(uint8_t reg) {
-        SPIclass.beginTransaction(MAX3421E_SPI_Settings);
-        UHS_PIN_WRITE(ss_pin, LOW);
-        SPIclass.transfer(reg);
-        uint8_t rv = SPIclass.transfer(0);
-        UHS_PIN_WRITE(ss_pin, HIGH);
-        SPIclass.endTransaction();
-        return (rv);
-}
-/* multiple-byte register read  */
-
-/* returns a pointer to a memory position after last read   */
-uint8_t* UHS_NI MAX3421E_HOST::bytesRd(uint8_t reg, uint8_t nbytes, uint8_t* data_p) {
-        SPIclass.beginTransaction(MAX3421E_SPI_Settings);
-        UHS_PIN_WRITE(ss_pin, LOW);
-        SPIclass.transfer(reg);
-        while(nbytes) {
-                *data_p++ = SPIclass.transfer(0);
-                nbytes--;
-        }
-        UHS_PIN_WRITE(ss_pin, HIGH);
-        SPIclass.endTransaction();
-        return ( data_p);
-}
-
-/* GPIO read. See gpioWr for explanation */
-
-/* GPIN pins are in high nibbles of IOPINS1, IOPINS2    */
-uint8_t UHS_NI MAX3421E_HOST::gpioRd(void) {
-        uint8_t gpin = 0;
-        gpin = regRd(rIOPINS2); //pins 4-7
-        gpin &= 0xf0; //clean lower nibble
-        gpin |= (regRd(rIOPINS1) >> 4); //shift low bits and OR with upper from previous operation.
-        return ( gpin);
-}
-
-/* reset MAX3421E. Returns number of microseconds it took for PLL to stabilize after reset
-  or zero if PLL haven't stabilized in 65535 cycles */
-uint16_t UHS_NI MAX3421E_HOST::reset(void) {
-        uint16_t i = 0;
-
-        // Initiate chip reset
-        regWr(rUSBCTL, bmCHIPRES);
-        regWr(rUSBCTL, 0x00);
-
-        int32_t now;
-        uint32_t expires = micros() + 65535;
-
-        // Enable full-duplex SPI so we can read rUSBIRQ
-        regWr(rPINCTL, bmFDUPSPI);
-        while((int32_t)(micros() - expires) < 0L) {
-                if((regRd(rUSBIRQ) & bmOSCOKIRQ)) {
-                        break;
+                else if(usb_task_state != UHS_USB_HOST_STATE_WAIT_BUS_READY)
+                {
+                    usb_task_state = UHS_USB_HOST_STATE_DEBOUNCE;
                 }
-        }
-        now = (int32_t)(micros() - expires);
-        if(now < 0L) {
-                i = 65535 + now; // Note this subtracts, as now is negative
-        }
-        return (i);
+            }
+            sof_countdown = 0;
+            break;
+        case SE1: // illegal state
+            sof_countdown = 0;
+            doingreset = false;
+            ReleaseChildren();
+            usb_task_state = UHS_USB_HOST_STATE_ILLEGAL;
+            break;
+        case SE0: // disconnected
+        default:
+            sof_countdown = 0;
+            doingreset = false;
+            ReleaseChildren();
+            usb_task_state = UHS_USB_HOST_STATE_IDLE;
+            break;
+    }
+
+    usb_host_speed = speed;
 }
 
-void UHS_NI MAX3421E_HOST::VBUS_changed(void) {
-        /* modify USB task state because Vbus changed or unknown */
-        uint8_t speed = 1;
-        //printf("\r\n\r\n\r\n\r\nSTATE %2.2x -> ", usb_task_state);
-        switch(vbusState) {
-                case LSHOST: // Low speed
 
-                        speed = 0;
-                        // Intentional fall-through
-                case FSHOST: // Full speed
-                        // Start device initialization if we are not initializing
-                        // Resets to the device cause an IRQ
-                        // usb_task_state == UHS_USB_HOST_STATE_RESET_NOT_COMPLETE;
-                        //if((usb_task_state & UHS_USB_HOST_STATE_MASK) != UHS_USB_HOST_STATE_DETACHED) {
-                        ReleaseChildren();
-                        if(!doingreset) {
-                                if(usb_task_state == UHS_USB_HOST_STATE_RESET_NOT_COMPLETE) {
-                                        usb_task_state = UHS_USB_HOST_STATE_WAIT_BUS_READY;
-                                } else if(usb_task_state != UHS_USB_HOST_STATE_WAIT_BUS_READY) {
-                                        usb_task_state = UHS_USB_HOST_STATE_DEBOUNCE;
-                                }
-                        }
-                        sof_countdown = 0;
-                        break;
-                case SE1: //illegal state
-                        sof_countdown = 0;
-                        doingreset = false;
-                        ReleaseChildren();
-                        usb_task_state = UHS_USB_HOST_STATE_ILLEGAL;
-                        break;
-                case SE0: //disconnected
-                default:
-                        sof_countdown = 0;
-                        doingreset = false;
-                        ReleaseChildren();
-                        usb_task_state = UHS_USB_HOST_STATE_IDLE;
-                        break;
-        }
-        usb_host_speed = speed;
-        //printf("0x%2.2x\r\n\r\n\r\n\r\n", usb_task_state);
-        return;
-};
+// Probe bus to determine device presence and speed,
+// then switch host to detected speed
+void UHS_NI MAX3421E_HOST::busprobe(void)
+{
+    uint8_t bus_sample = regRd(rHRSL);      // get J,K status
+    bus_sample &= (bmJSTATUS | bmKSTATUS);  // zero the rest of the byte
 
-/**
- *  Probe bus to determine device presence and speed,
- *  then switch host to detected speed.
- */
-void UHS_NI MAX3421E_HOST::busprobe(void) {
-        uint8_t bus_sample;
-        uint8_t tmpdata;
-        bus_sample = regRd(rHRSL); //Get J,K status
-        bus_sample &= (bmJSTATUS | bmKSTATUS); //zero the rest of the byte
-        switch(bus_sample) { //start full-speed or low-speed host
-                case(bmJSTATUS):
-                        // Serial.println("J");
-                        if((regRd(rMODE) & bmLOWSPEED) == 0) {
-                                regWr(rMODE, MODE_FS_HOST); // start full-speed host
-                                vbusState = FSHOST;
-                        } else {
-                                regWr(rMODE, MODE_LS_HOST); // start low-speed host
-                                vbusState = LSHOST;
-                        }
-                        tmpdata = regRd(rMODE) | bmSOFKAENAB; // start SOF generation
-                        regWr(rHIRQ, bmFRAMEIRQ); // see data sheet.
-                        regWr(rMODE, tmpdata);
-                        break;
-                case(bmKSTATUS):
-                        // Serial.println("K");
-                        if((regRd(rMODE) & bmLOWSPEED) == 0) {
-                                regWr(rMODE, MODE_LS_HOST); // start low-speed host
-                                vbusState = LSHOST;
-                        } else {
-                                regWr(rMODE, MODE_FS_HOST); // start full-speed host
-                                vbusState = FSHOST;
-                        }
-                        tmpdata = regRd(rMODE) | bmSOFKAENAB; // start SOF generation
-                        regWr(rHIRQ, bmFRAMEIRQ); // see data sheet.
-                        regWr(rMODE, tmpdata);
-                        break;
-                case(bmSE1): //illegal state
-                        // Serial.println("I");
-                        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
-                        vbusState = SE1;
-                        // sofevent = false;
-                        break;
-                case(bmSE0): //disconnected state
-                        // Serial.println("D");
-                        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
-                        vbusState = SE0;
-                        // sofevent = false;
-                        break;
-        }//end switch( bus_sample )
+    uint8_t tmpdata;
+
+    switch(bus_sample) // start full-speed or low-speed host
+    {
+        case(bmJSTATUS):
+            if((regRd(rMODE) & bmLOWSPEED) == 0)
+            {
+                regWr(rMODE, MODE_FS_HOST); // start full-speed host
+                vbusState = FSHOST;
+            }
+            else
+            {
+                regWr(rMODE, MODE_LS_HOST); // start low-speed host
+                vbusState = LSHOST;
+            }
+            tmpdata = regRd(rMODE) | bmSOFKAENAB; // start SOF generation
+            regWr(rHIRQ, bmFRAMEIRQ); // see data sheet
+            regWr(rMODE, tmpdata);
+            break;
+        case(bmKSTATUS):
+            if((regRd(rMODE) & bmLOWSPEED) == 0)
+            {
+                regWr(rMODE, MODE_LS_HOST); // start low-speed host
+                vbusState = LSHOST;
+            }
+            else
+            {
+                regWr(rMODE, MODE_FS_HOST); // start full-speed host
+                vbusState = FSHOST;
+            }
+            tmpdata = regRd(rMODE) | bmSOFKAENAB; // start SOF generation
+            regWr(rHIRQ, bmFRAMEIRQ); // see data sheet
+            regWr(rMODE, tmpdata);
+            break;
+        case(bmSE1): // illegal state
+            regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
+            vbusState = SE1;
+            // sofevent = false;
+            break;
+        case(bmSE0): // disconnected state
+            regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
+            vbusState = SE0;
+            // sofevent = false;
+            break;
+    }
 }
 
-/**
- * Initialize USB hardware, turn on VBUS
- *
- * @param mseconds Delay energizing VBUS after mseconds, A value of INT16_MIN means no delay.
- * @return 0 on success, -1 on error
- */
-int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds) {
-        usb_task_state = UHS_USB_HOST_STATE_INITIALIZE; //set up state machine
-        //        Serial.print("MAX3421E 'this' USB Host @ 0x");
-        //        Serial.println((uint32_t)this, HEX);
-        //        Serial.print("MAX3421E 'this' USB Host Address Pool @ 0x");
-        //        Serial.println((uint32_t)GetAddressPool(), HEX);
-        Init_dyn_SWI();
-        UHS_printf_HELPER_init();
-        noInterrupts();
-#ifdef ARDUINO_AVR_ADK
-        // For Mega ADK, which has a Max3421e on-board,
-        // set MAX_RESET to output mode, and then set it to HIGH
-        // PORTJ bit 2
-        if(irq_pin == 54) {
-                DDRJ |= 0x04; // output
-                PORTJ |= 0x04; // HIGH
-        }
-#endif
-        SPIclass.begin();
-#ifdef ARDUINO_AVR_ADK
-        if(irq_pin == 54) {
-                DDRE &= ~0x20; // input
-                PORTE |= 0x20; // pullup
-        } else
-#endif
-                pinMode(irq_pin, INPUT_PULLUP);
-        //UHS_PIN_WRITE(irq_pin, HIGH);
-        pinMode(ss_pin, OUTPUT);
-        UHS_PIN_WRITE(ss_pin, HIGH);
+// Initialize USB hardware, turn on VBUS
+// mseconds: Delay energizing VBUS after mseconds, A value of INT16_MIN means no delay.
+// returns 0 on success, -1 on error
+int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds)
+{
+    usb_task_state = UHS_USB_HOST_STATE_INITIALIZE; // set up state machine
 
-#ifdef USB_HOST_SHIELD_TIMING_PIN
-        pinMode(USB_HOST_SHIELD_TIMING_PIN, OUTPUT);
-        // My counter/timer can't work on an inverted gate signal
-        // so we gate using a high pulse -- AJK
-        UHS_PIN_WRITE(USB_HOST_SHIELD_TIMING_PIN, LOW);
-#endif
-        interrupts();
+    Init_dyn_SWI();
+    UHS_printf_HELPER_init();
+    //noInterrupts();
+
+    //pinMode(irq_pin, INPUT_PULLUP);
+
+    //interrupts();
 
 #if USB_HOST_SHIELD_USE_ISR
         int intr = digitalPinToInterrupt(irq_pin);
@@ -320,76 +325,46 @@ int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds) {
 #else
         SPIclass.usingInterrupt(255);
 #endif
-#if !defined(NO_AUTO_SPEED)
-        // test to get to reset acceptance.
-        uint32_t spd = UHS_MAX3421E_SPD;
-again:
-        MAX3421E_SPI_Settings = SPISettings(spd, MSBFIRST, SPI_MODE0);
-        if(reset() == 0) {
-                MAX_HOST_DEBUG(PSTR("Fail SPI speed %lu\r\n"), spd);
-                if(spd > 1999999) {
-                        spd -= 1000000;
-                        goto again;
-                }
-                return (-1);
-        } else {
-                // reset passes, does 64k?
-                uint8_t sample_wr = 0;
-                uint8_t sample_rd = 0;
-                uint8_t gpinpol_copy = regRd(rGPINPOL);
-                for(uint16_t j = 0; j < 65535; j++) {
-                        regWr(rGPINPOL, sample_wr);
-                        sample_rd = regRd(rGPINPOL);
-                        if(sample_rd != sample_wr) {
-                                MAX_HOST_DEBUG(PSTR("Fail SPI speed %lu\r\n"), spd);
-                                if(spd > 1999999) {
-                                        spd -= 1000000;
-                                        goto again;
-                                }
-                                return (-1);
-                        }
-                        sample_wr++;
-                }
-                regWr(rGPINPOL, gpinpol_copy);
-        }
 
-        MAX_HOST_DEBUG(PSTR("Pass SPI speed %lu\r\n"), spd);
-#endif
+    if(reset() == 0) // OSCOKIRQ hasn't asserted in time
+    {
+        MAX_HOST_DEBUG(PSTR("OSCOKIRQ hasn't asserted in time"));
+        return -1;
+    }
 
-        if(reset() == 0) { //OSCOKIRQ hasn't asserted in time
-                MAX_HOST_DEBUG(PSTR("OSCOKIRQ hasn't asserted in time"));
-                return ( -1);
-        }
+    // Set full-duplex SPI, INT level-active and VBUS OFF
+    regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL | GPX_VBDET));
 
-        /* MAX3421E - full-duplex SPI, interrupt kind, vbus off */
-        regWr(rPINCTL, (bmFDUPSPI | bmIRQ_SENSE | GPX_VBDET));
+    // Delay a minimum of 1 second to ensure any capacitors are drained
+    // 1 second is required to make sure we do not smoke a Microdrive!
+    if(mseconds != INT16_MIN)
+    {
+        if(mseconds < 1000) mseconds = 1000;
 
-        // Delay a minimum of 1 second to ensure any capacitors are drained.
-        // 1 second is required to make sure we do not smoke a Microdrive!
-        if(mseconds != INT16_MIN) {
-                if(mseconds < 1000) mseconds = 1000;
-                delay(mseconds); // We can't depend on SOF timer here.
-        }
+        delay(mseconds); // we can't depend on SOF timer here
+    }
 
-        regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST); // set pull-downs, Host
+    // Set pull-downs and Host mode
+    regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
 
-        // Enable interrupts on the MAX3421e
-        regWr(rHIEN, IRQ_CHECK_MASK);
-        // Enable interrupt pin on the MAX3421e, set pulse width for edge
-        regWr(rCPUCTL, (bmIE | bmPULSEWIDTH));
+    // Enable interrupts on the MAX3421e
+    regWr(rHIEN, IRQ_CHECK_MASK);
 
-        /* check if device is connected */
-        regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-        while(!(regRd(rHCTL) & bmSAMPLEBUS)); //wait for sample operation to finish
+    // Enable interrupt pin on the MAX3421e, set pulse width for edge
+    regWr(rCPUCTL, (bmIE | bmPULSEWIDTH));
 
-        busprobe(); //check if anything is connected
-        VBUS_changed();
+    /* check if device is connected */
+    regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
+    while(!(regRd(rHCTL) & bmSAMPLEBUS)); //wait for sample operation to finish
 
-        // GPX pin on. This is done here so that a change is detected if we have a switch connected.
-        /* MAX3421E - full-duplex SPI, interrupt kind, vbus on */
-        regWr(rPINCTL, (bmFDUPSPI | bmIRQ_SENSE));
-        regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet.
-        regWr(rHCTL, bmBUSRST); // issue bus reset to force generate yet another possible IRQ
+    busprobe(); //check if anything is connected
+    VBUS_changed();
+
+    // GPX pin on. This is done here so that a change is detected if we have a switch connected.
+    /* MAX3421E - full-duplex SPI, interrupt kind, vbus on */
+    regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
+    regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet.
+    regWr(rHCTL, bmBUSRST); // issue bus reset to force generate yet another possible IRQ
 
 
 #if USB_HOST_SHIELD_USE_ISR
@@ -976,5 +951,5 @@ void UHS_NI MAX3421E_HOST::ISRTask(void)
 DDSB();
 #endif
 #else
-#error "Never include USB_HOST_SHIELD_INLINE.h, include UHS_host.h instead"
+#error "Never include spi_max3421e_INLINE.h, include UHS_host.h instead"
 #endif

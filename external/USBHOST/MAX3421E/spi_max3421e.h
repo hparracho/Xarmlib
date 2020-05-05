@@ -2,7 +2,7 @@
 // @file    spi_max3421e.h
 // @brief   SPI MAX3421E driver class.
 // @notes   Based on UHS30 USB_HOST_SHIELD.h file suitable for Xarmlib
-// @date    4 May 2020
+// @date    5 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -82,15 +82,15 @@
 #endif
 
 
-#if !defined(IRQ_SENSE)
-#define IRQ_SENSE LOW
-#endif
-#if !defined(bmPULSEWIDTH)
-#define bmPULSEWIDTH 0
-#endif
-#if !defined(bmIRQ_SENSE)
-#define bmIRQ_SENSE bmINTLEVEL
-#endif
+//#if !defined(IRQ_SENSE)
+//#define IRQ_SENSE LOW
+//#endif
+//#if !defined(bmPULSEWIDTH)
+//#define bmPULSEWIDTH 0
+//#endif
+//#if !defined(bmIRQ_SENSE)
+//#define bmIRQ_SENSE bmINTLEVEL
+//#endif
 
 class MAX3421E_HOST : public UHS_USB_HOST_BASE
 #if defined(SWI_IRQ_NUM)
@@ -254,11 +254,6 @@ public:
         ISRbottom();
     }
 #endif
-
-    virtual void UHS_NI suspend_host(void)
-    {}
-
-    virtual void UHS_NI resume_host(void);
 };
 
 #if !defined(SPIclass)

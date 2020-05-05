@@ -2,7 +2,7 @@
 // @file    UHS_macros.h
 // @brief   UHS macros.
 // @notes   UHS30 UHS_macros.h file suitable for Xarmlib
-// @date    4 May 2020
+// @date    5 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,6 +36,7 @@
 #include "hal/hal_us_ticker.hpp"
 
 #define delay(ms) xarmlib::hal::UsTicker::wait(std::chrono::milliseconds(ms))
+#define micros() std::chrono::duration_cast<std::chrono::microseconds>(xarmlib::hal::UsTicker::now()).count()
 #define millis() std::chrono::duration_cast<std::chrono::milliseconds>(xarmlib::hal::UsTicker::now()).count()
 
 //#define Init_dyn_SWI() (void(0))
@@ -120,34 +121,34 @@
 //#endif
 //#endif
 
-#if defined(__arm__) && defined(CORE_TEENSY)
-#define UHS_PIN_WRITE(p, v) digitalWriteFast(p, v)
-#define UHS_PIN_READ(p) digitalReadFast(p)
-#endif
-// TODO: Fast inline code for AVR and SAM based microcontrollers
-//       This can be done pretty easily.
-//       For now, this will just work out-of-the-box.
-#if !defined(UHS_PIN_WRITE)
-#define UHS_PIN_WRITE(p, v) digitalWrite(p, v)
-#endif
-#if !defined(UHS_PIN_READ)
-#define UHS_PIN_READ(p) digitalRead(p)
-#endif
+//#if defined(__arm__) && defined(CORE_TEENSY)
+//#define UHS_PIN_WRITE(p, v) digitalWriteFast(p, v)
+//#define UHS_PIN_READ(p) digitalReadFast(p)
+//#endif
+//// TODO: Fast inline code for AVR and SAM based microcontrollers
+////       This can be done pretty easily.
+////       For now, this will just work out-of-the-box.
+//#if !defined(UHS_PIN_WRITE)
+//#define UHS_PIN_WRITE(p, v) digitalWrite(p, v)
+//#endif
+//#if !defined(UHS_PIN_READ)
+//#define UHS_PIN_READ(p) digitalRead(p)
+//#endif
 
 
 #define interrupts() __enable_irq()
 #define noInterrupts() __disable_irq()
 
 
-#if !defined(ARDUINO_SAMD_ZERO)
-#if defined(ARDUINO_AVR_ADK)
-#define UHS_GET_DPI(x) (x == 54 ? 6 : digitalPinToInterrupt(x))
-#else
-#define UHS_GET_DPI(x) digitalPinToInterrupt(x)
-#endif
-#else
-#define UHS_GET_DPI(x) (x)
-#endif
+//#if !defined(ARDUINO_SAMD_ZERO)
+//#if defined(ARDUINO_AVR_ADK)
+//#define UHS_GET_DPI(x) (x == 54 ? 6 : digitalPinToInterrupt(x))
+//#else
+//#define UHS_GET_DPI(x) digitalPinToInterrupt(x)
+//#endif
+//#else
+//#define UHS_GET_DPI(x) (x)
+//#endif
 
 #ifndef __AVR__
 #ifndef __PGMSPACE_H_
