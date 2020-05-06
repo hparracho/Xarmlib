@@ -2,7 +2,7 @@
 // @file    spi_max3421e_INLINE.h
 // @brief   SPI MAX3421E driver class implementation.
 // @notes   Based on UHS30 USB_HOST_SHIELD_INLINE.h file suitable for Xarmlib
-// @date    5 May 2020
+// @date    6 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,12 +33,10 @@
 #if defined(SPI_MAX3421E_H) && !defined(USB_HOST_SHIELD_LOADED)
 #define USB_HOST_SHIELD_LOADED
 
-#if !defined(digitalPinToInterrupt)
-#error digitalPinToInterrupt not defined, complain to your board maintainer.
-#endif
+//#if !defined(digitalPinToInterrupt)
+//#error digitalPinToInterrupt not defined, complain to your board maintainer.
+//#endif
 
-
-#if USB_HOST_SHIELD_USE_ISR
 
 // allow two slots. this makes the maximum allowed shield count TWO
 // for AVRs this is limited to pins 2 and 3 ONLY
@@ -54,7 +52,6 @@ static void UHS_NI call_ISRodd(void) {
         UHS_PIN_WRITE(LED_BUILTIN, HIGH);
         ISRodd->ISRTask();
 }
-#endif
 
 
 // Write single byte into MAX3421e register
@@ -296,35 +293,15 @@ void UHS_NI MAX3421E_HOST::busprobe(void)
     }
 }
 
+
 // Initialize USB hardware, turn on VBUS
-// mseconds: Delay energizing VBUS after mseconds, A value of INT16_MIN means no delay.
+// @param mseconds Delay energizing VBUS after mseconds, A value of INT16_MIN means no delay.
 // returns 0 on success, -1 on error
 int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds)
 {
     usb_task_state = UHS_USB_HOST_STATE_INITIALIZE; // set up state machine
 
-    Init_dyn_SWI();
     UHS_printf_HELPER_init();
-    //noInterrupts();
-
-    //pinMode(irq_pin, INPUT_PULLUP);
-
-    //interrupts();
-
-#if USB_HOST_SHIELD_USE_ISR
-        int intr = digitalPinToInterrupt(irq_pin);
-        if(intr == NOT_AN_INTERRUPT) {
-#if defined(ARDUINO_AVR_ADK)
-                if(irq_pin == 54)
-                        intr = 6;
-                else
-#endif
-                        return (-2);
-        }
-        SPIclass.usingInterrupt(intr);
-#else
-        SPIclass.usingInterrupt(255);
-#endif
 
     if(reset() == 0) // OSCOKIRQ hasn't asserted in time
     {
@@ -347,390 +324,420 @@ int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds)
     // Set pull-downs and Host mode
     regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
 
-    // Enable interrupts on the MAX3421e
+    // Enable interrupts
     regWr(rHIEN, IRQ_CHECK_MASK);
 
-    // Enable interrupt pin on the MAX3421e, set pulse width for edge
-    regWr(rCPUCTL, (bmIE | bmPULSEWIDTH));
+    // Enable INT pin
+    regWr(rCPUCTL, bmIE);
 
-    /* check if device is connected */
-    regWr(rHCTL, bmSAMPLEBUS); // sample USB bus
-    while(!(regRd(rHCTL) & bmSAMPLEBUS)); //wait for sample operation to finish
+    // Check if device is connected
+    regWr(rHCTL, bmSAMPLEBUS);            // sample USB bus
+    while(!(regRd(rHCTL) & bmSAMPLEBUS)); // wait for sample operation to finish
 
-    busprobe(); //check if anything is connected
+    busprobe(); // check if anything is connected
     VBUS_changed();
 
-    // GPX pin on. This is done here so that a change is detected if we have a switch connected.
-    /* MAX3421E - full-duplex SPI, interrupt kind, vbus on */
+    // !?? GPX pin on. This is done here so that a change is detected if we have a switch connected.
+    // Set full-duplex SPI, INT level-active and VBUS ON
     regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL));
-    regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet.
-    regWr(rHCTL, bmBUSRST); // issue bus reset to force generate yet another possible IRQ
+    regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet
+    regWr(rHCTL, bmBUSRST);      // issue bus reset to force generate yet another possible IRQ
 
-
+//@TODO: ADD attach interrupt handler (possibly in constructor)
 #if USB_HOST_SHIELD_USE_ISR
-        // Attach ISR to service IRQ from MAX3421e
-        noInterrupts();
-        if(irq_pin & 1) {
-                ISRodd = this;
-                attachInterrupt(UHS_GET_DPI(irq_pin), call_ISRodd, IRQ_SENSE);
-        } else {
-                ISReven = this;
-                attachInterrupt(UHS_GET_DPI(irq_pin), call_ISReven, IRQ_SENSE);
-        }
-        interrupts();
+    // Attach ISR to service IRQ from MAX3421e
+    noInterrupts();
+    if(irq_pin & 1) {
+            ISRodd = this;
+            attachInterrupt(UHS_GET_DPI(irq_pin), call_ISRodd, IRQ_SENSE);
+    } else {
+            ISReven = this;
+            attachInterrupt(UHS_GET_DPI(irq_pin), call_ISReven, IRQ_SENSE);
+    }
+    interrupts();
 #endif
-        //printf("\r\nrPINCTL 0x%2.2X\r\n", rPINCTL);
-        //printf("rCPUCTL 0x%2.2X\r\n", rCPUCTL);
-        //printf("rHIEN 0x%2.2X\r\n", rHIEN);
-        //printf("irq_pin %i\r\n", irq_pin);
-        return 0;
+
+    return 0;
 }
 
-/**
- * Setup UHS_EpInfo structure
- *
- * @param addr USB device address
+
+// Setup UHS_EpInfo structure
+/* @param addr USB device address
  * @param ep Endpoint
  * @param ppep pointer to the pointer to a valid UHS_EpInfo structure
  * @param nak_limit how many NAKs before aborting
- * @return 0 on success
- */
-uint8_t UHS_NI MAX3421E_HOST::SetAddress(uint8_t addr, uint8_t ep, UHS_EpInfo **ppep, uint16_t &nak_limit) {
-        UHS_Device *p = addrPool.GetUsbDevicePtr(addr);
+ * @return 0 on success */
+uint8_t UHS_NI MAX3421E_HOST::SetAddress(uint8_t addr, uint8_t ep, UHS_EpInfo **ppep, uint16_t &nak_limit)
+{
+    UHS_Device *p = addrPool.GetUsbDevicePtr(addr);
 
-        if(!p)
-                return UHS_HOST_ERROR_NO_ADDRESS_IN_POOL;
+    if(!p)
+        return UHS_HOST_ERROR_NO_ADDRESS_IN_POOL;
 
-        if(!p->epinfo)
-                return UHS_HOST_ERROR_NULL_EPINFO;
+    if(!p->epinfo)
+        return UHS_HOST_ERROR_NULL_EPINFO;
 
-        *ppep = getEpInfoEntry(addr, ep);
+    *ppep = getEpInfoEntry(addr, ep);
 
-        if(!*ppep)
-                return UHS_HOST_ERROR_NO_ENDPOINT_IN_TABLE;
+    if(!*ppep)
+        return UHS_HOST_ERROR_NO_ENDPOINT_IN_TABLE;
 
-        nak_limit = (0x0001UL << (((*ppep)->bmNakPower > UHS_USB_NAK_MAX_POWER) ? UHS_USB_NAK_MAX_POWER : (*ppep)->bmNakPower));
-        nak_limit--;
-        /*
-          USBTRACE2("\r\nAddress: ", addr);
-          USBTRACE2(" EP: ", ep);
-          USBTRACE2(" NAK Power: ",(*ppep)->bmNakPower);
-          USBTRACE2(" NAK Limit: ", nak_limit);
-          USBTRACE("\r\n");
-         */
-        regWr(rPERADDR, addr); //set peripheral address
+    nak_limit = (0x0001UL << (((*ppep)->bmNakPower > UHS_USB_NAK_MAX_POWER) ? UHS_USB_NAK_MAX_POWER : (*ppep)->bmNakPower));
+    nak_limit--;
 
-        uint8_t mode = regRd(rMODE);
+    regWr(rPERADDR, addr); // set peripheral address
 
-        //Serial.print("\r\nMode: ");
-        //Serial.println( mode, HEX);
-        //Serial.print("\r\nLS: ");
-        //Serial.println(p->speed, HEX);
+    uint8_t mode = regRd(rMODE);
 
-        // Set bmLOWSPEED and bmHUBPRE in case of low-speed device, reset them otherwise
-        regWr(rMODE, (p->speed) ? mode & ~(bmHUBPRE | bmLOWSPEED) : mode | bmLOWSPEED | hub_present);
+    // Set bmLOWSPEED and bmHUBPRE in case of low-speed device, reset them otherwise
+    regWr(rMODE, (p->speed) ? mode & ~(bmHUBPRE | bmLOWSPEED) : mode | bmLOWSPEED | hub_present);
 
-        return 0;
+    return 0;
 }
 
-/**
- * Receive a packet
- *
- * @param pep pointer to a valid UHS_EpInfo structure
+
+// Receive a packet
+/* @param pep pointer to a valid UHS_EpInfo structure
  * @param nak_limit how many NAKs before aborting
  * @param nbytesptr pointer to maximum number of bytes of data to receive
  * @param data pointer to data buffer
- * @return 0 on success
- */
-uint8_t UHS_NI MAX3421E_HOST::InTransfer(UHS_EpInfo *pep, uint16_t nak_limit, uint16_t *nbytesptr, uint8_t* data) {
-        uint8_t rcode = 0;
-        uint8_t pktsize;
+ * @return 0 on success */
+uint8_t UHS_NI MAX3421E_HOST::InTransfer(UHS_EpInfo *pep, uint16_t nak_limit, uint16_t *nbytesptr, uint8_t* data)
+{
+    uint8_t rcode = 0;
+    uint8_t pktsize;
 
-        uint16_t nbytes = *nbytesptr;
-        MAX_HOST_DEBUG(PSTR("Requesting %i bytes "), nbytes);
-        uint8_t maxpktsize = pep->maxPktSize;
+    uint16_t nbytes = *nbytesptr;
+    MAX_HOST_DEBUG(PSTR("Requesting %i bytes "), nbytes);
+    uint8_t maxpktsize = pep->maxPktSize;
 
-        *nbytesptr = 0;
-        regWr(rHCTL, (pep->bmRcvToggle) ? bmRCVTOG1 : bmRCVTOG0); //set toggle value
+    *nbytesptr = 0;
+    regWr(rHCTL, (pep->bmRcvToggle) ? bmRCVTOG1 : bmRCVTOG0); // set toggle value
 
-        // use a 'break' to exit this loop
-        while(1) {
-                rcode = dispatchPkt(MAX3421E_tokIN, pep->epAddr, nak_limit); //IN packet to EP-'endpoint'. Function takes care of NAKS.
-#if 0
-                // This issue should be resolved now.
-                if(rcode == UHS_HOST_ERROR_TOGERR) {
-                        //MAX_HOST_DEBUG(PSTR("toggle wrong\r\n"));
-                        // yes, we flip it wrong here so that next time it is actually correct!
-                        pep->bmRcvToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
-                        regWr(rHCTL, (pep->bmRcvToggle) ? bmRCVTOG1 : bmRCVTOG0); //set toggle value
-                        continue;
-                }
-#endif
-                if(rcode) {
-                        //MAX_HOST_DEBUG(PSTR(">>>>>>>> Problem! dispatchPkt %2.2x\r\n"), rcode);
-                        break; //should be 0, indicating ACK. Else return error code.
-                }
-                /* check for RCVDAVIRQ and generate error if not present */
-                /* the only case when absence of RCVDAVIRQ makes sense is when toggle error occurred. Need to add handling for that */
-                if((regRd(rHIRQ) & bmRCVDAVIRQ) == 0) {
-                        //MAX_HOST_DEBUG(PSTR(">>>>>>>> Problem! NO RCVDAVIRQ!\r\n"));
-                        rcode = 0xf0; //receive error
-                        break;
-                }
-                pktsize = regRd(rRCVBC); //number of received bytes
-                MAX_HOST_DEBUG(PSTR("Got %i bytes \r\n"), pktsize);
+    // Use a 'break' to exit this loop
+    while(1)
+    {
+        rcode = dispatchPkt(MAX3421E_tokIN, pep->epAddr, nak_limit); // IN packet to EP-'endpoint'. Function takes care of NAKS.
 
-                if(pktsize > nbytes) { //certain devices send more than asked
-                        //MAX_HOST_DEBUG(PSTR(">>>>>>>> Warning: wanted %i bytes but got %i.\r\n"), nbytes, pktsize);
-                        pktsize = nbytes;
-                }
+        if(rcode)
+        {
+            //MAX_HOST_DEBUG(PSTR(">>>>>>>> Problem! dispatchPkt %2.2x\r\n"), rcode);
+            break; // should be 0, indicating ACK. Else return error code.
+        }
 
-                int16_t mem_left = (int16_t)nbytes - *((int16_t*)nbytesptr);
+        // Check for RCVDAVIRQ and generate error if not present
+        // the only case when absence of RCVDAVIRQ makes sense is when toggle error occurred. Need to add handling for that
+        if((regRd(rHIRQ) & bmRCVDAVIRQ) == 0)
+        {
+            //MAX_HOST_DEBUG(PSTR(">>>>>>>> Problem! NO RCVDAVIRQ!\r\n"));
+            rcode = 0xf0; // receive error
+            break;
+        }
 
-                if(mem_left < 0)
-                        mem_left = 0;
+        pktsize = regRd(rRCVBC); // number of received bytes
+        MAX_HOST_DEBUG(PSTR("Got %i bytes \r\n"), pktsize);
 
-                data = bytesRd(rRCVFIFO, ((pktsize > mem_left) ? mem_left : pktsize), data);
+        if(pktsize > nbytes) // certain devices send more than asked
+        {
+            //MAX_HOST_DEBUG(PSTR(">>>>>>>> Warning: wanted %i bytes but got %i.\r\n"), nbytes, pktsize);
+            pktsize = nbytes;
+        }
 
-                regWr(rHIRQ, bmRCVDAVIRQ); // Clear the IRQ & free the buffer
-                *nbytesptr += pktsize; // add this packet's byte count to total transfer length
+        int16_t mem_left = (int16_t)nbytes - *((int16_t*)nbytesptr);
 
-                /* The transfer is complete under two conditions:           */
-                /* 1. The device sent a short packet (L.T. maxPacketSize)   */
-                /* 2. 'nbytes' have been transferred.                       */
-                if((pktsize < maxpktsize) || (*nbytesptr >= nbytes)) // have we transferred 'nbytes' bytes?
-                {
-                        // Save toggle value
-                        pep->bmRcvToggle = ((regRd(rHRSL) & bmRCVTOGRD)) ? 1 : 0;
-                        //MAX_HOST_DEBUG(PSTR("\r\n"));
-                        rcode = 0;
-                        break;
-                } // if
-        } //while( 1 )
-        return ( rcode);
+        if(mem_left < 0)
+            mem_left = 0;
+
+        data = bytesRd(rRCVFIFO, ((pktsize > mem_left) ? mem_left : pktsize), data);
+
+        // Clear the IRQ & free the buffer
+        regWr(rHIRQ, bmRCVDAVIRQ);
+        *nbytesptr += pktsize; // add this packet's byte count to total transfer length
+
+        // The transfer is complete under two conditions:
+        // 1. The device sent a short packet (L.T. maxPacketSize)
+        // 2. 'nbytes' have been transferred
+        if((pktsize < maxpktsize) || (*nbytesptr >= nbytes)) // have we transferred 'nbytes' bytes?
+        {
+            // Save toggle value
+            pep->bmRcvToggle = ((regRd(rHRSL) & bmRCVTOGRD)) ? 1 : 0;
+            //MAX_HOST_DEBUG(PSTR("\r\n"));
+            rcode = 0;
+            break;
+        }
+    }
+
+    return rcode;
 }
 
-/**
- * Transmit a packet
- *
- * @param pep pointer to a valid UHS_EpInfo structure
+
+// Transmit a packet
+/* @param pep pointer to a valid UHS_EpInfo structure
  * @param nak_limit how many NAKs before aborting
  * @param nbytes number of bytes of data to send
  * @param data pointer to data buffer
- * @return 0 on success
- */
-uint8_t UHS_NI MAX3421E_HOST::OutTransfer(UHS_EpInfo *pep, uint16_t nak_limit, uint16_t nbytes, uint8_t *data) {
-        uint8_t rcode = UHS_HOST_ERROR_NONE;
-        uint8_t retry_count;
-        uint8_t *data_p = data; //local copy of the data pointer
-        uint16_t bytes_tosend;
-        uint16_t nak_count;
-        uint16_t bytes_left = nbytes;
+ * @return 0 on success */
+uint8_t UHS_NI MAX3421E_HOST::OutTransfer(UHS_EpInfo *pep, uint16_t nak_limit, uint16_t nbytes, uint8_t *data)
+{
+    uint8_t rcode = UHS_HOST_ERROR_NONE;
+    uint8_t retry_count;
+    uint8_t *data_p = data; // local copy of the data pointer
+    uint16_t bytes_tosend;
+    uint16_t nak_count;
+    uint16_t bytes_left = nbytes;
 
-        uint8_t maxpktsize = pep->maxPktSize;
+    uint8_t maxpktsize = pep->maxPktSize;
 
-        if(maxpktsize < 1 || maxpktsize > 64)
-                return UHS_HOST_ERROR_BAD_MAX_PACKET_SIZE;
+    if(maxpktsize < 1 || maxpktsize > 64)
+        return UHS_HOST_ERROR_BAD_MAX_PACKET_SIZE;
 
-        unsigned long timeout = millis() + UHS_HOST_TRANSFER_MAX_MS;
+    unsigned long timeout = millis() + UHS_HOST_TRANSFER_MAX_MS;
 
-        regWr(rHCTL, (pep->bmSndToggle) ? bmSNDTOG1 : bmSNDTOG0); //set toggle value
+    // Set toggle value
+    regWr(rHCTL, (pep->bmSndToggle) ? bmSNDTOG1 : bmSNDTOG0);
 
-        while(bytes_left) {
-                SYSTEM_OR_SPECIAL_YIELD();
-                retry_count = 0;
-                nak_count = 0;
-                bytes_tosend = (bytes_left >= maxpktsize) ? maxpktsize : bytes_left;
-                bytesWr(rSNDFIFO, bytes_tosend, data_p); //filling output FIFO
-                regWr(rSNDBC, bytes_tosend); //set number of bytes
-                regWr(rHXFR, (MAX3421E_tokOUT | pep->epAddr)); //dispatch packet
-                while(!(regRd(rHIRQ) & bmHXFRDNIRQ)); //wait for the completion IRQ
-                regWr(rHIRQ, bmHXFRDNIRQ); //clear IRQ
-                rcode = (regRd(rHRSL) & 0x0f);
+    while(bytes_left)
+    {
+        SYSTEM_OR_SPECIAL_YIELD();
 
-                while(rcode && ((long)(millis() - timeout) < 0L)) {
-                        switch(rcode) {
-                                case UHS_HOST_ERROR_NAK:
-                                        nak_count++;
-                                        if(nak_limit && (nak_count == nak_limit))
-                                                goto breakout;
-                                        break;
-                                case UHS_HOST_ERROR_TIMEOUT:
-                                        retry_count++;
-                                        if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
-                                                goto breakout;
-                                        break;
-                                case UHS_HOST_ERROR_TOGERR:
-                                        // yes, we flip it wrong here so that next time it is actually correct!
-                                        pep->bmSndToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
-                                        regWr(rHCTL, (pep->bmSndToggle) ? bmSNDTOG1 : bmSNDTOG0); //set toggle value
-                                        break;
-                                default:
-                                        goto breakout;
-                        }//switch( rcode
+        retry_count = 0;
+        nak_count = 0;
 
-                        /* process NAK according to Host out NAK bug */
-                        regWr(rSNDBC, 0);
-                        regWr(rSNDFIFO, *data_p);
-                        regWr(rSNDBC, bytes_tosend);
-                        regWr(rHXFR, (MAX3421E_tokOUT | pep->epAddr)); //dispatch packet
-                        while(!(regRd(rHIRQ) & bmHXFRDNIRQ)); //wait for the completion IRQ
-                        regWr(rHIRQ, bmHXFRDNIRQ); //clear IRQ
-                        rcode = (regRd(rHRSL) & 0x0f);
-                        SYSTEM_OR_SPECIAL_YIELD();
-                }//while( rcode && ....
-                bytes_left -= bytes_tosend;
-                data_p += bytes_tosend;
-        }//while( bytes_left...
-breakout:
+        bytes_tosend = (bytes_left >= maxpktsize) ? maxpktsize : bytes_left;
 
-        pep->bmSndToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 1 : 0; //bmSNDTOG1 : bmSNDTOG0;  //update toggle
-        return ( rcode); //should be 0 in all cases
+        bytesWr(rSNDFIFO, bytes_tosend, data_p);       // filling output FIFO
+        regWr(rSNDBC, bytes_tosend);                   // set number of bytes
+        regWr(rHXFR, (MAX3421E_tokOUT | pep->epAddr)); // dispatch packet
+
+        // Wait for the completion IRQ
+        while(!(regRd(rHIRQ) & bmHXFRDNIRQ));
+
+        regWr(rHIRQ, bmHXFRDNIRQ); // clear IRQ
+
+        rcode = (regRd(rHRSL) & 0x0f);
+
+        while(rcode && ((long)(millis() - timeout) < 0L))
+        {
+            switch(rcode)
+            {
+                case UHS_HOST_ERROR_NAK:
+                    nak_count++;
+                    if(nak_limit && (nak_count == nak_limit))
+                        goto breakout; //@TODO: to change this shit!
+                    break;
+                case UHS_HOST_ERROR_TIMEOUT:
+                    retry_count++;
+                    if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
+                        goto breakout; //@TODO: to change this shit!
+                    break;
+                case UHS_HOST_ERROR_TOGERR:
+                    // Yes, we flip it wrong here so that next time it is actually correct!
+                    pep->bmSndToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
+                    regWr(rHCTL, (pep->bmSndToggle) ? bmSNDTOG1 : bmSNDTOG0); // set toggle value
+                    break;
+                default:
+                    goto breakout; //@TODO: to change this shit!
+            }
+
+            // Process NAK according to Host out NAK bug
+            regWr(rSNDBC, 0);
+            regWr(rSNDFIFO, *data_p);
+            regWr(rSNDBC, bytes_tosend);
+            regWr(rHXFR, (MAX3421E_tokOUT | pep->epAddr)); // dispatch packet
+
+            // Wait for the completion IRQ
+            while(!(regRd(rHIRQ) & bmHXFRDNIRQ));
+
+            regWr(rHIRQ, bmHXFRDNIRQ); // clear IRQ
+
+            rcode = (regRd(rHRSL) & 0x0f);
+
+            SYSTEM_OR_SPECIAL_YIELD();
+        }
+
+        bytes_left -= bytes_tosend;
+        data_p += bytes_tosend;
+    }
+
+breakout: //@TODO: to change this shit!
+
+    pep->bmSndToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 1 : 0; // bmSNDTOG1 : bmSNDTOG0;  // update toggle
+
+    return rcode; // should be 0 in all cases
 }
 
-/**
- * Send the actual packet.
- *
- * @param token
+
+// Send the actual packet
+/* @param token
  * @param ep Endpoint
  * @param nak_limit how many NAKs before aborting, 0 == exit after timeout
- * @return 0 on success, 0xFF indicates NAK timeout. @see
- */
-/* Assumes peripheral address is set and relevant buffer is loaded/empty       */
-/* If NAK, tries to re-send up to nak_limit times                                                   */
-/* If nak_limit == 0, do not count NAKs, exit after timeout                                         */
-/* If bus timeout, re-sends up to USB_RETRY_LIMIT times                                             */
+ * @return 0 on success, 0xFF indicates NAK timeout. @see */
+/* NOTES
+ * Assumes peripheral address is set and relevant buffer is loaded/empty
+ * If NAK, tries to re-send up to nak_limit times
+ * If nak_limit == 0, do not count NAKs, exit after timeout
+ * If bus timeout, re-sends up to USB_RETRY_LIMIT times
+ * return codes 0x00-0x0f are HRSLT( 0x00 being success ), 0xff means timeout */
+uint8_t UHS_NI MAX3421E_HOST::dispatchPkt(uint8_t token, uint8_t ep, uint16_t nak_limit)
+{
+    unsigned long timeout = millis() + UHS_HOST_TRANSFER_MAX_MS;
+    uint8_t tmpdata;
+    uint8_t rcode = UHS_HOST_ERROR_NONE;
+    uint8_t retry_count = 0;
+    uint16_t nak_count = 0;
 
-/* return codes 0x00-0x0f are HRSLT( 0x00 being success ), 0xff means timeout                       */
-uint8_t UHS_NI MAX3421E_HOST::dispatchPkt(uint8_t token, uint8_t ep, uint16_t nak_limit) {
-        unsigned long timeout = millis() + UHS_HOST_TRANSFER_MAX_MS;
-        uint8_t tmpdata;
-        uint8_t rcode = UHS_HOST_ERROR_NONE;
-        uint8_t retry_count = 0;
-        uint16_t nak_count = 0;
+    for(;;)
+    {
+        regWr(rHXFR, (token | ep)); // launch the transfer
 
-        for(;;) {
-                regWr(rHXFR, (token | ep)); //launch the transfer
-                while((long)(millis() - timeout) < 0L) //wait for transfer completion
+        // Wait for transfer completion
+        while((long)(millis() - timeout) < 0L)
+        {
+            SYSTEM_OR_SPECIAL_YIELD();
+
+            tmpdata = regRd(rHIRQ);
+
+            if(tmpdata & bmHXFRDNIRQ)
+            {
+                regWr(rHIRQ, bmHXFRDNIRQ); // clear the interrupt
+                break;
+            }
+        }
+
+        rcode = (regRd(rHRSL) & 0x0f); // analyze transfer result
+
+        switch(rcode)
+        {
+            case UHS_HOST_ERROR_NAK:
+                nak_count++;
+                if(nak_limit && (nak_count == nak_limit))
+                    return rcode;
+                UsTicker::wait(std::chrono::microseconds(200));
+                break;
+            case UHS_HOST_ERROR_TIMEOUT:
+                retry_count++;
+                if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
+                    return rcode;
+                break;
+            default:
+                return rcode;
+        }
+    }
+}
+
+
+// NULL is error, we don't need to know the reason
+
+UHS_EpInfo * UHS_NI MAX3421E_HOST::ctrlReqOpen(uint8_t addr, uint64_t Request, uint8_t *dataptr)
+{
+    uint8_t rcode;
+    UHS_EpInfo *pep = NULL;
+    uint16_t nak_limit = 0;
+    rcode = SetAddress(addr, 0, &pep, nak_limit);
+
+    if(!rcode)
+    {
+        bytesWr(rSUDFIFO, 8, (uint8_t*)(&Request)); // transfer to setup packet FIFO
+
+        rcode = dispatchPkt(MAX3421E_tokSETUP, 0, nak_limit); // dispatch packet
+
+        if(!rcode)
+        {
+            if(dataptr != NULL)
+            {
+                if(((Request)/* bmReqType*/ & 0x80) == 0x80)
                 {
-                        SYSTEM_OR_SPECIAL_YIELD();
-                        tmpdata = regRd(rHIRQ);
-
-                        if(tmpdata & bmHXFRDNIRQ) {
-                                regWr(rHIRQ, bmHXFRDNIRQ); //clear the interrupt
-                                //rcode = 0x00;
-                                break;
-                        }//if( tmpdata & bmHXFRDNIRQ
-
-                }//while ( millis() < timeouthttps://www.mouser.com/Search/Refine.aspx?Keyword=
-
-                rcode = (regRd(rHRSL) & 0x0f); //analyze transfer result
-
-                switch(rcode) {
-                        case UHS_HOST_ERROR_NAK:
-                                nak_count++;
-                                if(nak_limit && (nak_count == nak_limit))
-                                        return (rcode);
-                                delayMicroseconds(200);
-                                break;
-                        case UHS_HOST_ERROR_TIMEOUT:
-                                retry_count++;
-                                if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
-                                        return (rcode);
-                                break;
-                        default:
-                                return (rcode);
-                }//switch( rcode
+                    pep->bmRcvToggle = 1; // bmRCVTOG1;
+                }
+                else
+                {
+                    pep->bmSndToggle = 1; // bmSNDTOG1;
+                }
+            }
         }
+        else
+        {
+            pep = NULL;
+        }
+    }
+
+    return pep;
 }
 
-//
-// NULL is error, we don't need to know the reason.
-//
 
-UHS_EpInfo * UHS_NI MAX3421E_HOST::ctrlReqOpen(uint8_t addr, uint64_t Request, uint8_t *dataptr) {
-        uint8_t rcode;
-        UHS_EpInfo *pep = NULL;
-        uint16_t nak_limit = 0;
-        rcode = SetAddress(addr, 0, &pep, nak_limit);
+uint8_t UHS_NI MAX3421E_HOST::ctrlReqRead(UHS_EpInfo *pep, uint16_t *left, uint16_t *read, uint16_t nbytes, uint8_t *dataptr)
+{
+    *read = 0;
+    uint16_t nak_limit = 0;
+    MAX_HOST_DEBUG(PSTR("ctrlReqRead left: %i\r\n"), *left);
 
-        if(!rcode) {
+    if(*left)
+    {
+again: //@TODO: to change this shit!
 
-                bytesWr(rSUDFIFO, 8, (uint8_t*)(&Request)); //transfer to setup packet FIFO
+        *read = nbytes;
+        uint8_t rcode = InTransfer(pep, nak_limit, read, dataptr);
 
-                rcode = dispatchPkt(MAX3421E_tokSETUP, 0, nak_limit); //dispatch packet
-                if(!rcode) {
-                        if(dataptr != NULL) {
-                                if(((Request)/* bmReqType*/ & 0x80) == 0x80) {
-                                        pep->bmRcvToggle = 1; //bmRCVTOG1;
-                                } else {
-                                        pep->bmSndToggle = 1; //bmSNDTOG1;
-                                }
-                        }
-                } else {
-                        pep = NULL;
-                }
+        if(rcode == UHS_HOST_ERROR_TOGERR)
+        {
+            // Yes, we flip it wrong here so that next time it is actually correct!
+            pep->bmRcvToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
+            goto again; //@TODO: to change this shit!
         }
-        return pep;
+
+        if(rcode)
+        {
+            MAX_HOST_DEBUG(PSTR("ctrlReqRead ERROR: %2.2x, left: %i, read %i\r\n"), rcode, *left, *read);
+            return rcode;
+        }
+
+        *left -= *read;
+        MAX_HOST_DEBUG(PSTR("ctrlReqRead left: %i, read %i\r\n"), *left, *read);
+    }
+
+    return 0;
 }
 
-uint8_t UHS_NI MAX3421E_HOST::ctrlReqRead(UHS_EpInfo *pep, uint16_t *left, uint16_t *read, uint16_t nbytes, uint8_t *dataptr) {
-        *read = 0;
-        uint16_t nak_limit = 0;
-        MAX_HOST_DEBUG(PSTR("ctrlReqRead left: %i\r\n"), *left);
-        if(*left) {
-again:
-                *read = nbytes;
-                uint8_t rcode = InTransfer(pep, nak_limit, read, dataptr);
-                if(rcode == UHS_HOST_ERROR_TOGERR) {
-                        // yes, we flip it wrong here so that next time it is actually correct!
-                        pep->bmRcvToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
-                        goto again;
-                }
 
-                if(rcode) {
-                        MAX_HOST_DEBUG(PSTR("ctrlReqRead ERROR: %2.2x, left: %i, read %i\r\n"), rcode, *left, *read);
-                        return rcode;
-                }
-                *left -= *read;
-                MAX_HOST_DEBUG(PSTR("ctrlReqRead left: %i, read %i\r\n"), *left, *read);
+uint8_t UHS_NI MAX3421E_HOST::ctrlReqClose(UHS_EpInfo *pep, uint8_t bmReqType, uint16_t left, uint16_t nbytes, uint8_t *dataptr)
+{
+    uint8_t rcode = 0;
+
+    //MAX_HOST_DEBUG(PSTR("Closing"));
+    if(((bmReqType & 0x80) == 0x80) && pep && left && dataptr)
+    {
+        MAX_HOST_DEBUG(PSTR("ctrlReqRead Sinking %i\r\n"), left);
+        // If reading, sink the rest of the data
+        while(left)
+        {
+            uint16_t read = nbytes;
+            rcode = InTransfer(pep, 0, &read, dataptr);
+
+            if(rcode == UHS_HOST_ERROR_TOGERR)
+            {
+                // Yes, we flip it wrong here so that next time it is actually correct!
+                pep->bmRcvToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
+                continue;
+            }
+
+            if(rcode) break;
+            left -= read;
+            if(read < nbytes) break;
         }
-        return 0;
+    }
+
+    if(!rcode)
+    {
+        rcode = dispatchPkt(((bmReqType & 0x80) == 0x80) ? MAX3421E_tokOUTHS : MAX3421E_tokINHS, 0, 0); // GET if direction
+    }
+
+    return rcode;
 }
 
-uint8_t UHS_NI MAX3421E_HOST::ctrlReqClose(UHS_EpInfo *pep, uint8_t bmReqType, uint16_t left, uint16_t nbytes, uint8_t *dataptr) {
-        uint8_t rcode = 0;
 
-        //MAX_HOST_DEBUG(PSTR("Closing"));
-        if(((bmReqType & 0x80) == 0x80) && pep && left && dataptr) {
-                MAX_HOST_DEBUG(PSTR("ctrlReqRead Sinking %i\r\n"), left);
-                // If reading, sink the rest of the data.
-                while(left) {
-                        uint16_t read = nbytes;
-                        rcode = InTransfer(pep, 0, &read, dataptr);
-                        if(rcode == UHS_HOST_ERROR_TOGERR) {
-                                // yes, we flip it wrong here so that next time it is actually correct!
-                                pep->bmRcvToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
-                                continue;
-                        }
-                        if(rcode) break;
-                        left -= read;
-                        if(read < nbytes) break;
-                }
-        }
-        if(!rcode) {
-                //               Serial.println("Dispatching");
-                rcode = dispatchPkt(((bmReqType & 0x80) == 0x80) ? MAX3421E_tokOUTHS : MAX3421E_tokINHS, 0, 0); //GET if direction
-                //        } else {
-                //                Serial.println("Bypassed Dispatch");
-        }
-        return rcode;
-}
-
-/**
- * Bottom half of the ISR task
- */
-void UHS_NI MAX3421E_HOST::ISRbottom(void) {
+// Bottom half of the ISR task
+void UHS_NI MAX3421E_HOST::ISRbottom(void)
+{
         uint8_t x;
         //        Serial.print("Enter ");
         //        Serial.print((uint32_t)this,HEX);
@@ -826,69 +833,52 @@ void UHS_NI MAX3421E_HOST::ISRbottom(void) {
                 interrupts();
         }
 #endif
-#ifdef USB_HOST_SHIELD_TIMING_PIN
-        // My counter/timer can't work on an inverted gate signal
-        // so we gate using a high pulse -- AJK
-        UHS_PIN_WRITE(USB_HOST_SHIELD_TIMING_PIN, LOW);
-#endif
+
         //usb_task_polling_disabled--;
         EnablePoll();
         DDSB();
 }
 
 
-/* USB main task. Services the MAX3421e */
-#if !USB_HOST_SHIELD_USE_ISR
-
-void UHS_NI MAX3421E_HOST::ISRTask(void) {
-}
-void UHS_NI MAX3421E_HOST::Task(void)
-#else
-
-void UHS_NI MAX3421E_HOST::Task(void) {
-}
-
+// USB main task. Services the MAX3421e
 void UHS_NI MAX3421E_HOST::ISRTask(void)
-#endif
 {
-        DDSB();
+    DDSB();
 
-#if !defined(SWI_IRQ_NUM)
-        suspend_host();
-#if USB_HOST_SHIELD_USE_ISR
-        // Enable interrupts
-        interrupts();
-#endif
-#endif
+    //suspend_host();
+
+    interrupts(); // ??
 
         counted = false;
-        if(!UHS_PIN_READ(irq_pin)) {
-                uint8_t HIRQALL = regRd(rHIRQ); //determine interrupt source
-                uint8_t HIRQ = HIRQALL & IRQ_CHECK_MASK;
-                uint8_t HIRQ_sendback = 0x00;
 
-                if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ)) {
-                        MAX_HOST_DEBUG
-                                (PSTR("\r\nBEFORE CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
-                                (HIRQ & bmCONDETIRQ) ? "T" : "F",
-                                (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
-                                doingreset ? "T" : "F",
-                                usb_task_state
-                                );
-                }
-                // ALWAYS happens BEFORE or WITH CONDETIRQ
-                if(HIRQ & bmBUSEVENTIRQ) {
-                        HIRQ_sendback |= bmBUSEVENTIRQ;
-                        if(!doingreset) condet = true;
-                        busprobe();
-                        busevent = false;
-                }
+        if(!irq_pin)
+        {
+            uint8_t HIRQALL = regRd(rHIRQ); //determine interrupt source
+            uint8_t HIRQ = HIRQALL & IRQ_CHECK_MASK;
+            uint8_t HIRQ_sendback = 0x00;
 
-                if(HIRQ & bmCONDETIRQ) {
-                        HIRQ_sendback |= bmCONDETIRQ;
-                        if(!doingreset) condet = true;
-                        busprobe();
-                }
+            if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ)) {
+                    MAX_HOST_DEBUG
+                            (PSTR("\r\nBEFORE CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
+                            (HIRQ & bmCONDETIRQ) ? "T" : "F",
+                            (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
+                            doingreset ? "T" : "F",
+                            usb_task_state
+                            );
+            }
+            // ALWAYS happens BEFORE or WITH CONDETIRQ
+            if(HIRQ & bmBUSEVENTIRQ) {
+                    HIRQ_sendback |= bmBUSEVENTIRQ;
+                    if(!doingreset) condet = true;
+                    busprobe();
+                    busevent = false;
+            }
+
+            if(HIRQ & bmCONDETIRQ) {
+                    HIRQ_sendback |= bmCONDETIRQ;
+                    if(!doingreset) condet = true;
+                    busprobe();
+            }
 
 #if 1
                 if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ)) {
@@ -917,39 +907,23 @@ void UHS_NI MAX3421E_HOST::ISRTask(void)
                 //        usb_task_polling_disabled? "T" : "F");
                 DDSB();
                 regWr(rHIRQ, HIRQ_sendback);
-#if !defined(SWI_IRQ_NUM)
-        resume_host();
-#if USB_HOST_SHIELD_USE_ISR
-        // Disable interrupts
-        noInterrupts();
-#endif
-#endif
+
+        //resume_host();
+
+        noInterrupts(); // ??
+
                 if(!sof_countdown && !counted && !usb_task_polling_disabled) {
                         DisablePoll();
                         //usb_task_polling_disabled++;
-#ifdef USB_HOST_SHIELD_TIMING_PIN
-                        // My counter/timer can't work on an inverted gate signal
-                        // so we gate using a high pulse -- AJK
-                        UHS_PIN_WRITE(USB_HOST_SHIELD_TIMING_PIN, HIGH);
-#endif
 
-#if defined(SWI_IRQ_NUM)
-                        // MAX_HOST_DEBUG(PSTR("--------------- Doing SWI ----------------"));
-                        exec_SWI(this);
-#else
-#if USB_HOST_SHIELD_USE_ISR
-                        // Enable interrupts
-                        interrupts();
-#endif /* USB_HOST_SHIELD_USE_ISR */
-                        ISRbottom();
-#endif /* SWI_IRQ_NUM */
+                        interrupts(); // ??
+
+                        ISRbottom(); //@TODO: signal semaphore to call after this function...
                 }
         }
 }
 
-#if 0
-DDSB();
-#endif
+
 #else
 #error "Never include spi_max3421e_INLINE.h, include UHS_host.h instead"
 #endif

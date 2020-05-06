@@ -2,7 +2,7 @@
 // @file    spi_max3421e.h
 // @brief   SPI MAX3421E driver class.
 // @notes   Based on UHS30 USB_HOST_SHIELD.h file suitable for Xarmlib
-// @date    5 May 2020
+// @date    6 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -53,55 +53,25 @@
 #define MAX_HOST_DEBUG(...) VOID0
 #endif
 
-#if !defined(USB_HOST_SHIELD_USE_ISR)
-#if defined(USE_MULTIPLE_APP_API)
-#define USB_HOST_SHIELD_USE_ISR 0
-#else
-#define USB_HOST_SHIELD_USE_ISR 1
-#endif
-#else
-#define USB_HOST_SHIELD_USE_ISR 1
-#endif
+#define USB_HOST_SHIELD_USE_ISR 1 // TMP
 
 
-#define IRQ_IS_EDGE 0
+// NOTE: On the max3421e the irq enable and irq bits are in the same position
 
-
-// NOTE: On the max3421e the irq enable and irq bits are in the same position.
-
-// IRQs used if CPU polls
-#define ENIBITSPOLLED (bmCONDETIE | bmBUSEVENTIE  | bmFRAMEIE)
 // IRQs used if CPU is interrupted
 #define ENIBITSISR (bmCONDETIE | bmBUSEVENTIE | bmFRAMEIE /* | bmRCVDAVIRQ | bmSNDBAVIRQ | bmHXFRDNIRQ */ )
 
-#if !USB_HOST_SHIELD_USE_ISR
-#define IRQ_CHECK_MASK (ENIBITSPOLLED & ICLRALLBITS)
-#define IRQ_IS_EDGE 0
-#else
 #define IRQ_CHECK_MASK (ENIBITSISR & ICLRALLBITS)
-#endif
 
-
-//#if !defined(IRQ_SENSE)
-//#define IRQ_SENSE LOW
-//#endif
-//#if !defined(bmPULSEWIDTH)
-//#define bmPULSEWIDTH 0
-//#endif
-//#if !defined(bmIRQ_SENSE)
-//#define bmIRQ_SENSE bmINTLEVEL
-//#endif
 
 class MAX3421E_HOST : public UHS_USB_HOST_BASE
-#if defined(SWI_IRQ_NUM)
-, public dyn_SWI
-#endif
 {
     using DigitalOut = xarmlib::DigitalOut;
     using DigitalIn  = xarmlib::DigitalIn;
     using SpiMaster  = xarmlib::hal::SpiMaster;
     using Pin        = xarmlib::hal::Pin;
     using Gpio       = xarmlib::hal::Gpio;
+    using UsTicker   = xarmlib::hal::UsTicker;
 
     SpiMaster *pSpi;    // SPI master class instance pointer
     DigitalOut ss_pin;  // SPI slave select
@@ -140,9 +110,6 @@ public:
         while((sof_countdown != 0) && !condet)
         {
             SYSTEM_OR_SPECIAL_YIELD();
-#if !USB_HOST_SHIELD_USE_ISR
-            Task();
-#endif
         }
 
         return (!condet);
@@ -152,10 +119,10 @@ public:
 
     virtual void UHS_NI vbusPower(VBUS_t state)
     {
-        regWr(rPINCTL, (bmFDUPSPI | bmIRQ_SENSE) | (uint8_t)(state));
+        regWr(rPINCTL, (bmFDUPSPI | bmINTLEVEL) | (uint8_t)(state));
     }
 
-    void UHS_NI Task(void);
+    //void UHS_NI Task(void);
 
     virtual uint8_t SetAddress(uint8_t addr, uint8_t ep, UHS_EpInfo **ppep, uint16_t &nak_limit);
     virtual uint8_t OutTransfer(UHS_EpInfo *pep, uint16_t nak_limit, uint16_t nbytes, uint8_t *data);
@@ -182,46 +149,37 @@ public:
 
     virtual void UHS_NI doHostReset(void)
     {
-#if USB_HOST_SHIELD_USE_ISR
         noInterrupts();
-#endif
+
         doingreset = true;
         busevent = true;
 
         regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet
         regWr(rHCTL, bmBUSRST);      // issue bus reset
 
-#if USB_HOST_SHIELD_USE_ISR
         DDSB();
         interrupts();
-#endif
 
         while(busevent)
         {
             DDSB();
             SYSTEM_OR_SPECIAL_YIELD();
         }
-#endif
-#if USB_HOST_SHIELD_USE_ISR
+
         noInterrupts();
-#endif
+
         sofevent = true;
 
-#if USB_HOST_SHIELD_USE_ISR
         DDSB();
         interrupts();
-#endif
 
         // Wait for SOF
         while(sofevent);
 
-#if USB_HOST_SHIELD_USE_ISR
         noInterrupts();
-#endif
 
         doingreset = false;
 
-#if USB_HOST_SHIELD_USE_ISR
         DDSB();
         interrupts();
     }
@@ -245,20 +203,9 @@ public:
     uint8_t gpioRd(void);
     uint8_t* bytesWr(uint8_t reg, uint8_t nbytes, uint8_t* data_p);
     uint8_t* bytesRd(uint8_t reg, uint8_t nbytes, uint8_t* data_p);
-
-    // ARM/NVIC specific, used to emulate reentrant ISR.
-#if defined(SWI_IRQ_NUM)
-
-    void dyn_SWISR(void)
-    {
-        ISRbottom();
-    }
-#endif
 };
 
-#if !defined(SPIclass)
-#define SPIclass SPI
-#endif
+
 #if !defined(USB_HOST_SHIELD_LOADED)
 #include "spi_max3421e_INLINE.h"
 #endif
