@@ -2,7 +2,7 @@
 // @file    spi_max3421e_INLINE.h
 // @brief   SPI MAX3421E driver class implementation.
 // @notes   Based on UHS30 USB_HOST_SHIELD_INLINE.h file suitable for Xarmlib
-// @date    6 May 2020
+// @date    7 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,10 +32,6 @@
 
 #if defined(SPI_MAX3421E_H) && !defined(USB_HOST_SHIELD_LOADED)
 #define USB_HOST_SHIELD_LOADED
-
-//#if !defined(digitalPinToInterrupt)
-//#error digitalPinToInterrupt not defined, complain to your board maintainer.
-//#endif
 
 
 // allow two slots. this makes the maximum allowed shield count TWO
@@ -201,6 +197,7 @@ void UHS_NI MAX3421E_HOST::VBUS_changed(void)
         case LSHOST: // low speed
             speed = 0;
             // Intentional fall-through
+
         case FSHOST: // full speed
             // Start device initialization if we are not initializing
             // Resets to the device cause an IRQ
@@ -220,13 +217,16 @@ void UHS_NI MAX3421E_HOST::VBUS_changed(void)
             }
             sof_countdown = 0;
             break;
+
         case SE1: // illegal state
             sof_countdown = 0;
             doingreset = false;
             ReleaseChildren();
             usb_task_state = UHS_USB_HOST_STATE_ILLEGAL;
             break;
+
         case SE0: // disconnected
+
         default:
             sof_countdown = 0;
             doingreset = false;
@@ -265,6 +265,7 @@ void UHS_NI MAX3421E_HOST::busprobe(void)
             regWr(rHIRQ, bmFRAMEIRQ); // see data sheet
             regWr(rMODE, tmpdata);
             break;
+
         case(bmKSTATUS):
             if((regRd(rMODE) & bmLOWSPEED) == 0)
             {
@@ -280,11 +281,13 @@ void UHS_NI MAX3421E_HOST::busprobe(void)
             regWr(rHIRQ, bmFRAMEIRQ); // see data sheet
             regWr(rMODE, tmpdata);
             break;
+
         case(bmSE1): // illegal state
             regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
             vbusState = SE1;
             // sofevent = false;
             break;
+
         case(bmSE0): // disconnected state
             regWr(rMODE, bmDPPULLDN | bmDMPULLDN | bmHOST);
             vbusState = SE0;
@@ -525,16 +528,19 @@ uint8_t UHS_NI MAX3421E_HOST::OutTransfer(UHS_EpInfo *pep, uint16_t nak_limit, u
                     if(nak_limit && (nak_count == nak_limit))
                         goto breakout; //@TODO: to change this shit!
                     break;
+
                 case UHS_HOST_ERROR_TIMEOUT:
                     retry_count++;
                     if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
                         goto breakout; //@TODO: to change this shit!
                     break;
+
                 case UHS_HOST_ERROR_TOGERR:
                     // Yes, we flip it wrong here so that next time it is actually correct!
                     pep->bmSndToggle = (regRd(rHRSL) & bmSNDTOGRD) ? 0 : 1;
                     regWr(rHCTL, (pep->bmSndToggle) ? bmSNDTOG1 : bmSNDTOG0); // set toggle value
                     break;
+
                 default:
                     goto breakout; //@TODO: to change this shit!
             }
@@ -614,11 +620,13 @@ uint8_t UHS_NI MAX3421E_HOST::dispatchPkt(uint8_t token, uint8_t ep, uint16_t na
                     return rcode;
                 UsTicker::wait(std::chrono::microseconds(200));
                 break;
+
             case UHS_HOST_ERROR_TIMEOUT:
                 retry_count++;
                 if(retry_count == UHS_HOST_TRANSFER_RETRY_MAXIMUM)
                     return rcode;
                 break;
+
             default:
                 return rcode;
         }
@@ -738,189 +746,201 @@ uint8_t UHS_NI MAX3421E_HOST::ctrlReqClose(UHS_EpInfo *pep, uint8_t bmReqType, u
 // Bottom half of the ISR task
 void UHS_NI MAX3421E_HOST::ISRbottom(void)
 {
-        uint8_t x;
-        //        Serial.print("Enter ");
-        //        Serial.print((uint32_t)this,HEX);
-        //        Serial.print(" ");
-        //        Serial.println(usb_task_state, HEX);
+    if(condet)
+    {
+        VBUS_changed();
 
-        DDSB();
-        if(condet) {
-                VBUS_changed();
-#if USB_HOST_SHIELD_USE_ISR
-                noInterrupts();
-#endif
-                condet = false;
-#if USB_HOST_SHIELD_USE_ISR
-                interrupts();
-#endif
-        }
-        switch(usb_task_state) {
-                case UHS_USB_HOST_STATE_INITIALIZE:
-                        // should never happen...
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_INITIALIZE\r\n"));
-                        busprobe();
-                        VBUS_changed();
-                        break;
-                case UHS_USB_HOST_STATE_DEBOUNCE:
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_DEBOUNCE\r\n"));
-                        // This seems to not be needed. The host controller has debounce built in.
-                        sof_countdown = UHS_HOST_DEBOUNCE_DELAY_MS;
-                        usb_task_state = UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE;
-                        break;
-                case UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE:
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE\r\n"));
-                        if(!sof_countdown) usb_task_state = UHS_USB_HOST_STATE_RESET_DEVICE;
-                        break;
-                case UHS_USB_HOST_STATE_RESET_DEVICE:
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_RESET_DEVICE\r\n"));
-                        busevent = true;
-                        usb_task_state = UHS_USB_HOST_STATE_RESET_NOT_COMPLETE;
-                        regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet.
-                        regWr(rHCTL, bmBUSRST); // issue bus reset
-                        break;
-                case UHS_USB_HOST_STATE_RESET_NOT_COMPLETE:
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_RESET_NOT_COMPLETE\r\n"));
-                        if(!busevent) usb_task_state = UHS_USB_HOST_STATE_WAIT_BUS_READY;
-                        break;
-                case UHS_USB_HOST_STATE_WAIT_BUS_READY:
-                        MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_WAIT_BUS_READY\r\n"));
-                        usb_task_state = UHS_USB_HOST_STATE_CONFIGURING;
-                        break; // don't fall through
+        noInterrupts();
+        condet = false;
+        interrupts();
+    }
 
-                case UHS_USB_HOST_STATE_CONFIGURING:
-                        usb_task_state = UHS_USB_HOST_STATE_CHECK;
-                        x = Configuring(0, 1, usb_host_speed);
+    uint8_t x;
+
+    switch(usb_task_state)
+    {
+        case UHS_USB_HOST_STATE_INITIALIZE:
+            // Should never happen...
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_INITIALIZE\r\n"));
+            busprobe();
+            VBUS_changed();
+            break;
+
+        case UHS_USB_HOST_STATE_DEBOUNCE:
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_DEBOUNCE\r\n"));
+            // This seems to not be needed. The host controller has debounce built in.
+            sof_countdown = UHS_HOST_DEBOUNCE_DELAY_MS;
+            usb_task_state = UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE;
+            break;
+
+        case UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE:
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE\r\n"));
+            if(!sof_countdown) usb_task_state = UHS_USB_HOST_STATE_RESET_DEVICE;
+            break;
+
+        case UHS_USB_HOST_STATE_RESET_DEVICE:
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_RESET_DEVICE\r\n"));
+            busevent = true;
+            usb_task_state = UHS_USB_HOST_STATE_RESET_NOT_COMPLETE;
+            regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet
+            regWr(rHCTL, bmBUSRST);      // issue bus reset
+            break;
+
+        case UHS_USB_HOST_STATE_RESET_NOT_COMPLETE:
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_RESET_NOT_COMPLETE\r\n"));
+            if(!busevent) usb_task_state = UHS_USB_HOST_STATE_WAIT_BUS_READY;
+            break;
+
+        case UHS_USB_HOST_STATE_WAIT_BUS_READY:
+            MAX_HOST_DEBUG(PSTR("UHS_USB_HOST_STATE_WAIT_BUS_READY\r\n"));
+            usb_task_state = UHS_USB_HOST_STATE_CONFIGURING;
+            break;
+
+        case UHS_USB_HOST_STATE_CONFIGURING:
+            usb_task_state = UHS_USB_HOST_STATE_CHECK;
+            x = Configuring(0, 1, usb_host_speed);
+            usb_error = x;
+            if(usb_task_state == UHS_USB_HOST_STATE_CHECK)
+            {
+                if(x)
+                {
+                    MAX_HOST_DEBUG(PSTR("Error 0x%2.2x"), x);
+                    if(x == UHS_HOST_ERROR_JERR)
+                    {
+                        usb_task_state = UHS_USB_HOST_STATE_IDLE;
+                    }
+                    else if(x != UHS_HOST_ERROR_DEVICE_INIT_INCOMPLETE)
+                    {
                         usb_error = x;
-                        if(usb_task_state == UHS_USB_HOST_STATE_CHECK) {
-                                if(x) {
-                                        MAX_HOST_DEBUG(PSTR("Error 0x%2.2x"), x);
-                                        if(x == UHS_HOST_ERROR_JERR) {
-                                                usb_task_state = UHS_USB_HOST_STATE_IDLE;
-                                        } else if(x != UHS_HOST_ERROR_DEVICE_INIT_INCOMPLETE) {
-                                                usb_error = x;
-                                                usb_task_state = UHS_USB_HOST_STATE_ERROR;
-                                        }
-                                } else
-                                        usb_task_state = UHS_USB_HOST_STATE_CONFIGURING_DONE;
-                        }
-                        break;
+                        usb_task_state = UHS_USB_HOST_STATE_ERROR;
+                    }
+                }
+                else
+                    usb_task_state = UHS_USB_HOST_STATE_CONFIGURING_DONE;
+            }
+            break;
 
-                case UHS_USB_HOST_STATE_CHECK:
-                        // Serial.println((uint32_t)__builtin_return_address(0), HEX);
-                        break;
-                case UHS_USB_HOST_STATE_CONFIGURING_DONE:
-                        usb_task_state = UHS_USB_HOST_STATE_RUNNING;
-                        break;
-                case UHS_USB_HOST_STATE_RUNNING:
-                        Poll_Others();
-                        for(x = 0; (usb_task_state == UHS_USB_HOST_STATE_RUNNING) && (x < UHS_HOST_MAX_INTERFACE_DRIVERS); x++) {
-                                if(devConfig[x]) {
-                                        if(devConfig[x]->bPollEnable) devConfig[x]->Poll();
-                                }
-                        }
-                        // fall thru
-                default:
-                        // Do nothing
-                        break;
-        } // switch( usb_task_state )
-        DDSB();
-#if USB_HOST_SHIELD_USE_ISR
-        if(condet) {
-                VBUS_changed();
-                noInterrupts();
-                condet = false;
-                interrupts();
-        }
-#endif
+        case UHS_USB_HOST_STATE_CHECK:
+            break;
 
-        //usb_task_polling_disabled--;
-        EnablePoll();
-        DDSB();
+        case UHS_USB_HOST_STATE_CONFIGURING_DONE:
+            usb_task_state = UHS_USB_HOST_STATE_RUNNING;
+            break;
+
+        case UHS_USB_HOST_STATE_RUNNING:
+            Poll_Others();
+            for(x = 0; (usb_task_state == UHS_USB_HOST_STATE_RUNNING) && (x < UHS_HOST_MAX_INTERFACE_DRIVERS); x++)
+            {
+                if(devConfig[x])
+                {
+                    if(devConfig[x]->bPollEnable) devConfig[x]->Poll();
+                }
+            }
+            // fall thru...
+
+        default:
+            // Do nothing
+            break;
+    }
+
+    if(condet)
+    {
+        VBUS_changed();
+
+        noInterrupts();
+        condet = false;
+        interrupts();
+    }
+
+    EnablePoll();
 }
 
 
 // USB main task. Services the MAX3421e
 void UHS_NI MAX3421E_HOST::ISRTask(void)
 {
-    DDSB();
-
-    //suspend_host();
-
     interrupts(); // ??
 
-        counted = false;
+    counted = false;
 
-        if(!irq_pin)
+    if(!irq_pin)
+    {
+        uint8_t HIRQALL = regRd(rHIRQ); // determine interrupt source
+        uint8_t HIRQ = HIRQALL & IRQ_CHECK_MASK;
+        uint8_t HIRQ_sendback = 0x00;
+
+        if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ))
         {
-            uint8_t HIRQALL = regRd(rHIRQ); //determine interrupt source
-            uint8_t HIRQ = HIRQALL & IRQ_CHECK_MASK;
-            uint8_t HIRQ_sendback = 0x00;
+            MAX_HOST_DEBUG(PSTR("\r\nBEFORE CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
+                (HIRQ & bmCONDETIRQ) ? "T" : "F",
+                (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
+                doingreset ? "T" : "F",
+                usb_task_state
+                );
+        }
 
-            if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ)) {
-                    MAX_HOST_DEBUG
-                            (PSTR("\r\nBEFORE CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
-                            (HIRQ & bmCONDETIRQ) ? "T" : "F",
-                            (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
-                            doingreset ? "T" : "F",
-                            usb_task_state
-                            );
-            }
-            // ALWAYS happens BEFORE or WITH CONDETIRQ
-            if(HIRQ & bmBUSEVENTIRQ) {
-                    HIRQ_sendback |= bmBUSEVENTIRQ;
-                    if(!doingreset) condet = true;
-                    busprobe();
-                    busevent = false;
-            }
+        // ALWAYS happens BEFORE or WITH CONDETIRQ
+        if(HIRQ & bmBUSEVENTIRQ)
+        {
+            HIRQ_sendback |= bmBUSEVENTIRQ;
 
-            if(HIRQ & bmCONDETIRQ) {
-                    HIRQ_sendback |= bmCONDETIRQ;
-                    if(!doingreset) condet = true;
-                    busprobe();
-            }
+            if(!doingreset) condet = true;
+
+            busprobe();
+            busevent = false;
+        }
+
+        if(HIRQ & bmCONDETIRQ)
+        {
+            HIRQ_sendback |= bmCONDETIRQ;
+
+            if(!doingreset) condet = true;
+
+            busprobe();
+        }
 
 #if 1
-                if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ)) {
-                        MAX_HOST_DEBUG
-                                (PSTR("\r\nAFTER CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
-                                (HIRQ & bmCONDETIRQ) ? "T" : "F",
-                                (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
-                                doingreset ? "T" : "F",
-                                usb_task_state
-                                );
-                }
+        if((HIRQ & bmCONDETIRQ) || (HIRQ & bmBUSEVENTIRQ))
+        {
+            MAX_HOST_DEBUG(PSTR("\r\nAFTER CDIRQ %s BEIRQ %s resetting %s state 0x%2.2x\r\n"),
+                (HIRQ & bmCONDETIRQ) ? "T" : "F",
+                (HIRQ & bmBUSEVENTIRQ) ? "T" : "F",
+                doingreset ? "T" : "F",
+                usb_task_state
+                );
+        }
 #endif
 
-                if(HIRQ & bmFRAMEIRQ) {
-                        HIRQ_sendback |= bmFRAMEIRQ;
-                        if(sof_countdown) {
-                                sof_countdown--;
-                                counted = true;
-                        }
-                        sofevent = false;
-                }
+        if(HIRQ & bmFRAMEIRQ)
+        {
+            HIRQ_sendback |= bmFRAMEIRQ;
 
-                //MAX_HOST_DEBUG(PSTR("\r\n%s%s%s\r\n"),
-                //        sof_countdown ? "T" : "F",
-                //        counted ? "T" : "F",
-                //        usb_task_polling_disabled? "T" : "F");
-                DDSB();
-                regWr(rHIRQ, HIRQ_sendback);
+            if(sof_countdown)
+            {
+                sof_countdown--;
+                counted = true;
+            }
+            sofevent = false;
+        }
 
-        //resume_host();
+        //MAX_HOST_DEBUG(PSTR("\r\n%s%s%s\r\n"),
+        //        sof_countdown ? "T" : "F",
+        //        counted ? "T" : "F",
+        //        usb_task_polling_disabled? "T" : "F");
+        regWr(rHIRQ, HIRQ_sendback);
 
         noInterrupts(); // ??
 
-                if(!sof_countdown && !counted && !usb_task_polling_disabled) {
-                        DisablePoll();
-                        //usb_task_polling_disabled++;
+        if(!sof_countdown && !counted && !usb_task_polling_disabled)
+        {
+            DisablePoll();
+            //usb_task_polling_disabled++;
 
-                        interrupts(); // ??
+            interrupts(); // ??
 
-                        ISRbottom(); //@TODO: signal semaphore to call after this function...
-                }
+            ISRbottom(); //@TODO: signal semaphore to call after this function...
         }
+    }
 }
 
 

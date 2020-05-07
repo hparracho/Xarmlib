@@ -2,7 +2,7 @@
 // @file    UHS_macros.h
 // @brief   UHS macros.
 // @notes   UHS30 UHS_macros.h file suitable for Xarmlib
-// @date    5 May 2020
+// @date    6 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -39,7 +39,6 @@
 #define micros() std::chrono::duration_cast<std::chrono::microseconds>(xarmlib::hal::UsTicker::now()).count()
 #define millis() std::chrono::duration_cast<std::chrono::milliseconds>(xarmlib::hal::UsTicker::now()).count()
 
-//#define Init_dyn_SWI() (void(0))
 #if !defined(DDSB)
 #define DDSB() (void(0))
 #endif

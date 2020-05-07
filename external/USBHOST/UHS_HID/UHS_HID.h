@@ -27,7 +27,7 @@ e-mail   :  support@circuitsathome.com
 
 #if !defined(__UHS_HID_H__)
 #define __UHS_HID_H__
-#include "../UHS_host/UHS_host.h"
+#include "UHS_host.h"
 
 #if !defined(DEBUG_PRINTF_EXTRA_HUGE_USB_HID)
 #define DEBUG_PRINTF_EXTRA_HUGE_USB_HID 0

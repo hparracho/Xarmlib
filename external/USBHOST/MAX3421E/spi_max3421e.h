@@ -2,7 +2,7 @@
 // @file    spi_max3421e.h
 // @brief   SPI MAX3421E driver class.
 // @notes   Based on UHS30 USB_HOST_SHIELD.h file suitable for Xarmlib
-// @date    6 May 2020
+// @date    7 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,9 +33,6 @@
 #ifndef SPI_MAX3421E_H
 #define SPI_MAX3421E_H
 
-// uncomment to get 'printf' console debugging. NOT FOR UNO!
-//#define DEBUG_PRINTF_EXTRA_HUGE_USB_HOST_SHIELD
-
 #ifdef LOAD_MAX3421E
 #include "UHS_max3421e.h"
 #include "api/api_digital_in.hpp"
@@ -43,8 +40,11 @@
 #include "hal/hal_spi.hpp"
 
 
+#if !defined(DEBUG_PRINTF_EXTRA_HUGE_USB_HOST_SHIELD)
+#define DEBUG_PRINTF_EXTRA_HUGE_USB_HOST_SHIELD 0
+#endif
 #if DEBUG_PRINTF_EXTRA_HUGE
-#ifdef DEBUG_PRINTF_EXTRA_HUGE_USB_HOST_SHIELD
+#if DEBUG_PRINTF_EXTRA_HUGE_USB_HOST_SHIELD
 #define MAX_HOST_DEBUG(...) printf_P(__VA_ARGS__)
 #else
 #define MAX_HOST_DEBUG(...) VOID0
@@ -52,8 +52,6 @@
 #else
 #define MAX_HOST_DEBUG(...) VOID0
 #endif
-
-#define USB_HOST_SHIELD_USE_ISR 1 // TMP
 
 
 // NOTE: On the max3421e the irq enable and irq bits are in the same position
@@ -157,12 +155,10 @@ public:
         regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet
         regWr(rHCTL, bmBUSRST);      // issue bus reset
 
-        DDSB();
         interrupts();
 
         while(busevent)
         {
-            DDSB();
             SYSTEM_OR_SPECIAL_YIELD();
         }
 
@@ -170,7 +166,6 @@ public:
 
         sofevent = true;
 
-        DDSB();
         interrupts();
 
         // Wait for SOF
@@ -180,7 +175,6 @@ public:
 
         doingreset = false;
 
-        DDSB();
         interrupts();
     }
 
