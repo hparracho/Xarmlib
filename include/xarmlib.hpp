@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    27 August 2019
+// @date    14 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -54,6 +54,7 @@
 #include "hal/hal_gpio.hpp"
 #include "hal/hal_i2c.hpp"
 #include "hal/hal_pin.hpp"
+#include "hal/hal_pin_int.hpp"
 #include "hal/hal_port.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
