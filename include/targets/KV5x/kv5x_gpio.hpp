@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_gpio.hpp
 // @brief   Kinetis KV5x GPIO class.
-// @date    13 January 2020
+// @date    14 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -47,6 +47,8 @@ namespace kv5x
 
 class GpioDriver
 {
+        friend class PinIntDriver;
+
     protected:
 
         // --------------------------------------------------------------------
