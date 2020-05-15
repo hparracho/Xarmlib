@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin_int.hpp
 // @brief   Pin Interrupt HAL interface class.
-// @date    14 May 2020
+// @date    15 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,12 +70,16 @@ class PinIntBase : protected PinIntDriver
         // -------- CONSTRUCTORS ----------------------------------------------
 
         // Normal input pin constructor
-        PinIntBase(const hal::Pin::Name pin_name, const InputModeConfig& config) : PinIntDriver(pin_name, config)
+        PinIntBase(const hal::Pin::Name   pin_name,
+                   const InputModeConfig& config,
+                   const IntMode          int_mode) : PinIntDriver(pin_name, config, int_mode)
         {}
 
 #if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         // True open-drain input pin constructor
-        PinIntBase(const hal::Pin::Name pin_name, const InputModeTrueOpenDrainConfig& config) : PinIntDriver(pin_name, config)
+        PinIntBase(const hal::Pin::Name                pin_name,
+                   const InputModeTrueOpenDrainConfig& config,
+                   const IntMode                       int_mode) : PinIntDriver(pin_name, config, int_mode)
         {}
 #endif
 
@@ -94,9 +98,9 @@ class PinIntBase : protected PinIntDriver
 
         // -------- INTERRUPT -------------------------------------------------
 
-        void enable_interrupt(const IntMode mode) { PinIntDriver::enable_interrupt(mode); }
-        void disable_interrupt()                  { PinIntDriver::disable_interrupt(); }
-        bool is_interrupt_enabled() const         { return PinIntDriver::is_interrupt_enabled(); }
+        void enable_interrupt()           { PinIntDriver::enable_interrupt(); }
+        void disable_interrupt()          { PinIntDriver::disable_interrupt(); }
+        bool is_interrupt_enabled() const { return PinIntDriver::is_interrupt_enabled(); }
 
         bool is_interrupt_pending() const { return PinIntDriver::is_interrupt_pending(); }
         void clear_interrupt_pending()    { PinIntDriver::clear_interrupt_pending(); }

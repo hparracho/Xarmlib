@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin_int.cpp
 // @brief   Kinetis KV4x pin interrupt class.
-// @date    12 May 2020
+// @date    14 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,6 @@
 
 #ifdef __KV4X__
 
-#include "xarmlib_config.hpp"
 #include "targets/KV4x/kv4x_pin_int.hpp"
 
 

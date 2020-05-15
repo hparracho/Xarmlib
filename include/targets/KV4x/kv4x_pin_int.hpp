@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin_int.hpp
 // @brief   Kinetis KV4x pin interrupt class.
-// @date    13 May 2020
+// @date    15 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -58,7 +58,7 @@ namespace kv4x
 {
 
 
-
+constexpr std::size_t XARMLIB_CONFIG_PIN_INTERRUPT_COUNT { 2 }; // @FIXME
 
 class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_PIN_INTERRUPT_COUNT>
 {
@@ -115,10 +115,12 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
 
         // Normal input pin constructor
         PinIntDriver(const PinDriver::Name  pin_name,
-                     const InputModeConfig& config) : PeripheralPinInt(*this),
-                                                      m_port_index { PinDriver::get_port_index(pin_name) },
-                                                      m_port_base { get_port_base(m_port_index) },
-                                                      m_gpio(pin_name, config)
+                     const InputModeConfig& config,
+                     const IntMode          int_mode) : PeripheralPinInt(*this),
+                                                        m_int_mode { int_mode },
+                                                        m_port_index { PinDriver::get_port_index(pin_name) },
+                                                        m_port_base { get_port_base(m_port_index) },
+                                                        m_gpio(pin_name, config)
         {
             assert(pin_name != PinDriver::Name::nc);
             assert(pin_name != PinDriver::Name::pc_6 && pin_name != PinDriver::Name::pc_7);
@@ -129,10 +131,12 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
 
         // True open-drain input pin constructor (only available on PC_6 and PC_7)
         PinIntDriver(const PinDriver::Name               pin_name,
-                     const InputModeTrueOpenDrainConfig& config) : PeripheralPinInt(*this),
-                                                                   m_port_index { PinDriver::get_port_index(pin_name) },
-                                                                   m_port_base { get_port_base(m_port_index) },
-                                                                   m_gpio(pin_name, config)
+                     const InputModeTrueOpenDrainConfig& config,
+                     const IntMode                       int_mode) : PeripheralPinInt(*this),
+                                                                     m_int_mode { int_mode },
+                                                                     m_port_index { PinDriver::get_port_index(pin_name) },
+                                                                     m_port_base { get_port_base(m_port_index) },
+                                                                     m_gpio(pin_name, config)
         {
             assert(pin_name == PinDriver::Name::pc_6 || pin_name == PinDriver::Name::pc_7);
 
@@ -169,9 +173,9 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
 
         // -------- PIN INTERRUPT ---------------------------------------------
 
-        void enable_interrupt(const IntMode mode)
+        void enable_interrupt()
         {
-            PORT_SetPinInterruptConfig(m_port_base, m_gpio.m_pin, static_cast<port_interrupt_t>(mode));
+            PORT_SetPinInterruptConfig(m_port_base, m_gpio.m_pin, static_cast<port_interrupt_t>(m_int_mode));
         }
 
         void disable_interrupt()
@@ -346,6 +350,7 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
+        const IntMode     m_int_mode;
         const std::size_t m_port_index;
         PORT_Type*        m_port_base { nullptr };
         GpioDriver        m_gpio;
