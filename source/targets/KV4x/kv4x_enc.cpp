@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.cpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    24 January 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,54 +33,7 @@
 
 #ifdef __KV4X__
 
-#include "xarmlib_config.hpp"
 #include "targets/KV4x/kv4x_enc.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace kv4x
-{
-
-
-
-
-// ----------------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// ----------------------------------------------------------------------------
-
-uint16_t EncDriver::convert_us_to_period(const int64_t rate_us)
-{
-    return static_cast<uint16_t>(SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK) * rate_us / 1000000UL);
-}
-
-
-
-
-int64_t EncDriver::get_max_watchdog_timeout_rate_us()
-{
-    constexpr int64_t max_period = 0xFFFF;
-
-    return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-int64_t EncDriver::get_max_input_filter_sample_rate_us()
-{
-    constexpr int64_t max_period = 0xFF;
-
-    return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-} // namespace kv4x
-} // namespace targets
-} // namespace xarmlib
 
 
 

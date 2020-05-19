@@ -2,11 +2,11 @@
 // @file    kv4x_i2c.cpp
 // @brief   Kinetis KV4x I2C class.
 // @note    Only master mode is implemented.
-// @date    5 April 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,46 +34,7 @@
 
 #ifdef __KV4X__
 
-#include "xarmlib_config.hpp"
 #include "targets/KV4x/kv4x_i2c.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace kv4x
-{
-
-
-
-
-// --------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// --------------------------------------------------------------------
-
-void I2cDriver::initialize(const MasterConfig& master_config)
-{
-    assert(master_config.baudrate > 0);
-
-    const uint32_t baudrate = static_cast<uint32_t>(master_config.baudrate);
-
-    const i2c_master_config_t i2c_master_config =
-    {
-        false,  // Disable the peripheral at initialization time
-        false,  // Disable the stop hold
-        baudrate,
-        0       // No glitch filter
-    };
-
-    I2C_MasterInit(I2C, &i2c_master_config, SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-} // namespace kv4x
-} // namespace targets
-} // namespace xarmlib
 
 
 

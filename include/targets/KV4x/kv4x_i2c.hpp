@@ -2,7 +2,7 @@
 // @file    kv4x_i2c.hpp
 // @brief   Kinetis KV4x I2C class.
 // @note    Only master mode is implemented.
-// @date    18 May 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,6 +33,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_I2C_HPP
 #define __XARMLIB_TARGETS_KV4X_I2C_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "external/span.hpp"
 #include "fsl_i2c.h"
@@ -400,9 +401,22 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT>
             return PinDriver::PinMux::pin_disabled_or_analog;
         }
 
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void initialize(const MasterConfig& master_config);
+        void initialize(const MasterConfig& master_config)
+        {
+            assert(master_config.baudrate > 0);
+
+            const uint32_t baudrate = static_cast<uint32_t>(master_config.baudrate);
+
+            const i2c_master_config_t i2c_master_config =
+            {
+                false,  // Disable the peripheral at initialization time
+                false,  // Disable the stop hold
+                baudrate,
+                0       // No glitch filter
+            };
+
+            I2C_MasterInit(I2C, &i2c_master_config, SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // -------- ENABLE / DISABLE ------------------------------------------
 

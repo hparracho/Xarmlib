@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_enc.hpp
 // @brief   Kinetis KV4x Quadrature Encoder/Decoder (ENC) class.
-// @date    28 January 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_ENC_HPP
 #define __XARMLIB_TARGETS_KV4X_ENC_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "fsl_enc.h"
 #include "targets/KV4x/kv4x_xbara.hpp"
@@ -829,17 +830,27 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
 
         // -------- PERIOD CONFIGURATION --------------------------------------
 
-        // NOTE: next methods are implemented on the CPP file because it uses
-        //       parameters from the library configuration file (xarmlib_config.h).
-
         // Get period value based on supplied rate in microseconds
-        static uint16_t convert_us_to_period(const int64_t rate_us);
+        static uint16_t convert_us_to_period(const int64_t rate_us)
+        {
+            return static_cast<uint16_t>(SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK) * rate_us / 1000000UL);
+        }
 
         // Get the maximum allowed watchdog timeout rate in microseconds
-        static int64_t get_max_watchdog_timeout_rate_us();
+        static int64_t get_max_watchdog_timeout_rate_us()
+        {
+            constexpr int64_t max_period = 0xFFFF;
+
+            return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // Get the maximum allowed input filter sample rate in microseconds
-        static int64_t get_max_input_filter_sample_rate_us();
+        static int64_t get_max_input_filter_sample_rate_us()
+        {
+            constexpr int64_t max_period = 0xFF;
+
+            return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // -------- PRIVATE HOME IRQ HANDLER ----------------------------------
 

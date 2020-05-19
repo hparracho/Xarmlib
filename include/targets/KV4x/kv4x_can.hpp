@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    18 May 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -36,6 +36,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_CAN_HPP
 #define __XARMLIB_TARGETS_KV4X_CAN_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "external/span.hpp"
 #include "fsl_flexcan.h"
@@ -1115,9 +1116,46 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
             return { Name::can0, PinDriver::PinMux::pin_disabled_or_analog };
         }
 
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void initialize(const Config& config);
+        void initialize(const Config& config)
+        {
+            const flexcan_timing_config_t timing_config =
+            {
+                // According to the http://www.bittiming.can-wiki.info/#Freescale
+                // with clock rate at 80 MHz, Sample-Point at 87.5 % and SJW 1,
+                // and a bit time consisting of 16 time quanta, the protocol
+                // timing configuration is:
+                0,  // Clock Pre-scaler Division Factor (it will be calculated)
+                1,  // Re-Sync Jump Width
+                7,  // Phase Segment 1
+                1,  // Phase Segment 2
+                4   // Propagation Segment
+            };
+
+            const flexcan_config_t can_config =
+            {
+                static_cast<uint32_t>(config.baudrate),
+                kFLEXCAN_ClkSrc1,
+                kFLEXCAN_WakeupSrcUnfiltered,
+                16,     // Maximum number of Message Buffers
+                static_cast<bool>(config.loop_back_mode),
+                true,   // Enable timer synchronization
+                false,  // Disable Self Wakeup Mode
+                true,   // Enable Rx Individual Mask
+                false,  // Disable Self Reflection
+                false,  // Disable Listen Only Mode
+                false,  // Disable Doze Mode
+                timing_config
+            };
+
+            FLEXCAN_Init(m_can_base, &can_config, SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_1), true);
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_2), true);
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_3), true);
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_4), true);
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_5), true);
+            FLEXCAN_SetTxMbConfig(m_can_base, static_cast<uint8_t>(TxMessageBuffer::number_6), true);
+        }
 
         // Get Tx Message Buffer availability
         bool is_tx_message_buffer_available(const TxMessageBuffer tx_message_buffer) const
