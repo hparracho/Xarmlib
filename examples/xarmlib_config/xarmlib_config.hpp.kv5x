@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
-// @brief   Xarmlib demo configuration header file for Kinetis KV4x targets.
+// @brief   Xarmlib demo configuration header file for Kinetis KV5x targets.
 // @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
@@ -49,7 +49,7 @@ namespace xarmlib
 #define XARMLIB_CONFIG_FLASH_CONFIG_BACKDOOR_KEY                 (0xFEDCBA9876543210ULL)
 
 // -------- SYSTEM CLOCK ------------------------------------------------------
-constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::xtal_80mhz_run };
+constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::xtal_160mhz_run };
 
 // -------- PIN INTERRUPT -----------------------------------------------------
 constexpr std::size_t XARMLIB_CONFIG_PIN_INTERRUPT_COUNT { 1 }; // Maximum possible number of pin interrupts
