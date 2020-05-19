@@ -2,7 +2,7 @@
 // @file    kv5x_i2c.cpp
 // @brief   Kinetis KV5x I2C class.
 // @note    Only master mode is implemented.
-// @date    23 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,46 +34,7 @@
 
 #ifdef __KV5X__
 
-#include "xarmlib_config.hpp"
 #include "targets/KV5x/kv5x_i2c.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace kv5x
-{
-
-
-
-
-// --------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// --------------------------------------------------------------------
-
-void I2cDriver::initialize(const MasterConfig& master_config)
-{
-    assert(master_config.baudrate > 0);
-
-    const uint32_t baudrate = static_cast<uint32_t>(master_config.baudrate);
-
-    const i2c_master_config_t i2c_master_config =
-    {
-        false,  // Disable the peripheral at initialization time
-        false,  // Disable the stop hold
-        baudrate,
-        0       // No glitch filter
-    };
-
-    I2C_MasterInit(m_i2c_base, &i2c_master_config, SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-} // namespace kv5x
-} // namespace targets
-} // namespace xarmlib
 
 
 

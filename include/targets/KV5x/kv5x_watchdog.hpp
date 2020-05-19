@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_watchdog.hpp
 // @brief   Kinetis KV5x Watchdog class.
-// @date    14 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV5X_WATCHDOG_HPP
 #define __XARMLIB_TARGETS_KV5X_WATCHDOG_HPP
 
+#include "xarmlib_config.hpp"
 #include "fsl_wdog.h"
 
 #include <chrono>
@@ -114,9 +115,17 @@ class WatchdogDriver
         }
 
         // Get the minimum allowed watchdog timeout in microseconds
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        static int64_t get_min_timeout_us();
+        static int64_t get_min_timeout_us()
+        {
+            // NOTE: timeout value must be always greater than 2xWCT time + 20 bus clock cycles.
+            //       (WCT = 256 bus clock cycles)
+            //       For further details see the section 28.4.2 - Watchdog configuration time (WCT)
+            //       from the reference manual (KV5XP144M240RM)
+            constexpr int64_t min_timeout = 532;
+
+            return ((min_timeout * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK))
+                  +((min_timeout * 1000000UL % SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK)) != 0));
+        }
 
         // Get the maximum allowed watchdog timeout in microseconds
         static int64_t get_max_timeout_us()

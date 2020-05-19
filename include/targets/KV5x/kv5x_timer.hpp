@@ -2,7 +2,7 @@
 // @file    kv5x_timer.hpp
 // @brief   Kinetis KV5x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    14 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,6 +33,7 @@
 #ifndef __XARMLIB_TARGETS_KV5X_TIMER_HPP
 #define __XARMLIB_TARGETS_KV5X_TIMER_HPP
 
+#include "xarmlib_config.hpp"
 #include "fsl_pit.h"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
@@ -298,20 +299,33 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // Get timer period value
         uint32_t get_period() const { return PIT->CHANNEL[get_index()].LDVAL; }
 
-        // NOTE: next methods are implemented on the CPP file because it uses
-        //       parameters from the library configuration file (xarmlib_config.h).
-
         // Get timer period value (ready to load into LDVAL register) based on supplied rate in microseconds
-        static uint32_t convert_us_to_period(const int64_t rate_us);
+        static uint32_t convert_us_to_period(const int64_t rate_us)
+        {
+            return static_cast<uint32_t>(SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK) * rate_us / 1000000UL);
+        }
 
         // Get rate in microseconds based on timer period value
-        static int64_t convert_period_to_us(const uint32_t period);
+        static int64_t convert_period_to_us(const uint32_t period)
+        {
+            return (static_cast<int64_t>(period) * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // Get the minimum allowed rate in microseconds
-        static int64_t get_min_rate_us();
+        static int64_t get_min_rate_us()
+        {
+            constexpr int64_t min_period = 0x01;
+
+            return (min_period * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // Get the maximum allowed rate in microseconds
-        static int64_t get_max_rate_us();
+        static int64_t get_max_rate_us()
+        {
+            constexpr int64_t max_period = 0xFFFFFFFF;
+
+            return (max_period * 1000000UL / SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 

@@ -34,6 +34,7 @@
 #ifndef __XARMLIB_TARGETS_KV5X_UART_HPP
 #define __XARMLIB_TARGETS_KV5X_UART_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "fsl_uart.h"
 #include "targets/KV5x/kv5x_pin.hpp"
@@ -324,9 +325,17 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, T
 
         // -------- BAUDRATE --------------------------------------------------
 
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void set_baudrate(const int32_t baudrate);
+        void set_baudrate(const int32_t baudrate)
+        {
+            assert(baudrate > 0);
+
+            const int32_t result = UART_SetBaudRate(m_uart_base, static_cast<uint32_t>(baudrate), SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+            // Assert baudrate less than 3%
+            assert(result == 0);
+
+            (void)result;
+        }
 
         // -------- READ / WRITE ----------------------------------------------
 
@@ -722,9 +731,41 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, T
             }
         }
 
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void initialize(const Config& config);
+        void initialize(const Config& config)
+        {
+            assert(config.baudrate > 0);
+
+            const uart_config_t uart_config =
+            {
+                static_cast<uint32_t>(config.baudrate),
+                static_cast<uart_parity_mode_t>(config.parity),
+                static_cast<uart_stop_bit_count_t>(config.stop_bits),
+                0,      // TX FIFO watermark
+                1,      // RX FIFO watermark
+                false,  // RX RTS disable
+                false,  // TX CTS disable
+                static_cast<uart_idle_type_select_t>(config.idle_type),
+                false,  // Disable TX
+                false   // Disable RX
+            };
+
+            const int32_t result = UART_Init(m_uart_base, &uart_config, SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+
+            // Assert baudrate less than 3%
+            assert(result == 0);
+
+            (void)result;
+
+            if(config.data_bits == DataBits::bits_9)
+            {
+                m_uart_base->C1 |= UART_C1_M_MASK;
+
+                if(config.parity != Parity::none)
+                {
+                    m_uart_base->C4 |= UART_C4_M10_MASK;
+                }
+            }
+        }
 
         // -------- PRIVATE STATUS IRQ HANDLERS -------------------------------
 

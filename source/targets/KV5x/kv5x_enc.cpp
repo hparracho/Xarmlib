@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_enc.cpp
 // @brief   Kinetis KV5x Quadrature Encoder/Decoder (ENC) class.
-// @date    16 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,54 +33,7 @@
 
 #ifdef __KV5X__
 
-#include "xarmlib_config.hpp"
 #include "targets/KV5x/kv5x_enc.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace kv5x
-{
-
-
-
-
-// ----------------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// ----------------------------------------------------------------------------
-
-uint16_t EncDriver::convert_us_to_period(const int64_t rate_us)
-{
-    return static_cast<uint16_t>(SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK) * rate_us / 1000000UL);
-}
-
-
-
-
-int64_t EncDriver::get_max_watchdog_timeout_rate_us()
-{
-    constexpr int64_t max_period = 0xFFFF;
-
-    return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-int64_t EncDriver::get_max_input_filter_sample_rate_us()
-{
-    constexpr int64_t max_period = 0xFF;
-
-    return (max_period * 1000000UL / SystemDriver::get_fast_peripheral_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
-}
-
-
-
-
-} // namespace kv5x
-} // namespace targets
-} // namespace xarmlib
 
 
 

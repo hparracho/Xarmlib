@@ -33,6 +33,7 @@
 #ifndef __XARMLIB_TARGETS_KV5X_I2C_HPP
 #define __XARMLIB_TARGETS_KV5X_I2C_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "external/span.hpp"
 #include "fsl_i2c.h"
@@ -449,9 +450,22 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
             return { Name::i2c0, PinDriver::PinMux::pin_disabled_or_analog };
         }
 
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void initialize(const MasterConfig& master_config);
+        void initialize(const MasterConfig& master_config)
+        {
+            assert(master_config.baudrate > 0);
+
+            const uint32_t baudrate = static_cast<uint32_t>(master_config.baudrate);
+
+            const i2c_master_config_t i2c_master_config =
+            {
+                false,  // Disable the peripheral at initialization time
+                false,  // Disable the stop hold
+                baudrate,
+                0       // No glitch filter
+            };
+
+            I2C_MasterInit(m_i2c_base, &i2c_master_config, SystemDriver::get_bus_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK));
+        }
 
         // -------- ENABLE / DISABLE ------------------------------------------
 
