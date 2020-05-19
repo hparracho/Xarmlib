@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_pin_int.hpp
 // @brief   Kinetis KV5x pin interrupt class.
-// @date    15 May 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV5X_PIN_INT_HPP
 #define __XARMLIB_TARGETS_KV5X_PIN_INT_HPP
 
+#include "xarmlib_config.hpp"
 #include "targets/KV5x/kv5x_gpio.hpp"
 #include "targets/KV5x/kv5x_port.hpp"
 #include "core/delegate.hpp"
@@ -58,7 +59,7 @@ namespace kv5x
 {
 
 
-constexpr std::size_t XARMLIB_CONFIG_PIN_INTERRUPT_COUNT { 1 }; // @FIXME
+
 
 class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_PIN_INTERRUPT_COUNT>
 {
