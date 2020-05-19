@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    diskio.cpp
 // @brief   Low level disk I/O functions for FatFs.
-// @date    8 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -31,9 +31,16 @@
 
 #include "xarmlib_config.hpp"
 
-#if (XARMLIB_ENABLE_FATFS == 1)
+#if defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
 
+#include "ffconf.h"
 #include "diskio.h"
+#include "devices/spi_sd_card.hpp"
+#include <memory>
+
+#if defined(FF_VOLUMES) && (FF_VOLUMES > 1)
+#include "devices/spi_nor_flash.hpp"
+#endif
 
 namespace xarmlib
 {
@@ -475,4 +482,4 @@ DWORD get_fattime(void)
 
 } // namespace xarmlib
 
-#endif // (XARMLIB_ENABLE_FATFS == 1)
+#endif // defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)

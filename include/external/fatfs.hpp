@@ -2,13 +2,12 @@
 // @file    fatfs.hpp
 // @brief   Generic FAT Filesystem Module header file. This should be the only
 //          header file included when FatFs functionality is required by the
-//          application. When setting XARMLIB_ENABLE_FATFS == 1 this is auto-
-//          matically included by xarmlib_config.hpp.
-// @date    25 July 2019
+//          application.
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,6 +33,10 @@
 
 #ifndef __XARMLIB_EXTERNAL_FATFS_HPP
 #define __XARMLIB_EXTERNAL_FATFS_HPP
+
+#include "xarmlib_config.hpp"
+
+#if defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
 
 #include "ffconf.h"
 #include "diskio.h"
@@ -65,5 +68,7 @@ bool SpiNorFlash_fatfs_initialize(hal::SpiMaster& spi_master, const hal::Pin::Na
 
 #include "ff.h"
 #include "ff_util.hpp"
+
+#endif // defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
 
 #endif // __XARMLIB_EXTERNAL_FATFS_HPP

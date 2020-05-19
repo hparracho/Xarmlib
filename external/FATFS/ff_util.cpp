@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    ff_util.cpp
 // @brief   Utility functions for FatFs.
-// @date    25 July 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -31,7 +31,7 @@
 
 #include "xarmlib_config.hpp"
 
-#if (XARMLIB_ENABLE_FATFS == 1)
+#if defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
 
 #include "ff_util.hpp"
 #include "diskio.h"
@@ -152,4 +152,4 @@ FRESULT f_file_exists(const TCHAR *path)
 
 } // namespace xarmlib
 
-#endif // (XARMLIB_ENABLE_FATFS == 1)
+#endif // defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)

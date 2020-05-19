@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    ff_util.hpp
 // @brief   Utility functions for FatFs.
-// @date    25 July 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -31,6 +31,8 @@
 
 #ifndef __XARMLIB_EXTERNAL_FATFS_FF_UTIL_HPP
 #define __XARMLIB_EXTERNAL_FATFS_FF_UTIL_HPP
+
+#include "diskio.h"
 
 namespace xarmlib
 {
