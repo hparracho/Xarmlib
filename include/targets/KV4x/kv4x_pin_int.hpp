@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin_int.hpp
 // @brief   Kinetis KV4x pin interrupt class.
-// @date    15 May 2020
+// @date    18 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,6 +32,7 @@
 #ifndef __XARMLIB_TARGETS_KV4X_PIN_INT_HPP
 #define __XARMLIB_TARGETS_KV4X_PIN_INT_HPP
 
+#include "xarmlib_config.hpp"
 #include "targets/KV4x/kv4x_gpio.hpp"
 #include "targets/KV4x/kv4x_port.hpp"
 #include "core/delegate.hpp"
@@ -58,7 +59,7 @@ namespace kv4x
 {
 
 
-constexpr std::size_t XARMLIB_CONFIG_PIN_INTERRUPT_COUNT { 2 }; // @FIXME
+
 
 class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_PIN_INTERRUPT_COUNT>
 {

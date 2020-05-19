@@ -2,11 +2,11 @@
 // @file    kv4x_i2c.hpp
 // @brief   Kinetis KV4x I2C class.
 // @note    Only master mode is implemented.
-// @date    14 August 2019
+// @date    18 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,6 +34,7 @@
 #define __XARMLIB_TARGETS_KV4X_I2C_HPP
 
 #include "external/bitmask.hpp"
+#include "external/span.hpp"
 #include "fsl_i2c.h"
 #include "targets/KV4x/kv4x_pin.hpp"
 #include "core/delegate.hpp"
