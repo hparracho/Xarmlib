@@ -9,7 +9,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 - NXP LPC81x
 - NXP LPC84x
 - NXP KV4x
-- NXP KV5x *(work in progress...)*
+- NXP KV5x
 
 ## Supported Toolchains:
 - [GNU Arm Embedded Toolchain 7-2017q4-major or greater](https://developer.arm.com/open-source/gnu-toolchain/gnu-rm)
@@ -22,7 +22,7 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 - [fsl: Freescale drivers from Kinetis SDK Version 2.7.0](https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html)
 - [lfs: Little fail-safe filesystem v2.2.1](https://github.com/ARMmbed/littlefs) - currently using master commit as of 9 April 2020
 - [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 31 January 2020
-- [usbhost: USB Host Library version 3.0](https://github.com/felis/UHS30) - currently using master commit as of 15 April 2020
+- [usbhost: USB Host Library version 3.0](https://github.com/felis/UHS30) - currently using master commit as of 15 April 2020 *(work in progress...)*
 - [usflib: Micro String Format (μSF) library](https://github.com/hparracho/usflib) - currently using master commit as of 14 January 2019
 
 ---
