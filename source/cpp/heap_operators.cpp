@@ -2,11 +2,11 @@
 // @file    heap_operators.cpp
 // @brief   Minimal implementations of the new/delete operators. Optional null
 //          stubs for malloc/free (only used if symbol CPP_NO_HEAP is defined).
-// @date    10 July 2018
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -30,7 +30,7 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "xarmlib_config.hpp"
+#include <cstdlib>
 
 
 
