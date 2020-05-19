@@ -3,11 +3,11 @@
 // @brief   Kinetis KV4x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    9 May 2019
+// @date    18 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -36,6 +36,7 @@
 
 #include "external/bitmask.hpp"
 #include "fsl_uart.h"
+#include "targets/KV4x/kv4x_pin.hpp"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
 
