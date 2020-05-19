@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    24 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,7 +37,9 @@
 #define __XARMLIB_TARGETS_KV5X_CAN_HPP
 
 #include "external/bitmask.hpp"
+#include "external/span.hpp"
 #include "fsl_flexcan.h"
+#include "targets/KV5x/kv5x_pin.hpp"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
 

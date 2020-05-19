@@ -2,7 +2,7 @@
 // @file    kv5x_i2c.hpp
 // @brief   Kinetis KV5x I2C class.
 // @note    Only master mode is implemented.
-// @date    23 January 2020
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,6 +34,7 @@
 #define __XARMLIB_TARGETS_KV5X_I2C_HPP
 
 #include "external/bitmask.hpp"
+#include "external/span.hpp"
 #include "fsl_i2c.h"
 #include "targets/KV5x/kv5x_pin.hpp"
 #include "core/delegate.hpp"
