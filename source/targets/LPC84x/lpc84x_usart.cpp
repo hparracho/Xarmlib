@@ -2,11 +2,11 @@
 // @file    lpc84x_usart.cpp
 // @brief   NXP LPC84x USART class (takes control of FRG0).
 // @notes   Synchronous mode not implemented.
-// @date    9 April 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,55 +34,7 @@
 
 #ifdef __LPC84X__
 
-#include "xarmlib_config.hpp"
 #include "targets/LPC84x/lpc84x_usart.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc84x
-{
-
-
-
-
-// ----------------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// ----------------------------------------------------------------------------
-
-void UsartDriver::initialize_frg0()
-{
-    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
-    constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
-
-    constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
-    constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
-
-    // Select main clock as the source for FRG0
-    ClockDriver::set_frg_clock_source(ClockDriver::FrgClockSelect::frg0, ClockDriver::FrgClockSource::main_clk);
-
-    // Set the FRG0 fractional divider
-    ClockDriver::set_frg_clock_divider(ClockDriver::FrgClockSelect::frg0, mul, div);
-}
-
-
-
-
-int32_t UsartDriver::get_baudrate_generator_div(const int32_t baudrate)
-{
-    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
-    constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
-
-    return usart_freq / 16 / baudrate;
-}
-
-
-
-
-} // namespace lpc84x
-} // namespace targets
-} // namespace xarmlib
 
 
 

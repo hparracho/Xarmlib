@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_faim.hpp
 // @brief   NXP LPC84x Fast Initialization Memory (FAIM) class.
-// @date    21 May 2019
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,6 +33,7 @@
 #define __XARMLIB_TARGETS_LPC84X_FAIM_HPP
 
 #include "targets/LPC84x/lpc84x_flash_iap.hpp"
+#include "targets/LPC84x/lpc84x_pin.hpp"
 #include "targets/LPC84x/lpc84x_system.hpp"
 
 namespace xarmlib
