@@ -2,12 +2,12 @@
 // @file    spi_sd_card.hpp
 // @brief   SPI SD card class.
 // @note    For FatFs use should be included "external/fatfs.hpp" header file
-//          instead of this one (setting XARMLIB_ENABLE_FATFS == 1).
-// @date    25 July 2019
+//          instead of this one.
+// @date    19 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -37,6 +37,7 @@
 // Based on Physical Layer Simplified Specification v6.00 from 29 August 2018
 // available in the following URL: https://www.sdcard.org/downloads/pls/index.html
 
+#include "xarmlib_config.hpp"
 #include "api/api_digital_out.hpp"
 #include "hal/hal_spi.hpp"
 #include "hal/hal_us_ticker.hpp"
@@ -382,7 +383,7 @@ class SpiSdCard
             return flag;
         }
 
-#if (XARMLIB_ENABLE_FATFS == 1)
+#if defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
         // Control device specific features and miscellaneous functions other than generic read/write
         bool control(const uint8_t code, void* data)
         {
@@ -457,7 +458,7 @@ class SpiSdCard
 
             return res;
         }
-#endif // (XARMLIB_ENABLE_FATFS == 1)
+#endif // defined(XARMLIB_ENABLE_FATFS) && (XARMLIB_ENABLE_FATFS == 1)
 
     private:
 
