@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    14 May 2020
+// @file    UHS_host.h
+// @brief   UHS host definitions.
+// @notes   Based on UHS30 UHS_host.h file with minor changes
+// @date    4 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,42 +30,53 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#ifndef _UHS_host_h_
+#define _UHS_host_h_
 
+// WARNING: Do not change the order of includes, or stuff will break!
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
+#include <stdint.h>
 
+/*#include <ISR_safe_memory.h>
+#include <Wire.h>
+#include <SPI.h>
+#include <UHS_ByteBuffer.h>*/
+#include "UHS_macros.h"
 
+// None of these should ever be directly included by a driver, or a user's sketch.
+//#include "../dyn_SWI/dyn_SWI.h"
+#include "UHS_USB_IDs.h"
+#include "UHS_settings.h"
+#include "UHS_usb_ch9.h"
+#include "UHS_UsbCore.h"
+#include "UHS_address.h"
+#include "UHS_usbhost.h"
+#include "UHS_printhex.h"
+#include "UHS_message.h"
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_digital_out_bus.hpp"
-#include "api/api_input_debouncer.hpp"
-#include "api/api_io_debouncer.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_scanner.hpp"
+// Load system components as required
+#if defined(LOAD_USB_HOST_SYSTEM) && !defined(USB_HOST_SYSTEM_LOADED)
+#include "UHS_util_INLINE.h"
+#include "UHS_host_INLINE.h"
+#include "UHS_printf_HELPER.h"
 
-// Targets HAL interface
-#include "hal/hal_can.hpp"
-#include "hal/hal_enc.hpp"
-#include "hal/hal_faim.hpp"
-#include "hal/hal_flash.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_i2c.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_pin_int.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_timer16.hpp"
-#include "hal/hal_uart.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+#if defined(LOAD_MAX3421E)
+#include "MAX3421E/spi_max3421e.h"
+#endif
 
+// Load USB drivers and multiplexers
 
+#if defined(LOAD_UHS_HUB)
+#include "UHS_HUB/UHS_HUB.h"
+#endif // HUB loaded
 
+// Add HID
+#if defined(LOAD_UHS_HID)
+#include "UHS_HID/UHS_HID.h"
+#endif // HID loaded
 
-#endif // __XARMLIB_HPP
+#endif // System code loaded
+
+#endif // _UHS_host_h_

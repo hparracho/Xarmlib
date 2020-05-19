@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
+// @file    kv4x_pin_int.cpp
+// @brief   Kinetis KV4x pin interrupt class.
 // @date    14 May 2020
 // ----------------------------------------------------------------------------
 //
@@ -29,42 +29,89 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#include "core/target_specs.hpp"
+
+#ifdef __KV4X__
+
+#include "targets/KV4x/kv4x_pin_int.hpp"
 
 
 
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_digital_out_bus.hpp"
-#include "api/api_input_debouncer.hpp"
-#include "api/api_io_debouncer.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_scanner.hpp"
+using namespace xarmlib::targets::kv4x;
 
-// Targets HAL interface
-#include "hal/hal_can.hpp"
-#include "hal/hal_enc.hpp"
-#include "hal/hal_faim.hpp"
-#include "hal/hal_flash.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_i2c.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_pin_int.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_timer16.hpp"
-#include "hal/hal_uart.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+// --------------------------------------------------------------------
+// IRQ HANDLERS
+// --------------------------------------------------------------------
+
+extern "C" void PORTA_IRQHandler(void)
+{
+    const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::porta);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
 
 
 
 
-#endif // __XARMLIB_HPP
+extern "C" void PORTB_IRQHandler(void)
+{
+    const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portb);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+extern "C" void PORTC_IRQHandler(void)
+{
+    const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portc);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+extern "C" void PORTD_IRQHandler(void)
+{
+    const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portd);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+extern "C" void PORTE_IRQHandler(void)
+{
+    const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::porte);
+
+#ifdef XARMLIB_ENABLE_FREERTOS
+    portEND_SWITCHING_ISR(yield);
+#else
+    (void)yield;
+#endif
+}
+
+
+
+
+#endif // __KV4X__

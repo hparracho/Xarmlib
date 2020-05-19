@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------------
-// @file    xarmlib.hpp
-// @brief   Xarmlib main header file.
-// @date    14 May 2020
+// @file    usb_host.hpp
+// @brief   USB Host header file to use in the library. This should be the only
+//          header file included when USB Host functionality is required.
+// @date    30 April 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,42 +30,41 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_HPP
-#define __XARMLIB_HPP
+#ifndef __XARMLIB_EXTERNAL_USB_HOST_HPP
+#define __XARMLIB_EXTERNAL_USB_HOST_HPP
 
+// LIBRARIES THAT WILL BE USED
 
+// Patch printf so we can use it
+//#define LOAD_UHS_PRINTF_HELPER
 
+// Load the USB Host System core
+//#define LOAD_USB_HOST_SYSTEM
 
-// API interface
-#include "api/api_crc.hpp"
-#include "api/api_digital_in.hpp"
-#include "api/api_digital_in_bus.hpp"
-#include "api/api_digital_out.hpp"
-#include "api/api_digital_out_bus.hpp"
-#include "api/api_input_debouncer.hpp"
-#include "api/api_io_debouncer.hpp"
-#include "api/api_pin_bus.hpp"
-#include "api/api_pin_scanner.hpp"
+// Load USB Host Shield
+//#define LOAD_USB_HOST_SHIELD
 
-// Targets HAL interface
-#include "hal/hal_can.hpp"
-#include "hal/hal_enc.hpp"
-#include "hal/hal_faim.hpp"
-#include "hal/hal_flash.hpp"
-#include "hal/hal_gpio.hpp"
-#include "hal/hal_i2c.hpp"
-#include "hal/hal_pin.hpp"
-#include "hal/hal_pin_int.hpp"
-#include "hal/hal_port.hpp"
-#include "hal/hal_spi.hpp"
-#include "hal/hal_system.hpp"
-#include "hal/hal_timer.hpp"
-#include "hal/hal_timer16.hpp"
-#include "hal/hal_uart.hpp"
-#include "hal/hal_us_ticker.hpp"
-#include "hal/hal_watchdog.hpp"
+// USB hub
+//#define LOAD_UHS_HUB
 
+// Bulk Storage
+//#define LOAD_UHS_BULK_STORAGE
 
+// HID
+//#define LOAD_UHS_HID
 
+// DEBUG
+#define ENABLE_UHS_DEBUGGING             0
+#define DEBUG_PRINTF_EXTRA_HUGE          0
+#define DEBUG_PRINTF_EXTRA_HUGE_UHS_HOST 0
+#define DEBUG_PRINTF_EXTRA_HUGE_USB_HID  0
+#define DEBUG_PRINTF_EXTRA_HUGE_USB_HUB  0
 
-#endif // __XARMLIB_HPP
+// OPTIONS
+// Where to redirect debugging, also used for the program output
+#define USB_HOST_SERIAL Serial1
+
+// INCLUDES
+#include <UHS_host.h>
+
+#endif // __XARMLIB_EXTERNAL_USB_HOST_HPP
