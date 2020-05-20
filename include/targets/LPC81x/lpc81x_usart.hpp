@@ -2,11 +2,11 @@
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    4 March 2019
+// @date    20 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,6 +33,7 @@
 #ifndef __XARMLIB_TARGETS_LPC81X_USART_HPP
 #define __XARMLIB_TARGETS_LPC81X_USART_HPP
 
+#include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "targets/LPC81x/lpc81x_cmsis.hpp"
 #include "targets/LPC81x/lpc81x_pin.hpp"
@@ -557,11 +558,6 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
 
         // NOTE: USART FRG clock-in is equal to the main clock due to the USART clock divider was previously set to 1.
 
-        // Configure the USART FRG that is shared by all USART peripherals.
-        // NOTE: implemented on the CPP file because it uses parameters from
-        //       the library configuration file (xarmlib_config.h).
-        void initialize_usart_frg();
-
         // Return the FRG MUL value for the supplied USART and main clock frequencies
         static constexpr uint8_t get_frg_mul(const int32_t usart_freq, const int32_t main_clk_freq)
         {
@@ -586,7 +582,26 @@ class UsartDriver : private PeripheralRefCounter<UsartDriver, TARGET_USART_COUNT
         }
 
         // Return the USART frequency divider (baudrate generator divider) to obtain the supplied baudrate frequency
-        static int32_t get_baudrate_generator_div(const int32_t baudrate);
+        static int32_t get_baudrate_generator_div(const int32_t baudrate)
+        {
+            constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
+            constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
+
+            return usart_freq / 16 / baudrate;
+        }
+
+        // Configure the USART FRG that is shared by all USART peripherals
+        void initialize_usart_frg()
+        {
+            constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
+            constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
+
+            constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
+            constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
+
+            // Set the USART FRG fractional divider
+            ClockDriver::set_usart_frg_clock_divider(mul, div);
+        }
 
         // -------- PRIVATE IRQ HANDLERS --------------------------------------
 

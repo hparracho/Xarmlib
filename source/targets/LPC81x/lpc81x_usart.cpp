@@ -2,11 +2,11 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    4 March 2019
+// @date    20 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,52 +34,7 @@
 
 #ifdef __LPC81X__
 
-#include "xarmlib_config.hpp"
 #include "targets/LPC81x/lpc81x_usart.hpp"
-
-namespace xarmlib
-{
-namespace targets
-{
-namespace lpc81x
-{
-
-
-
-
-// --------------------------------------------------------------------
-// PRIVATE MEMBER FUNCTIONS
-// --------------------------------------------------------------------
-
-void UsartDriver::initialize_usart_frg()
-{
-    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
-    constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
-
-    constexpr uint8_t mul = get_frg_mul(usart_freq, main_clk_freq);
-    constexpr uint8_t div = 0xFF; // Fixed value to use with the fractional baudrate generator
-
-    // Set the USART FRG fractional divider
-    ClockDriver::set_usart_frg_clock_divider(mul, div);
-}
-
-
-
-
-int32_t UsartDriver::get_baudrate_generator_div(const int32_t baudrate)
-{
-    constexpr int32_t main_clk_freq = SystemDriver::get_main_clock_frequency(XARMLIB_CONFIG_SYSTEM_CLOCK);
-    constexpr int32_t usart_freq = get_max_standard_frequency(main_clk_freq);
-
-    return usart_freq / 16 / baudrate;
-}
-
-
-
-
-} // namespace lpc81x
-} // namespace targets
-} // namespace xarmlib
 
 
 
