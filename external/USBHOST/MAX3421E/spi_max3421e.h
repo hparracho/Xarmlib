@@ -2,7 +2,7 @@
 // @file    spi_max3421e.h
 // @brief   SPI MAX3421E driver class.
 // @notes   Based on UHS30 USB_HOST_SHIELD.h file suitable for Xarmlib
-// @date    7 May 2020
+// @date    20 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,8 +35,8 @@
 
 #ifdef LOAD_MAX3421E
 #include "UHS_max3421e.h"
-#include "api/api_digital_in.hpp"
 #include "api/api_digital_out.hpp"
+#include "hal/hal_pin_int.hpp"
 #include "hal/hal_spi.hpp"
 
 
@@ -64,16 +64,25 @@
 
 class MAX3421E_HOST : public UHS_USB_HOST_BASE
 {
+public:
+
+    // IRQ handlers definition
+    using IrqHandlerType = int32_t();
+    using IrqHandler     = xarmlib::Delegate<IrqHandlerType>;
+
+private:
+
     using DigitalOut = xarmlib::DigitalOut;
-    using DigitalIn  = xarmlib::DigitalIn;
     using SpiMaster  = xarmlib::hal::SpiMaster;
     using Pin        = xarmlib::hal::Pin;
+    using PinInt     = xarmlib::hal::PinInt;
     using Gpio       = xarmlib::hal::Gpio;
     using UsTicker   = xarmlib::hal::UsTicker;
 
-    SpiMaster *pSpi;    // SPI master class instance pointer
-    DigitalOut ss_pin;  // SPI slave select
-    DigitalIn  irq_pin; // MAX3421E INT IRQ pin
+    SpiMaster *pSpi;             // SPI master class instance pointer
+    DigitalOut ss_pin;           // SPI slave select
+    PinInt     irq_pin;          // MAX3421E INT IRQ pin
+    IrqHandler irq_user_handler; // User defined ISR bottom handler
 
     // TO-DO: move these into the parent class.
     volatile uint8_t vbusState;
@@ -91,7 +100,7 @@ public:
     UHS_NI MAX3421E_HOST(SpiMaster *spi_master, const Pin::Name spi_ss, const Pin::Name max_int) :
         pSpi(spi_master),
         ss_pin(spi_ss, { Gpio::OutputMode::push_pull_high }),
-        irq_pin(max_int, { Gpio::InputMode::pull_up })
+        irq_pin(max_int, PinInt::InputModeConfig{}, PinInt::IntMode::interrupt_falling_edge)
     {
         sof_countdown = 0;
         doingreset = false;
@@ -178,14 +187,15 @@ public:
         interrupts();
     }
 
-    int16_t UHS_NI Init(int16_t mseconds);
+    // NOTE: Don't forget to enable Port IRQ and set IRQ priority!
+    int16_t UHS_NI Init(int16_t mseconds, const IrqHandler& irq_handler);
 
-    int16_t UHS_NI Init(void)
+    int16_t UHS_NI Init(const IrqHandler& irq_handler)
     {
-        return Init(INT16_MIN);
+        return Init(INT16_MIN, irq_handler);
     }
 
-    void ISRTask(void);
+    int32_t ISRTask(void);
     void ISRbottom(void);
     void busprobe(void);
     uint16_t reset(void);

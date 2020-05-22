@@ -2,7 +2,7 @@
 // @file    spi_max3421e_INLINE.h
 // @brief   SPI MAX3421E driver class implementation.
 // @notes   Based on UHS30 USB_HOST_SHIELD_INLINE.h file suitable for Xarmlib
-// @date    7 May 2020
+// @date    20 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -32,22 +32,6 @@
 
 #if defined(SPI_MAX3421E_H) && !defined(USB_HOST_SHIELD_LOADED)
 #define USB_HOST_SHIELD_LOADED
-
-
-// allow two slots. this makes the maximum allowed shield count TWO
-// for AVRs this is limited to pins 2 and 3 ONLY
-// for all other boards, one odd and one even pin number is allowed.
-static MAX3421E_HOST *ISReven;
-static MAX3421E_HOST *ISRodd;
-
-static void UHS_NI call_ISReven(void) {
-        ISReven->ISRTask();
-}
-
-static void UHS_NI call_ISRodd(void) {
-        UHS_PIN_WRITE(LED_BUILTIN, HIGH);
-        ISRodd->ISRTask();
-}
 
 
 // Write single byte into MAX3421e register
@@ -300,8 +284,11 @@ void UHS_NI MAX3421E_HOST::busprobe(void)
 // Initialize USB hardware, turn on VBUS
 // @param mseconds Delay energizing VBUS after mseconds, A value of INT16_MIN means no delay.
 // returns 0 on success, -1 on error
-int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds)
+// NOTE: Don't forget to enable Port IRQ and set IRQ priority!
+int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds, const IrqHandler& irq_handler)
 {
+    irq_user_handler = irq_handler;
+
     usb_task_state = UHS_USB_HOST_STATE_INITIALIZE; // set up state machine
 
     UHS_printf_HELPER_init();
@@ -346,19 +333,11 @@ int16_t UHS_NI MAX3421E_HOST::Init(int16_t mseconds)
     regWr(rHIRQ, bmBUSEVENTIRQ); // see data sheet
     regWr(rHCTL, bmBUSRST);      // issue bus reset to force generate yet another possible IRQ
 
-//@TODO: ADD attach interrupt handler (possibly in constructor)
-#if USB_HOST_SHIELD_USE_ISR
-    // Attach ISR to service IRQ from MAX3421e
-    noInterrupts();
-    if(irq_pin & 1) {
-            ISRodd = this;
-            attachInterrupt(UHS_GET_DPI(irq_pin), call_ISRodd, IRQ_SENSE);
-    } else {
-            ISReven = this;
-            attachInterrupt(UHS_GET_DPI(irq_pin), call_ISReven, IRQ_SENSE);
-    }
-    interrupts();
-#endif
+    // Create and assign the PinInt IRQ handler to the MAX3421E_HOST::ISRTask() member function
+    auto handler = PinInt::IrqHandler::create<MAX3421E_HOST, &MAX3421E_HOST::ISRTask>(this);
+    irq_pin.assign_irq_handler(handler);
+
+    irq_pin.enable_interrupt();
 
     return 0;
 }
@@ -857,13 +836,15 @@ void UHS_NI MAX3421E_HOST::ISRbottom(void)
 
 
 // USB main task. Services the MAX3421e
-void UHS_NI MAX3421E_HOST::ISRTask(void)
+int32_t UHS_NI MAX3421E_HOST::ISRTask(void)
 {
-    interrupts(); // ??
+    int32_t yield = 0;  // User in FreeRTOS
+
+    //interrupts(); //@TODO ??
 
     counted = false;
 
-    if(!irq_pin)
+    if(!irq_pin.read())
     {
         uint8_t HIRQALL = regRd(rHIRQ); // determine interrupt source
         uint8_t HIRQ = HIRQALL & IRQ_CHECK_MASK;
@@ -929,18 +910,24 @@ void UHS_NI MAX3421E_HOST::ISRTask(void)
         //        usb_task_polling_disabled? "T" : "F");
         regWr(rHIRQ, HIRQ_sendback);
 
-        noInterrupts(); // ??
+        //noInterrupts(); //@TODO ??
 
         if(!sof_countdown && !counted && !usb_task_polling_disabled)
         {
             DisablePoll();
             //usb_task_polling_disabled++;
 
-            interrupts(); // ??
+            //interrupts(); //@TODO ??
 
-            ISRbottom(); //@TODO: signal semaphore to call after this function...
+            //ISRbottom(); //@TODO: signal semaphore to call after this function...
+            if(irq_user_handler != nullptr)
+            {
+                yield = irq_user_handler();
+            }
         }
     }
+
+    return yield;
 }
 
 
