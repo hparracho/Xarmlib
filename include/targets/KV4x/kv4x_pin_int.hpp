@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin_int.hpp
 // @brief   Kinetis KV4x pin interrupt class.
-// @date    18 May 2020
+// @date    26 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -324,6 +324,7 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
                 }
             }
 
+            // NOTE: due to level interrupt mode, flags should be cleared after the handler
             clear_port_interrupts(port_index, flags);
 
             return yield;
