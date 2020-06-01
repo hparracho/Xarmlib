@@ -2,7 +2,7 @@
 // @file    newlib_stubs.cpp
 // @brief   Support files for GNU libc. These functions will replace or
 //          extend some of the newlib functionality.
-// @date    19 May 2020
+// @date    1 June 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,6 +29,8 @@
 // DEALINGS IN THE SOFTWARE.
 //
 // ----------------------------------------------------------------------------
+
+#include "external/cmsis.hpp"
 
 extern "C"
 {
