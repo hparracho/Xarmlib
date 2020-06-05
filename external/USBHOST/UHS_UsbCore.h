@@ -1,28 +1,34 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-Contact information
--------------------
-
-Circuits At Home, LTD
-Web      :  http://www.circuitsathome.com
-e-mail   :  support@circuitsathome.com
- */
+// ----------------------------------------------------------------------------
+// @file    UHS_UsbCore.h
+// @brief   UHS USB Host class base.
+// @notes   Based on UHS30 UHS_UsbCore.h file with some cleanup
+// @date    5 June 2020
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
 
 #if !defined(_UHS_host_h_) || defined(USBCORE_H)
 #error "Never include UHS_UsbCore.h directly; include UHS_Host.h instead"
@@ -33,13 +39,6 @@ e-mail   :  support@circuitsathome.com
 #define                UHS_HOST_MAX_INTERFACE_DRIVERS 0x10U // Default maximum number of USB interface drivers
 #endif
 
-#if !defined(SYSTEM_OR_SPECIAL_YIELD)
-#define SYSTEM_OR_SPECIAL_YIELD(...) VOID0
-#endif
-
-#if !defined(SYSTEM_OR_SPECIAL_YIELD_FROM_ISR)
-#define SYSTEM_OR_SPECIAL_YIELD_FROM_ISR(...) SYSTEM_OR_SPECIAL_YIELD
-#endif
 
 // As we make extensions to a target interface add to UHS_HOST_MAX_INTERFACE_DRIVERS
 // This offset gets calculated for supporting wide subclasses, such as HID, BT, etc.
@@ -166,27 +165,27 @@ e-mail   :  support@circuitsathome.com
 ////////////////////////////////////////////////////////////////////////////////
 
 
-/* USB state machine states */
-#define                       UHS_USB_HOST_STATE_MASK 0xF0U
-
-// Configure states, MSN == 0 --------------------------V
-#define                   UHS_USB_HOST_STATE_DETACHED 0x00U
-#define                   UHS_USB_HOST_STATE_DEBOUNCE 0x01U
-#define      UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE 0x02U
-#define         UHS_USB_HOST_STATE_RESET_NOT_COMPLETE 0x03U
-#define                   UHS_USB_HOST_STATE_WAIT_SOF 0x04U
-#define             UHS_USB_HOST_STATE_WAIT_BUS_READY 0x05U
-#define               UHS_USB_HOST_STATE_RESET_DEVICE 0x0AU
-#define                UHS_USB_HOST_STATE_CONFIGURING 0x0CU // Looks like "CO"nfig (backwards)
-#define           UHS_USB_HOST_STATE_CONFIGURING_DONE 0x0DU // Looks like "DO"one (backwards)
-#define                      UHS_USB_HOST_STATE_CHECK 0x0EU
-#define                    UHS_USB_HOST_STATE_ILLEGAL 0x0FU // Foo
-
-// Run states, MSN != 0 --------------------------------V
-#define                    UHS_USB_HOST_STATE_RUNNING 0x60U // Looks like "GO"
-#define                       UHS_USB_HOST_STATE_IDLE 0x1DU // Looks like "ID"le
-#define                      UHS_USB_HOST_STATE_ERROR 0xF0U // Looks like "FO"o
-#define                 UHS_USB_HOST_STATE_INITIALIZE 0x10U // Looks like "I"nit
+///* USB state machine states */
+//#define                       UHS_USB_HOST_STATE_MASK 0xF0U
+//
+//// Configure states, MSN == 0 --------------------------V
+//#define                   UHS_USB_HOST_STATE_DETACHED 0x00U
+//#define                   UHS_USB_HOST_STATE_DEBOUNCE 0x01U
+//#define      UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE 0x02U
+//#define         UHS_USB_HOST_STATE_RESET_NOT_COMPLETE 0x03U
+//#define                   UHS_USB_HOST_STATE_WAIT_SOF 0x04U
+//#define             UHS_USB_HOST_STATE_WAIT_BUS_READY 0x05U
+//#define               UHS_USB_HOST_STATE_RESET_DEVICE 0x0AU
+//#define                UHS_USB_HOST_STATE_CONFIGURING 0x0CU // Looks like "CO"nfig (backwards)
+//#define           UHS_USB_HOST_STATE_CONFIGURING_DONE 0x0DU // Looks like "DO"one (backwards)
+//#define                      UHS_USB_HOST_STATE_CHECK 0x0EU
+//#define                    UHS_USB_HOST_STATE_ILLEGAL 0x0FU // Foo
+//
+//// Run states, MSN != 0 --------------------------------V
+//#define                    UHS_USB_HOST_STATE_RUNNING 0x60U // Looks like "GO"
+//#define                       UHS_USB_HOST_STATE_IDLE 0x1DU // Looks like "ID"le
+//#define                      UHS_USB_HOST_STATE_ERROR 0xF0U // Looks like "FO"o
+//#define                 UHS_USB_HOST_STATE_INITIALIZE 0x10U // Looks like "I"nit
 
 // Host SE result codes.
 // Common SE results are stored in the low nybble, all interface drivers understand these plus 0x1f.

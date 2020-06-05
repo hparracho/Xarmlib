@@ -1,8 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    usb_host.hpp
-// @brief   USB Host header file to use in the library. This should be the only
-//          header file included when USB Host functionality is required.
-// @date    5 June 2020
+// @file    UHS_debug.h
+// @brief   UHS debug definitions.
+// @date    28 May 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,35 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_EXTERNAL_USB_HOST_HPP
-#define __XARMLIB_EXTERNAL_USB_HOST_HPP
+#if !defined(_UHS_host_h_) || defined(__DEBUG_H__)
+#error "Never include UHS_debug.h directly; include UHS_Usb.h instead"
+#else
+#define __DEBUG_H__
 
-// LIBRARIES THAT WILL BE USED
 
-// Load the USB Host System core
-#define LOAD_USB_HOST_SYSTEM
+#ifdef DEBUG_USB_HOST
+// Global debug interface - SHOULD BE DEFINED BY THE APPLICATION
+template<typename... Args>
+void DBG(std::string_view fmt, Args&&... args);
+#else
+template<typename... Args>
+void DBG(NOTUSED(std::string_view fmt), NOTUSED(Args&&... args)){}
+#endif
 
-// Load MAX3421E
-#define LOAD_MAX3421E
 
-// USB hub
-//#define LOAD_UHS_HUB
-
-// Bulk Storage
-#define LOAD_UHS_BULK_STORAGE
-
-// HID
-//#define LOAD_UHS_HID
-//#define LOAD_UHS_HIDRAWBOOT_MOUSE
-//#define UHS_DEVICE_WINDOWS_USB_SPEC_VIOLATION_DESCRIPTOR_DEVICE 0
-
-// DEBUG
-#define DEBUG_USB_HOST
-
-// Maximum number of USB interface drivers
-#define UHS_HOST_MAX_INTERFACE_DRIVERS  2
-
-// INCLUDES
-#include "UHS_host.h"
-
-#endif // __XARMLIB_EXTERNAL_USB_HOST_HPP
+#endif // __MESSAGE_H__

@@ -1,8 +1,8 @@
 // ----------------------------------------------------------------------------
 // @file    UHS_host.h
 // @brief   UHS host definitions.
-// @notes   Based on UHS30 UHS_host.h file with minor changes
-// @date    21 May 2020
+// @notes   Based on UHS30 UHS_host.h file with few changes
+// @date    3 June 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,28 +34,29 @@
 #define _UHS_host_h_
 
 // WARNING: Do not change the order of includes, or stuff will break!
-#include <inttypes.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdint.h>
+//#include <inttypes.h>
+//#include <stddef.h>
+//#include <stdio.h>
+//#include <stdint.h>
 
 #include "UHS_macros.h"
 
 // None of these should ever be directly included by a driver, or a user's sketch.
-#include "UHS_USB_IDs.h"
-#include "UHS_settings.h"
+//#include "UHS_USB_IDs.h"
+//#include "UHS_settings.h"
+#include "UHS_debug.h"
 #include "UHS_usb_ch9.h"
 #include "UHS_UsbCore.h"
 #include "UHS_address.h"
 #include "UHS_usbhost.h"
 //#include "UHS_printhex.h"
-#include "UHS_message.h"
+//#include "UHS_message.h"
 
 // Load system components as required
 #if defined(LOAD_USB_HOST_SYSTEM) && !defined(USB_HOST_SYSTEM_LOADED)
 //#include "UHS_util_INLINE.h"
 #include "UHS_host_INLINE.h"
-#include "UHS_printf_HELPER.h"
+//#include "UHS_printf_HELPER.h"
 
 #if defined(LOAD_MAX3421E)
 #include "MAX3421E/spi_max3421e.h"
@@ -65,12 +66,16 @@
 
 #if defined(LOAD_UHS_HUB)
 #include "UHS_HUB/UHS_HUB.h"
-#endif // HUB loaded
+#endif
+
+#if defined(LOAD_UHS_BULK_STORAGE)
+#include "UHS_BULK_STORAGE/UHS_BULK_STORAGE.h"
+#endif
 
 // Add HID
 #if defined(LOAD_UHS_HID)
 #include "UHS_HID/UHS_HID.h"
-#endif // HID loaded
+#endif
 
 #endif // System code loaded
 

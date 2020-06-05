@@ -307,47 +307,47 @@ void UHS_NI PrintHubPortStatus(UHS_USBHub *hubptr, NOTUSED(uint8_t addr), uint8_
         rcode = hubptr->GetPortStatus(port, 4, evt.evtBuff);
 
         if(!rcode) {
-                USB_HOST_SERIAL.print("\r\nPort ");
-                USB_HOST_SERIAL.println(port, DEC);
-
-                USB_HOST_SERIAL.println("Status");
-                USB_HOST_SERIAL.print("CONNECTION:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_CONNECTION) > 0, DEC);
-                USB_HOST_SERIAL.print("ENABLE:\t\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_ENABLE) > 0, DEC);
-                USB_HOST_SERIAL.print("SUSPEND:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_SUSPEND) > 0, DEC);
-                USB_HOST_SERIAL.print("OVER_CURRENT:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_OVER_CURRENT) > 0, DEC);
-                USB_HOST_SERIAL.print("RESET:\t\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_RESET) > 0, DEC);
-                USB_HOST_SERIAL.print("POWER:\t\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_POWER) > 0, DEC);
-                USB_HOST_SERIAL.print("LOW_SPEED:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_LOW_SPEED) > 0, DEC);
-                USB_HOST_SERIAL.print("HIGH_SPEED:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_HIGH_SPEED) > 0, DEC);
-                USB_HOST_SERIAL.print("TEST:\t\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_TEST) > 0, DEC);
-                USB_HOST_SERIAL.print("INDICATOR:\t");
-                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_INDICATOR) > 0, DEC);
+//                USB_HOST_SERIAL.print("\r\nPort ");
+//                USB_HOST_SERIAL.println(port, DEC);
+//
+//                USB_HOST_SERIAL.println("Status");
+//                USB_HOST_SERIAL.print("CONNECTION:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_CONNECTION) > 0, DEC);
+//                USB_HOST_SERIAL.print("ENABLE:\t\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_ENABLE) > 0, DEC);
+//                USB_HOST_SERIAL.print("SUSPEND:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_SUSPEND) > 0, DEC);
+//                USB_HOST_SERIAL.print("OVER_CURRENT:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_OVER_CURRENT) > 0, DEC);
+//                USB_HOST_SERIAL.print("RESET:\t\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_RESET) > 0, DEC);
+//                USB_HOST_SERIAL.print("POWER:\t\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_POWER) > 0, DEC);
+//                USB_HOST_SERIAL.print("LOW_SPEED:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_LOW_SPEED) > 0, DEC);
+//                USB_HOST_SERIAL.print("HIGH_SPEED:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_HIGH_SPEED) > 0, DEC);
+//                USB_HOST_SERIAL.print("TEST:\t\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_TEST) > 0, DEC);
+//                USB_HOST_SERIAL.print("INDICATOR:\t");
+//                USB_HOST_SERIAL.println((evt.bmStatus & UHS_HUB_bmPORT_STATUS_PORT_INDICATOR) > 0, DEC);
 
                 if(print_changes) {
 
-                        USB_HOST_SERIAL.println("\r\nChange");
-                        USB_HOST_SERIAL.print("CONNECTION:\t");
-                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_CONNECTION) > 0, DEC);
-                        USB_HOST_SERIAL.print("ENABLE:\t\t");
-                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_ENABLE) > 0, DEC);
-                        USB_HOST_SERIAL.print("SUSPEND:\t");
-                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_SUSPEND) > 0, DEC);
-                        USB_HOST_SERIAL.print("OVER_CURRENT:\t");
-                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_OVER_CURRENT) > 0, DEC);
-                        USB_HOST_SERIAL.print("RESET:\t\t");
-                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_RESET) > 0, DEC);
+//                        USB_HOST_SERIAL.println("\r\nChange");
+//                        USB_HOST_SERIAL.print("CONNECTION:\t");
+//                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_CONNECTION) > 0, DEC);
+//                        USB_HOST_SERIAL.print("ENABLE:\t\t");
+//                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_ENABLE) > 0, DEC);
+//                        USB_HOST_SERIAL.print("SUSPEND:\t");
+//                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_SUSPEND) > 0, DEC);
+//                        USB_HOST_SERIAL.print("OVER_CURRENT:\t");
+//                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_OVER_CURRENT) > 0, DEC);
+//                        USB_HOST_SERIAL.print("RESET:\t\t");
+//                        USB_HOST_SERIAL.println((evt.bmChange & UHS_HUB_bmPORT_STATUS_PORT_RESET) > 0, DEC);
                 }
         } else {
-                USB_HOST_SERIAL.println("ERROR!");
+//                USB_HOST_SERIAL.println("ERROR!");
         }
 
         hubptr->pUsb->EnablePoll();

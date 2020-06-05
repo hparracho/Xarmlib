@@ -1,46 +1,51 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
-
-This program is free software; you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation; either version 2 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-Contact information
--------------------
-
-Circuits At Home, LTD
-Web      :  http://www.circuitsathome.com
-e-mail   :  support@circuitsathome.com
- */
-
+// ----------------------------------------------------------------------------
+// @file    UHS_HID.h
+// @brief   UHS HID class.
+// @notes   Based on UHS30 UHS_HID.h file with few changes
+// @date    28 May 2020
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
 
 #if !defined(__UHS_HID_H__)
 #define __UHS_HID_H__
 #include "UHS_host.h"
 
-#if !defined(DEBUG_PRINTF_EXTRA_HUGE_USB_HID)
-#define DEBUG_PRINTF_EXTRA_HUGE_USB_HID 0
-#endif
-#if DEBUG_PRINTF_EXTRA_HUGE
-#if DEBUG_PRINTF_EXTRA_HUGE_USB_HID
-#define HID_DEBUG(...) printf(__VA_ARGS__)
-#else
-#define HID_DEBUG(...) VOID0
-#endif
-#else
-#define HID_DEBUG(...) VOID0
-#endif
+//#if !defined(DEBUG_PRINTF_EXTRA_HUGE_USB_HID)
+//#define DEBUG_PRINTF_EXTRA_HUGE_USB_HID 0
+//#endif
+//#if DEBUG_PRINTF_EXTRA_HUGE
+//#if DEBUG_PRINTF_EXTRA_HUGE_USB_HID
+//#define HID_DEBUG(...) printf(__VA_ARGS__)
+//#else
+//#define HID_DEBUG(...) VOID0
+//#endif
+//#else
+//#define HID_DEBUG(...) VOID0
+//#endif
 
 #ifndef AJK_NI
 #define AJK_NI __attribute__((noinline))
@@ -57,7 +62,7 @@ class UHS_HID_base;
 
 class UHS_HID_PROCESSOR {
 public:
-        UHS_HID_PROCESSOR(void) {};
+//        UHS_HID_PROCESSOR(void) {};
         virtual void onStart(UHS_HID_base *d);
         virtual void onPoll(UHS_HID_base *d, uint8_t *data, uint16_t length);
         virtual void onRelease(UHS_HID_base *d);
@@ -143,10 +148,11 @@ public:
                 uint8_t rv = parent->pUsb->inTransfer(parent->bAddress, parent->epInfo[parent->epInterruptInIndex].epAddr, &length, data);
 
                 if(rv == 0) {
-                        printf_P(PSTR("Length %d "), length);
+                        DBG("Length {:d} ", length);
                         parent->hidProcessor->onPoll(this, data, length);
                 } else if(rv != UHS_HOST_ERROR_NAK) {
-                        printf_P(PSTR("DP %02x A %02x EI %02x EA %02x\r\n"), rv, parent->bAddress, parent->epInterruptInIndex, parent->epInfo[parent->epInterruptInIndex].epAddr);
+                        const uint8_t epAddr = parent->epInfo[parent->epInterruptInIndex].epAddr;
+                        DBG("DP 0x{:X} A 0x{:X} EI 0x{:X} EA 0x{:X}\r\n", rv, parent->bAddress, parent->epInterruptInIndex, epAddr);
                 }
         }
 
