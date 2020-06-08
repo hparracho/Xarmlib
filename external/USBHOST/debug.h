@@ -1,8 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    UHS_host.h
-// @brief   UHS host definitions.
-// @notes   Based on UHS30 UHS_host.h file with minor changes
-// @date    4 May 2020
+// @file    debug.h
+// @brief   Debug definitions.
+// @date    8 June 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -30,53 +29,20 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef _UHS_host_h_
-#define _UHS_host_h_
+#if !defined(_usb_h_) || defined(__DEBUG_H__)
+#error "Never include debug.h directly; include Usb.h instead"
+#else
+#define __DEBUG_H__
 
-// WARNING: Do not change the order of includes, or stuff will break!
-#include <inttypes.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdint.h>
 
-/*#include <ISR_safe_memory.h>
-#include <Wire.h>
-#include <SPI.h>
-#include <UHS_ByteBuffer.h>*/
-#include "UHS_macros.h"
-
-// None of these should ever be directly included by a driver, or a user's sketch.
-//#include "../dyn_SWI/dyn_SWI.h"
-#include "UHS_USB_IDs.h"
-#include "UHS_settings.h"
-#include "UHS_usb_ch9.h"
-#include "UHS_UsbCore.h"
-#include "UHS_address.h"
-#include "UHS_usbhost.h"
-#include "UHS_printhex.h"
-#include "UHS_message.h"
-
-// Load system components as required
-#if defined(LOAD_USB_HOST_SYSTEM) && !defined(USB_HOST_SYSTEM_LOADED)
-#include "UHS_util_INLINE.h"
-#include "UHS_host_INLINE.h"
-#include "UHS_printf_HELPER.h"
-
-#if defined(LOAD_MAX3421E)
-#include "MAX3421E/spi_max3421e.h"
+#ifdef DEBUG_USB_HOST
+// Global debug interface - SHOULD BE DEFINED BY THE APPLICATION
+template<typename... Args>
+void DBG(std::string_view fmt, Args&&... args);
+//#else
+//template<typename... Args>
+//void DBG(std::string_view fmt __attribute__((unused)), Args&&... args __attribute__((unused))){}
 #endif
 
-// Load USB drivers and multiplexers
 
-#if defined(LOAD_UHS_HUB)
-#include "UHS_HUB/UHS_HUB.h"
-#endif // HUB loaded
-
-// Add HID
-#if defined(LOAD_UHS_HID)
-#include "UHS_HID/UHS_HID.h"
-#endif // HID loaded
-
-#endif // System code loaded
-
-#endif // _UHS_host_h_
+#endif // __DEBUG_H__

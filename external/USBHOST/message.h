@@ -1,6 +1,4 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
+/* Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,8 +21,8 @@ Circuits At Home, LTD
 Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
-#if !defined(_UHS_host_h_) || defined(__MESSAGE_H__)
-#error "Never include UHS_message.h directly; include UHS_Usb.h instead"
+#if !defined(_usb_h_) || defined(__MESSAGE_H__)
+#error "Never include message.h directly; include Usb.h instead"
 #else
 #define __MESSAGE_H__
 
@@ -50,41 +48,37 @@ void NotifyFailSetConfDescr(void);
 void NotifyFailUnknownDevice(uint16_t VID, uint16_t PID);
 void NotifyFail(uint8_t rcode);
 #else
-#define Notify(...) VOID0
-#define NotifyStr(...) VOID0
-#define Notifyc(...) VOID0
-#define NotifyFailGetDevDescr(...) VOID0
-#define NotifyFailSetDevTblEntry(...) VOID0
-#define NotifyFailGetConfDescr(...) VOID0
-#define NotifyFailGetDevDescr(...) VOID0
-#define NotifyFailSetDevTblEntry(...) VOID0
-#define NotifyFailGetConfDescr(...) VOID0
-#define NotifyFailSetConfDescr(...) VOID0
-#define NotifyFailUnknownDevice(...) VOID0
-#define NotifyFail(...) VOID0
+#define Notify(...) ((void)0)
+#define NotifyStr(...) ((void)0)
+#define Notifyc(...) ((void)0)
+#define NotifyFailGetDevDescr(...) ((void)0)
+#define NotifyFailSetDevTblEntry(...) ((void)0)
+#define NotifyFailGetConfDescr(...) ((void)0)
+#define NotifyFailGetDevDescr(...) ((void)0)
+#define NotifyFailSetDevTblEntry(...) ((void)0)
+#define NotifyFailGetConfDescr(...) ((void)0)
+#define NotifyFailSetConfDescr(...) ((void)0)
+#define NotifyFailUnknownDevice(...) ((void)0)
+#define NotifyFail(...) ((void)0)
 #endif
 
+template <class ERROR_TYPE>
+void ErrorMessage(uint8_t level, char const * msg, ERROR_TYPE rcode = 0) {
 #ifdef DEBUG_USB_HOST
-template <class ERROR_TYPE> void ErrorMessage(uint8_t level, char const * msg, ERROR_TYPE rcode = 0) {
         Notify(msg, level);
         Notify(PSTR(": "), level);
         D_PrintHex<ERROR_TYPE > (rcode, level);
         Notify(PSTR("\r\n"), level);
-#else
-template <class ERROR_TYPE> void ErrorMessage(NOTUSED(uint8_t level), NOTUSED(char const * msg), ERROR_TYPE rcode = 0) {
-        (void)rcode;
 #endif
 }
 
+template <class ERROR_TYPE>
+void ErrorMessage(char const * msg __attribute__((unused)), ERROR_TYPE rcode __attribute__((unused)) = 0) {
 #ifdef DEBUG_USB_HOST
-template <class ERROR_TYPE> void ErrorMessage(char const * msg, ERROR_TYPE rcode = 0) {
         Notify(msg, 0x80);
         Notify(PSTR(": "), 0x80);
         D_PrintHex<ERROR_TYPE > (rcode, 0x80);
         Notify(PSTR("\r\n"), 0x80);
-#else
-template <class ERROR_TYPE> void ErrorMessage(NOTUSED(char const * msg), ERROR_TYPE rcode = 0) {
-        (void)rcode;
 #endif
 }
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    usb_host.hpp
-// @brief   USB Host header file to use in the library. This should be the only
-//          header file included when USB Host functionality is required.
+// @file    Usb.h
+// @brief   USB class.
+// @notes   USB_Host_Shield_2.0 Usb.h file suitable for Xarmlib
 // @date    8 June 2020
 // ----------------------------------------------------------------------------
 //
@@ -30,12 +30,28 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_EXTERNAL_USB_HOST_HPP
-#define __XARMLIB_EXTERNAL_USB_HOST_HPP
+#ifndef _usb_h_
+#define _usb_h_
 
+// WARNING: Do not change the order of includes, or stuff will break!
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
 
-// INCLUDES
-#include "hidboot.h"
-//#include "usbhub.h"
+// None of these should ever be included by a driver, or a user's sketch.
+#include "settings.h"
+#include "debug.h"
+#include "printhex.h"
+#include "message.h"
+//#include "hexdump.h"
+#include "sink_parser.h"
+#include "max3421e.h"
+#include "address.h"
+//#include "avrpins.h"
+#include "usb_ch9.h"
+#include "spi_max3421e.h"// "usbhost.h"
+#include "UsbCore.h"
+#include "parsetools.h"
+#include "confdescparser.h"
 
-#endif // __XARMLIB_EXTERNAL_USB_HOST_HPP
+#endif // _usb_h_

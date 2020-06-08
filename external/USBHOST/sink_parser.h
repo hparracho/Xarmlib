@@ -1,6 +1,4 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
+/* Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -23,11 +21,29 @@ Circuits At Home, LTD
 Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
-#ifndef _UHS_UNOFFICIAL_IDs_h
-#define _UHS_UNOFFICIAL_IDs_h
 
-// Bogus unofficial and unregistered VIDs from cloners to be listed here.
+#if !defined(_usb_h_) || defined(__SINK_PARSER_H__)
+#error "Never include hexdump.h directly; include Usb.h instead"
+#else
+#define __SINK_PARSER_H__
 
-#define UHS_VID_UNOFFICIAL_JOYTECH 0x162EU  // For unofficial Joytech controllers
+extern int UsbDEBUGlvl;
 
-#endif
+// This parser does absolutely nothing with the data, just swallows it.
+
+template <class BASE_CLASS, class LEN_TYPE, class OFFSET_TYPE>
+class SinkParser : public BASE_CLASS {
+public:
+
+        SinkParser() {
+        };
+
+        void Initialize() {
+        };
+
+        void Parse(const LEN_TYPE len, const uint8_t *pbuf, const OFFSET_TYPE &offset) {
+        };
+};
+
+
+#endif // __HEXDUMP_H__

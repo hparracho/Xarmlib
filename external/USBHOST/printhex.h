@@ -1,6 +1,4 @@
-/* Copyright (C) 2015-2016 Andrew J. Kroll
-   and
-Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
+/* Copyright (C) 2011 Circuits At Home, LTD. All rights reserved.
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -24,8 +22,8 @@ Web      :  http://www.circuitsathome.com
 e-mail   :  support@circuitsathome.com
  */
 
-#if !defined(_UHS_host_h_) || defined(__PRINTHEX_H__)
-#error "Never include UHS_printhex.h directly; include UHS_Usb.h instead"
+#if !defined(_usb_h_) || defined(__PRINTHEX_H__)
+#error "Never include printhex.h directly; include Usb.h instead"
 #else
 #define __PRINTHEX_H__
 
@@ -51,14 +49,15 @@ void PrintBin(T val, int lvl) {
                         E_Notifyc('0', lvl);
 }
 
-template <class T>
+//@TODO: check this
+/*template <class T>
 void SerialPrintHex(T val) {
         int num_nibbles = sizeof (T) * 2;
 
         do {
                 char v = 48 + (((val >> (num_nibbles - 1) * 4)) & 0x0f);
                 if(v > 57) v += 7;
-                USB_HOST_SERIAL.print(v);
+                DBG("{}", v);//USB_HOST_SERIAL.print(v);
         } while(--num_nibbles);
 }
 
@@ -73,21 +72,18 @@ void PrintHex2(Print *prn, T val) {
                 mask >>= 4;
         }
         prn->print((T)val, HEX);
-}
+}*/
 
+template <class T> void D_PrintHex(T val __attribute__((unused)), int lvl __attribute__((unused))) {
 #ifdef DEBUG_USB_HOST
-template <class T> void D_PrintHex(T val, int lvl) {
         PrintHex<T > (val, lvl);
-#else
-template <class T> void D_PrintHex(NOTUSED(T val), NOTUSED(int lvl)) {
 #endif
 }
 
+template <class T>
+void D_PrintBin(T val, int lvl) {
 #ifdef DEBUG_USB_HOST
-template <class T> void D_PrintBin(T val, int lvl) {
         PrintBin<T > (val, lvl);
-#else
-template <class T> void D_PrintBin(NOTUSED(T val), NOTUSED(int lvl)) {
 #endif
 }
 

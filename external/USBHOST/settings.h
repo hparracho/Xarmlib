@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    usb_host.hpp
-// @brief   USB Host header file to use in the library. This should be the only
-//          header file included when USB Host functionality is required.
+// @file    settings.h
+// @brief   settings.
+// @notes   USB_Host_Shield_2.0 settings.h file with some cleanups
 // @date    8 June 2020
 // ----------------------------------------------------------------------------
 //
@@ -30,12 +30,48 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_EXTERNAL_USB_HOST_HPP
-#define __XARMLIB_EXTERNAL_USB_HOST_HPP
+#ifndef USB_HOST_SHIELD_SETTINGS_H
+#define USB_HOST_SHIELD_SETTINGS_H
+#include "macros.h"
 
 
-// INCLUDES
-#include "hidboot.h"
-//#include "usbhub.h"
+////////////////////////////////////////////////////////////////////////////////
+// DEBUGGING
+////////////////////////////////////////////////////////////////////////////////
 
-#endif // __XARMLIB_EXTERNAL_USB_HOST_HPP
+/* Set this to 1 to activate serial debugging */
+#define ENABLE_UHS_DEBUGGING 0
+
+////////////////////////////////////////////////////////////////////////////////
+// MASS STORAGE
+////////////////////////////////////////////////////////////////////////////////
+// <<<<<<<<<<<<<<<< IMPORTANT >>>>>>>>>>>>>>>
+// Set this to 1 to support single LUN devices, and save RAM. -- I.E. thumb drives.
+// Each LUN needs ~13 bytes to be able to track the state of each unit.
+#ifndef MASS_MAX_SUPPORTED_LUN
+#define MASS_MAX_SUPPORTED_LUN 8
+#endif
+
+////////////////////////////////////////////////////////////////////////////////
+// AUTOMATIC Settings
+////////////////////////////////////////////////////////////////////////////////
+
+// No user serviceable parts below this line.
+// DO NOT change anything below here unless you are a developer!
+
+//#include "version_helper.h"
+
+#if !defined(DEBUG_USB_HOST) && ENABLE_UHS_DEBUGGING
+#define DEBUG_USB_HOST
+#endif
+
+
+#define PROGMEM
+
+#define PSTR(s) (s)
+
+#define pgm_read_byte(addr) (*reinterpret_cast<const uint8_t*>(addr))
+#define pgm_read_word(addr) (*reinterpret_cast<const uint16_t*>(addr))
+
+
+#endif /* SETTINGS_H */
