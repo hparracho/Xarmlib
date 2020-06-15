@@ -2,7 +2,7 @@
 // @file    UHS_usbhost.h
 // @brief   UHS USB Host class base.
 // @notes   Based on UHS30 UHS_usbhost.h file with some changes and cleanup
-// @date    5 June 2020
+// @date    9 June 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,19 +37,16 @@
 #define _USBHOST_H_
 
 
-//@TODO: review this
-#define millis() std::chrono::duration_cast<std::chrono::milliseconds>(xarmlib::hal::UsTicker::now()).count()
-
-
 class UHS_USBInterface; // forward class declaration
 
 
 // enumerator to turn the VBUS on/off
 
-//typedef enum {
-//        vbus_on = 0,
-//        vbus_off = 1
-//} VBUS_t;
+typedef enum
+{
+    vbus_on = 0,
+    vbus_off = 1
+} VBUS_t;
 
 
 // All host SEI use this base class
@@ -57,25 +54,13 @@ class UHS_USB_HOST_BASE
 {
 public:
 
-    enum class TaskState
-    {
-        illegal,
-        idle,
-        bus_reset,
-        wait_bus_ready,
-        configuring,
-        check,
-        error,
-        running
-    };
-
     AddressPool addrPool;
     UHS_USBInterface* devConfig[UHS_HOST_MAX_INTERFACE_DRIVERS];
-    volatile TaskState usb_task_state{ TaskState::illegal };
-    volatile uint8_t   usb_error{ 0 };
-    volatile uint8_t   usb_task_polling_disabled{ 0 };
-    volatile uint8_t   usb_host_speed{ 0 };
-    volatile uint8_t   hub_present{ 0 };
+    volatile uint8_t usb_error{ 0 };
+    volatile uint8_t usb_task_state{ UHS_USB_HOST_STATE_INITIALIZE }; //set up state machine
+    volatile uint8_t usb_task_polling_disabled{ 0 };
+    volatile uint8_t usb_host_speed{ 0 };
+    volatile uint8_t hub_present{ 0 };
 
     UHS_USB_HOST_BASE()
     {
@@ -92,7 +77,7 @@ public:
     //
     /////////////////////////////////////////////
 
-    virtual void UHS_NI initialize() {}
+//    virtual void UHS_NI initialize() {}
 
     /**
      * Delay for x milliseconds
@@ -104,7 +89,9 @@ public:
      */
     virtual bool UHS_NI sof_delay(uint16_t ms)
     {
-        const TaskState current_state = usb_task_state;
+        if(!(usb_task_state & UHS_USB_HOST_STATE_MASK)) return false;
+
+        const uint8_t current_state = usb_task_state;
 
         while(current_state == usb_task_state && ms--)
         {
@@ -120,7 +107,7 @@ public:
 
     virtual void UHS_NI doHostReset() {}
 
-//    virtual void UHS_NI vbusPower(NOTUSED(VBUS_t state)) {}
+    virtual void UHS_NI vbusPower(NOTUSED(VBUS_t state)) {}
 
     virtual uint8_t UHS_NI SetAddress(NOTUSED(uint8_t addr), NOTUSED(uint8_t ep), NOTUSED(UHS_EpInfo **ppep), NOTUSED(uint16_t &nak_limit))
     {
@@ -217,7 +204,7 @@ public:
 
     uint8_t UHS_NI setEpInfoEntry(uint8_t addr, uint8_t iface, uint8_t epcount, volatile UHS_EpInfo* eprecord_ptr);
 
-    TaskState getUsbTaskState() { return usb_task_state; }
+    inline uint8_t getUsbTaskState() { return usb_task_state; }
 
     AddressPool* GetAddressPool() { return &addrPool; }
 

@@ -34,6 +34,12 @@
 #define MACROS_H
 
 
+#define delay(ms) xarmlib::hal::UsTicker::wait(std::chrono::milliseconds(ms))
+#define delayMicroseconds(us) xarmlib::hal::UsTicker::wait(std::chrono::microseconds(us))
+#define micros() std::chrono::duration_cast<std::chrono::microseconds>(xarmlib::hal::UsTicker::now()).count()
+#define millis() std::chrono::duration_cast<std::chrono::milliseconds>(xarmlib::hal::UsTicker::now()).count()
+
+
 ////////////////////////////////////////////////////////////////////////////////
 // HANDY MACROS
 ////////////////////////////////////////////////////////////////////////////////

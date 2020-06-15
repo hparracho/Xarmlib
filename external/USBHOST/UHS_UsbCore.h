@@ -2,7 +2,7 @@
 // @file    UHS_UsbCore.h
 // @brief   UHS USB Host class base.
 // @notes   Based on UHS30 UHS_UsbCore.h file with some cleanup
-// @date    5 June 2020
+// @date    9 June 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -165,27 +165,27 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 
-///* USB state machine states */
-//#define                       UHS_USB_HOST_STATE_MASK 0xF0U
-//
-//// Configure states, MSN == 0 --------------------------V
-//#define                   UHS_USB_HOST_STATE_DETACHED 0x00U
-//#define                   UHS_USB_HOST_STATE_DEBOUNCE 0x01U
-//#define      UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE 0x02U
-//#define         UHS_USB_HOST_STATE_RESET_NOT_COMPLETE 0x03U
-//#define                   UHS_USB_HOST_STATE_WAIT_SOF 0x04U
-//#define             UHS_USB_HOST_STATE_WAIT_BUS_READY 0x05U
-//#define               UHS_USB_HOST_STATE_RESET_DEVICE 0x0AU
-//#define                UHS_USB_HOST_STATE_CONFIGURING 0x0CU // Looks like "CO"nfig (backwards)
-//#define           UHS_USB_HOST_STATE_CONFIGURING_DONE 0x0DU // Looks like "DO"one (backwards)
-//#define                      UHS_USB_HOST_STATE_CHECK 0x0EU
-//#define                    UHS_USB_HOST_STATE_ILLEGAL 0x0FU // Foo
-//
-//// Run states, MSN != 0 --------------------------------V
-//#define                    UHS_USB_HOST_STATE_RUNNING 0x60U // Looks like "GO"
-//#define                       UHS_USB_HOST_STATE_IDLE 0x1DU // Looks like "ID"le
-//#define                      UHS_USB_HOST_STATE_ERROR 0xF0U // Looks like "FO"o
-//#define                 UHS_USB_HOST_STATE_INITIALIZE 0x10U // Looks like "I"nit
+/* USB state machine states */
+#define                       UHS_USB_HOST_STATE_MASK 0xF0U
+
+// Configure states, MSN == 0 --------------------------V
+#define                   UHS_USB_HOST_STATE_DETACHED 0x00U
+#define                   UHS_USB_HOST_STATE_DEBOUNCE 0x01U
+#define      UHS_USB_HOST_STATE_DEBOUNCE_NOT_COMPLETE 0x02U
+#define         UHS_USB_HOST_STATE_RESET_NOT_COMPLETE 0x03U
+#define                   UHS_USB_HOST_STATE_WAIT_SOF 0x04U
+#define             UHS_USB_HOST_STATE_WAIT_BUS_READY 0x05U
+#define               UHS_USB_HOST_STATE_RESET_DEVICE 0x0AU
+#define                UHS_USB_HOST_STATE_CONFIGURING 0x0CU // Looks like "CO"nfig (backwards)
+#define           UHS_USB_HOST_STATE_CONFIGURING_DONE 0x0DU // Looks like "DO"one (backwards)
+#define                      UHS_USB_HOST_STATE_CHECK 0x0EU
+#define                    UHS_USB_HOST_STATE_ILLEGAL 0x0FU // Foo
+
+// Run states, MSN != 0 --------------------------------V
+#define                    UHS_USB_HOST_STATE_RUNNING 0x60U // Looks like "GO"
+#define                       UHS_USB_HOST_STATE_IDLE 0x1DU // Looks like "ID"le
+#define                      UHS_USB_HOST_STATE_ERROR 0xF0U // Looks like "FO"o
+#define                 UHS_USB_HOST_STATE_INITIALIZE 0x10U // Looks like "I"nit
 
 // Host SE result codes.
 // Common SE results are stored in the low nybble, all interface drivers understand these plus 0x1f.
