@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    19 May 2020
+// @date    26 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -440,7 +440,9 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
             switch(m_can_name)
             {
                 case Name::can0: m_can_base = CAN0; break;
+#if (TARGET_CAN_COUNT == 2)
                 case Name::can1: m_can_base = CAN1; break;
+#endif
             };
 
             initialize(config);
