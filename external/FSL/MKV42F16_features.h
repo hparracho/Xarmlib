@@ -1,13 +1,13 @@
 /*
 ** ###################################################################
-**     Version:             rev. 1.6, 2015-06-08
-**     Build:               b190822
+**     Version:             rev. 1.5, 2015-11-02
+**     Build:               b200409
 **
 **     Abstract:
 **         Chip specific module features.
 **
 **     Copyright 2016 Freescale Semiconductor, Inc.
-**     Copyright 2016-2019 NXP
+**     Copyright 2016-2020 NXP
 **     All rights reserved.
 **
 **     SPDX-License-Identifier: BSD-3-Clause
@@ -26,95 +26,159 @@
 **         Renamed interrupt vector I2C to I2C0 and LPTimer to LPTMR0
 **     - rev. 1.2 (2015-01-21)
 **         Added FSL_FEATURE_SOC_peripheral_COUNT with number of peripheral instances
-**     - rev. 1.3 (2015-02-11)
-**         AIPS registers have been added.
-**     - rev. 1.4 (2015-05-19)
+**     - rev. 1.3 (2015-05-19)
 **         FSL_FEATURE_SOC_CAU_COUNT remamed to FSL_FEATURE_SOC_MMCAU_COUNT.
 **         Added FSL_FEATURE_SOC_peripheral_COUNT for TRNG and HSADC.
 **         Added features for PORT and PDB.
-**     - rev. 1.5 (2015-05-25)
+**     - rev. 1.4 (2015-05-25)
 **         Added FSL_FEATURE_FLASH_PFLASH_START_ADDRESS
-**     - rev. 1.6 (2015-06-08)
-**         FTM features BUS_CLOCK and FAST_CLOCK removed.
+**     - rev. 1.5 (2015-11-02)
+**         AIPS registers have been added.
 **
 ** ###################################################################
 */
 
-#ifndef _MKV46F16_FEATURES_H_
-#define _MKV46F16_FEATURES_H_
+#ifndef _MKV42F16_FEATURES_H_
+#define _MKV42F16_FEATURES_H_
 
 /* SOC module features */
 
-/* @brief AIPS availability on the SoC. */
-#define FSL_FEATURE_SOC_AIPS_COUNT (1)
-/* @brief AOI availability on the SoC. */
-#define FSL_FEATURE_SOC_AOI_COUNT (1)
-/* @brief AXBS availability on the SoC. */
-#define FSL_FEATURE_SOC_AXBS_COUNT (1)
-/* @brief CADC availability on the SoC. */
-#define FSL_FEATURE_SOC_CADC_COUNT (1)
-/* @brief FLEXCAN availability on the SoC. */
-#define FSL_FEATURE_SOC_FLEXCAN_COUNT (2)
-/* @brief CMP availability on the SoC. */
-#define FSL_FEATURE_SOC_CMP_COUNT (4)
-/* @brief CRC availability on the SoC. */
-#define FSL_FEATURE_SOC_CRC_COUNT (1)
-/* @brief DAC availability on the SoC. */
-#define FSL_FEATURE_SOC_DAC_COUNT (1)
-/* @brief EDMA availability on the SoC. */
-#define FSL_FEATURE_SOC_EDMA_COUNT (1)
-/* @brief DMAMUX availability on the SoC. */
-#define FSL_FEATURE_SOC_DMAMUX_COUNT (1)
-/* @brief DSPI availability on the SoC. */
-#define FSL_FEATURE_SOC_DSPI_COUNT (1)
-/* @brief ENC availability on the SoC. */
-#define FSL_FEATURE_SOC_ENC_COUNT (1)
-/* @brief EWM availability on the SoC. */
-#define FSL_FEATURE_SOC_EWM_COUNT (1)
-/* @brief FMC availability on the SoC. */
-#define FSL_FEATURE_SOC_FMC_COUNT (1)
-/* @brief FTFA availability on the SoC. */
-#define FSL_FEATURE_SOC_FTFA_COUNT (1)
-/* @brief FTM availability on the SoC. */
-#define FSL_FEATURE_SOC_FTM_COUNT (3)
-/* @brief GPIO availability on the SoC. */
-#define FSL_FEATURE_SOC_GPIO_COUNT (5)
-/* @brief I2C availability on the SoC. */
-#define FSL_FEATURE_SOC_I2C_COUNT (1)
-/* @brief LLWU availability on the SoC. */
-#define FSL_FEATURE_SOC_LLWU_COUNT (1)
-/* @brief LPTMR availability on the SoC. */
-#define FSL_FEATURE_SOC_LPTMR_COUNT (1)
-/* @brief MCG availability on the SoC. */
-#define FSL_FEATURE_SOC_MCG_COUNT (1)
-/* @brief MCM availability on the SoC. */
-#define FSL_FEATURE_SOC_MCM_COUNT (1)
-/* @brief OSC availability on the SoC. */
-#define FSL_FEATURE_SOC_OSC_COUNT (1)
-/* @brief PDB availability on the SoC. */
-#define FSL_FEATURE_SOC_PDB_COUNT (2)
-/* @brief PIT availability on the SoC. */
-#define FSL_FEATURE_SOC_PIT_COUNT (1)
-/* @brief PMC availability on the SoC. */
-#define FSL_FEATURE_SOC_PMC_COUNT (1)
-/* @brief PORT availability on the SoC. */
-#define FSL_FEATURE_SOC_PORT_COUNT (5)
-/* @brief PWM availability on the SoC. */
-#define FSL_FEATURE_SOC_PWM_COUNT (1)
-/* @brief RCM availability on the SoC. */
-#define FSL_FEATURE_SOC_RCM_COUNT (1)
-/* @brief SIM availability on the SoC. */
-#define FSL_FEATURE_SOC_SIM_COUNT (1)
-/* @brief SMC availability on the SoC. */
-#define FSL_FEATURE_SOC_SMC_COUNT (1)
-/* @brief UART availability on the SoC. */
-#define FSL_FEATURE_SOC_UART_COUNT (2)
-/* @brief WDOG availability on the SoC. */
-#define FSL_FEATURE_SOC_WDOG_COUNT (1)
-/* @brief XBARA availability on the SoC. */
-#define FSL_FEATURE_SOC_XBARA_COUNT (1)
-/* @brief XBARB availability on the SoC. */
-#define FSL_FEATURE_SOC_XBARB_COUNT (1)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16)
+    /* @brief AIPS availability on the SoC. */
+    #define FSL_FEATURE_SOC_AIPS_COUNT (1)
+    /* @brief AOI availability on the SoC. */
+    #define FSL_FEATURE_SOC_AOI_COUNT (1)
+    /* @brief AXBS availability on the SoC. */
+    #define FSL_FEATURE_SOC_AXBS_COUNT (1)
+    /* @brief CADC availability on the SoC. */
+    #define FSL_FEATURE_SOC_CADC_COUNT (1)
+    /* @brief FLEXCAN availability on the SoC. */
+    #define FSL_FEATURE_SOC_FLEXCAN_COUNT (1)
+    /* @brief CMP availability on the SoC. */
+    #define FSL_FEATURE_SOC_CMP_COUNT (4)
+    /* @brief CRC availability on the SoC. */
+    #define FSL_FEATURE_SOC_CRC_COUNT (1)
+    /* @brief EDMA availability on the SoC. */
+    #define FSL_FEATURE_SOC_EDMA_COUNT (1)
+    /* @brief DMAMUX availability on the SoC. */
+    #define FSL_FEATURE_SOC_DMAMUX_COUNT (1)
+    /* @brief DSPI availability on the SoC. */
+    #define FSL_FEATURE_SOC_DSPI_COUNT (1)
+    /* @brief ENC availability on the SoC. */
+    #define FSL_FEATURE_SOC_ENC_COUNT (1)
+    /* @brief EWM availability on the SoC. */
+    #define FSL_FEATURE_SOC_EWM_COUNT (1)
+    /* @brief FMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_FMC_COUNT (1)
+    /* @brief FTFA availability on the SoC. */
+    #define FSL_FEATURE_SOC_FTFA_COUNT (1)
+    /* @brief FTM availability on the SoC. */
+    #define FSL_FEATURE_SOC_FTM_COUNT (3)
+    /* @brief GPIO availability on the SoC. */
+    #define FSL_FEATURE_SOC_GPIO_COUNT (5)
+    /* @brief I2C availability on the SoC. */
+    #define FSL_FEATURE_SOC_I2C_COUNT (1)
+    /* @brief LLWU availability on the SoC. */
+    #define FSL_FEATURE_SOC_LLWU_COUNT (1)
+    /* @brief LPTMR availability on the SoC. */
+    #define FSL_FEATURE_SOC_LPTMR_COUNT (1)
+    /* @brief MCG availability on the SoC. */
+    #define FSL_FEATURE_SOC_MCG_COUNT (1)
+    /* @brief MCM availability on the SoC. */
+    #define FSL_FEATURE_SOC_MCM_COUNT (1)
+    /* @brief OSC availability on the SoC. */
+    #define FSL_FEATURE_SOC_OSC_COUNT (1)
+    /* @brief PDB availability on the SoC. */
+    #define FSL_FEATURE_SOC_PDB_COUNT (2)
+    /* @brief PIT availability on the SoC. */
+    #define FSL_FEATURE_SOC_PIT_COUNT (1)
+    /* @brief PMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_PMC_COUNT (1)
+    /* @brief PORT availability on the SoC. */
+    #define FSL_FEATURE_SOC_PORT_COUNT (5)
+    /* @brief RCM availability on the SoC. */
+    #define FSL_FEATURE_SOC_RCM_COUNT (1)
+    /* @brief SIM availability on the SoC. */
+    #define FSL_FEATURE_SOC_SIM_COUNT (1)
+    /* @brief SMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_SMC_COUNT (1)
+    /* @brief UART availability on the SoC. */
+    #define FSL_FEATURE_SOC_UART_COUNT (2)
+    /* @brief WDOG availability on the SoC. */
+    #define FSL_FEATURE_SOC_WDOG_COUNT (1)
+    /* @brief XBARA availability on the SoC. */
+    #define FSL_FEATURE_SOC_XBARA_COUNT (1)
+    /* @brief XBARB availability on the SoC. */
+    #define FSL_FEATURE_SOC_XBARB_COUNT (1)
+#elif defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F256VLL16) || \
+    defined(CPU_MKV42F64VLH16)
+    /* @brief AIPS availability on the SoC. */
+    #define FSL_FEATURE_SOC_AIPS_COUNT (1)
+    /* @brief AOI availability on the SoC. */
+    #define FSL_FEATURE_SOC_AOI_COUNT (1)
+    /* @brief AXBS availability on the SoC. */
+    #define FSL_FEATURE_SOC_AXBS_COUNT (1)
+    /* @brief CADC availability on the SoC. */
+    #define FSL_FEATURE_SOC_CADC_COUNT (1)
+    /* @brief FLEXCAN availability on the SoC. */
+    #define FSL_FEATURE_SOC_FLEXCAN_COUNT (2)
+    /* @brief CMP availability on the SoC. */
+    #define FSL_FEATURE_SOC_CMP_COUNT (4)
+    /* @brief CRC availability on the SoC. */
+    #define FSL_FEATURE_SOC_CRC_COUNT (1)
+    /* @brief EDMA availability on the SoC. */
+    #define FSL_FEATURE_SOC_EDMA_COUNT (1)
+    /* @brief DMAMUX availability on the SoC. */
+    #define FSL_FEATURE_SOC_DMAMUX_COUNT (1)
+    /* @brief DSPI availability on the SoC. */
+    #define FSL_FEATURE_SOC_DSPI_COUNT (1)
+    /* @brief ENC availability on the SoC. */
+    #define FSL_FEATURE_SOC_ENC_COUNT (1)
+    /* @brief EWM availability on the SoC. */
+    #define FSL_FEATURE_SOC_EWM_COUNT (1)
+    /* @brief FMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_FMC_COUNT (1)
+    /* @brief FTFA availability on the SoC. */
+    #define FSL_FEATURE_SOC_FTFA_COUNT (1)
+    /* @brief FTM availability on the SoC. */
+    #define FSL_FEATURE_SOC_FTM_COUNT (3)
+    /* @brief GPIO availability on the SoC. */
+    #define FSL_FEATURE_SOC_GPIO_COUNT (5)
+    /* @brief I2C availability on the SoC. */
+    #define FSL_FEATURE_SOC_I2C_COUNT (1)
+    /* @brief LLWU availability on the SoC. */
+    #define FSL_FEATURE_SOC_LLWU_COUNT (1)
+    /* @brief LPTMR availability on the SoC. */
+    #define FSL_FEATURE_SOC_LPTMR_COUNT (1)
+    /* @brief MCG availability on the SoC. */
+    #define FSL_FEATURE_SOC_MCG_COUNT (1)
+    /* @brief MCM availability on the SoC. */
+    #define FSL_FEATURE_SOC_MCM_COUNT (1)
+    /* @brief OSC availability on the SoC. */
+    #define FSL_FEATURE_SOC_OSC_COUNT (1)
+    /* @brief PDB availability on the SoC. */
+    #define FSL_FEATURE_SOC_PDB_COUNT (2)
+    /* @brief PIT availability on the SoC. */
+    #define FSL_FEATURE_SOC_PIT_COUNT (1)
+    /* @brief PMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_PMC_COUNT (1)
+    /* @brief PORT availability on the SoC. */
+    #define FSL_FEATURE_SOC_PORT_COUNT (5)
+    /* @brief RCM availability on the SoC. */
+    #define FSL_FEATURE_SOC_RCM_COUNT (1)
+    /* @brief SIM availability on the SoC. */
+    #define FSL_FEATURE_SOC_SIM_COUNT (1)
+    /* @brief SMC availability on the SoC. */
+    #define FSL_FEATURE_SOC_SMC_COUNT (1)
+    /* @brief UART availability on the SoC. */
+    #define FSL_FEATURE_SOC_UART_COUNT (2)
+    /* @brief WDOG availability on the SoC. */
+    #define FSL_FEATURE_SOC_WDOG_COUNT (1)
+    /* @brief XBARA availability on the SoC. */
+    #define FSL_FEATURE_SOC_XBARA_COUNT (1)
+    /* @brief XBARB availability on the SoC. */
+    #define FSL_FEATURE_SOC_XBARB_COUNT (1)
+#endif
 
 /* AOI module features */
 
@@ -125,32 +189,58 @@
 
 /* FLEXCAN module features */
 
-/* @brief Message buffer size */
-#define FSL_FEATURE_FLEXCAN_HAS_MESSAGE_BUFFER_MAX_NUMBERn(x) (16)
-/* @brief Has doze mode support (register bit field MCR[DOZE]). */
-#define FSL_FEATURE_FLEXCAN_HAS_DOZE_MODE_SUPPORT (1)
-/* @brief Insatnce has doze mode support (register bit field MCR[DOZE]). */
-#define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_DOZE_MODE_SUPPORTn(x) (1)
-/* @brief Has a glitch filter on the receive pin (register bit field MCR[WAKSRC]). */
-#define FSL_FEATURE_FLEXCAN_HAS_GLITCH_FILTER (1)
-/* @brief Has extended interrupt mask and flag register (register IMASK2, IFLAG2). */
-#define FSL_FEATURE_FLEXCAN_HAS_EXTENDED_FLAG_REGISTER (0)
-/* @brief Instance has extended bit timing register (register CBT). */
-#define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_EXTENDED_TIMING_REGISTERn(x) (1)
-/* @brief Has a receive FIFO DMA feature (register bit field MCR[DMA]). */
-#define FSL_FEATURE_FLEXCAN_HAS_RX_FIFO_DMA (1)
-/* @brief Instance has a receive FIFO DMA feature (register bit field MCR[DMA]). */
-#define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_RX_FIFO_DMAn(x) (1)
-/* @brief Has separate message buffer 0 interrupt flag (register bit field IFLAG1[BUF0I]). */
-#define FSL_FEATURE_FLEXCAN_HAS_SEPARATE_BUFFER_0_FLAG (1)
-/* @brief Has bitfield name BUF31TO0M. */
-#define FSL_FEATURE_FLEXCAN_HAS_BUF31TO0M (1)
-/* @brief Number of interrupt vectors. */
-#define FSL_FEATURE_FLEXCAN_INTERRUPT_COUNT (6)
-/* @brief Is affected by errata with ID 5641 (Module does not transmit a message that is enabled to be transmitted at a specific moment during the arbitration process). */
-#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_5641 (0)
-// Added by Emanuel Pinto
-#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16)
+    /* @brief Message buffer size */
+    #define FSL_FEATURE_FLEXCAN_HAS_MESSAGE_BUFFER_MAX_NUMBERn(x) (16)
+    /* @brief Has doze mode support (register bit field MCR[DOZE]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_DOZE_MODE_SUPPORT (1)
+    /* @brief Insatnce has doze mode support (register bit field MCR[DOZE]). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_DOZE_MODE_SUPPORTn(x) (1)
+    /* @brief Has a glitch filter on the receive pin (register bit field MCR[WAKSRC]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_GLITCH_FILTER (1)
+    /* @brief Has extended interrupt mask and flag register (register IMASK2, IFLAG2). */
+    #define FSL_FEATURE_FLEXCAN_HAS_EXTENDED_FLAG_REGISTER (0)
+    /* @brief Instance has extended bit timing register (register CBT). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_EXTENDED_TIMING_REGISTERn(x) (1)
+    /* @brief Has a receive FIFO DMA feature (register bit field MCR[DMA]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_RX_FIFO_DMA (1)
+    /* @brief Instance has a receive FIFO DMA feature (register bit field MCR[DMA]). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_RX_FIFO_DMAn(x) (1)
+    /* @brief Has separate message buffer 0 interrupt flag (register bit field IFLAG1[BUF0I]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_SEPARATE_BUFFER_0_FLAG (1)
+    /* @brief Has bitfield name BUF31TO0M. */
+    #define FSL_FEATURE_FLEXCAN_HAS_BUF31TO0M (1)
+    /* @brief Number of interrupt vectors. */
+    #define FSL_FEATURE_FLEXCAN_INTERRUPT_COUNT (6)
+    /* @brief Is affected by errata with ID 5641 (Module does not transmit a message that is enabled to be transmitted at a specific moment during the arbitration process). */
+    #define FSL_FEATURE_FLEXCAN_HAS_ERRATA_5641 (0)
+#elif defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F256VLL16) || \
+    defined(CPU_MKV42F64VLH16)
+    /* @brief Message buffer size */
+    #define FSL_FEATURE_FLEXCAN_HAS_MESSAGE_BUFFER_MAX_NUMBERn(x) (16)
+    /* @brief Has doze mode support (register bit field MCR[DOZE]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_DOZE_MODE_SUPPORT (1)
+    /* @brief Insatnce has doze mode support (register bit field MCR[DOZE]). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_DOZE_MODE_SUPPORTn(x) (1)
+    /* @brief Has a glitch filter on the receive pin (register bit field MCR[WAKSRC]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_GLITCH_FILTER (1)
+    /* @brief Has extended interrupt mask and flag register (register IMASK2, IFLAG2). */
+    #define FSL_FEATURE_FLEXCAN_HAS_EXTENDED_FLAG_REGISTER (0)
+    /* @brief Instance has extended bit timing register (register CBT). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_EXTENDED_TIMING_REGISTERn(x) (1)
+    /* @brief Has a receive FIFO DMA feature (register bit field MCR[DMA]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_RX_FIFO_DMA (1)
+    /* @brief Instance has a receive FIFO DMA feature (register bit field MCR[DMA]). */
+    #define FSL_FEATURE_FLEXCAN_INSTANCE_HAS_RX_FIFO_DMAn(x) (1)
+    /* @brief Has separate message buffer 0 interrupt flag (register bit field IFLAG1[BUF0I]). */
+    #define FSL_FEATURE_FLEXCAN_HAS_SEPARATE_BUFFER_0_FLAG (1)
+    /* @brief Has bitfield name BUF31TO0M. */
+    #define FSL_FEATURE_FLEXCAN_HAS_BUF31TO0M (1)
+    /* @brief Number of interrupt vectors. */
+    #define FSL_FEATURE_FLEXCAN_INTERRUPT_COUNT (6)
+    /* @brief Is affected by errata with ID 5641 (Module does not transmit a message that is enabled to be transmitted at a specific moment during the arbitration process). */
+    #define FSL_FEATURE_FLEXCAN_HAS_ERRATA_5641 (0)
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16) */
 
 /* CMP module features */
 
@@ -171,27 +261,6 @@
 
 /* @brief Has data register with name CRC */
 #define FSL_FEATURE_CRC_HAS_CRC_REG (0)
-
-/* DAC module features */
-
-/* @brief Define the size of hardware buffer */
-#define FSL_FEATURE_DAC_BUFFER_SIZE (16)
-/* @brief Define whether the buffer supports watermark event detection or not. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_DETECTION (1)
-/* @brief Define whether the buffer supports watermark selection detection or not. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_SELECTION (1)
-/* @brief Define whether the buffer supports watermark event 1 word before buffer upper limit. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_1_WORD (1)
-/* @brief Define whether the buffer supports watermark event 2 words before buffer upper limit. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_2_WORDS (1)
-/* @brief Define whether the buffer supports watermark event 3 words before buffer upper limit. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_3_WORDS (1)
-/* @brief Define whether the buffer supports watermark event 4 words before buffer upper limit. */
-#define FSL_FEATURE_DAC_HAS_WATERMARK_4_WORDS (1)
-/* @brief Define whether FIFO buffer mode is available or not. */
-#define FSL_FEATURE_DAC_HAS_BUFFER_FIFO_MODE (1)
-/* @brief Define whether swing buffer mode is available or not.. */
-#define FSL_FEATURE_DAC_HAS_BUFFER_SWING_MODE (1)
 
 /* EDMA module features */
 
@@ -234,7 +303,7 @@
 
 /* FLASH module features */
 
-#if defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F128VLL16)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16)
     /* @brief Is of type FTFA. */
     #define FSL_FEATURE_FLASH_IS_FTFA (1)
     /* @brief Is of type FTFE. */
@@ -427,7 +496,7 @@
     #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1110 (0xFFFF)
     /* @brief Emulated eeprom size code 1111 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
     #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1111 (0xFFFF)
-#elif defined(CPU_MKV46F256VLH16) || defined(CPU_MKV46F256VLL16)
+#elif defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F256VLL16)
     /* @brief Is of type FTFA. */
     #define FSL_FEATURE_FLASH_IS_FTFA (1)
     /* @brief Is of type FTFE. */
@@ -620,7 +689,200 @@
     #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1110 (0xFFFF)
     /* @brief Emulated eeprom size code 1111 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
     #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1111 (0xFFFF)
-#endif /* defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F128VLL16) */
+#elif defined(CPU_MKV42F64VLF16) || defined(CPU_MKV42F64VLH16)
+    /* @brief Is of type FTFA. */
+    #define FSL_FEATURE_FLASH_IS_FTFA (1)
+    /* @brief Is of type FTFE. */
+    #define FSL_FEATURE_FLASH_IS_FTFE (0)
+    /* @brief Is of type FTFL. */
+    #define FSL_FEATURE_FLASH_IS_FTFL (0)
+    /* @brief Has flags indicating the status of the FlexRAM (register bits FCNFG[EEERDY], FCNFG[RAMRDY] and FCNFG[PFLSH]). */
+    #define FSL_FEATURE_FLASH_HAS_FLEX_RAM_FLAGS (0)
+    /* @brief Has program flash swapping status flag (register bit FCNFG[SWAP]). */
+    #define FSL_FEATURE_FLASH_HAS_PFLASH_SWAPPING_STATUS_FLAG (0)
+    /* @brief Has EEPROM region protection (register FEPROT). */
+    #define FSL_FEATURE_FLASH_HAS_EEROM_REGION_PROTECTION (0)
+    /* @brief Has data flash region protection (register FDPROT). */
+    #define FSL_FEATURE_FLASH_HAS_DATA_FLASH_REGION_PROTECTION (0)
+    /* @brief Has flash access control (registers XACCHn, SACCHn, where n is a number, FACSS and FACSN). */
+    #define FSL_FEATURE_FLASH_HAS_ACCESS_CONTROL (1)
+    /* @brief Has flash cache control in FMC module. */
+    #define FSL_FEATURE_FLASH_HAS_FMC_FLASH_CACHE_CONTROLS (1)
+    /* @brief Has flash cache control in MCM module. */
+    #define FSL_FEATURE_FLASH_HAS_MCM_FLASH_CACHE_CONTROLS (0)
+    /* @brief Has flash cache control in MSCM module. */
+    #define FSL_FEATURE_FLASH_HAS_MSCM_FLASH_CACHE_CONTROLS (0)
+    /* @brief Has prefetch speculation control in flash, such as kv5x. */
+    #define FSL_FEATURE_FLASH_PREFETCH_SPECULATION_CONTROL_IN_FLASH (0)
+    /* @brief P-Flash flash size coding rule version, value 0 for K1 and K2, value 1 for K3. */
+    #define FSL_FEATURE_FLASH_SIZE_ENCODING_RULE_VERSION (0)
+    /* @brief P-Flash start address. */
+    #define FSL_FEATURE_FLASH_PFLASH_START_ADDRESS (0x00000000)
+    /* @brief P-Flash block count. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_COUNT (1)
+    /* @brief P-Flash block size. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_SIZE (65536)
+    /* @brief P-Flash sector size. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_SECTOR_SIZE (4096)
+    /* @brief P-Flash write unit size. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_WRITE_UNIT_SIZE (4)
+    /* @brief P-Flash data path width. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_DATA_PATH_WIDTH (16)
+    /* @brief P-Flash block swap feature. */
+    #define FSL_FEATURE_FLASH_HAS_PFLASH_BLOCK_SWAP (0)
+    /* @brief P-Flash protection region count. */
+    #define FSL_FEATURE_FLASH_PFLASH_PROTECTION_REGION_COUNT (32)
+    /* @brief Has FlexNVM memory. */
+    #define FSL_FEATURE_FLASH_HAS_FLEX_NVM (0)
+    /* @brief Has FlexNVM alias. */
+    #define FSL_FEATURE_FLASH_HAS_FLEX_NVM_ALIAS (0)
+    /* @brief FlexNVM start address. (Valid only if FlexNVM is available.) */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_START_ADDRESS (0x00000000)
+    /* @brief FlexNVM alias start address. (Valid only if FlexNVM alias is available.) */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_ALIAS_START_ADDRESS (0x00000000)
+    /* @brief FlexNVM block count. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_BLOCK_COUNT (0)
+    /* @brief FlexNVM block size. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_BLOCK_SIZE (0)
+    /* @brief FlexNVM sector size. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_BLOCK_SECTOR_SIZE (0)
+    /* @brief FlexNVM write unit size. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_BLOCK_WRITE_UNIT_SIZE (0)
+    /* @brief FlexNVM data path width. */
+    #define FSL_FEATURE_FLASH_FLEX_BLOCK_DATA_PATH_WIDTH (0)
+    /* @brief Has FlexRAM memory. */
+    #define FSL_FEATURE_FLASH_HAS_FLEX_RAM (0)
+    /* @brief FlexRAM start address. (Valid only if FlexRAM is available.) */
+    #define FSL_FEATURE_FLASH_FLEX_RAM_START_ADDRESS (0x00000000)
+    /* @brief FlexRAM size. */
+    #define FSL_FEATURE_FLASH_FLEX_RAM_SIZE (0)
+    /* @brief Has 0x00 Read 1s Block command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_1S_BLOCK_CMD (0)
+    /* @brief Has 0x01 Read 1s Section command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_1S_SECTION_CMD (1)
+    /* @brief Has 0x02 Program Check command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_CHECK_CMD (1)
+    /* @brief Has 0x03 Read Resource command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_RESOURCE_CMD (1)
+    /* @brief Has 0x06 Program Longword command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_LONGWORD_CMD (1)
+    /* @brief Has 0x07 Program Phrase command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_PHRASE_CMD (0)
+    /* @brief Has 0x08 Erase Flash Block command. */
+    #define FSL_FEATURE_FLASH_HAS_ERASE_FLASH_BLOCK_CMD (0)
+    /* @brief Has 0x09 Erase Flash Sector command. */
+    #define FSL_FEATURE_FLASH_HAS_ERASE_FLASH_SECTOR_CMD (1)
+    /* @brief Has 0x0B Program Section command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_SECTION_CMD (0)
+    /* @brief Has 0x40 Read 1s All Blocks command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_1S_ALL_BLOCKS_CMD (1)
+    /* @brief Has 0x41 Read Once command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_ONCE_CMD (1)
+    /* @brief Has 0x43 Program Once command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_ONCE_CMD (1)
+    /* @brief Has 0x44 Erase All Blocks command. */
+    #define FSL_FEATURE_FLASH_HAS_ERASE_ALL_BLOCKS_CMD (1)
+    /* @brief Has 0x45 Verify Backdoor Access Key command. */
+    #define FSL_FEATURE_FLASH_HAS_VERIFY_BACKDOOR_ACCESS_KEY_CMD (1)
+    /* @brief Has 0x46 Swap Control command. */
+    #define FSL_FEATURE_FLASH_HAS_SWAP_CONTROL_CMD (0)
+    /* @brief Has 0x49 Erase All Blocks Unsecure command. */
+    #define FSL_FEATURE_FLASH_HAS_ERASE_ALL_BLOCKS_UNSECURE_CMD (0)
+    /* @brief Has 0x4A Read 1s All Execute-only Segments command. */
+    #define FSL_FEATURE_FLASH_HAS_READ_1S_ALL_EXECUTE_ONLY_SEGMENTS_CMD (0)
+    /* @brief Has 0x4B Erase All Execute-only Segments command. */
+    #define FSL_FEATURE_FLASH_HAS_ERASE_ALL_EXECUTE_ONLY_SEGMENTS_CMD (0)
+    /* @brief Has 0x80 Program Partition command. */
+    #define FSL_FEATURE_FLASH_HAS_PROGRAM_PARTITION_CMD (0)
+    /* @brief Has 0x81 Set FlexRAM Function command. */
+    #define FSL_FEATURE_FLASH_HAS_SET_FLEXRAM_FUNCTION_CMD (0)
+    /* @brief P-Flash Erase/Read 1st all block command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_BLOCK_CMD_ADDRESS_ALIGMENT (16)
+    /* @brief P-Flash Erase sector command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_SECTOR_CMD_ADDRESS_ALIGMENT (16)
+    /* @brief P-Flash Rrogram/Verify section command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_SECTION_CMD_ADDRESS_ALIGMENT (16)
+    /* @brief P-Flash Read resource command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_RESOURCE_CMD_ADDRESS_ALIGMENT (4)
+    /* @brief P-Flash Program check command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_CHECK_CMD_ADDRESS_ALIGMENT (4)
+    /* @brief P-Flash Program check command address alignment. */
+    #define FSL_FEATURE_FLASH_PFLASH_SWAP_CONTROL_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM Erase/Read 1st all block command address alignment. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_BLOCK_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM Erase sector command address alignment. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_SECTOR_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM Rrogram/Verify section command address alignment. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_SECTION_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM Read resource command address alignment. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_RESOURCE_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM Program check command address alignment. */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_CHECK_CMD_ADDRESS_ALIGMENT (0)
+    /* @brief FlexNVM partition code 0000 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0000 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0001 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0001 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0010 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0010 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0011 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0011 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0100 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0100 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0101 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0101 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0110 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0110 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 0111 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_0111 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1000 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1000 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1001 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1001 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1010 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1010 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1011 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1011 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1100 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1100 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1101 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1101 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1110 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1110 (0xFFFFFFFFU)
+    /* @brief FlexNVM partition code 1111 mapping to data flash size in bytes (0xFFFFFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_DFLASH_SIZE_FOR_DEPART_1111 (0xFFFFFFFFU)
+    /* @brief Emulated eeprom size code 0000 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0000 (0xFFFF)
+    /* @brief Emulated eeprom size code 0001 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0001 (0xFFFF)
+    /* @brief Emulated eeprom size code 0010 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0010 (0xFFFF)
+    /* @brief Emulated eeprom size code 0011 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0011 (0xFFFF)
+    /* @brief Emulated eeprom size code 0100 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0100 (0xFFFF)
+    /* @brief Emulated eeprom size code 0101 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0101 (0xFFFF)
+    /* @brief Emulated eeprom size code 0110 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0110 (0xFFFF)
+    /* @brief Emulated eeprom size code 0111 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_0111 (0xFFFF)
+    /* @brief Emulated eeprom size code 1000 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1000 (0xFFFF)
+    /* @brief Emulated eeprom size code 1001 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1001 (0xFFFF)
+    /* @brief Emulated eeprom size code 1010 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1010 (0xFFFF)
+    /* @brief Emulated eeprom size code 1011 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1011 (0xFFFF)
+    /* @brief Emulated eeprom size code 1100 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1100 (0xFFFF)
+    /* @brief Emulated eeprom size code 1101 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1101 (0xFFFF)
+    /* @brief Emulated eeprom size code 1110 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1110 (0xFFFF)
+    /* @brief Emulated eeprom size code 1111 mapping to emulated eeprom size in bytes (0xFFFF = reserved). */
+    #define FSL_FEATURE_FLASH_FLEX_NVM_EEPROM_SIZE_FOR_EEESIZE_1111 (0xFFFF)
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16) */
 
 /* FTM module features */
 
@@ -649,6 +911,8 @@
 #define FSL_FEATURE_FTM_HAS_CHANNEL7_TRIGGER (0)
 /* @brief Has no QDCTRL. */
 #define FSL_FEATURE_FTM_HAS_NO_QDCTRL (0)
+/* @brief If instance has only TPM function. */
+#define FSL_FEATURE_FTM_IS_TPM_ONLY_INSTANCEn(x) (0)
 
 /* GPIO module features */
 
@@ -682,7 +946,240 @@
 
 /* LLWU module features */
 
-#if defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16)
+    /* @brief Maximum number of pins (maximal index plus one) connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN (22)
+    /* @brief Has pins 8-15 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_EXTERNAL_PIN_GROUP2 (1)
+    /* @brief Maximum number of internal modules connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE (4)
+    /* @brief Number of digital filters. */
+    #define FSL_FEATURE_LLWU_HAS_PIN_FILTER (2)
+    /* @brief Has MF register. */
+    #define FSL_FEATURE_LLWU_HAS_MF (1)
+    /* @brief Has PF register. */
+    #define FSL_FEATURE_LLWU_HAS_PF (1)
+    /* @brief Has possibility to enable reset in low leakage power mode and enable digital filter for RESET pin (register LLWU_RST). */
+    #define FSL_FEATURE_LLWU_HAS_RESET_ENABLE (0)
+    /* @brief Has no internal module wakeup flag register. */
+    #define FSL_FEATURE_LLWU_HAS_NO_INTERNAL_MODULE_WAKEUP_FLAG_REG (0)
+    /* @brief Has external pin 0 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN0 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN0_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN0_GPIO_PIN (0)
+    /* @brief Has external pin 1 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN1 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN1_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN1_GPIO_PIN (0)
+    /* @brief Has external pin 2 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN2 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN2_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN2_GPIO_PIN (0)
+    /* @brief Has external pin 3 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN3 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN3_GPIO_IDX (GPIOA_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN3_GPIO_PIN (4)
+    /* @brief Has external pin 4 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN4 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN4_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN4_GPIO_PIN (0)
+    /* @brief Has external pin 5 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN5 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN5_GPIO_IDX (GPIOB_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN5_GPIO_PIN (0)
+    /* @brief Has external pin 6 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN6 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN6_GPIO_IDX (GPIOC_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN6_GPIO_PIN (1)
+    /* @brief Has external pin 7 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN7 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN7_GPIO_IDX (GPIOC_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN7_GPIO_PIN (3)
+    /* @brief Has external pin 8 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN8 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN8_GPIO_IDX (GPIOC_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN8_GPIO_PIN (4)
+    /* @brief Has external pin 9 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN9 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN9_GPIO_IDX (GPIOC_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN9_GPIO_PIN (5)
+    /* @brief Has external pin 10 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN10 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN10_GPIO_IDX (GPIOC_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN10_GPIO_PIN (6)
+    /* @brief Has external pin 11 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN11 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN11_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN11_GPIO_PIN (0)
+    /* @brief Has external pin 12 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN12 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN12_GPIO_IDX (GPIOD_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN12_GPIO_PIN (0)
+    /* @brief Has external pin 13 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN13 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN13_GPIO_IDX (GPIOD_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN13_GPIO_PIN (2)
+    /* @brief Has external pin 14 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN14 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN14_GPIO_IDX (GPIOD_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN14_GPIO_PIN (4)
+    /* @brief Has external pin 15 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN15 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN15_GPIO_IDX (GPIOD_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN15_GPIO_PIN (6)
+    /* @brief Has external pin 16 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN16 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN16_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN16_GPIO_PIN (0)
+    /* @brief Has external pin 17 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN17 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN17_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN17_GPIO_PIN (0)
+    /* @brief Has external pin 18 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN18 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN18_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN18_GPIO_PIN (0)
+    /* @brief Has external pin 19 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN19 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN19_GPIO_IDX (GPIOE_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN19_GPIO_PIN (17)
+    /* @brief Has external pin 20 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN20 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN20_GPIO_IDX (GPIOE_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN20_GPIO_PIN (18)
+    /* @brief Has external pin 21 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN21 (1)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN21_GPIO_IDX (GPIOE_IDX)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN21_GPIO_PIN (25)
+    /* @brief Has external pin 22 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN22 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN22_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN22_GPIO_PIN (0)
+    /* @brief Has external pin 23 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN23 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN23_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN23_GPIO_PIN (0)
+    /* @brief Has external pin 24 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN24 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN24_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN24_GPIO_PIN (0)
+    /* @brief Has external pin 25 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN25 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN25_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN25_GPIO_PIN (0)
+    /* @brief Has external pin 26 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN26 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN26_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN26_GPIO_PIN (0)
+    /* @brief Has external pin 27 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN27 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN27_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN27_GPIO_PIN (0)
+    /* @brief Has external pin 28 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN28 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN28_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN28_GPIO_PIN (0)
+    /* @brief Has external pin 29 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN29 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN29_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN29_GPIO_PIN (0)
+    /* @brief Has external pin 30 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN30 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN30_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN30_GPIO_PIN (0)
+    /* @brief Has external pin 31 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN31 (0)
+    /* @brief Index of port of external pin. */
+    #define FSL_FEATURE_LLWU_PIN31_GPIO_IDX (0)
+    /* @brief Number of external pin port on specified port. */
+    #define FSL_FEATURE_LLWU_PIN31_GPIO_PIN (0)
+    /* @brief Has internal module 0 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE0 (1)
+    /* @brief Has internal module 1 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE1 (1)
+    /* @brief Has internal module 2 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE2 (1)
+    /* @brief Has internal module 3 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE3 (1)
+    /* @brief Has internal module 4 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE4 (0)
+    /* @brief Has internal module 5 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE5 (0)
+    /* @brief Has internal module 6 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE6 (0)
+    /* @brief Has internal module 7 connected to LLWU device. */
+    #define FSL_FEATURE_LLWU_HAS_INTERNAL_MODULE7 (0)
+    /* @brief Has Version ID Register (LLWU_VERID). */
+    #define FSL_FEATURE_LLWU_HAS_VERID (0)
+    /* @brief Has Parameter Register (LLWU_PARAM). */
+    #define FSL_FEATURE_LLWU_HAS_PARAM (0)
+    /* @brief Width of registers of the LLWU. */
+    #define FSL_FEATURE_LLWU_REG_BITWIDTH (8)
+    /* @brief Has DMA Enable register (LLWU_DE). */
+    #define FSL_FEATURE_LLWU_HAS_DMA_ENABLE_REG (0)
+#elif defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F64VLH16)
     /* @brief Maximum number of pins (maximal index plus one) connected to LLWU device. */
     #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN (22)
     /* @brief Has pins 8-15 connected to LLWU device. */
@@ -915,7 +1412,7 @@
     #define FSL_FEATURE_LLWU_REG_BITWIDTH (8)
     /* @brief Has DMA Enable register (LLWU_DE). */
     #define FSL_FEATURE_LLWU_HAS_DMA_ENABLE_REG (0)
-#elif defined(CPU_MKV46F128VLL16) || defined(CPU_MKV46F256VLL16)
+#elif defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLL16)
     /* @brief Maximum number of pins (maximal index plus one) connected to LLWU device. */
     #define FSL_FEATURE_LLWU_HAS_EXTERNAL_PIN (22)
     /* @brief Has pins 8-15 connected to LLWU device. */
@@ -1148,7 +1645,7 @@
     #define FSL_FEATURE_LLWU_REG_BITWIDTH (8)
     /* @brief Has DMA Enable register (LLWU_DE). */
     #define FSL_FEATURE_LLWU_HAS_DMA_ENABLE_REG (0)
-#endif /* defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16) */
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16) */
 
 /* LPTMR module features */
 
@@ -1232,10 +1729,18 @@
 
 /* interrupt module features */
 
-/* @brief Lowest interrupt request number. */
-#define FSL_FEATURE_INTERRUPT_IRQ_MIN (-14)
-/* @brief Highest interrupt request number. */
-#define FSL_FEATURE_INTERRUPT_IRQ_MAX (99)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16)
+    /* @brief Lowest interrupt request number. */
+    #define FSL_FEATURE_INTERRUPT_IRQ_MIN (-14)
+    /* @brief Highest interrupt request number. */
+    #define FSL_FEATURE_INTERRUPT_IRQ_MAX (92)
+#elif defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F256VLL16) || \
+    defined(CPU_MKV42F64VLH16)
+    /* @brief Lowest interrupt request number. */
+    #define FSL_FEATURE_INTERRUPT_IRQ_MIN (-14)
+    /* @brief Highest interrupt request number. */
+    #define FSL_FEATURE_INTERRUPT_IRQ_MAX (99)
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16) */
 
 /* OSC module features */
 
@@ -1341,52 +1846,6 @@
 #define FSL_FEATURE_PORT_HAS_IRQC_FLAG (0)
 /* @brief Defines whether PCR[IRQC] bit-field has trigger states. */
 #define FSL_FEATURE_PORT_HAS_IRQC_TRIGGER (0)
-
-/* PWM module features */
-
-#if defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16)
-    /* @brief Number of each EflexPWM module channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNEL_COUNT (8U)
-    /* @brief Number of EflexPWM module A channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELA_COUNT (4U)
-    /* @brief Number of EflexPWM module B channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELB_COUNT (4U)
-    /* @brief Number of EflexPWM module X channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELX_COUNT (0U)
-    /* @brief Number of each EflexPWM module compare channels interrupts. */
-    #define FSL_FEATURE_PWM_CMP_INT_HANDLER_COUNT (4U)
-    /* @brief Number of each EflexPWM module reload channels interrupts. */
-    #define FSL_FEATURE_PWM_RELOAD_INT_HANDLER_COUNT (4U)
-    /* @brief Number of each EflexPWM module capture channels interrupts. */
-    #define FSL_FEATURE_PWM_CAP_INT_HANDLER_COUNT (1U)
-    /* @brief Number of each EflexPWM module reload error channels interrupts. */
-    #define FSL_FEATURE_PWM_RERR_INT_HANDLER_COUNT (1U)
-    /* @brief Number of each EflexPWM module fault channels interrupts. */
-    #define FSL_FEATURE_PWM_FAULT_INT_HANDLER_COUNT (1U)
-    /* @brief Number of submodules in each EflexPWM module. */
-    #define FSL_FEATURE_PWM_SUBMODULE_COUNT (4U)
-#elif defined(CPU_MKV46F128VLL16) || defined(CPU_MKV46F256VLL16)
-    /* @brief Number of each EflexPWM module channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNEL_COUNT (12U)
-    /* @brief Number of EflexPWM module A channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELA_COUNT (4U)
-    /* @brief Number of EflexPWM module B channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELB_COUNT (4U)
-    /* @brief Number of EflexPWM module X channels (outputs). */
-    #define FSL_FEATURE_PWM_CHANNELX_COUNT (4U)
-    /* @brief Number of each EflexPWM module compare channels interrupts. */
-    #define FSL_FEATURE_PWM_CMP_INT_HANDLER_COUNT (4U)
-    /* @brief Number of each EflexPWM module reload channels interrupts. */
-    #define FSL_FEATURE_PWM_RELOAD_INT_HANDLER_COUNT (4U)
-    /* @brief Number of each EflexPWM module capture channels interrupts. */
-    #define FSL_FEATURE_PWM_CAP_INT_HANDLER_COUNT (1U)
-    /* @brief Number of each EflexPWM module reload error channels interrupts. */
-    #define FSL_FEATURE_PWM_RERR_INT_HANDLER_COUNT (1U)
-    /* @brief Number of each EflexPWM module fault channels interrupts. */
-    #define FSL_FEATURE_PWM_FAULT_INT_HANDLER_COUNT (1U)
-    /* @brief Number of submodules in each EflexPWM module. */
-    #define FSL_FEATURE_PWM_SUBMODULE_COUNT (4U)
-#endif /* defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16) */
 
 /* RCM module features */
 
@@ -1706,10 +2165,13 @@
 #define FSL_FEATURE_SMC_HAS_SRS_TAMPER (0)
 /* @brief Has security violation reset (register bit SRS[SECVIO]). */
 #define FSL_FEATURE_SMC_HAS_SRS_SECVIO (0)
+/* @brief Width of SMC registers. */
+#define FSL_FEATURE_SMC_REG_WIDTH (8)
 
 /* DSPI module features */
 
-#if defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F64VLF16) || \
+    defined(CPU_MKV42F64VLH16)
     /* @brief Receive/transmit FIFO size in number of items. */
     #define FSL_FEATURE_DSPI_FIFO_SIZEn(x) (4)
     /* @brief Maximum transfer data width in bits. */
@@ -1728,7 +2190,7 @@
     #define FSL_FEATURE_DSPI_16BIT_TRANSFERS (1)
     /* @brief Has separate DMA RX and TX requests. */
     #define FSL_FEATURE_DSPI_HAS_SEPARATE_DMA_RX_TX_REQn(x) (1)
-#elif defined(CPU_MKV46F128VLL16) || defined(CPU_MKV46F256VLL16)
+#elif defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLL16)
     /* @brief Receive/transmit FIFO size in number of items. */
     #define FSL_FEATURE_DSPI_FIFO_SIZEn(x) (4)
     /* @brief Maximum transfer data width in bits. */
@@ -1747,7 +2209,8 @@
     #define FSL_FEATURE_DSPI_16BIT_TRANSFERS (1)
     /* @brief Has separate DMA RX and TX requests. */
     #define FSL_FEATURE_DSPI_HAS_SEPARATE_DMA_RX_TX_REQn(x) (1)
-#endif /* defined(CPU_MKV46F128VLH16) || defined(CPU_MKV46F256VLH16) */
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F64VLF16) || \
+    defined(CPU_MKV42F64VLH16) */
 
 /* SysTick module features */
 
@@ -1824,1046 +2287,2090 @@
 
 /* XBARA module features */
 
-/* @brief Has single XBAR module. */
-#define FSL_FEATURE_XBARA_HAS_SINGLE_MODULE (0)
-/* @brief Maximum value of XBARA input. */
-#define FSL_FEATURE_XBARA_MODULE_INPUTS (52)
-/* @brief Maximum value of XBARA output. */
-#define FSL_FEATURE_XBARA_MODULE_OUTPUTS (59)
-/* @brief Half register position. */
-#define FSL_FEATURE_XBARA_HALF_REGISTER_SHIFT (BP_XBARA_SEL0_SEL1)
-/* @brief Offset of the control register. */
-#define FSL_FEATURE_XBARA_CONTROL_REGISTER_OFFSET (HW_XBARA_CTRL0_ADDR(0))
-/* @brief Number of controled outputs. */
-#define FSL_FEATURE_XBARA_CONTROL_OUTPUTS_NUMBER (4U)
-/* @brief Number of interrupt requests. */
-#define FSL_FEATURE_XBARA_INTERRUPT_COUNT (4)
-/* @brief Number of controled outputs. */
-#define FSL_FEATURE_XBARA_OUTPUT_COUNT (4U)
-/* @brief XBARA has input 0. */
-#define FSL_FEATURE_XBARA_HAS_INPUT0 (1)
-/* @brief XBARA has input 1. */
-#define FSL_FEATURE_XBARA_HAS_INPUT1 (1)
-/* @brief XBARA has input 2. */
-#define FSL_FEATURE_XBARA_HAS_INPUT2 (1)
-/* @brief XBARA has input 3. */
-#define FSL_FEATURE_XBARA_HAS_INPUT3 (1)
-/* @brief XBARA has input 4. */
-#define FSL_FEATURE_XBARA_HAS_INPUT4 (1)
-/* @brief XBARA has input 5. */
-#define FSL_FEATURE_XBARA_HAS_INPUT5 (1)
-/* @brief XBARA has input 6. */
-#define FSL_FEATURE_XBARA_HAS_INPUT6 (1)
-/* @brief XBARA has input 7. */
-#define FSL_FEATURE_XBARA_HAS_INPUT7 (1)
-/* @brief XBARA has input 8. */
-#define FSL_FEATURE_XBARA_HAS_INPUT8 (1)
-/* @brief XBARA has input 9. */
-#define FSL_FEATURE_XBARA_HAS_INPUT9 (1)
-/* @brief XBARA has input 10. */
-#define FSL_FEATURE_XBARA_HAS_INPUT10 (1)
-/* @brief XBARA has input 11. */
-#define FSL_FEATURE_XBARA_HAS_INPUT11 (1)
-/* @brief XBARA has input 12. */
-#define FSL_FEATURE_XBARA_HAS_INPUT12 (1)
-/* @brief XBARA has input 13. */
-#define FSL_FEATURE_XBARA_HAS_INPUT13 (1)
-/* @brief XBARA has input 14. */
-#define FSL_FEATURE_XBARA_HAS_INPUT14 (1)
-/* @brief XBARA has input 15. */
-#define FSL_FEATURE_XBARA_HAS_INPUT15 (1)
-/* @brief XBARA has input 16. */
-#define FSL_FEATURE_XBARA_HAS_INPUT16 (1)
-/* @brief XBARA has input 17. */
-#define FSL_FEATURE_XBARA_HAS_INPUT17 (1)
-/* @brief XBARA has input 18. */
-#define FSL_FEATURE_XBARA_HAS_INPUT18 (1)
-/* @brief XBARA has input 19. */
-#define FSL_FEATURE_XBARA_HAS_INPUT19 (1)
-/* @brief XBARA has input 20. */
-#define FSL_FEATURE_XBARA_HAS_INPUT20 (1)
-/* @brief XBARA has input 21. */
-#define FSL_FEATURE_XBARA_HAS_INPUT21 (1)
-/* @brief XBARA has input 22. */
-#define FSL_FEATURE_XBARA_HAS_INPUT22 (1)
-/* @brief XBARA has input 23. */
-#define FSL_FEATURE_XBARA_HAS_INPUT23 (1)
-/* @brief XBARA has input 24. */
-#define FSL_FEATURE_XBARA_HAS_INPUT24 (1)
-/* @brief XBARA has input 25. */
-#define FSL_FEATURE_XBARA_HAS_INPUT25 (1)
-/* @brief XBARA has input 26. */
-#define FSL_FEATURE_XBARA_HAS_INPUT26 (1)
-/* @brief XBARA has input 27. */
-#define FSL_FEATURE_XBARA_HAS_INPUT27 (1)
-/* @brief XBARA has input 28. */
-#define FSL_FEATURE_XBARA_HAS_INPUT28 (0)
-/* @brief XBARA has input 29. */
-#define FSL_FEATURE_XBARA_HAS_INPUT29 (1)
-/* @brief XBARA has input 30. */
-#define FSL_FEATURE_XBARA_HAS_INPUT30 (0)
-/* @brief XBARA has input 31. */
-#define FSL_FEATURE_XBARA_HAS_INPUT31 (1)
-/* @brief XBARA has input 32. */
-#define FSL_FEATURE_XBARA_HAS_INPUT32 (0)
-/* @brief XBARA has input 33. */
-#define FSL_FEATURE_XBARA_HAS_INPUT33 (1)
-/* @brief XBARA has input 34. */
-#define FSL_FEATURE_XBARA_HAS_INPUT34 (0)
-/* @brief XBARA has input 35. */
-#define FSL_FEATURE_XBARA_HAS_INPUT35 (1)
-/* @brief XBARA has input 36. */
-#define FSL_FEATURE_XBARA_HAS_INPUT36 (1)
-/* @brief XBARA has input 37. */
-#define FSL_FEATURE_XBARA_HAS_INPUT37 (1)
-/* @brief XBARA has input 38. */
-#define FSL_FEATURE_XBARA_HAS_INPUT38 (1)
-/* @brief XBARA has input 39. */
-#define FSL_FEATURE_XBARA_HAS_INPUT39 (1)
-/* @brief XBARA has input 40. */
-#define FSL_FEATURE_XBARA_HAS_INPUT40 (1)
-/* @brief XBARA has input 41. */
-#define FSL_FEATURE_XBARA_HAS_INPUT41 (1)
-/* @brief XBARA has input 42. */
-#define FSL_FEATURE_XBARA_HAS_INPUT42 (1)
-/* @brief XBARA has input 43. */
-#define FSL_FEATURE_XBARA_HAS_INPUT43 (1)
-/* @brief XBARA has input 44. */
-#define FSL_FEATURE_XBARA_HAS_INPUT44 (0)
-/* @brief XBARA has input 45. */
-#define FSL_FEATURE_XBARA_HAS_INPUT45 (1)
-/* @brief XBARA has input 46. */
-#define FSL_FEATURE_XBARA_HAS_INPUT46 (1)
-/* @brief XBARA has input 47. */
-#define FSL_FEATURE_XBARA_HAS_INPUT47 (1)
-/* @brief XBARA has input 48. */
-#define FSL_FEATURE_XBARA_HAS_INPUT48 (1)
-/* @brief XBARA has input 49. */
-#define FSL_FEATURE_XBARA_HAS_INPUT49 (1)
-/* @brief XBARA has input 50. */
-#define FSL_FEATURE_XBARA_HAS_INPUT50 (1)
-/* @brief XBARA has input 51. */
-#define FSL_FEATURE_XBARA_HAS_INPUT51 (1)
-/* @brief XBARA has input 52. */
-#define FSL_FEATURE_XBARA_HAS_INPUT52 (0)
-/* @brief XBARA has input 53. */
-#define FSL_FEATURE_XBARA_HAS_INPUT53 (0)
-/* @brief XBARA has input 54. */
-#define FSL_FEATURE_XBARA_HAS_INPUT54 (0)
-/* @brief XBARA has input 55. */
-#define FSL_FEATURE_XBARA_HAS_INPUT55 (0)
-/* @brief XBARA has input 56. */
-#define FSL_FEATURE_XBARA_HAS_INPUT56 (0)
-/* @brief XBARA has input 57. */
-#define FSL_FEATURE_XBARA_HAS_INPUT57 (0)
-/* @brief XBARA has input 58. */
-#define FSL_FEATURE_XBARA_HAS_INPUT58 (0)
-/* @brief XBARA has input 59. */
-#define FSL_FEATURE_XBARA_HAS_INPUT59 (0)
-/* @brief XBARA has input 60. */
-#define FSL_FEATURE_XBARA_HAS_INPUT60 (0)
-/* @brief XBARA has input 61. */
-#define FSL_FEATURE_XBARA_HAS_INPUT61 (0)
-/* @brief XBARA has input 62. */
-#define FSL_FEATURE_XBARA_HAS_INPUT62 (0)
-/* @brief XBARA has input 63. */
-#define FSL_FEATURE_XBARA_HAS_INPUT63 (0)
-/* @brief XBARA has input 64. */
-#define FSL_FEATURE_XBARA_HAS_INPUT64 (0)
-/* @brief XBARA has input 65. */
-#define FSL_FEATURE_XBARA_HAS_INPUT65 (0)
-/* @brief XBARA has input 66. */
-#define FSL_FEATURE_XBARA_HAS_INPUT66 (0)
-/* @brief XBARA has input 67. */
-#define FSL_FEATURE_XBARA_HAS_INPUT67 (0)
-/* @brief XBARA has input 68. */
-#define FSL_FEATURE_XBARA_HAS_INPUT68 (0)
-/* @brief XBARA has input 69. */
-#define FSL_FEATURE_XBARA_HAS_INPUT69 (0)
-/* @brief XBARA has input 70. */
-#define FSL_FEATURE_XBARA_HAS_INPUT70 (0)
-/* @brief XBARA has input 71. */
-#define FSL_FEATURE_XBARA_HAS_INPUT71 (0)
-/* @brief XBARA has input 72. */
-#define FSL_FEATURE_XBARA_HAS_INPUT72 (0)
-/* @brief XBARA has input 73. */
-#define FSL_FEATURE_XBARA_HAS_INPUT73 (0)
-/* @brief XBARA has input 74. */
-#define FSL_FEATURE_XBARA_HAS_INPUT74 (0)
-/* @brief XBARA has input 75. */
-#define FSL_FEATURE_XBARA_HAS_INPUT75 (0)
-/* @brief XBARA has input 76. */
-#define FSL_FEATURE_XBARA_HAS_INPUT76 (0)
-/* @brief XBARA has input 77. */
-#define FSL_FEATURE_XBARA_HAS_INPUT77 (0)
-/* @brief XBARA has input 78. */
-#define FSL_FEATURE_XBARA_HAS_INPUT78 (0)
-/* @brief XBARA has input 79. */
-#define FSL_FEATURE_XBARA_HAS_INPUT79 (0)
-/* @brief XBARA has input 80. */
-#define FSL_FEATURE_XBARA_HAS_INPUT80 (0)
-/* @brief XBARA has input 81. */
-#define FSL_FEATURE_XBARA_HAS_INPUT81 (0)
-/* @brief XBARA has input 82. */
-#define FSL_FEATURE_XBARA_HAS_INPUT82 (0)
-/* @brief XBARA has input 83. */
-#define FSL_FEATURE_XBARA_HAS_INPUT83 (0)
-/* @brief XBARA has input 84. */
-#define FSL_FEATURE_XBARA_HAS_INPUT84 (0)
-/* @brief XBARA has input 85. */
-#define FSL_FEATURE_XBARA_HAS_INPUT85 (0)
-/* @brief XBARA has input 86. */
-#define FSL_FEATURE_XBARA_HAS_INPUT86 (0)
-/* @brief XBARA has input 87. */
-#define FSL_FEATURE_XBARA_HAS_INPUT87 (0)
-/* @brief XBARA has input 88. */
-#define FSL_FEATURE_XBARA_HAS_INPUT88 (0)
-/* @brief XBARA has input 89. */
-#define FSL_FEATURE_XBARA_HAS_INPUT89 (0)
-/* @brief XBARA has input 90. */
-#define FSL_FEATURE_XBARA_HAS_INPUT90 (0)
-/* @brief XBARA has input 91. */
-#define FSL_FEATURE_XBARA_HAS_INPUT91 (0)
-/* @brief XBARA has input 92. */
-#define FSL_FEATURE_XBARA_HAS_INPUT92 (0)
-/* @brief XBARA has input 93. */
-#define FSL_FEATURE_XBARA_HAS_INPUT93 (0)
-/* @brief XBARA has input 94. */
-#define FSL_FEATURE_XBARA_HAS_INPUT94 (0)
-/* @brief XBARA has input 95. */
-#define FSL_FEATURE_XBARA_HAS_INPUT95 (0)
-/* @brief XBARA has input 96. */
-#define FSL_FEATURE_XBARA_HAS_INPUT96 (0)
-/* @brief XBARA has input 97. */
-#define FSL_FEATURE_XBARA_HAS_INPUT97 (0)
-/* @brief XBARA has input 98. */
-#define FSL_FEATURE_XBARA_HAS_INPUT98 (0)
-/* @brief XBARA has input 99. */
-#define FSL_FEATURE_XBARA_HAS_INPUT99 (0)
-/* @brief XBARA has input 100. */
-#define FSL_FEATURE_XBARA_HAS_INPUT100 (0)
-/* @brief XBARA has input 101. */
-#define FSL_FEATURE_XBARA_HAS_INPUT101 (0)
-/* @brief XBARA has input 102. */
-#define FSL_FEATURE_XBARA_HAS_INPUT102 (0)
-/* @brief XBARA has input 103. */
-#define FSL_FEATURE_XBARA_HAS_INPUT103 (0)
-/* @brief XBARA has input 104. */
-#define FSL_FEATURE_XBARA_HAS_INPUT104 (0)
-/* @brief XBARA has input 105. */
-#define FSL_FEATURE_XBARA_HAS_INPUT105 (0)
-/* @brief XBARA has input 106. */
-#define FSL_FEATURE_XBARA_HAS_INPUT106 (0)
-/* @brief XBARA has input 107. */
-#define FSL_FEATURE_XBARA_HAS_INPUT107 (0)
-/* @brief XBARA has input 108. */
-#define FSL_FEATURE_XBARA_HAS_INPUT108 (0)
-/* @brief XBARA has input 109. */
-#define FSL_FEATURE_XBARA_HAS_INPUT109 (0)
-/* @brief XBARA has input 110. */
-#define FSL_FEATURE_XBARA_HAS_INPUT110 (0)
-/* @brief XBARA has input 111. */
-#define FSL_FEATURE_XBARA_HAS_INPUT111 (0)
-/* @brief XBARA has input 112. */
-#define FSL_FEATURE_XBARA_HAS_INPUT112 (0)
-/* @brief XBARA has input 113. */
-#define FSL_FEATURE_XBARA_HAS_INPUT113 (0)
-/* @brief XBARA has input 114. */
-#define FSL_FEATURE_XBARA_HAS_INPUT114 (0)
-/* @brief XBARA has input 115. */
-#define FSL_FEATURE_XBARA_HAS_INPUT115 (0)
-/* @brief XBARA has input 116. */
-#define FSL_FEATURE_XBARA_HAS_INPUT116 (0)
-/* @brief XBARA has input 117. */
-#define FSL_FEATURE_XBARA_HAS_INPUT117 (0)
-/* @brief XBARA has input 118. */
-#define FSL_FEATURE_XBARA_HAS_INPUT118 (0)
-/* @brief XBARA has input 119. */
-#define FSL_FEATURE_XBARA_HAS_INPUT119 (0)
-/* @brief XBARA has input 120. */
-#define FSL_FEATURE_XBARA_HAS_INPUT120 (0)
-/* @brief XBARA has input 121. */
-#define FSL_FEATURE_XBARA_HAS_INPUT121 (0)
-/* @brief XBARA has input 122. */
-#define FSL_FEATURE_XBARA_HAS_INPUT122 (0)
-/* @brief XBARA has input 123. */
-#define FSL_FEATURE_XBARA_HAS_INPUT123 (0)
-/* @brief XBARA has input 124. */
-#define FSL_FEATURE_XBARA_HAS_INPUT124 (0)
-/* @brief XBARA has input 125. */
-#define FSL_FEATURE_XBARA_HAS_INPUT125 (0)
-/* @brief XBARA has input 126. */
-#define FSL_FEATURE_XBARA_HAS_INPUT126 (0)
-/* @brief XBARA has input 127. */
-#define FSL_FEATURE_XBARA_HAS_INPUT127 (0)
-/* @brief XBARA has output 0. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT0 (1)
-/* @brief XBARA has output 1. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT1 (1)
-/* @brief XBARA has output 2. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT2 (1)
-/* @brief XBARA has output 3. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT3 (1)
-/* @brief XBARA has output 4. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT4 (1)
-/* @brief XBARA has output 5. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT5 (1)
-/* @brief XBARA has output 6. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT6 (1)
-/* @brief XBARA has output 7. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT7 (1)
-/* @brief XBARA has output 8. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT8 (1)
-/* @brief XBARA has output 9. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT9 (1)
-/* @brief XBARA has output 10. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT10 (1)
-/* @brief XBARA has output 11. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT11 (1)
-/* @brief XBARA has output 12. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT12 (1)
-/* @brief XBARA has output 13. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT13 (1)
-/* @brief XBARA has output 14. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT14 (0)
-/* @brief XBARA has output 15. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT15 (1)
-/* @brief XBARA has output 16. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT16 (1)
-/* @brief XBARA has output 17. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT17 (1)
-/* @brief XBARA has output 18. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT18 (1)
-/* @brief XBARA has output 19. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT19 (1)
-/* @brief XBARA has output 20. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT20 (1)
-/* @brief XBARA has output 21. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT21 (1)
-/* @brief XBARA has output 22. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT22 (1)
-/* @brief XBARA has output 23. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT23 (1)
-/* @brief XBARA has output 24. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT24 (1)
-/* @brief XBARA has output 25. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT25 (1)
-/* @brief XBARA has output 26. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT26 (1)
-/* @brief XBARA has output 27. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT27 (1)
-/* @brief XBARA has output 28. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT28 (1)
-/* @brief XBARA has output 29. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT29 (1)
-/* @brief XBARA has output 30. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT30 (1)
-/* @brief XBARA has output 31. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT31 (1)
-/* @brief XBARA has output 32. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT32 (1)
-/* @brief XBARA has output 33. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT33 (1)
-/* @brief XBARA has output 34. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT34 (1)
-/* @brief XBARA has output 35. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT35 (1)
-/* @brief XBARA has output 36. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT36 (0)
-/* @brief XBARA has output 37. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT37 (1)
-/* @brief XBARA has output 38. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT38 (1)
-/* @brief XBARA has output 39. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT39 (0)
-/* @brief XBARA has output 40. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT40 (0)
-/* @brief XBARA has output 41. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT41 (1)
-/* @brief XBARA has output 42. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT42 (1)
-/* @brief XBARA has output 43. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT43 (0)
-/* @brief XBARA has output 44. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT44 (1)
-/* @brief XBARA has output 45. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT45 (1)
-/* @brief XBARA has output 46. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT46 (1)
-/* @brief XBARA has output 47. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT47 (1)
-/* @brief XBARA has output 48. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT48 (1)
-/* @brief XBARA has output 49. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT49 (1)
-/* @brief XBARA has output 50. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT50 (1)
-/* @brief XBARA has output 51. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT51 (0)
-/* @brief XBARA has output 52. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT52 (1)
-/* @brief XBARA has output 53. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT53 (0)
-/* @brief XBARA has output 54. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT54 (0)
-/* @brief XBARA has output 55. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT55 (0)
-/* @brief XBARA has output 56. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT56 (0)
-/* @brief XBARA has output 57. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT57 (0)
-/* @brief XBARA has output 58. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT58 (1)
-/* @brief XBARA has output 59. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT59 (0)
-/* @brief XBARA has output 60. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT60 (0)
-/* @brief XBARA has output 61. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT61 (0)
-/* @brief XBARA has output 62. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT62 (0)
-/* @brief XBARA has output 63. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT63 (0)
-/* @brief XBARA has output 64. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT64 (0)
-/* @brief XBARA has output 65. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT65 (0)
-/* @brief XBARA has output 66. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT66 (0)
-/* @brief XBARA has output 67. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT67 (0)
-/* @brief XBARA has output 68. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT68 (0)
-/* @brief XBARA has output 69. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT69 (0)
-/* @brief XBARA has output 70. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT70 (0)
-/* @brief XBARA has output 71. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT71 (0)
-/* @brief XBARA has output 72. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT72 (0)
-/* @brief XBARA has output 73. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT73 (0)
-/* @brief XBARA has output 74. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT74 (0)
-/* @brief XBARA has output 75. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT75 (0)
-/* @brief XBARA has output 76. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT76 (0)
-/* @brief XBARA has output 77. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT77 (0)
-/* @brief XBARA has output 78. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT78 (0)
-/* @brief XBARA has output 79. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT79 (0)
-/* @brief XBARA has output 80. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT80 (0)
-/* @brief XBARA has output 81. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT81 (0)
-/* @brief XBARA has output 82. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT82 (0)
-/* @brief XBARA has output 83. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT83 (0)
-/* @brief XBARA has output 84. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT84 (0)
-/* @brief XBARA has output 85. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT85 (0)
-/* @brief XBARA has output 86. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT86 (0)
-/* @brief XBARA has output 87. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT87 (0)
-/* @brief XBARA has output 88. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT88 (0)
-/* @brief XBARA has output 89. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT89 (0)
-/* @brief XBARA has output 90. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT90 (0)
-/* @brief XBARA has output 91. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT91 (0)
-/* @brief XBARA has output 92. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT92 (0)
-/* @brief XBARA has output 93. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT93 (0)
-/* @brief XBARA has output 94. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT94 (0)
-/* @brief XBARA has output 95. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT95 (0)
-/* @brief XBARA has output 96. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT96 (0)
-/* @brief XBARA has output 97. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT97 (0)
-/* @brief XBARA has output 98. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT98 (0)
-/* @brief XBARA has output 99. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT99 (0)
-/* @brief XBARA has output 100. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT100 (0)
-/* @brief XBARA has output 101. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT101 (0)
-/* @brief XBARA has output 102. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT102 (0)
-/* @brief XBARA has output 103. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT103 (0)
-/* @brief XBARA has output 104. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT104 (0)
-/* @brief XBARA has output 105. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT105 (0)
-/* @brief XBARA has output 106. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT106 (0)
-/* @brief XBARA has output 107. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT107 (0)
-/* @brief XBARA has output 108. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT108 (0)
-/* @brief XBARA has output 109. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT109 (0)
-/* @brief XBARA has output 110. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT110 (0)
-/* @brief XBARA has output 111. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT111 (0)
-/* @brief XBARA has output 112. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT112 (0)
-/* @brief XBARA has output 113. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT113 (0)
-/* @brief XBARA has output 114. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT114 (0)
-/* @brief XBARA has output 115. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT115 (0)
-/* @brief XBARA has output 116. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT116 (0)
-/* @brief XBARA has output 117. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT117 (0)
-/* @brief XBARA has output 118. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT118 (0)
-/* @brief XBARA has output 119. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT119 (0)
-/* @brief XBARA has output 120. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT120 (0)
-/* @brief XBARA has output 121. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT121 (0)
-/* @brief XBARA has output 122. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT122 (0)
-/* @brief XBARA has output 123. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT123 (0)
-/* @brief XBARA has output 124. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT124 (0)
-/* @brief XBARA has output 125. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT125 (0)
-/* @brief XBARA has output 126. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT126 (0)
-/* @brief XBARA has output 127. */
-#define FSL_FEATURE_XBARA_HAS_OUTPUT127 (0)
-/* @brief XBARA input 0 ID. */
-#define FSL_FEATURE_XBARA_INPUT0_ID (Vss)
-/* @brief XBARA input 1 ID. */
-#define FSL_FEATURE_XBARA_INPUT1_ID (Vdd)
-/* @brief XBARA input 2 ID. */
-#define FSL_FEATURE_XBARA_INPUT2_ID (XbarIn2)
-/* @brief XBARA input 3 ID. */
-#define FSL_FEATURE_XBARA_INPUT3_ID (XbarIn3)
-/* @brief XBARA input 4 ID. */
-#define FSL_FEATURE_XBARA_INPUT4_ID (XbarIn4)
-/* @brief XBARA input 5 ID. */
-#define FSL_FEATURE_XBARA_INPUT5_ID (XbarIn5)
-/* @brief XBARA input 6 ID. */
-#define FSL_FEATURE_XBARA_INPUT6_ID (XbarIn6)
-/* @brief XBARA input 7 ID. */
-#define FSL_FEATURE_XBARA_INPUT7_ID (XbarIn7)
-/* @brief XBARA input 8 ID. */
-#define FSL_FEATURE_XBARA_INPUT8_ID (XbarIn8)
-/* @brief XBARA input 9 ID. */
-#define FSL_FEATURE_XBARA_INPUT9_ID (XbarIn9)
-/* @brief XBARA input 10 ID. */
-#define FSL_FEATURE_XBARA_INPUT10_ID (XbarIn10)
-/* @brief XBARA input 11 ID. */
-#define FSL_FEATURE_XBARA_INPUT11_ID (XbarIn11)
-/* @brief XBARA input 12 ID. */
-#define FSL_FEATURE_XBARA_INPUT12_ID (Cmp0Output)
-/* @brief XBARA input 13 ID. */
-#define FSL_FEATURE_XBARA_INPUT13_ID (Cmp1Output)
-/* @brief XBARA input 14 ID. */
-#define FSL_FEATURE_XBARA_INPUT14_ID (Cmp2Output)
-/* @brief XBARA input 15 ID. */
-#define FSL_FEATURE_XBARA_INPUT15_ID (Cmp3Output)
-/* @brief XBARA input 16 ID. */
-#define FSL_FEATURE_XBARA_INPUT16_ID (Ftm0Match)
-/* @brief XBARA input 17 ID. */
-#define FSL_FEATURE_XBARA_INPUT17_ID (Ftm0Extrig)
-/* @brief XBARA input 18 ID. */
-#define FSL_FEATURE_XBARA_INPUT18_ID (Ftm3Match)
-/* @brief XBARA input 19 ID. */
-#define FSL_FEATURE_XBARA_INPUT19_ID (Ftm3Extrig)
-/* @brief XBARA input 20 ID. */
-#define FSL_FEATURE_XBARA_INPUT20_ID (Pwm0Trg0)
-/* @brief XBARA input 21 ID. */
-#define FSL_FEATURE_XBARA_INPUT21_ID (Pwm0Trg1)
-/* @brief XBARA input 22 ID. */
-#define FSL_FEATURE_XBARA_INPUT22_ID (Pwm1Trg0)
-/* @brief XBARA input 23 ID. */
-#define FSL_FEATURE_XBARA_INPUT23_ID (Pwm1Trg1)
-/* @brief XBARA input 24 ID. */
-#define FSL_FEATURE_XBARA_INPUT24_ID (Pwm2Trg0)
-/* @brief XBARA input 25 ID. */
-#define FSL_FEATURE_XBARA_INPUT25_ID (Pwm2Trg1)
-/* @brief XBARA input 26 ID. */
-#define FSL_FEATURE_XBARA_INPUT26_ID (Pwm3Trg0)
-/* @brief XBARA input 27 ID. */
-#define FSL_FEATURE_XBARA_INPUT27_ID (Pwm3Trg1)
-/* @brief XBARA input 28 ID. */
-#define FSL_FEATURE_XBARA_INPUT28_ID (XBARA_IN_RESERVED28)
-/* @brief XBARA input 29 ID. */
-#define FSL_FEATURE_XBARA_INPUT29_ID (Pdb0Ch0Output)
-/* @brief XBARA input 30 ID. */
-#define FSL_FEATURE_XBARA_INPUT30_ID (XBARA_IN_RESERVED30)
-/* @brief XBARA input 31 ID. */
-#define FSL_FEATURE_XBARA_INPUT31_ID (Pdb1Ch0Output)
-/* @brief XBARA input 32 ID. */
-#define FSL_FEATURE_XBARA_INPUT32_ID (XBARA_IN_RESERVED32)
-/* @brief XBARA input 33 ID. */
-#define FSL_FEATURE_XBARA_INPUT33_ID (AdcAEs)
-/* @brief XBARA input 34 ID. */
-#define FSL_FEATURE_XBARA_INPUT34_ID (XBARA_IN_RESERVED34)
-/* @brief XBARA input 35 ID. */
-#define FSL_FEATURE_XBARA_INPUT35_ID (AdcBEs)
-/* @brief XBARA input 36 ID. */
-#define FSL_FEATURE_XBARA_INPUT36_ID (Ftm1Match)
-/* @brief XBARA input 37 ID. */
-#define FSL_FEATURE_XBARA_INPUT37_ID (Ftm1Extrig)
-/* @brief XBARA input 38 ID. */
-#define FSL_FEATURE_XBARA_INPUT38_ID (DmaCh0Done)
-/* @brief XBARA input 39 ID. */
-#define FSL_FEATURE_XBARA_INPUT39_ID (DmaCh1Done)
-/* @brief XBARA input 40 ID. */
-#define FSL_FEATURE_XBARA_INPUT40_ID (DmaCh6Done)
-/* @brief XBARA input 41 ID. */
-#define FSL_FEATURE_XBARA_INPUT41_ID (DmaCh7Done)
-/* @brief XBARA input 42 ID. */
-#define FSL_FEATURE_XBARA_INPUT42_ID (PitTrigger0)
-/* @brief XBARA input 43 ID. */
-#define FSL_FEATURE_XBARA_INPUT43_ID (PitTrigger1)
-/* @brief XBARA input 44 ID. */
-#define FSL_FEATURE_XBARA_INPUT44_ID (XBARA_IN_RESERVED44)
-/* @brief XBARA input 45 ID. */
-#define FSL_FEATURE_XBARA_INPUT45_ID (Enc0CmpPosMatch)
-/* @brief XBARA input 46 ID. */
-#define FSL_FEATURE_XBARA_INPUT46_ID (AndOrInvert0)
-/* @brief XBARA input 47 ID. */
-#define FSL_FEATURE_XBARA_INPUT47_ID (AndOrInvert1)
-/* @brief XBARA input 48 ID. */
-#define FSL_FEATURE_XBARA_INPUT48_ID (AndOrInvert2)
-/* @brief XBARA input 49 ID. */
-#define FSL_FEATURE_XBARA_INPUT49_ID (AndOrInvert3)
-/* @brief XBARA input 50 ID. */
-#define FSL_FEATURE_XBARA_INPUT50_ID (PitTrigger2)
-/* @brief XBARA input 51 ID. */
-#define FSL_FEATURE_XBARA_INPUT51_ID (PitTrigger3)
-/* @brief XBARA input 52 ID. */
-#define FSL_FEATURE_XBARA_INPUT52_ID (XBARA_IN_RESERVED52)
-/* @brief XBARA input 53 ID. */
-#define FSL_FEATURE_XBARA_INPUT53_ID (XBARA_IN_RESERVED53)
-/* @brief XBARA input 54 ID. */
-#define FSL_FEATURE_XBARA_INPUT54_ID (XBARA_IN_RESERVED54)
-/* @brief XBARA input 55 ID. */
-#define FSL_FEATURE_XBARA_INPUT55_ID (XBARA_IN_RESERVED55)
-/* @brief XBARA input 56 ID. */
-#define FSL_FEATURE_XBARA_INPUT56_ID (XBARA_IN_RESERVED56)
-/* @brief XBARA input 57 ID. */
-#define FSL_FEATURE_XBARA_INPUT57_ID (XBARA_IN_RESERVED57)
-/* @brief XBARA input 58 ID. */
-#define FSL_FEATURE_XBARA_INPUT58_ID (XBARA_IN_RESERVED58)
-/* @brief XBARA input 59 ID. */
-#define FSL_FEATURE_XBARA_INPUT59_ID (XBARA_IN_RESERVED59)
-/* @brief XBARA input 60 ID. */
-#define FSL_FEATURE_XBARA_INPUT60_ID (XBARA_IN_RESERVED60)
-/* @brief XBARA input 61 ID. */
-#define FSL_FEATURE_XBARA_INPUT61_ID (XBARA_IN_RESERVED61)
-/* @brief XBARA input 62 ID. */
-#define FSL_FEATURE_XBARA_INPUT62_ID (XBARA_IN_RESERVED62)
-/* @brief XBARA input 63 ID. */
-#define FSL_FEATURE_XBARA_INPUT63_ID (XBARA_IN_RESERVED63)
-/* @brief XBARA input 64 ID. */
-#define FSL_FEATURE_XBARA_INPUT64_ID (XBARA_IN_RESERVED64)
-/* @brief XBARA input 65 ID. */
-#define FSL_FEATURE_XBARA_INPUT65_ID (XBARA_IN_RESERVED65)
-/* @brief XBARA input 66 ID. */
-#define FSL_FEATURE_XBARA_INPUT66_ID (XBARA_IN_RESERVED66)
-/* @brief XBARA input 67 ID. */
-#define FSL_FEATURE_XBARA_INPUT67_ID (XBARA_IN_RESERVED67)
-/* @brief XBARA input 68 ID. */
-#define FSL_FEATURE_XBARA_INPUT68_ID (XBARA_IN_RESERVED68)
-/* @brief XBARA input 69 ID. */
-#define FSL_FEATURE_XBARA_INPUT69_ID (XBARA_IN_RESERVED69)
-/* @brief XBARA input 70 ID. */
-#define FSL_FEATURE_XBARA_INPUT70_ID (XBARA_IN_RESERVED70)
-/* @brief XBARA input 71 ID. */
-#define FSL_FEATURE_XBARA_INPUT71_ID (XBARA_IN_RESERVED71)
-/* @brief XBARA input 72 ID. */
-#define FSL_FEATURE_XBARA_INPUT72_ID (XBARA_IN_RESERVED72)
-/* @brief XBARA input 73 ID. */
-#define FSL_FEATURE_XBARA_INPUT73_ID (XBARA_IN_RESERVED73)
-/* @brief XBARA input 74 ID. */
-#define FSL_FEATURE_XBARA_INPUT74_ID (XBARA_IN_RESERVED74)
-/* @brief XBARA input 75 ID. */
-#define FSL_FEATURE_XBARA_INPUT75_ID (XBARA_IN_RESERVED75)
-/* @brief XBARA input 76 ID. */
-#define FSL_FEATURE_XBARA_INPUT76_ID (XBARA_IN_RESERVED76)
-/* @brief XBARA input 77 ID. */
-#define FSL_FEATURE_XBARA_INPUT77_ID (XBARA_IN_RESERVED77)
-/* @brief XBARA input 78 ID. */
-#define FSL_FEATURE_XBARA_INPUT78_ID (XBARA_IN_RESERVED78)
-/* @brief XBARA input 79 ID. */
-#define FSL_FEATURE_XBARA_INPUT79_ID (XBARA_IN_RESERVED79)
-/* @brief XBARA input 80 ID. */
-#define FSL_FEATURE_XBARA_INPUT80_ID (XBARA_IN_RESERVED80)
-/* @brief XBARA input 81 ID. */
-#define FSL_FEATURE_XBARA_INPUT81_ID (XBARA_IN_RESERVED81)
-/* @brief XBARA input 82 ID. */
-#define FSL_FEATURE_XBARA_INPUT82_ID (XBARA_IN_RESERVED82)
-/* @brief XBARA input 83 ID. */
-#define FSL_FEATURE_XBARA_INPUT83_ID (XBARA_IN_RESERVED83)
-/* @brief XBARA input 84 ID. */
-#define FSL_FEATURE_XBARA_INPUT84_ID (XBARA_IN_RESERVED84)
-/* @brief XBARA input 85 ID. */
-#define FSL_FEATURE_XBARA_INPUT85_ID (XBARA_IN_RESERVED85)
-/* @brief XBARA input 86 ID. */
-#define FSL_FEATURE_XBARA_INPUT86_ID (XBARA_IN_RESERVED86)
-/* @brief XBARA input 87 ID. */
-#define FSL_FEATURE_XBARA_INPUT87_ID (XBARA_IN_RESERVED87)
-/* @brief XBARA input 88 ID. */
-#define FSL_FEATURE_XBARA_INPUT88_ID (XBARA_IN_RESERVED88)
-/* @brief XBARA input 89 ID. */
-#define FSL_FEATURE_XBARA_INPUT89_ID (XBARA_IN_RESERVED89)
-/* @brief XBARA input 90 ID. */
-#define FSL_FEATURE_XBARA_INPUT90_ID (XBARA_IN_RESERVED90)
-/* @brief XBARA input 91 ID. */
-#define FSL_FEATURE_XBARA_INPUT91_ID (XBARA_IN_RESERVED91)
-/* @brief XBARA input 92 ID. */
-#define FSL_FEATURE_XBARA_INPUT92_ID (XBARA_IN_RESERVED92)
-/* @brief XBARA input 93 ID. */
-#define FSL_FEATURE_XBARA_INPUT93_ID (XBARA_IN_RESERVED93)
-/* @brief XBARA input 94 ID. */
-#define FSL_FEATURE_XBARA_INPUT94_ID (XBARA_IN_RESERVED94)
-/* @brief XBARA input 95 ID. */
-#define FSL_FEATURE_XBARA_INPUT95_ID (XBARA_IN_RESERVED95)
-/* @brief XBARA input 96 ID. */
-#define FSL_FEATURE_XBARA_INPUT96_ID (XBARA_IN_RESERVED96)
-/* @brief XBARA input 97 ID. */
-#define FSL_FEATURE_XBARA_INPUT97_ID (XBARA_IN_RESERVED97)
-/* @brief XBARA input 98 ID. */
-#define FSL_FEATURE_XBARA_INPUT98_ID (XBARA_IN_RESERVED98)
-/* @brief XBARA input 99 ID. */
-#define FSL_FEATURE_XBARA_INPUT99_ID (XBARA_IN_RESERVED99)
-/* @brief XBARA input 100 ID. */
-#define FSL_FEATURE_XBARA_INPUT100_ID (XBARA_IN_RESERVED100)
-/* @brief XBARA input 101 ID. */
-#define FSL_FEATURE_XBARA_INPUT101_ID (XBARA_IN_RESERVED101)
-/* @brief XBARA input 102 ID. */
-#define FSL_FEATURE_XBARA_INPUT102_ID (XBARA_IN_RESERVED102)
-/* @brief XBARA input 103 ID. */
-#define FSL_FEATURE_XBARA_INPUT103_ID (XBARA_IN_RESERVED103)
-/* @brief XBARA input 104 ID. */
-#define FSL_FEATURE_XBARA_INPUT104_ID (XBARA_IN_RESERVED104)
-/* @brief XBARA input 105 ID. */
-#define FSL_FEATURE_XBARA_INPUT105_ID (XBARA_IN_RESERVED105)
-/* @brief XBARA input 106 ID. */
-#define FSL_FEATURE_XBARA_INPUT106_ID (XBARA_IN_RESERVED106)
-/* @brief XBARA input 107 ID. */
-#define FSL_FEATURE_XBARA_INPUT107_ID (XBARA_IN_RESERVED107)
-/* @brief XBARA input 108 ID. */
-#define FSL_FEATURE_XBARA_INPUT108_ID (XBARA_IN_RESERVED108)
-/* @brief XBARA input 109 ID. */
-#define FSL_FEATURE_XBARA_INPUT109_ID (XBARA_IN_RESERVED109)
-/* @brief XBARA input 110 ID. */
-#define FSL_FEATURE_XBARA_INPUT110_ID (XBARA_IN_RESERVED110)
-/* @brief XBARA input 111 ID. */
-#define FSL_FEATURE_XBARA_INPUT111_ID (XBARA_IN_RESERVED111)
-/* @brief XBARA input 112 ID. */
-#define FSL_FEATURE_XBARA_INPUT112_ID (XBARA_IN_RESERVED112)
-/* @brief XBARA input 113 ID. */
-#define FSL_FEATURE_XBARA_INPUT113_ID (XBARA_IN_RESERVED113)
-/* @brief XBARA input 114 ID. */
-#define FSL_FEATURE_XBARA_INPUT114_ID (XBARA_IN_RESERVED114)
-/* @brief XBARA input 115 ID. */
-#define FSL_FEATURE_XBARA_INPUT115_ID (XBARA_IN_RESERVED115)
-/* @brief XBARA input 116 ID. */
-#define FSL_FEATURE_XBARA_INPUT116_ID (XBARA_IN_RESERVED116)
-/* @brief XBARA input 117 ID. */
-#define FSL_FEATURE_XBARA_INPUT117_ID (XBARA_IN_RESERVED117)
-/* @brief XBARA input 118 ID. */
-#define FSL_FEATURE_XBARA_INPUT118_ID (XBARA_IN_RESERVED118)
-/* @brief XBARA input 119 ID. */
-#define FSL_FEATURE_XBARA_INPUT119_ID (XBARA_IN_RESERVED119)
-/* @brief XBARA input 120 ID. */
-#define FSL_FEATURE_XBARA_INPUT120_ID (XBARA_IN_RESERVED120)
-/* @brief XBARA input 121 ID. */
-#define FSL_FEATURE_XBARA_INPUT121_ID (XBARA_IN_RESERVED121)
-/* @brief XBARA input 122 ID. */
-#define FSL_FEATURE_XBARA_INPUT122_ID (XBARA_IN_RESERVED122)
-/* @brief XBARA input 123 ID. */
-#define FSL_FEATURE_XBARA_INPUT123_ID (XBARA_IN_RESERVED123)
-/* @brief XBARA input 124 ID. */
-#define FSL_FEATURE_XBARA_INPUT124_ID (XBARA_IN_RESERVED124)
-/* @brief XBARA input 125 ID. */
-#define FSL_FEATURE_XBARA_INPUT125_ID (XBARA_IN_RESERVED125)
-/* @brief XBARA input 126 ID. */
-#define FSL_FEATURE_XBARA_INPUT126_ID (XBARA_IN_RESERVED126)
-/* @brief XBARA input 127 ID. */
-#define FSL_FEATURE_XBARA_INPUT127_ID (XBARA_IN_RESERVED127)
-/* @brief XBARA output 0 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT0_ID (Dmamux18)
-/* @brief XBARA output 1 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT1_ID (Dmamux19)
-/* @brief XBARA output 2 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT2_ID (Dmamux20)
-/* @brief XBARA output 3 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT3_ID (Dmamux21)
-/* @brief XBARA output 4 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT4_ID (XbOut4)
-/* @brief XBARA output 5 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT5_ID (XbOut5)
-/* @brief XBARA output 6 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT6_ID (XbOut6)
-/* @brief XBARA output 7 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT7_ID (XbOut7)
-/* @brief XBARA output 8 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT8_ID (XbOut8)
-/* @brief XBARA output 9 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT9_ID (XbOut9)
-/* @brief XBARA output 10 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT10_ID (XbOut10)
-/* @brief XBARA output 11 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT11_ID (XbOut11)
-/* @brief XBARA output 12 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT12_ID (AdcaTrig)
-/* @brief XBARA output 13 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT13_ID (AdcbTrig)
-/* @brief XBARA output 14 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT14_ID (XBARA_OUT_RESERVED14)
-/* @brief XBARA output 15 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT15_ID (Dac012bSync)
-/* @brief XBARA output 16 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT16_ID (Cmp0)
-/* @brief XBARA output 17 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT17_ID (Cmp1)
-/* @brief XBARA output 18 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT18_ID (Cmp2)
-/* @brief XBARA output 19 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT19_ID (Cmp3)
-/* @brief XBARA output 20 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT20_ID (PwmA0ExtA)
-/* @brief XBARA output 21 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT21_ID (PwmA1ExtA)
-/* @brief XBARA output 22 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT22_ID (PwmA2ExtA)
-/* @brief XBARA output 23 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT23_ID (PwmA3ExtA)
-/* @brief XBARA output 24 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT24_ID (PwmA0ExtSync)
-/* @brief XBARA output 25 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT25_ID (PwmA1ExtSync)
-/* @brief XBARA output 26 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT26_ID (PwmA2ExtSync)
-/* @brief XBARA output 27 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT27_ID (PwmA3ExtSync)
-/* @brief XBARA output 28 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT28_ID (PwmAExtClk)
-/* @brief XBARA output 29 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT29_ID (PwmAFault0)
-/* @brief XBARA output 30 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT30_ID (PwmAFault1)
-/* @brief XBARA output 31 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT31_ID (PwmAFault2)
-/* @brief XBARA output 32 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT32_ID (PwmAFault3)
-/* @brief XBARA output 33 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT33_ID (PwmAForce)
-/* @brief XBARA output 34 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT34_ID (Ftm0Trig2)
-/* @brief XBARA output 35 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT35_ID (Ftm1Trig2)
-/* @brief XBARA output 36 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT36_ID (XBARA_OUT_RESERVED36)
-/* @brief XBARA output 37 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT37_ID (Ftm3Trig2)
-/* @brief XBARA output 38 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT38_ID (Pdb0InCh12)
-/* @brief XBARA output 39 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT39_ID (XBARA_OUT_RESERVED39)
-/* @brief XBARA output 40 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT40_ID (XBARA_OUT_RESERVED40)
-/* @brief XBARA output 41 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT41_ID (Pdb1InCh12)
-/* @brief XBARA output 42 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT42_ID (SimXorFtm1Ch1Ftm1Ch0)
-/* @brief XBARA output 43 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT43_ID (XBARA_OUT_RESERVED43)
-/* @brief XBARA output 44 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT44_ID (Enc0PhA)
-/* @brief XBARA output 45 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT45_ID (Enc0PhB)
-/* @brief XBARA output 46 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT46_ID (Enc0Index)
-/* @brief XBARA output 47 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT47_ID (Enc0Home)
-/* @brief XBARA output 48 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT48_ID (Enc0CapTrigger)
-/* @brief XBARA output 49 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT49_ID (Ftm0Fault3)
-/* @brief XBARA output 50 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT50_ID (Ftm1Fault1)
-/* @brief XBARA output 51 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT51_ID (XBARA_OUT_RESERVED51)
-/* @brief XBARA output 52 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT52_ID (Ftm3Fault3)
-/* @brief XBARA output 53 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT53_ID (XBARA_OUT_RESERVED53)
-/* @brief XBARA output 54 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT54_ID (XBARA_OUT_RESERVED54)
-/* @brief XBARA output 55 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT55_ID (XBARA_OUT_RESERVED55)
-/* @brief XBARA output 56 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT56_ID (XBARA_OUT_RESERVED56)
-/* @brief XBARA output 57 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT57_ID (XBARA_OUT_RESERVED57)
-/* @brief XBARA output 58 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT58_ID (EwmIn)
-/* @brief XBARA output 59 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT59_ID (XBARA_OUT_RESERVED59)
-/* @brief XBARA output 60 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT60_ID (XBARA_OUT_RESERVED60)
-/* @brief XBARA output 61 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT61_ID (XBARA_OUT_RESERVED61)
-/* @brief XBARA output 62 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT62_ID (XBARA_OUT_RESERVED62)
-/* @brief XBARA output 63 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT63_ID (XBARA_OUT_RESERVED63)
-/* @brief XBARA output 64 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT64_ID (XBARA_OUT_RESERVED64)
-/* @brief XBARA output 65 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT65_ID (XBARA_OUT_RESERVED65)
-/* @brief XBARA output 66 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT66_ID (XBARA_OUT_RESERVED66)
-/* @brief XBARA output 67 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT67_ID (XBARA_OUT_RESERVED67)
-/* @brief XBARA output 68 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT68_ID (XBARA_OUT_RESERVED68)
-/* @brief XBARA output 69 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT69_ID (XBARA_OUT_RESERVED69)
-/* @brief XBARA output 70 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT70_ID (XBARA_OUT_RESERVED70)
-/* @brief XBARA output 71 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT71_ID (XBARA_OUT_RESERVED71)
-/* @brief XBARA output 72 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT72_ID (XBARA_OUT_RESERVED72)
-/* @brief XBARA output 73 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT73_ID (XBARA_OUT_RESERVED73)
-/* @brief XBARA output 74 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT74_ID (XBARA_OUT_RESERVED74)
-/* @brief XBARA output 75 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT75_ID (XBARA_OUT_RESERVED75)
-/* @brief XBARA output 76 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT76_ID (XBARA_OUT_RESERVED76)
-/* @brief XBARA output 77 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT77_ID (XBARA_OUT_RESERVED77)
-/* @brief XBARA output 78 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT78_ID (XBARA_OUT_RESERVED78)
-/* @brief XBARA output 79 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT79_ID (XBARA_OUT_RESERVED79)
-/* @brief XBARA output 80 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT80_ID (XBARA_OUT_RESERVED80)
-/* @brief XBARA output 81 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT81_ID (XBARA_OUT_RESERVED81)
-/* @brief XBARA output 82 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT82_ID (XBARA_OUT_RESERVED82)
-/* @brief XBARA output 83 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT83_ID (XBARA_OUT_RESERVED83)
-/* @brief XBARA output 84 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT84_ID (XBARA_OUT_RESERVED84)
-/* @brief XBARA output 85 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT85_ID (XBARA_OUT_RESERVED85)
-/* @brief XBARA output 86 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT86_ID (XBARA_OUT_RESERVED86)
-/* @brief XBARA output 87 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT87_ID (XBARA_OUT_RESERVED87)
-/* @brief XBARA output 88 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT88_ID (XBARA_OUT_RESERVED88)
-/* @brief XBARA output 89 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT89_ID (XBARA_OUT_RESERVED89)
-/* @brief XBARA output 90 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT90_ID (XBARA_OUT_RESERVED90)
-/* @brief XBARA output 91 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT91_ID (XBARA_OUT_RESERVED91)
-/* @brief XBARA output 92 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT92_ID (XBARA_OUT_RESERVED92)
-/* @brief XBARA output 93 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT93_ID (XBARA_OUT_RESERVED93)
-/* @brief XBARA output 94 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT94_ID (XBARA_OUT_RESERVED94)
-/* @brief XBARA output 95 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT95_ID (XBARA_OUT_RESERVED95)
-/* @brief XBARA output 96 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT96_ID (XBARA_OUT_RESERVED96)
-/* @brief XBARA output 97 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT97_ID (XBARA_OUT_RESERVED97)
-/* @brief XBARA output 98 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT98_ID (XBARA_OUT_RESERVED98)
-/* @brief XBARA output 99 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT99_ID (XBARA_OUT_RESERVED99)
-/* @brief XBARA output 100 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT100_ID (XBARA_OUT_RESERVED100)
-/* @brief XBARA output 101 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT101_ID (XBARA_OUT_RESERVED101)
-/* @brief XBARA output 102 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT102_ID (XBARA_OUT_RESERVED102)
-/* @brief XBARA output 103 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT103_ID (XBARA_OUT_RESERVED103)
-/* @brief XBARA output 104 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT104_ID (XBARA_OUT_RESERVED104)
-/* @brief XBARA output 105 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT105_ID (XBARA_OUT_RESERVED105)
-/* @brief XBARA output 106 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT106_ID (XBARA_OUT_RESERVED106)
-/* @brief XBARA output 107 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT107_ID (XBARA_OUT_RESERVED107)
-/* @brief XBARA output 108 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT108_ID (XBARA_OUT_RESERVED108)
-/* @brief XBARA output 109 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT109_ID (XBARA_OUT_RESERVED109)
-/* @brief XBARA output 110 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT110_ID (XBARA_OUT_RESERVED110)
-/* @brief XBARA output 111 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT111_ID (XBARA_OUT_RESERVED111)
-/* @brief XBARA output 112 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT112_ID (XBARA_OUT_RESERVED112)
-/* @brief XBARA output 113 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT113_ID (XBARA_OUT_RESERVED113)
-/* @brief XBARA output 114 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT114_ID (XBARA_OUT_RESERVED114)
-/* @brief XBARA output 115 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT115_ID (XBARA_OUT_RESERVED115)
-/* @brief XBARA output 116 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT116_ID (XBARA_OUT_RESERVED116)
-/* @brief XBARA output 117 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT117_ID (XBARA_OUT_RESERVED117)
-/* @brief XBARA output 118 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT118_ID (XBARA_OUT_RESERVED118)
-/* @brief XBARA output 119 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT119_ID (XBARA_OUT_RESERVED119)
-/* @brief XBARA output 120 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT120_ID (XBARA_OUT_RESERVED120)
-/* @brief XBARA output 121 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT121_ID (XBARA_OUT_RESERVED121)
-/* @brief XBARA output 122 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT122_ID (XBARA_OUT_RESERVED122)
-/* @brief XBARA output 123 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT123_ID (XBARA_OUT_RESERVED123)
-/* @brief XBARA output 124 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT124_ID (XBARA_OUT_RESERVED124)
-/* @brief XBARA output 125 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT125_ID (XBARA_OUT_RESERVED125)
-/* @brief XBARA output 126 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT126_ID (XBARA_OUT_RESERVED126)
-/* @brief XBARA output 127 ID. */
-#define FSL_FEATURE_XBARA_OUTPUT127_ID (XBARA_OUT_RESERVED127)
+#if defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16)
+    /* @brief Has single XBAR module. */
+    #define FSL_FEATURE_XBARA_HAS_SINGLE_MODULE (0)
+    /* @brief Maximum value of XBARA input. */
+    #define FSL_FEATURE_XBARA_MODULE_INPUTS (52)
+    /* @brief Maximum value of XBARA output. */
+    #define FSL_FEATURE_XBARA_MODULE_OUTPUTS (59)
+    /* @brief Half register position. */
+    #define FSL_FEATURE_XBARA_HALF_REGISTER_SHIFT (BP_XBARA_SEL0_SEL1)
+    /* @brief Offset of the control register. */
+    #define FSL_FEATURE_XBARA_CONTROL_REGISTER_OFFSET (HW_XBARA_CTRL0_ADDR(0))
+    /* @brief Number of controled outputs. */
+    #define FSL_FEATURE_XBARA_CONTROL_OUTPUTS_NUMBER (4U)
+    /* @brief Number of interrupt requests. */
+    #define FSL_FEATURE_XBARA_INTERRUPT_COUNT (4)
+    /* @brief Number of controled outputs. */
+    #define FSL_FEATURE_XBARA_OUTPUT_COUNT (4U)
+    /* @brief XBARA has input 0. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT0 (1)
+    /* @brief XBARA has input 1. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT1 (1)
+    /* @brief XBARA has input 2. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT2 (1)
+    /* @brief XBARA has input 3. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT3 (1)
+    /* @brief XBARA has input 4. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT4 (1)
+    /* @brief XBARA has input 5. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT5 (1)
+    /* @brief XBARA has input 6. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT6 (1)
+    /* @brief XBARA has input 7. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT7 (1)
+    /* @brief XBARA has input 8. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT8 (1)
+    /* @brief XBARA has input 9. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT9 (1)
+    /* @brief XBARA has input 10. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT10 (1)
+    /* @brief XBARA has input 11. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT11 (1)
+    /* @brief XBARA has input 12. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT12 (1)
+    /* @brief XBARA has input 13. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT13 (1)
+    /* @brief XBARA has input 14. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT14 (1)
+    /* @brief XBARA has input 15. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT15 (1)
+    /* @brief XBARA has input 16. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT16 (1)
+    /* @brief XBARA has input 17. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT17 (1)
+    /* @brief XBARA has input 18. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT18 (1)
+    /* @brief XBARA has input 19. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT19 (1)
+    /* @brief XBARA has input 20. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT20 (0)
+    /* @brief XBARA has input 21. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT21 (0)
+    /* @brief XBARA has input 22. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT22 (0)
+    /* @brief XBARA has input 23. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT23 (0)
+    /* @brief XBARA has input 24. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT24 (0)
+    /* @brief XBARA has input 25. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT25 (0)
+    /* @brief XBARA has input 26. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT26 (0)
+    /* @brief XBARA has input 27. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT27 (0)
+    /* @brief XBARA has input 28. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT28 (0)
+    /* @brief XBARA has input 29. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT29 (1)
+    /* @brief XBARA has input 30. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT30 (0)
+    /* @brief XBARA has input 31. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT31 (1)
+    /* @brief XBARA has input 32. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT32 (0)
+    /* @brief XBARA has input 33. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT33 (1)
+    /* @brief XBARA has input 34. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT34 (0)
+    /* @brief XBARA has input 35. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT35 (1)
+    /* @brief XBARA has input 36. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT36 (1)
+    /* @brief XBARA has input 37. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT37 (1)
+    /* @brief XBARA has input 38. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT38 (1)
+    /* @brief XBARA has input 39. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT39 (1)
+    /* @brief XBARA has input 40. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT40 (1)
+    /* @brief XBARA has input 41. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT41 (1)
+    /* @brief XBARA has input 42. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT42 (1)
+    /* @brief XBARA has input 43. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT43 (1)
+    /* @brief XBARA has input 44. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT44 (0)
+    /* @brief XBARA has input 45. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT45 (1)
+    /* @brief XBARA has input 46. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT46 (1)
+    /* @brief XBARA has input 47. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT47 (1)
+    /* @brief XBARA has input 48. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT48 (1)
+    /* @brief XBARA has input 49. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT49 (1)
+    /* @brief XBARA has input 50. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT50 (1)
+    /* @brief XBARA has input 51. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT51 (1)
+    /* @brief XBARA has input 52. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT52 (0)
+    /* @brief XBARA has input 53. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT53 (0)
+    /* @brief XBARA has input 54. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT54 (0)
+    /* @brief XBARA has input 55. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT55 (0)
+    /* @brief XBARA has input 56. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT56 (0)
+    /* @brief XBARA has input 57. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT57 (0)
+    /* @brief XBARA has input 58. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT58 (0)
+    /* @brief XBARA has input 59. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT59 (0)
+    /* @brief XBARA has input 60. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT60 (0)
+    /* @brief XBARA has input 61. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT61 (0)
+    /* @brief XBARA has input 62. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT62 (0)
+    /* @brief XBARA has input 63. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT63 (0)
+    /* @brief XBARA has input 64. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT64 (0)
+    /* @brief XBARA has input 65. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT65 (0)
+    /* @brief XBARA has input 66. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT66 (0)
+    /* @brief XBARA has input 67. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT67 (0)
+    /* @brief XBARA has input 68. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT68 (0)
+    /* @brief XBARA has input 69. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT69 (0)
+    /* @brief XBARA has input 70. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT70 (0)
+    /* @brief XBARA has input 71. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT71 (0)
+    /* @brief XBARA has input 72. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT72 (0)
+    /* @brief XBARA has input 73. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT73 (0)
+    /* @brief XBARA has input 74. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT74 (0)
+    /* @brief XBARA has input 75. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT75 (0)
+    /* @brief XBARA has input 76. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT76 (0)
+    /* @brief XBARA has input 77. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT77 (0)
+    /* @brief XBARA has input 78. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT78 (0)
+    /* @brief XBARA has input 79. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT79 (0)
+    /* @brief XBARA has input 80. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT80 (0)
+    /* @brief XBARA has input 81. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT81 (0)
+    /* @brief XBARA has input 82. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT82 (0)
+    /* @brief XBARA has input 83. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT83 (0)
+    /* @brief XBARA has input 84. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT84 (0)
+    /* @brief XBARA has input 85. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT85 (0)
+    /* @brief XBARA has input 86. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT86 (0)
+    /* @brief XBARA has input 87. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT87 (0)
+    /* @brief XBARA has input 88. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT88 (0)
+    /* @brief XBARA has input 89. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT89 (0)
+    /* @brief XBARA has input 90. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT90 (0)
+    /* @brief XBARA has input 91. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT91 (0)
+    /* @brief XBARA has input 92. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT92 (0)
+    /* @brief XBARA has input 93. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT93 (0)
+    /* @brief XBARA has input 94. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT94 (0)
+    /* @brief XBARA has input 95. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT95 (0)
+    /* @brief XBARA has input 96. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT96 (0)
+    /* @brief XBARA has input 97. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT97 (0)
+    /* @brief XBARA has input 98. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT98 (0)
+    /* @brief XBARA has input 99. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT99 (0)
+    /* @brief XBARA has input 100. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT100 (0)
+    /* @brief XBARA has input 101. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT101 (0)
+    /* @brief XBARA has input 102. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT102 (0)
+    /* @brief XBARA has input 103. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT103 (0)
+    /* @brief XBARA has input 104. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT104 (0)
+    /* @brief XBARA has input 105. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT105 (0)
+    /* @brief XBARA has input 106. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT106 (0)
+    /* @brief XBARA has input 107. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT107 (0)
+    /* @brief XBARA has input 108. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT108 (0)
+    /* @brief XBARA has input 109. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT109 (0)
+    /* @brief XBARA has input 110. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT110 (0)
+    /* @brief XBARA has input 111. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT111 (0)
+    /* @brief XBARA has input 112. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT112 (0)
+    /* @brief XBARA has input 113. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT113 (0)
+    /* @brief XBARA has input 114. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT114 (0)
+    /* @brief XBARA has input 115. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT115 (0)
+    /* @brief XBARA has input 116. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT116 (0)
+    /* @brief XBARA has input 117. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT117 (0)
+    /* @brief XBARA has input 118. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT118 (0)
+    /* @brief XBARA has input 119. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT119 (0)
+    /* @brief XBARA has input 120. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT120 (0)
+    /* @brief XBARA has input 121. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT121 (0)
+    /* @brief XBARA has input 122. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT122 (0)
+    /* @brief XBARA has input 123. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT123 (0)
+    /* @brief XBARA has input 124. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT124 (0)
+    /* @brief XBARA has input 125. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT125 (0)
+    /* @brief XBARA has input 126. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT126 (0)
+    /* @brief XBARA has input 127. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT127 (0)
+    /* @brief XBARA has output 0. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT0 (1)
+    /* @brief XBARA has output 1. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT1 (1)
+    /* @brief XBARA has output 2. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT2 (1)
+    /* @brief XBARA has output 3. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT3 (1)
+    /* @brief XBARA has output 4. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT4 (1)
+    /* @brief XBARA has output 5. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT5 (1)
+    /* @brief XBARA has output 6. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT6 (1)
+    /* @brief XBARA has output 7. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT7 (1)
+    /* @brief XBARA has output 8. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT8 (1)
+    /* @brief XBARA has output 9. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT9 (1)
+    /* @brief XBARA has output 10. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT10 (0)
+    /* @brief XBARA has output 11. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT11 (0)
+    /* @brief XBARA has output 12. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT12 (1)
+    /* @brief XBARA has output 13. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT13 (1)
+    /* @brief XBARA has output 14. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT14 (0)
+    /* @brief XBARA has output 15. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT15 (0)
+    /* @brief XBARA has output 16. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT16 (1)
+    /* @brief XBARA has output 17. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT17 (1)
+    /* @brief XBARA has output 18. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT18 (1)
+    /* @brief XBARA has output 19. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT19 (1)
+    /* @brief XBARA has output 20. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT20 (0)
+    /* @brief XBARA has output 21. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT21 (0)
+    /* @brief XBARA has output 22. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT22 (0)
+    /* @brief XBARA has output 23. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT23 (0)
+    /* @brief XBARA has output 24. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT24 (0)
+    /* @brief XBARA has output 25. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT25 (0)
+    /* @brief XBARA has output 26. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT26 (0)
+    /* @brief XBARA has output 27. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT27 (0)
+    /* @brief XBARA has output 28. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT28 (0)
+    /* @brief XBARA has output 29. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT29 (0)
+    /* @brief XBARA has output 30. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT30 (0)
+    /* @brief XBARA has output 31. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT31 (0)
+    /* @brief XBARA has output 32. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT32 (0)
+    /* @brief XBARA has output 33. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT33 (0)
+    /* @brief XBARA has output 34. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT34 (1)
+    /* @brief XBARA has output 35. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT35 (1)
+    /* @brief XBARA has output 36. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT36 (0)
+    /* @brief XBARA has output 37. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT37 (1)
+    /* @brief XBARA has output 38. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT38 (1)
+    /* @brief XBARA has output 39. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT39 (0)
+    /* @brief XBARA has output 40. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT40 (0)
+    /* @brief XBARA has output 41. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT41 (1)
+    /* @brief XBARA has output 42. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT42 (1)
+    /* @brief XBARA has output 43. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT43 (0)
+    /* @brief XBARA has output 44. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT44 (1)
+    /* @brief XBARA has output 45. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT45 (1)
+    /* @brief XBARA has output 46. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT46 (1)
+    /* @brief XBARA has output 47. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT47 (1)
+    /* @brief XBARA has output 48. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT48 (1)
+    /* @brief XBARA has output 49. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT49 (1)
+    /* @brief XBARA has output 50. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT50 (1)
+    /* @brief XBARA has output 51. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT51 (0)
+    /* @brief XBARA has output 52. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT52 (1)
+    /* @brief XBARA has output 53. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT53 (0)
+    /* @brief XBARA has output 54. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT54 (0)
+    /* @brief XBARA has output 55. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT55 (0)
+    /* @brief XBARA has output 56. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT56 (0)
+    /* @brief XBARA has output 57. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT57 (0)
+    /* @brief XBARA has output 58. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT58 (1)
+    /* @brief XBARA has output 59. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT59 (0)
+    /* @brief XBARA has output 60. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT60 (0)
+    /* @brief XBARA has output 61. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT61 (0)
+    /* @brief XBARA has output 62. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT62 (0)
+    /* @brief XBARA has output 63. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT63 (0)
+    /* @brief XBARA has output 64. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT64 (0)
+    /* @brief XBARA has output 65. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT65 (0)
+    /* @brief XBARA has output 66. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT66 (0)
+    /* @brief XBARA has output 67. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT67 (0)
+    /* @brief XBARA has output 68. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT68 (0)
+    /* @brief XBARA has output 69. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT69 (0)
+    /* @brief XBARA has output 70. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT70 (0)
+    /* @brief XBARA has output 71. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT71 (0)
+    /* @brief XBARA has output 72. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT72 (0)
+    /* @brief XBARA has output 73. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT73 (0)
+    /* @brief XBARA has output 74. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT74 (0)
+    /* @brief XBARA has output 75. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT75 (0)
+    /* @brief XBARA has output 76. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT76 (0)
+    /* @brief XBARA has output 77. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT77 (0)
+    /* @brief XBARA has output 78. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT78 (0)
+    /* @brief XBARA has output 79. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT79 (0)
+    /* @brief XBARA has output 80. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT80 (0)
+    /* @brief XBARA has output 81. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT81 (0)
+    /* @brief XBARA has output 82. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT82 (0)
+    /* @brief XBARA has output 83. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT83 (0)
+    /* @brief XBARA has output 84. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT84 (0)
+    /* @brief XBARA has output 85. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT85 (0)
+    /* @brief XBARA has output 86. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT86 (0)
+    /* @brief XBARA has output 87. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT87 (0)
+    /* @brief XBARA has output 88. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT88 (0)
+    /* @brief XBARA has output 89. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT89 (0)
+    /* @brief XBARA has output 90. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT90 (0)
+    /* @brief XBARA has output 91. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT91 (0)
+    /* @brief XBARA has output 92. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT92 (0)
+    /* @brief XBARA has output 93. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT93 (0)
+    /* @brief XBARA has output 94. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT94 (0)
+    /* @brief XBARA has output 95. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT95 (0)
+    /* @brief XBARA has output 96. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT96 (0)
+    /* @brief XBARA has output 97. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT97 (0)
+    /* @brief XBARA has output 98. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT98 (0)
+    /* @brief XBARA has output 99. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT99 (0)
+    /* @brief XBARA has output 100. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT100 (0)
+    /* @brief XBARA has output 101. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT101 (0)
+    /* @brief XBARA has output 102. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT102 (0)
+    /* @brief XBARA has output 103. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT103 (0)
+    /* @brief XBARA has output 104. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT104 (0)
+    /* @brief XBARA has output 105. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT105 (0)
+    /* @brief XBARA has output 106. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT106 (0)
+    /* @brief XBARA has output 107. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT107 (0)
+    /* @brief XBARA has output 108. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT108 (0)
+    /* @brief XBARA has output 109. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT109 (0)
+    /* @brief XBARA has output 110. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT110 (0)
+    /* @brief XBARA has output 111. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT111 (0)
+    /* @brief XBARA has output 112. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT112 (0)
+    /* @brief XBARA has output 113. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT113 (0)
+    /* @brief XBARA has output 114. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT114 (0)
+    /* @brief XBARA has output 115. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT115 (0)
+    /* @brief XBARA has output 116. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT116 (0)
+    /* @brief XBARA has output 117. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT117 (0)
+    /* @brief XBARA has output 118. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT118 (0)
+    /* @brief XBARA has output 119. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT119 (0)
+    /* @brief XBARA has output 120. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT120 (0)
+    /* @brief XBARA has output 121. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT121 (0)
+    /* @brief XBARA has output 122. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT122 (0)
+    /* @brief XBARA has output 123. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT123 (0)
+    /* @brief XBARA has output 124. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT124 (0)
+    /* @brief XBARA has output 125. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT125 (0)
+    /* @brief XBARA has output 126. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT126 (0)
+    /* @brief XBARA has output 127. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT127 (0)
+    /* @brief XBARA input 0 ID. */
+    #define FSL_FEATURE_XBARA_INPUT0_ID (Vss)
+    /* @brief XBARA input 1 ID. */
+    #define FSL_FEATURE_XBARA_INPUT1_ID (Vdd)
+    /* @brief XBARA input 2 ID. */
+    #define FSL_FEATURE_XBARA_INPUT2_ID (XbarIn2)
+    /* @brief XBARA input 3 ID. */
+    #define FSL_FEATURE_XBARA_INPUT3_ID (XbarIn3)
+    /* @brief XBARA input 4 ID. */
+    #define FSL_FEATURE_XBARA_INPUT4_ID (XbarIn4)
+    /* @brief XBARA input 5 ID. */
+    #define FSL_FEATURE_XBARA_INPUT5_ID (XbarIn5)
+    /* @brief XBARA input 6 ID. */
+    #define FSL_FEATURE_XBARA_INPUT6_ID (XbarIn6)
+    /* @brief XBARA input 7 ID. */
+    #define FSL_FEATURE_XBARA_INPUT7_ID (XbarIn7)
+    /* @brief XBARA input 8 ID. */
+    #define FSL_FEATURE_XBARA_INPUT8_ID (XbarIn8)
+    /* @brief XBARA input 9 ID. */
+    #define FSL_FEATURE_XBARA_INPUT9_ID (XbarIn9)
+    /* @brief XBARA input 10 ID. */
+    #define FSL_FEATURE_XBARA_INPUT10_ID (XbarIn10)
+    /* @brief XBARA input 11 ID. */
+    #define FSL_FEATURE_XBARA_INPUT11_ID (XbarIn11)
+    /* @brief XBARA input 12 ID. */
+    #define FSL_FEATURE_XBARA_INPUT12_ID (Cmp0Output)
+    /* @brief XBARA input 13 ID. */
+    #define FSL_FEATURE_XBARA_INPUT13_ID (Cmp1Output)
+    /* @brief XBARA input 14 ID. */
+    #define FSL_FEATURE_XBARA_INPUT14_ID (Cmp2Output)
+    /* @brief XBARA input 15 ID. */
+    #define FSL_FEATURE_XBARA_INPUT15_ID (Cmp3Output)
+    /* @brief XBARA input 16 ID. */
+    #define FSL_FEATURE_XBARA_INPUT16_ID (Ftm0Match)
+    /* @brief XBARA input 17 ID. */
+    #define FSL_FEATURE_XBARA_INPUT17_ID (Ftm0Extrig)
+    /* @brief XBARA input 18 ID. */
+    #define FSL_FEATURE_XBARA_INPUT18_ID (Ftm3Match)
+    /* @brief XBARA input 19 ID. */
+    #define FSL_FEATURE_XBARA_INPUT19_ID (Ftm3Extrig)
+    /* @brief XBARA input 20 ID. */
+    #define FSL_FEATURE_XBARA_INPUT20_ID (XBARA_IN_RESERVED20)
+    /* @brief XBARA input 21 ID. */
+    #define FSL_FEATURE_XBARA_INPUT21_ID (XBARA_IN_RESERVED21)
+    /* @brief XBARA input 22 ID. */
+    #define FSL_FEATURE_XBARA_INPUT22_ID (XBARA_IN_RESERVED22)
+    /* @brief XBARA input 23 ID. */
+    #define FSL_FEATURE_XBARA_INPUT23_ID (XBARA_IN_RESERVED23)
+    /* @brief XBARA input 24 ID. */
+    #define FSL_FEATURE_XBARA_INPUT24_ID (XBARA_IN_RESERVED24)
+    /* @brief XBARA input 25 ID. */
+    #define FSL_FEATURE_XBARA_INPUT25_ID (XBARA_IN_RESERVED25)
+    /* @brief XBARA input 26 ID. */
+    #define FSL_FEATURE_XBARA_INPUT26_ID (XBARA_IN_RESERVED26)
+    /* @brief XBARA input 27 ID. */
+    #define FSL_FEATURE_XBARA_INPUT27_ID (XBARA_IN_RESERVED27)
+    /* @brief XBARA input 28 ID. */
+    #define FSL_FEATURE_XBARA_INPUT28_ID (XBARA_IN_RESERVED28)
+    /* @brief XBARA input 29 ID. */
+    #define FSL_FEATURE_XBARA_INPUT29_ID (Pdb0Ch0Output)
+    /* @brief XBARA input 30 ID. */
+    #define FSL_FEATURE_XBARA_INPUT30_ID (XBARA_IN_RESERVED30)
+    /* @brief XBARA input 31 ID. */
+    #define FSL_FEATURE_XBARA_INPUT31_ID (Pdb1Ch0Output)
+    /* @brief XBARA input 32 ID. */
+    #define FSL_FEATURE_XBARA_INPUT32_ID (XBARA_IN_RESERVED32)
+    /* @brief XBARA input 33 ID. */
+    #define FSL_FEATURE_XBARA_INPUT33_ID (AdcAEs)
+    /* @brief XBARA input 34 ID. */
+    #define FSL_FEATURE_XBARA_INPUT34_ID (XBARA_IN_RESERVED34)
+    /* @brief XBARA input 35 ID. */
+    #define FSL_FEATURE_XBARA_INPUT35_ID (AdcBEs)
+    /* @brief XBARA input 36 ID. */
+    #define FSL_FEATURE_XBARA_INPUT36_ID (Ftm1Match)
+    /* @brief XBARA input 37 ID. */
+    #define FSL_FEATURE_XBARA_INPUT37_ID (Ftm1Extrig)
+    /* @brief XBARA input 38 ID. */
+    #define FSL_FEATURE_XBARA_INPUT38_ID (DmaCh0Done)
+    /* @brief XBARA input 39 ID. */
+    #define FSL_FEATURE_XBARA_INPUT39_ID (DmaCh1Done)
+    /* @brief XBARA input 40 ID. */
+    #define FSL_FEATURE_XBARA_INPUT40_ID (DmaCh6Done)
+    /* @brief XBARA input 41 ID. */
+    #define FSL_FEATURE_XBARA_INPUT41_ID (DmaCh7Done)
+    /* @brief XBARA input 42 ID. */
+    #define FSL_FEATURE_XBARA_INPUT42_ID (PitTrigger0)
+    /* @brief XBARA input 43 ID. */
+    #define FSL_FEATURE_XBARA_INPUT43_ID (PitTrigger1)
+    /* @brief XBARA input 44 ID. */
+    #define FSL_FEATURE_XBARA_INPUT44_ID (XBARA_IN_RESERVED44)
+    /* @brief XBARA input 45 ID. */
+    #define FSL_FEATURE_XBARA_INPUT45_ID (Enc0CmpPosMatch)
+    /* @brief XBARA input 46 ID. */
+    #define FSL_FEATURE_XBARA_INPUT46_ID (AndOrInvert0)
+    /* @brief XBARA input 47 ID. */
+    #define FSL_FEATURE_XBARA_INPUT47_ID (AndOrInvert1)
+    /* @brief XBARA input 48 ID. */
+    #define FSL_FEATURE_XBARA_INPUT48_ID (AndOrInvert2)
+    /* @brief XBARA input 49 ID. */
+    #define FSL_FEATURE_XBARA_INPUT49_ID (AndOrInvert3)
+    /* @brief XBARA input 50 ID. */
+    #define FSL_FEATURE_XBARA_INPUT50_ID (PitTrigger2)
+    /* @brief XBARA input 51 ID. */
+    #define FSL_FEATURE_XBARA_INPUT51_ID (PitTrigger3)
+    /* @brief XBARA input 52 ID. */
+    #define FSL_FEATURE_XBARA_INPUT52_ID (XBARA_IN_RESERVED52)
+    /* @brief XBARA input 53 ID. */
+    #define FSL_FEATURE_XBARA_INPUT53_ID (XBARA_IN_RESERVED53)
+    /* @brief XBARA input 54 ID. */
+    #define FSL_FEATURE_XBARA_INPUT54_ID (XBARA_IN_RESERVED54)
+    /* @brief XBARA input 55 ID. */
+    #define FSL_FEATURE_XBARA_INPUT55_ID (XBARA_IN_RESERVED55)
+    /* @brief XBARA input 56 ID. */
+    #define FSL_FEATURE_XBARA_INPUT56_ID (XBARA_IN_RESERVED56)
+    /* @brief XBARA input 57 ID. */
+    #define FSL_FEATURE_XBARA_INPUT57_ID (XBARA_IN_RESERVED57)
+    /* @brief XBARA input 58 ID. */
+    #define FSL_FEATURE_XBARA_INPUT58_ID (XBARA_IN_RESERVED58)
+    /* @brief XBARA input 59 ID. */
+    #define FSL_FEATURE_XBARA_INPUT59_ID (XBARA_IN_RESERVED59)
+    /* @brief XBARA input 60 ID. */
+    #define FSL_FEATURE_XBARA_INPUT60_ID (XBARA_IN_RESERVED60)
+    /* @brief XBARA input 61 ID. */
+    #define FSL_FEATURE_XBARA_INPUT61_ID (XBARA_IN_RESERVED61)
+    /* @brief XBARA input 62 ID. */
+    #define FSL_FEATURE_XBARA_INPUT62_ID (XBARA_IN_RESERVED62)
+    /* @brief XBARA input 63 ID. */
+    #define FSL_FEATURE_XBARA_INPUT63_ID (XBARA_IN_RESERVED63)
+    /* @brief XBARA input 64 ID. */
+    #define FSL_FEATURE_XBARA_INPUT64_ID (XBARA_IN_RESERVED64)
+    /* @brief XBARA input 65 ID. */
+    #define FSL_FEATURE_XBARA_INPUT65_ID (XBARA_IN_RESERVED65)
+    /* @brief XBARA input 66 ID. */
+    #define FSL_FEATURE_XBARA_INPUT66_ID (XBARA_IN_RESERVED66)
+    /* @brief XBARA input 67 ID. */
+    #define FSL_FEATURE_XBARA_INPUT67_ID (XBARA_IN_RESERVED67)
+    /* @brief XBARA input 68 ID. */
+    #define FSL_FEATURE_XBARA_INPUT68_ID (XBARA_IN_RESERVED68)
+    /* @brief XBARA input 69 ID. */
+    #define FSL_FEATURE_XBARA_INPUT69_ID (XBARA_IN_RESERVED69)
+    /* @brief XBARA input 70 ID. */
+    #define FSL_FEATURE_XBARA_INPUT70_ID (XBARA_IN_RESERVED70)
+    /* @brief XBARA input 71 ID. */
+    #define FSL_FEATURE_XBARA_INPUT71_ID (XBARA_IN_RESERVED71)
+    /* @brief XBARA input 72 ID. */
+    #define FSL_FEATURE_XBARA_INPUT72_ID (XBARA_IN_RESERVED72)
+    /* @brief XBARA input 73 ID. */
+    #define FSL_FEATURE_XBARA_INPUT73_ID (XBARA_IN_RESERVED73)
+    /* @brief XBARA input 74 ID. */
+    #define FSL_FEATURE_XBARA_INPUT74_ID (XBARA_IN_RESERVED74)
+    /* @brief XBARA input 75 ID. */
+    #define FSL_FEATURE_XBARA_INPUT75_ID (XBARA_IN_RESERVED75)
+    /* @brief XBARA input 76 ID. */
+    #define FSL_FEATURE_XBARA_INPUT76_ID (XBARA_IN_RESERVED76)
+    /* @brief XBARA input 77 ID. */
+    #define FSL_FEATURE_XBARA_INPUT77_ID (XBARA_IN_RESERVED77)
+    /* @brief XBARA input 78 ID. */
+    #define FSL_FEATURE_XBARA_INPUT78_ID (XBARA_IN_RESERVED78)
+    /* @brief XBARA input 79 ID. */
+    #define FSL_FEATURE_XBARA_INPUT79_ID (XBARA_IN_RESERVED79)
+    /* @brief XBARA input 80 ID. */
+    #define FSL_FEATURE_XBARA_INPUT80_ID (XBARA_IN_RESERVED80)
+    /* @brief XBARA input 81 ID. */
+    #define FSL_FEATURE_XBARA_INPUT81_ID (XBARA_IN_RESERVED81)
+    /* @brief XBARA input 82 ID. */
+    #define FSL_FEATURE_XBARA_INPUT82_ID (XBARA_IN_RESERVED82)
+    /* @brief XBARA input 83 ID. */
+    #define FSL_FEATURE_XBARA_INPUT83_ID (XBARA_IN_RESERVED83)
+    /* @brief XBARA input 84 ID. */
+    #define FSL_FEATURE_XBARA_INPUT84_ID (XBARA_IN_RESERVED84)
+    /* @brief XBARA input 85 ID. */
+    #define FSL_FEATURE_XBARA_INPUT85_ID (XBARA_IN_RESERVED85)
+    /* @brief XBARA input 86 ID. */
+    #define FSL_FEATURE_XBARA_INPUT86_ID (XBARA_IN_RESERVED86)
+    /* @brief XBARA input 87 ID. */
+    #define FSL_FEATURE_XBARA_INPUT87_ID (XBARA_IN_RESERVED87)
+    /* @brief XBARA input 88 ID. */
+    #define FSL_FEATURE_XBARA_INPUT88_ID (XBARA_IN_RESERVED88)
+    /* @brief XBARA input 89 ID. */
+    #define FSL_FEATURE_XBARA_INPUT89_ID (XBARA_IN_RESERVED89)
+    /* @brief XBARA input 90 ID. */
+    #define FSL_FEATURE_XBARA_INPUT90_ID (XBARA_IN_RESERVED90)
+    /* @brief XBARA input 91 ID. */
+    #define FSL_FEATURE_XBARA_INPUT91_ID (XBARA_IN_RESERVED91)
+    /* @brief XBARA input 92 ID. */
+    #define FSL_FEATURE_XBARA_INPUT92_ID (XBARA_IN_RESERVED92)
+    /* @brief XBARA input 93 ID. */
+    #define FSL_FEATURE_XBARA_INPUT93_ID (XBARA_IN_RESERVED93)
+    /* @brief XBARA input 94 ID. */
+    #define FSL_FEATURE_XBARA_INPUT94_ID (XBARA_IN_RESERVED94)
+    /* @brief XBARA input 95 ID. */
+    #define FSL_FEATURE_XBARA_INPUT95_ID (XBARA_IN_RESERVED95)
+    /* @brief XBARA input 96 ID. */
+    #define FSL_FEATURE_XBARA_INPUT96_ID (XBARA_IN_RESERVED96)
+    /* @brief XBARA input 97 ID. */
+    #define FSL_FEATURE_XBARA_INPUT97_ID (XBARA_IN_RESERVED97)
+    /* @brief XBARA input 98 ID. */
+    #define FSL_FEATURE_XBARA_INPUT98_ID (XBARA_IN_RESERVED98)
+    /* @brief XBARA input 99 ID. */
+    #define FSL_FEATURE_XBARA_INPUT99_ID (XBARA_IN_RESERVED99)
+    /* @brief XBARA input 100 ID. */
+    #define FSL_FEATURE_XBARA_INPUT100_ID (XBARA_IN_RESERVED100)
+    /* @brief XBARA input 101 ID. */
+    #define FSL_FEATURE_XBARA_INPUT101_ID (XBARA_IN_RESERVED101)
+    /* @brief XBARA input 102 ID. */
+    #define FSL_FEATURE_XBARA_INPUT102_ID (XBARA_IN_RESERVED102)
+    /* @brief XBARA input 103 ID. */
+    #define FSL_FEATURE_XBARA_INPUT103_ID (XBARA_IN_RESERVED103)
+    /* @brief XBARA input 104 ID. */
+    #define FSL_FEATURE_XBARA_INPUT104_ID (XBARA_IN_RESERVED104)
+    /* @brief XBARA input 105 ID. */
+    #define FSL_FEATURE_XBARA_INPUT105_ID (XBARA_IN_RESERVED105)
+    /* @brief XBARA input 106 ID. */
+    #define FSL_FEATURE_XBARA_INPUT106_ID (XBARA_IN_RESERVED106)
+    /* @brief XBARA input 107 ID. */
+    #define FSL_FEATURE_XBARA_INPUT107_ID (XBARA_IN_RESERVED107)
+    /* @brief XBARA input 108 ID. */
+    #define FSL_FEATURE_XBARA_INPUT108_ID (XBARA_IN_RESERVED108)
+    /* @brief XBARA input 109 ID. */
+    #define FSL_FEATURE_XBARA_INPUT109_ID (XBARA_IN_RESERVED109)
+    /* @brief XBARA input 110 ID. */
+    #define FSL_FEATURE_XBARA_INPUT110_ID (XBARA_IN_RESERVED110)
+    /* @brief XBARA input 111 ID. */
+    #define FSL_FEATURE_XBARA_INPUT111_ID (XBARA_IN_RESERVED111)
+    /* @brief XBARA input 112 ID. */
+    #define FSL_FEATURE_XBARA_INPUT112_ID (XBARA_IN_RESERVED112)
+    /* @brief XBARA input 113 ID. */
+    #define FSL_FEATURE_XBARA_INPUT113_ID (XBARA_IN_RESERVED113)
+    /* @brief XBARA input 114 ID. */
+    #define FSL_FEATURE_XBARA_INPUT114_ID (XBARA_IN_RESERVED114)
+    /* @brief XBARA input 115 ID. */
+    #define FSL_FEATURE_XBARA_INPUT115_ID (XBARA_IN_RESERVED115)
+    /* @brief XBARA input 116 ID. */
+    #define FSL_FEATURE_XBARA_INPUT116_ID (XBARA_IN_RESERVED116)
+    /* @brief XBARA input 117 ID. */
+    #define FSL_FEATURE_XBARA_INPUT117_ID (XBARA_IN_RESERVED117)
+    /* @brief XBARA input 118 ID. */
+    #define FSL_FEATURE_XBARA_INPUT118_ID (XBARA_IN_RESERVED118)
+    /* @brief XBARA input 119 ID. */
+    #define FSL_FEATURE_XBARA_INPUT119_ID (XBARA_IN_RESERVED119)
+    /* @brief XBARA input 120 ID. */
+    #define FSL_FEATURE_XBARA_INPUT120_ID (XBARA_IN_RESERVED120)
+    /* @brief XBARA input 121 ID. */
+    #define FSL_FEATURE_XBARA_INPUT121_ID (XBARA_IN_RESERVED121)
+    /* @brief XBARA input 122 ID. */
+    #define FSL_FEATURE_XBARA_INPUT122_ID (XBARA_IN_RESERVED122)
+    /* @brief XBARA input 123 ID. */
+    #define FSL_FEATURE_XBARA_INPUT123_ID (XBARA_IN_RESERVED123)
+    /* @brief XBARA input 124 ID. */
+    #define FSL_FEATURE_XBARA_INPUT124_ID (XBARA_IN_RESERVED124)
+    /* @brief XBARA input 125 ID. */
+    #define FSL_FEATURE_XBARA_INPUT125_ID (XBARA_IN_RESERVED125)
+    /* @brief XBARA input 126 ID. */
+    #define FSL_FEATURE_XBARA_INPUT126_ID (XBARA_IN_RESERVED126)
+    /* @brief XBARA input 127 ID. */
+    #define FSL_FEATURE_XBARA_INPUT127_ID (XBARA_IN_RESERVED127)
+    /* @brief XBARA output 0 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT0_ID (Dmamux18)
+    /* @brief XBARA output 1 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT1_ID (Dmamux19)
+    /* @brief XBARA output 2 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT2_ID (Dmamux20)
+    /* @brief XBARA output 3 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT3_ID (Dmamux21)
+    /* @brief XBARA output 4 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT4_ID (XbOut4)
+    /* @brief XBARA output 5 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT5_ID (XbOut5)
+    /* @brief XBARA output 6 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT6_ID (XbOut6)
+    /* @brief XBARA output 7 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT7_ID (XbOut7)
+    /* @brief XBARA output 8 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT8_ID (XbOut8)
+    /* @brief XBARA output 9 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT9_ID (XbOut9)
+    /* @brief XBARA output 10 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT10_ID (XBARA_OUT_RESERVED10)
+    /* @brief XBARA output 11 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT11_ID (XBARA_OUT_RESERVED11)
+    /* @brief XBARA output 12 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT12_ID (AdcaTrig)
+    /* @brief XBARA output 13 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT13_ID (AdcbTrig)
+    /* @brief XBARA output 14 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT14_ID (XBARA_OUT_RESERVED14)
+    /* @brief XBARA output 15 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT15_ID (XBARA_OUT_RESERVED15)
+    /* @brief XBARA output 16 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT16_ID (Cmp0)
+    /* @brief XBARA output 17 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT17_ID (Cmp1)
+    /* @brief XBARA output 18 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT18_ID (Cmp2)
+    /* @brief XBARA output 19 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT19_ID (Cmp3)
+    /* @brief XBARA output 20 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT20_ID (XBARA_OUT_RESERVED20)
+    /* @brief XBARA output 21 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT21_ID (XBARA_OUT_RESERVED21)
+    /* @brief XBARA output 22 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT22_ID (XBARA_OUT_RESERVED22)
+    /* @brief XBARA output 23 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT23_ID (XBARA_OUT_RESERVED23)
+    /* @brief XBARA output 24 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT24_ID (XBARA_OUT_RESERVED24)
+    /* @brief XBARA output 25 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT25_ID (XBARA_OUT_RESERVED25)
+    /* @brief XBARA output 26 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT26_ID (XBARA_OUT_RESERVED26)
+    /* @brief XBARA output 27 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT27_ID (XBARA_OUT_RESERVED27)
+    /* @brief XBARA output 28 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT28_ID (XBARA_OUT_RESERVED28)
+    /* @brief XBARA output 29 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT29_ID (XBARA_OUT_RESERVED29)
+    /* @brief XBARA output 30 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT30_ID (XBARA_OUT_RESERVED30)
+    /* @brief XBARA output 31 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT31_ID (XBARA_OUT_RESERVED31)
+    /* @brief XBARA output 32 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT32_ID (XBARA_OUT_RESERVED32)
+    /* @brief XBARA output 33 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT33_ID (XBARA_OUT_RESERVED33)
+    /* @brief XBARA output 34 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT34_ID (Ftm0Trig2)
+    /* @brief XBARA output 35 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT35_ID (Ftm1Trig2)
+    /* @brief XBARA output 36 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT36_ID (XBARA_OUT_RESERVED36)
+    /* @brief XBARA output 37 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT37_ID (Ftm3Trig2)
+    /* @brief XBARA output 38 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT38_ID (Pdb0InCh12)
+    /* @brief XBARA output 39 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT39_ID (XBARA_OUT_RESERVED39)
+    /* @brief XBARA output 40 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT40_ID (XBARA_OUT_RESERVED40)
+    /* @brief XBARA output 41 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT41_ID (Pdb1InCh12)
+    /* @brief XBARA output 42 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT42_ID (SimXorFtm1Ch1Ftm1Ch0)
+    /* @brief XBARA output 43 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT43_ID (XBARA_OUT_RESERVED43)
+    /* @brief XBARA output 44 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT44_ID (Enc0PhA)
+    /* @brief XBARA output 45 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT45_ID (Enc0PhB)
+    /* @brief XBARA output 46 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT46_ID (Enc0Index)
+    /* @brief XBARA output 47 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT47_ID (Enc0Home)
+    /* @brief XBARA output 48 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT48_ID (Enc0CapTrigger)
+    /* @brief XBARA output 49 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT49_ID (Ftm0Fault3)
+    /* @brief XBARA output 50 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT50_ID (Ftm1Fault1)
+    /* @brief XBARA output 51 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT51_ID (XBARA_OUT_RESERVED51)
+    /* @brief XBARA output 52 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT52_ID (Ftm3Fault3)
+    /* @brief XBARA output 53 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT53_ID (XBARA_OUT_RESERVED53)
+    /* @brief XBARA output 54 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT54_ID (XBARA_OUT_RESERVED54)
+    /* @brief XBARA output 55 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT55_ID (XBARA_OUT_RESERVED55)
+    /* @brief XBARA output 56 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT56_ID (XBARA_OUT_RESERVED56)
+    /* @brief XBARA output 57 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT57_ID (XBARA_OUT_RESERVED57)
+    /* @brief XBARA output 58 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT58_ID (EwmIn)
+    /* @brief XBARA output 59 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT59_ID (XBARA_OUT_RESERVED59)
+    /* @brief XBARA output 60 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT60_ID (XBARA_OUT_RESERVED60)
+    /* @brief XBARA output 61 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT61_ID (XBARA_OUT_RESERVED61)
+    /* @brief XBARA output 62 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT62_ID (XBARA_OUT_RESERVED62)
+    /* @brief XBARA output 63 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT63_ID (XBARA_OUT_RESERVED63)
+    /* @brief XBARA output 64 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT64_ID (XBARA_OUT_RESERVED64)
+    /* @brief XBARA output 65 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT65_ID (XBARA_OUT_RESERVED65)
+    /* @brief XBARA output 66 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT66_ID (XBARA_OUT_RESERVED66)
+    /* @brief XBARA output 67 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT67_ID (XBARA_OUT_RESERVED67)
+    /* @brief XBARA output 68 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT68_ID (XBARA_OUT_RESERVED68)
+    /* @brief XBARA output 69 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT69_ID (XBARA_OUT_RESERVED69)
+    /* @brief XBARA output 70 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT70_ID (XBARA_OUT_RESERVED70)
+    /* @brief XBARA output 71 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT71_ID (XBARA_OUT_RESERVED71)
+    /* @brief XBARA output 72 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT72_ID (XBARA_OUT_RESERVED72)
+    /* @brief XBARA output 73 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT73_ID (XBARA_OUT_RESERVED73)
+    /* @brief XBARA output 74 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT74_ID (XBARA_OUT_RESERVED74)
+    /* @brief XBARA output 75 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT75_ID (XBARA_OUT_RESERVED75)
+    /* @brief XBARA output 76 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT76_ID (XBARA_OUT_RESERVED76)
+    /* @brief XBARA output 77 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT77_ID (XBARA_OUT_RESERVED77)
+    /* @brief XBARA output 78 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT78_ID (XBARA_OUT_RESERVED78)
+    /* @brief XBARA output 79 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT79_ID (XBARA_OUT_RESERVED79)
+    /* @brief XBARA output 80 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT80_ID (XBARA_OUT_RESERVED80)
+    /* @brief XBARA output 81 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT81_ID (XBARA_OUT_RESERVED81)
+    /* @brief XBARA output 82 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT82_ID (XBARA_OUT_RESERVED82)
+    /* @brief XBARA output 83 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT83_ID (XBARA_OUT_RESERVED83)
+    /* @brief XBARA output 84 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT84_ID (XBARA_OUT_RESERVED84)
+    /* @brief XBARA output 85 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT85_ID (XBARA_OUT_RESERVED85)
+    /* @brief XBARA output 86 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT86_ID (XBARA_OUT_RESERVED86)
+    /* @brief XBARA output 87 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT87_ID (XBARA_OUT_RESERVED87)
+    /* @brief XBARA output 88 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT88_ID (XBARA_OUT_RESERVED88)
+    /* @brief XBARA output 89 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT89_ID (XBARA_OUT_RESERVED89)
+    /* @brief XBARA output 90 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT90_ID (XBARA_OUT_RESERVED90)
+    /* @brief XBARA output 91 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT91_ID (XBARA_OUT_RESERVED91)
+    /* @brief XBARA output 92 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT92_ID (XBARA_OUT_RESERVED92)
+    /* @brief XBARA output 93 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT93_ID (XBARA_OUT_RESERVED93)
+    /* @brief XBARA output 94 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT94_ID (XBARA_OUT_RESERVED94)
+    /* @brief XBARA output 95 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT95_ID (XBARA_OUT_RESERVED95)
+    /* @brief XBARA output 96 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT96_ID (XBARA_OUT_RESERVED96)
+    /* @brief XBARA output 97 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT97_ID (XBARA_OUT_RESERVED97)
+    /* @brief XBARA output 98 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT98_ID (XBARA_OUT_RESERVED98)
+    /* @brief XBARA output 99 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT99_ID (XBARA_OUT_RESERVED99)
+    /* @brief XBARA output 100 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT100_ID (XBARA_OUT_RESERVED100)
+    /* @brief XBARA output 101 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT101_ID (XBARA_OUT_RESERVED101)
+    /* @brief XBARA output 102 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT102_ID (XBARA_OUT_RESERVED102)
+    /* @brief XBARA output 103 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT103_ID (XBARA_OUT_RESERVED103)
+    /* @brief XBARA output 104 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT104_ID (XBARA_OUT_RESERVED104)
+    /* @brief XBARA output 105 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT105_ID (XBARA_OUT_RESERVED105)
+    /* @brief XBARA output 106 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT106_ID (XBARA_OUT_RESERVED106)
+    /* @brief XBARA output 107 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT107_ID (XBARA_OUT_RESERVED107)
+    /* @brief XBARA output 108 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT108_ID (XBARA_OUT_RESERVED108)
+    /* @brief XBARA output 109 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT109_ID (XBARA_OUT_RESERVED109)
+    /* @brief XBARA output 110 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT110_ID (XBARA_OUT_RESERVED110)
+    /* @brief XBARA output 111 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT111_ID (XBARA_OUT_RESERVED111)
+    /* @brief XBARA output 112 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT112_ID (XBARA_OUT_RESERVED112)
+    /* @brief XBARA output 113 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT113_ID (XBARA_OUT_RESERVED113)
+    /* @brief XBARA output 114 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT114_ID (XBARA_OUT_RESERVED114)
+    /* @brief XBARA output 115 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT115_ID (XBARA_OUT_RESERVED115)
+    /* @brief XBARA output 116 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT116_ID (XBARA_OUT_RESERVED116)
+    /* @brief XBARA output 117 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT117_ID (XBARA_OUT_RESERVED117)
+    /* @brief XBARA output 118 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT118_ID (XBARA_OUT_RESERVED118)
+    /* @brief XBARA output 119 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT119_ID (XBARA_OUT_RESERVED119)
+    /* @brief XBARA output 120 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT120_ID (XBARA_OUT_RESERVED120)
+    /* @brief XBARA output 121 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT121_ID (XBARA_OUT_RESERVED121)
+    /* @brief XBARA output 122 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT122_ID (XBARA_OUT_RESERVED122)
+    /* @brief XBARA output 123 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT123_ID (XBARA_OUT_RESERVED123)
+    /* @brief XBARA output 124 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT124_ID (XBARA_OUT_RESERVED124)
+    /* @brief XBARA output 125 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT125_ID (XBARA_OUT_RESERVED125)
+    /* @brief XBARA output 126 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT126_ID (XBARA_OUT_RESERVED126)
+    /* @brief XBARA output 127 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT127_ID (XBARA_OUT_RESERVED127)
+#elif defined(CPU_MKV42F128VLH16) || defined(CPU_MKV42F128VLL16) || defined(CPU_MKV42F256VLH16) || defined(CPU_MKV42F256VLL16) || \
+    defined(CPU_MKV42F64VLH16)
+    /* @brief Has single XBAR module. */
+    #define FSL_FEATURE_XBARA_HAS_SINGLE_MODULE (0)
+    /* @brief Maximum value of XBARA input. */
+    #define FSL_FEATURE_XBARA_MODULE_INPUTS (52)
+    /* @brief Maximum value of XBARA output. */
+    #define FSL_FEATURE_XBARA_MODULE_OUTPUTS (59)
+    /* @brief Half register position. */
+    #define FSL_FEATURE_XBARA_HALF_REGISTER_SHIFT (BP_XBARA_SEL0_SEL1)
+    /* @brief Offset of the control register. */
+    #define FSL_FEATURE_XBARA_CONTROL_REGISTER_OFFSET (HW_XBARA_CTRL0_ADDR(0))
+    /* @brief Number of controled outputs. */
+    #define FSL_FEATURE_XBARA_CONTROL_OUTPUTS_NUMBER (4U)
+    /* @brief Number of interrupt requests. */
+    #define FSL_FEATURE_XBARA_INTERRUPT_COUNT (4)
+    /* @brief Number of controled outputs. */
+    #define FSL_FEATURE_XBARA_OUTPUT_COUNT (4U)
+    /* @brief XBARA has input 0. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT0 (1)
+    /* @brief XBARA has input 1. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT1 (1)
+    /* @brief XBARA has input 2. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT2 (1)
+    /* @brief XBARA has input 3. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT3 (1)
+    /* @brief XBARA has input 4. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT4 (1)
+    /* @brief XBARA has input 5. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT5 (1)
+    /* @brief XBARA has input 6. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT6 (1)
+    /* @brief XBARA has input 7. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT7 (1)
+    /* @brief XBARA has input 8. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT8 (1)
+    /* @brief XBARA has input 9. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT9 (1)
+    /* @brief XBARA has input 10. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT10 (1)
+    /* @brief XBARA has input 11. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT11 (1)
+    /* @brief XBARA has input 12. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT12 (1)
+    /* @brief XBARA has input 13. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT13 (1)
+    /* @brief XBARA has input 14. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT14 (1)
+    /* @brief XBARA has input 15. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT15 (1)
+    /* @brief XBARA has input 16. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT16 (1)
+    /* @brief XBARA has input 17. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT17 (1)
+    /* @brief XBARA has input 18. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT18 (1)
+    /* @brief XBARA has input 19. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT19 (1)
+    /* @brief XBARA has input 20. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT20 (0)
+    /* @brief XBARA has input 21. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT21 (0)
+    /* @brief XBARA has input 22. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT22 (0)
+    /* @brief XBARA has input 23. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT23 (0)
+    /* @brief XBARA has input 24. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT24 (0)
+    /* @brief XBARA has input 25. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT25 (0)
+    /* @brief XBARA has input 26. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT26 (0)
+    /* @brief XBARA has input 27. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT27 (0)
+    /* @brief XBARA has input 28. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT28 (0)
+    /* @brief XBARA has input 29. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT29 (1)
+    /* @brief XBARA has input 30. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT30 (0)
+    /* @brief XBARA has input 31. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT31 (1)
+    /* @brief XBARA has input 32. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT32 (0)
+    /* @brief XBARA has input 33. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT33 (1)
+    /* @brief XBARA has input 34. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT34 (0)
+    /* @brief XBARA has input 35. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT35 (1)
+    /* @brief XBARA has input 36. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT36 (1)
+    /* @brief XBARA has input 37. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT37 (1)
+    /* @brief XBARA has input 38. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT38 (1)
+    /* @brief XBARA has input 39. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT39 (1)
+    /* @brief XBARA has input 40. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT40 (1)
+    /* @brief XBARA has input 41. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT41 (1)
+    /* @brief XBARA has input 42. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT42 (1)
+    /* @brief XBARA has input 43. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT43 (1)
+    /* @brief XBARA has input 44. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT44 (0)
+    /* @brief XBARA has input 45. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT45 (1)
+    /* @brief XBARA has input 46. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT46 (1)
+    /* @brief XBARA has input 47. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT47 (1)
+    /* @brief XBARA has input 48. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT48 (1)
+    /* @brief XBARA has input 49. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT49 (1)
+    /* @brief XBARA has input 50. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT50 (1)
+    /* @brief XBARA has input 51. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT51 (1)
+    /* @brief XBARA has input 52. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT52 (0)
+    /* @brief XBARA has input 53. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT53 (0)
+    /* @brief XBARA has input 54. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT54 (0)
+    /* @brief XBARA has input 55. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT55 (0)
+    /* @brief XBARA has input 56. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT56 (0)
+    /* @brief XBARA has input 57. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT57 (0)
+    /* @brief XBARA has input 58. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT58 (0)
+    /* @brief XBARA has input 59. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT59 (0)
+    /* @brief XBARA has input 60. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT60 (0)
+    /* @brief XBARA has input 61. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT61 (0)
+    /* @brief XBARA has input 62. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT62 (0)
+    /* @brief XBARA has input 63. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT63 (0)
+    /* @brief XBARA has input 64. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT64 (0)
+    /* @brief XBARA has input 65. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT65 (0)
+    /* @brief XBARA has input 66. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT66 (0)
+    /* @brief XBARA has input 67. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT67 (0)
+    /* @brief XBARA has input 68. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT68 (0)
+    /* @brief XBARA has input 69. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT69 (0)
+    /* @brief XBARA has input 70. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT70 (0)
+    /* @brief XBARA has input 71. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT71 (0)
+    /* @brief XBARA has input 72. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT72 (0)
+    /* @brief XBARA has input 73. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT73 (0)
+    /* @brief XBARA has input 74. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT74 (0)
+    /* @brief XBARA has input 75. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT75 (0)
+    /* @brief XBARA has input 76. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT76 (0)
+    /* @brief XBARA has input 77. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT77 (0)
+    /* @brief XBARA has input 78. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT78 (0)
+    /* @brief XBARA has input 79. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT79 (0)
+    /* @brief XBARA has input 80. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT80 (0)
+    /* @brief XBARA has input 81. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT81 (0)
+    /* @brief XBARA has input 82. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT82 (0)
+    /* @brief XBARA has input 83. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT83 (0)
+    /* @brief XBARA has input 84. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT84 (0)
+    /* @brief XBARA has input 85. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT85 (0)
+    /* @brief XBARA has input 86. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT86 (0)
+    /* @brief XBARA has input 87. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT87 (0)
+    /* @brief XBARA has input 88. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT88 (0)
+    /* @brief XBARA has input 89. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT89 (0)
+    /* @brief XBARA has input 90. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT90 (0)
+    /* @brief XBARA has input 91. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT91 (0)
+    /* @brief XBARA has input 92. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT92 (0)
+    /* @brief XBARA has input 93. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT93 (0)
+    /* @brief XBARA has input 94. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT94 (0)
+    /* @brief XBARA has input 95. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT95 (0)
+    /* @brief XBARA has input 96. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT96 (0)
+    /* @brief XBARA has input 97. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT97 (0)
+    /* @brief XBARA has input 98. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT98 (0)
+    /* @brief XBARA has input 99. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT99 (0)
+    /* @brief XBARA has input 100. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT100 (0)
+    /* @brief XBARA has input 101. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT101 (0)
+    /* @brief XBARA has input 102. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT102 (0)
+    /* @brief XBARA has input 103. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT103 (0)
+    /* @brief XBARA has input 104. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT104 (0)
+    /* @brief XBARA has input 105. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT105 (0)
+    /* @brief XBARA has input 106. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT106 (0)
+    /* @brief XBARA has input 107. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT107 (0)
+    /* @brief XBARA has input 108. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT108 (0)
+    /* @brief XBARA has input 109. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT109 (0)
+    /* @brief XBARA has input 110. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT110 (0)
+    /* @brief XBARA has input 111. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT111 (0)
+    /* @brief XBARA has input 112. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT112 (0)
+    /* @brief XBARA has input 113. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT113 (0)
+    /* @brief XBARA has input 114. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT114 (0)
+    /* @brief XBARA has input 115. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT115 (0)
+    /* @brief XBARA has input 116. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT116 (0)
+    /* @brief XBARA has input 117. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT117 (0)
+    /* @brief XBARA has input 118. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT118 (0)
+    /* @brief XBARA has input 119. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT119 (0)
+    /* @brief XBARA has input 120. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT120 (0)
+    /* @brief XBARA has input 121. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT121 (0)
+    /* @brief XBARA has input 122. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT122 (0)
+    /* @brief XBARA has input 123. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT123 (0)
+    /* @brief XBARA has input 124. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT124 (0)
+    /* @brief XBARA has input 125. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT125 (0)
+    /* @brief XBARA has input 126. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT126 (0)
+    /* @brief XBARA has input 127. */
+    #define FSL_FEATURE_XBARA_HAS_INPUT127 (0)
+    /* @brief XBARA has output 0. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT0 (1)
+    /* @brief XBARA has output 1. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT1 (1)
+    /* @brief XBARA has output 2. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT2 (1)
+    /* @brief XBARA has output 3. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT3 (1)
+    /* @brief XBARA has output 4. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT4 (1)
+    /* @brief XBARA has output 5. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT5 (1)
+    /* @brief XBARA has output 6. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT6 (1)
+    /* @brief XBARA has output 7. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT7 (1)
+    /* @brief XBARA has output 8. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT8 (1)
+    /* @brief XBARA has output 9. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT9 (1)
+    /* @brief XBARA has output 10. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT10 (1)
+    /* @brief XBARA has output 11. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT11 (1)
+    /* @brief XBARA has output 12. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT12 (1)
+    /* @brief XBARA has output 13. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT13 (1)
+    /* @brief XBARA has output 14. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT14 (0)
+    /* @brief XBARA has output 15. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT15 (0)
+    /* @brief XBARA has output 16. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT16 (1)
+    /* @brief XBARA has output 17. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT17 (1)
+    /* @brief XBARA has output 18. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT18 (1)
+    /* @brief XBARA has output 19. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT19 (1)
+    /* @brief XBARA has output 20. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT20 (0)
+    /* @brief XBARA has output 21. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT21 (0)
+    /* @brief XBARA has output 22. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT22 (0)
+    /* @brief XBARA has output 23. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT23 (0)
+    /* @brief XBARA has output 24. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT24 (0)
+    /* @brief XBARA has output 25. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT25 (0)
+    /* @brief XBARA has output 26. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT26 (0)
+    /* @brief XBARA has output 27. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT27 (0)
+    /* @brief XBARA has output 28. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT28 (0)
+    /* @brief XBARA has output 29. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT29 (0)
+    /* @brief XBARA has output 30. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT30 (0)
+    /* @brief XBARA has output 31. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT31 (0)
+    /* @brief XBARA has output 32. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT32 (0)
+    /* @brief XBARA has output 33. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT33 (0)
+    /* @brief XBARA has output 34. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT34 (1)
+    /* @brief XBARA has output 35. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT35 (1)
+    /* @brief XBARA has output 36. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT36 (0)
+    /* @brief XBARA has output 37. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT37 (1)
+    /* @brief XBARA has output 38. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT38 (1)
+    /* @brief XBARA has output 39. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT39 (0)
+    /* @brief XBARA has output 40. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT40 (0)
+    /* @brief XBARA has output 41. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT41 (1)
+    /* @brief XBARA has output 42. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT42 (1)
+    /* @brief XBARA has output 43. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT43 (0)
+    /* @brief XBARA has output 44. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT44 (1)
+    /* @brief XBARA has output 45. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT45 (1)
+    /* @brief XBARA has output 46. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT46 (1)
+    /* @brief XBARA has output 47. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT47 (1)
+    /* @brief XBARA has output 48. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT48 (1)
+    /* @brief XBARA has output 49. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT49 (1)
+    /* @brief XBARA has output 50. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT50 (1)
+    /* @brief XBARA has output 51. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT51 (0)
+    /* @brief XBARA has output 52. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT52 (1)
+    /* @brief XBARA has output 53. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT53 (0)
+    /* @brief XBARA has output 54. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT54 (0)
+    /* @brief XBARA has output 55. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT55 (0)
+    /* @brief XBARA has output 56. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT56 (0)
+    /* @brief XBARA has output 57. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT57 (0)
+    /* @brief XBARA has output 58. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT58 (1)
+    /* @brief XBARA has output 59. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT59 (0)
+    /* @brief XBARA has output 60. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT60 (0)
+    /* @brief XBARA has output 61. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT61 (0)
+    /* @brief XBARA has output 62. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT62 (0)
+    /* @brief XBARA has output 63. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT63 (0)
+    /* @brief XBARA has output 64. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT64 (0)
+    /* @brief XBARA has output 65. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT65 (0)
+    /* @brief XBARA has output 66. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT66 (0)
+    /* @brief XBARA has output 67. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT67 (0)
+    /* @brief XBARA has output 68. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT68 (0)
+    /* @brief XBARA has output 69. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT69 (0)
+    /* @brief XBARA has output 70. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT70 (0)
+    /* @brief XBARA has output 71. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT71 (0)
+    /* @brief XBARA has output 72. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT72 (0)
+    /* @brief XBARA has output 73. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT73 (0)
+    /* @brief XBARA has output 74. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT74 (0)
+    /* @brief XBARA has output 75. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT75 (0)
+    /* @brief XBARA has output 76. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT76 (0)
+    /* @brief XBARA has output 77. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT77 (0)
+    /* @brief XBARA has output 78. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT78 (0)
+    /* @brief XBARA has output 79. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT79 (0)
+    /* @brief XBARA has output 80. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT80 (0)
+    /* @brief XBARA has output 81. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT81 (0)
+    /* @brief XBARA has output 82. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT82 (0)
+    /* @brief XBARA has output 83. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT83 (0)
+    /* @brief XBARA has output 84. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT84 (0)
+    /* @brief XBARA has output 85. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT85 (0)
+    /* @brief XBARA has output 86. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT86 (0)
+    /* @brief XBARA has output 87. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT87 (0)
+    /* @brief XBARA has output 88. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT88 (0)
+    /* @brief XBARA has output 89. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT89 (0)
+    /* @brief XBARA has output 90. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT90 (0)
+    /* @brief XBARA has output 91. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT91 (0)
+    /* @brief XBARA has output 92. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT92 (0)
+    /* @brief XBARA has output 93. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT93 (0)
+    /* @brief XBARA has output 94. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT94 (0)
+    /* @brief XBARA has output 95. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT95 (0)
+    /* @brief XBARA has output 96. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT96 (0)
+    /* @brief XBARA has output 97. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT97 (0)
+    /* @brief XBARA has output 98. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT98 (0)
+    /* @brief XBARA has output 99. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT99 (0)
+    /* @brief XBARA has output 100. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT100 (0)
+    /* @brief XBARA has output 101. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT101 (0)
+    /* @brief XBARA has output 102. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT102 (0)
+    /* @brief XBARA has output 103. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT103 (0)
+    /* @brief XBARA has output 104. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT104 (0)
+    /* @brief XBARA has output 105. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT105 (0)
+    /* @brief XBARA has output 106. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT106 (0)
+    /* @brief XBARA has output 107. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT107 (0)
+    /* @brief XBARA has output 108. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT108 (0)
+    /* @brief XBARA has output 109. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT109 (0)
+    /* @brief XBARA has output 110. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT110 (0)
+    /* @brief XBARA has output 111. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT111 (0)
+    /* @brief XBARA has output 112. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT112 (0)
+    /* @brief XBARA has output 113. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT113 (0)
+    /* @brief XBARA has output 114. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT114 (0)
+    /* @brief XBARA has output 115. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT115 (0)
+    /* @brief XBARA has output 116. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT116 (0)
+    /* @brief XBARA has output 117. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT117 (0)
+    /* @brief XBARA has output 118. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT118 (0)
+    /* @brief XBARA has output 119. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT119 (0)
+    /* @brief XBARA has output 120. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT120 (0)
+    /* @brief XBARA has output 121. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT121 (0)
+    /* @brief XBARA has output 122. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT122 (0)
+    /* @brief XBARA has output 123. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT123 (0)
+    /* @brief XBARA has output 124. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT124 (0)
+    /* @brief XBARA has output 125. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT125 (0)
+    /* @brief XBARA has output 126. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT126 (0)
+    /* @brief XBARA has output 127. */
+    #define FSL_FEATURE_XBARA_HAS_OUTPUT127 (0)
+    /* @brief XBARA input 0 ID. */
+    #define FSL_FEATURE_XBARA_INPUT0_ID (Vss)
+    /* @brief XBARA input 1 ID. */
+    #define FSL_FEATURE_XBARA_INPUT1_ID (Vdd)
+    /* @brief XBARA input 2 ID. */
+    #define FSL_FEATURE_XBARA_INPUT2_ID (XbarIn2)
+    /* @brief XBARA input 3 ID. */
+    #define FSL_FEATURE_XBARA_INPUT3_ID (XbarIn3)
+    /* @brief XBARA input 4 ID. */
+    #define FSL_FEATURE_XBARA_INPUT4_ID (XbarIn4)
+    /* @brief XBARA input 5 ID. */
+    #define FSL_FEATURE_XBARA_INPUT5_ID (XbarIn5)
+    /* @brief XBARA input 6 ID. */
+    #define FSL_FEATURE_XBARA_INPUT6_ID (XbarIn6)
+    /* @brief XBARA input 7 ID. */
+    #define FSL_FEATURE_XBARA_INPUT7_ID (XbarIn7)
+    /* @brief XBARA input 8 ID. */
+    #define FSL_FEATURE_XBARA_INPUT8_ID (XbarIn8)
+    /* @brief XBARA input 9 ID. */
+    #define FSL_FEATURE_XBARA_INPUT9_ID (XbarIn9)
+    /* @brief XBARA input 10 ID. */
+    #define FSL_FEATURE_XBARA_INPUT10_ID (XbarIn10)
+    /* @brief XBARA input 11 ID. */
+    #define FSL_FEATURE_XBARA_INPUT11_ID (XbarIn11)
+    /* @brief XBARA input 12 ID. */
+    #define FSL_FEATURE_XBARA_INPUT12_ID (Cmp0Output)
+    /* @brief XBARA input 13 ID. */
+    #define FSL_FEATURE_XBARA_INPUT13_ID (Cmp1Output)
+    /* @brief XBARA input 14 ID. */
+    #define FSL_FEATURE_XBARA_INPUT14_ID (Cmp2Output)
+    /* @brief XBARA input 15 ID. */
+    #define FSL_FEATURE_XBARA_INPUT15_ID (Cmp3Output)
+    /* @brief XBARA input 16 ID. */
+    #define FSL_FEATURE_XBARA_INPUT16_ID (Ftm0Match)
+    /* @brief XBARA input 17 ID. */
+    #define FSL_FEATURE_XBARA_INPUT17_ID (Ftm0Extrig)
+    /* @brief XBARA input 18 ID. */
+    #define FSL_FEATURE_XBARA_INPUT18_ID (Ftm3Match)
+    /* @brief XBARA input 19 ID. */
+    #define FSL_FEATURE_XBARA_INPUT19_ID (Ftm3Extrig)
+    /* @brief XBARA input 20 ID. */
+    #define FSL_FEATURE_XBARA_INPUT20_ID (XBARA_IN_RESERVED20)
+    /* @brief XBARA input 21 ID. */
+    #define FSL_FEATURE_XBARA_INPUT21_ID (XBARA_IN_RESERVED21)
+    /* @brief XBARA input 22 ID. */
+    #define FSL_FEATURE_XBARA_INPUT22_ID (XBARA_IN_RESERVED22)
+    /* @brief XBARA input 23 ID. */
+    #define FSL_FEATURE_XBARA_INPUT23_ID (XBARA_IN_RESERVED23)
+    /* @brief XBARA input 24 ID. */
+    #define FSL_FEATURE_XBARA_INPUT24_ID (XBARA_IN_RESERVED24)
+    /* @brief XBARA input 25 ID. */
+    #define FSL_FEATURE_XBARA_INPUT25_ID (XBARA_IN_RESERVED25)
+    /* @brief XBARA input 26 ID. */
+    #define FSL_FEATURE_XBARA_INPUT26_ID (XBARA_IN_RESERVED26)
+    /* @brief XBARA input 27 ID. */
+    #define FSL_FEATURE_XBARA_INPUT27_ID (XBARA_IN_RESERVED27)
+    /* @brief XBARA input 28 ID. */
+    #define FSL_FEATURE_XBARA_INPUT28_ID (XBARA_IN_RESERVED28)
+    /* @brief XBARA input 29 ID. */
+    #define FSL_FEATURE_XBARA_INPUT29_ID (Pdb0Ch0Output)
+    /* @brief XBARA input 30 ID. */
+    #define FSL_FEATURE_XBARA_INPUT30_ID (XBARA_IN_RESERVED30)
+    /* @brief XBARA input 31 ID. */
+    #define FSL_FEATURE_XBARA_INPUT31_ID (Pdb1Ch0Output)
+    /* @brief XBARA input 32 ID. */
+    #define FSL_FEATURE_XBARA_INPUT32_ID (XBARA_IN_RESERVED32)
+    /* @brief XBARA input 33 ID. */
+    #define FSL_FEATURE_XBARA_INPUT33_ID (AdcAEs)
+    /* @brief XBARA input 34 ID. */
+    #define FSL_FEATURE_XBARA_INPUT34_ID (XBARA_IN_RESERVED34)
+    /* @brief XBARA input 35 ID. */
+    #define FSL_FEATURE_XBARA_INPUT35_ID (AdcBEs)
+    /* @brief XBARA input 36 ID. */
+    #define FSL_FEATURE_XBARA_INPUT36_ID (Ftm1Match)
+    /* @brief XBARA input 37 ID. */
+    #define FSL_FEATURE_XBARA_INPUT37_ID (Ftm1Extrig)
+    /* @brief XBARA input 38 ID. */
+    #define FSL_FEATURE_XBARA_INPUT38_ID (DmaCh0Done)
+    /* @brief XBARA input 39 ID. */
+    #define FSL_FEATURE_XBARA_INPUT39_ID (DmaCh1Done)
+    /* @brief XBARA input 40 ID. */
+    #define FSL_FEATURE_XBARA_INPUT40_ID (DmaCh6Done)
+    /* @brief XBARA input 41 ID. */
+    #define FSL_FEATURE_XBARA_INPUT41_ID (DmaCh7Done)
+    /* @brief XBARA input 42 ID. */
+    #define FSL_FEATURE_XBARA_INPUT42_ID (PitTrigger0)
+    /* @brief XBARA input 43 ID. */
+    #define FSL_FEATURE_XBARA_INPUT43_ID (PitTrigger1)
+    /* @brief XBARA input 44 ID. */
+    #define FSL_FEATURE_XBARA_INPUT44_ID (XBARA_IN_RESERVED44)
+    /* @brief XBARA input 45 ID. */
+    #define FSL_FEATURE_XBARA_INPUT45_ID (Enc0CmpPosMatch)
+    /* @brief XBARA input 46 ID. */
+    #define FSL_FEATURE_XBARA_INPUT46_ID (AndOrInvert0)
+    /* @brief XBARA input 47 ID. */
+    #define FSL_FEATURE_XBARA_INPUT47_ID (AndOrInvert1)
+    /* @brief XBARA input 48 ID. */
+    #define FSL_FEATURE_XBARA_INPUT48_ID (AndOrInvert2)
+    /* @brief XBARA input 49 ID. */
+    #define FSL_FEATURE_XBARA_INPUT49_ID (AndOrInvert3)
+    /* @brief XBARA input 50 ID. */
+    #define FSL_FEATURE_XBARA_INPUT50_ID (PitTrigger2)
+    /* @brief XBARA input 51 ID. */
+    #define FSL_FEATURE_XBARA_INPUT51_ID (PitTrigger3)
+    /* @brief XBARA input 52 ID. */
+    #define FSL_FEATURE_XBARA_INPUT52_ID (XBARA_IN_RESERVED52)
+    /* @brief XBARA input 53 ID. */
+    #define FSL_FEATURE_XBARA_INPUT53_ID (XBARA_IN_RESERVED53)
+    /* @brief XBARA input 54 ID. */
+    #define FSL_FEATURE_XBARA_INPUT54_ID (XBARA_IN_RESERVED54)
+    /* @brief XBARA input 55 ID. */
+    #define FSL_FEATURE_XBARA_INPUT55_ID (XBARA_IN_RESERVED55)
+    /* @brief XBARA input 56 ID. */
+    #define FSL_FEATURE_XBARA_INPUT56_ID (XBARA_IN_RESERVED56)
+    /* @brief XBARA input 57 ID. */
+    #define FSL_FEATURE_XBARA_INPUT57_ID (XBARA_IN_RESERVED57)
+    /* @brief XBARA input 58 ID. */
+    #define FSL_FEATURE_XBARA_INPUT58_ID (XBARA_IN_RESERVED58)
+    /* @brief XBARA input 59 ID. */
+    #define FSL_FEATURE_XBARA_INPUT59_ID (XBARA_IN_RESERVED59)
+    /* @brief XBARA input 60 ID. */
+    #define FSL_FEATURE_XBARA_INPUT60_ID (XBARA_IN_RESERVED60)
+    /* @brief XBARA input 61 ID. */
+    #define FSL_FEATURE_XBARA_INPUT61_ID (XBARA_IN_RESERVED61)
+    /* @brief XBARA input 62 ID. */
+    #define FSL_FEATURE_XBARA_INPUT62_ID (XBARA_IN_RESERVED62)
+    /* @brief XBARA input 63 ID. */
+    #define FSL_FEATURE_XBARA_INPUT63_ID (XBARA_IN_RESERVED63)
+    /* @brief XBARA input 64 ID. */
+    #define FSL_FEATURE_XBARA_INPUT64_ID (XBARA_IN_RESERVED64)
+    /* @brief XBARA input 65 ID. */
+    #define FSL_FEATURE_XBARA_INPUT65_ID (XBARA_IN_RESERVED65)
+    /* @brief XBARA input 66 ID. */
+    #define FSL_FEATURE_XBARA_INPUT66_ID (XBARA_IN_RESERVED66)
+    /* @brief XBARA input 67 ID. */
+    #define FSL_FEATURE_XBARA_INPUT67_ID (XBARA_IN_RESERVED67)
+    /* @brief XBARA input 68 ID. */
+    #define FSL_FEATURE_XBARA_INPUT68_ID (XBARA_IN_RESERVED68)
+    /* @brief XBARA input 69 ID. */
+    #define FSL_FEATURE_XBARA_INPUT69_ID (XBARA_IN_RESERVED69)
+    /* @brief XBARA input 70 ID. */
+    #define FSL_FEATURE_XBARA_INPUT70_ID (XBARA_IN_RESERVED70)
+    /* @brief XBARA input 71 ID. */
+    #define FSL_FEATURE_XBARA_INPUT71_ID (XBARA_IN_RESERVED71)
+    /* @brief XBARA input 72 ID. */
+    #define FSL_FEATURE_XBARA_INPUT72_ID (XBARA_IN_RESERVED72)
+    /* @brief XBARA input 73 ID. */
+    #define FSL_FEATURE_XBARA_INPUT73_ID (XBARA_IN_RESERVED73)
+    /* @brief XBARA input 74 ID. */
+    #define FSL_FEATURE_XBARA_INPUT74_ID (XBARA_IN_RESERVED74)
+    /* @brief XBARA input 75 ID. */
+    #define FSL_FEATURE_XBARA_INPUT75_ID (XBARA_IN_RESERVED75)
+    /* @brief XBARA input 76 ID. */
+    #define FSL_FEATURE_XBARA_INPUT76_ID (XBARA_IN_RESERVED76)
+    /* @brief XBARA input 77 ID. */
+    #define FSL_FEATURE_XBARA_INPUT77_ID (XBARA_IN_RESERVED77)
+    /* @brief XBARA input 78 ID. */
+    #define FSL_FEATURE_XBARA_INPUT78_ID (XBARA_IN_RESERVED78)
+    /* @brief XBARA input 79 ID. */
+    #define FSL_FEATURE_XBARA_INPUT79_ID (XBARA_IN_RESERVED79)
+    /* @brief XBARA input 80 ID. */
+    #define FSL_FEATURE_XBARA_INPUT80_ID (XBARA_IN_RESERVED80)
+    /* @brief XBARA input 81 ID. */
+    #define FSL_FEATURE_XBARA_INPUT81_ID (XBARA_IN_RESERVED81)
+    /* @brief XBARA input 82 ID. */
+    #define FSL_FEATURE_XBARA_INPUT82_ID (XBARA_IN_RESERVED82)
+    /* @brief XBARA input 83 ID. */
+    #define FSL_FEATURE_XBARA_INPUT83_ID (XBARA_IN_RESERVED83)
+    /* @brief XBARA input 84 ID. */
+    #define FSL_FEATURE_XBARA_INPUT84_ID (XBARA_IN_RESERVED84)
+    /* @brief XBARA input 85 ID. */
+    #define FSL_FEATURE_XBARA_INPUT85_ID (XBARA_IN_RESERVED85)
+    /* @brief XBARA input 86 ID. */
+    #define FSL_FEATURE_XBARA_INPUT86_ID (XBARA_IN_RESERVED86)
+    /* @brief XBARA input 87 ID. */
+    #define FSL_FEATURE_XBARA_INPUT87_ID (XBARA_IN_RESERVED87)
+    /* @brief XBARA input 88 ID. */
+    #define FSL_FEATURE_XBARA_INPUT88_ID (XBARA_IN_RESERVED88)
+    /* @brief XBARA input 89 ID. */
+    #define FSL_FEATURE_XBARA_INPUT89_ID (XBARA_IN_RESERVED89)
+    /* @brief XBARA input 90 ID. */
+    #define FSL_FEATURE_XBARA_INPUT90_ID (XBARA_IN_RESERVED90)
+    /* @brief XBARA input 91 ID. */
+    #define FSL_FEATURE_XBARA_INPUT91_ID (XBARA_IN_RESERVED91)
+    /* @brief XBARA input 92 ID. */
+    #define FSL_FEATURE_XBARA_INPUT92_ID (XBARA_IN_RESERVED92)
+    /* @brief XBARA input 93 ID. */
+    #define FSL_FEATURE_XBARA_INPUT93_ID (XBARA_IN_RESERVED93)
+    /* @brief XBARA input 94 ID. */
+    #define FSL_FEATURE_XBARA_INPUT94_ID (XBARA_IN_RESERVED94)
+    /* @brief XBARA input 95 ID. */
+    #define FSL_FEATURE_XBARA_INPUT95_ID (XBARA_IN_RESERVED95)
+    /* @brief XBARA input 96 ID. */
+    #define FSL_FEATURE_XBARA_INPUT96_ID (XBARA_IN_RESERVED96)
+    /* @brief XBARA input 97 ID. */
+    #define FSL_FEATURE_XBARA_INPUT97_ID (XBARA_IN_RESERVED97)
+    /* @brief XBARA input 98 ID. */
+    #define FSL_FEATURE_XBARA_INPUT98_ID (XBARA_IN_RESERVED98)
+    /* @brief XBARA input 99 ID. */
+    #define FSL_FEATURE_XBARA_INPUT99_ID (XBARA_IN_RESERVED99)
+    /* @brief XBARA input 100 ID. */
+    #define FSL_FEATURE_XBARA_INPUT100_ID (XBARA_IN_RESERVED100)
+    /* @brief XBARA input 101 ID. */
+    #define FSL_FEATURE_XBARA_INPUT101_ID (XBARA_IN_RESERVED101)
+    /* @brief XBARA input 102 ID. */
+    #define FSL_FEATURE_XBARA_INPUT102_ID (XBARA_IN_RESERVED102)
+    /* @brief XBARA input 103 ID. */
+    #define FSL_FEATURE_XBARA_INPUT103_ID (XBARA_IN_RESERVED103)
+    /* @brief XBARA input 104 ID. */
+    #define FSL_FEATURE_XBARA_INPUT104_ID (XBARA_IN_RESERVED104)
+    /* @brief XBARA input 105 ID. */
+    #define FSL_FEATURE_XBARA_INPUT105_ID (XBARA_IN_RESERVED105)
+    /* @brief XBARA input 106 ID. */
+    #define FSL_FEATURE_XBARA_INPUT106_ID (XBARA_IN_RESERVED106)
+    /* @brief XBARA input 107 ID. */
+    #define FSL_FEATURE_XBARA_INPUT107_ID (XBARA_IN_RESERVED107)
+    /* @brief XBARA input 108 ID. */
+    #define FSL_FEATURE_XBARA_INPUT108_ID (XBARA_IN_RESERVED108)
+    /* @brief XBARA input 109 ID. */
+    #define FSL_FEATURE_XBARA_INPUT109_ID (XBARA_IN_RESERVED109)
+    /* @brief XBARA input 110 ID. */
+    #define FSL_FEATURE_XBARA_INPUT110_ID (XBARA_IN_RESERVED110)
+    /* @brief XBARA input 111 ID. */
+    #define FSL_FEATURE_XBARA_INPUT111_ID (XBARA_IN_RESERVED111)
+    /* @brief XBARA input 112 ID. */
+    #define FSL_FEATURE_XBARA_INPUT112_ID (XBARA_IN_RESERVED112)
+    /* @brief XBARA input 113 ID. */
+    #define FSL_FEATURE_XBARA_INPUT113_ID (XBARA_IN_RESERVED113)
+    /* @brief XBARA input 114 ID. */
+    #define FSL_FEATURE_XBARA_INPUT114_ID (XBARA_IN_RESERVED114)
+    /* @brief XBARA input 115 ID. */
+    #define FSL_FEATURE_XBARA_INPUT115_ID (XBARA_IN_RESERVED115)
+    /* @brief XBARA input 116 ID. */
+    #define FSL_FEATURE_XBARA_INPUT116_ID (XBARA_IN_RESERVED116)
+    /* @brief XBARA input 117 ID. */
+    #define FSL_FEATURE_XBARA_INPUT117_ID (XBARA_IN_RESERVED117)
+    /* @brief XBARA input 118 ID. */
+    #define FSL_FEATURE_XBARA_INPUT118_ID (XBARA_IN_RESERVED118)
+    /* @brief XBARA input 119 ID. */
+    #define FSL_FEATURE_XBARA_INPUT119_ID (XBARA_IN_RESERVED119)
+    /* @brief XBARA input 120 ID. */
+    #define FSL_FEATURE_XBARA_INPUT120_ID (XBARA_IN_RESERVED120)
+    /* @brief XBARA input 121 ID. */
+    #define FSL_FEATURE_XBARA_INPUT121_ID (XBARA_IN_RESERVED121)
+    /* @brief XBARA input 122 ID. */
+    #define FSL_FEATURE_XBARA_INPUT122_ID (XBARA_IN_RESERVED122)
+    /* @brief XBARA input 123 ID. */
+    #define FSL_FEATURE_XBARA_INPUT123_ID (XBARA_IN_RESERVED123)
+    /* @brief XBARA input 124 ID. */
+    #define FSL_FEATURE_XBARA_INPUT124_ID (XBARA_IN_RESERVED124)
+    /* @brief XBARA input 125 ID. */
+    #define FSL_FEATURE_XBARA_INPUT125_ID (XBARA_IN_RESERVED125)
+    /* @brief XBARA input 126 ID. */
+    #define FSL_FEATURE_XBARA_INPUT126_ID (XBARA_IN_RESERVED126)
+    /* @brief XBARA input 127 ID. */
+    #define FSL_FEATURE_XBARA_INPUT127_ID (XBARA_IN_RESERVED127)
+    /* @brief XBARA output 0 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT0_ID (Dmamux18)
+    /* @brief XBARA output 1 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT1_ID (Dmamux19)
+    /* @brief XBARA output 2 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT2_ID (Dmamux20)
+    /* @brief XBARA output 3 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT3_ID (Dmamux21)
+    /* @brief XBARA output 4 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT4_ID (XbOut4)
+    /* @brief XBARA output 5 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT5_ID (XbOut5)
+    /* @brief XBARA output 6 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT6_ID (XbOut6)
+    /* @brief XBARA output 7 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT7_ID (XbOut7)
+    /* @brief XBARA output 8 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT8_ID (XbOut8)
+    /* @brief XBARA output 9 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT9_ID (XbOut9)
+    /* @brief XBARA output 10 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT10_ID (XbOut10)
+    /* @brief XBARA output 11 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT11_ID (XbOut11)
+    /* @brief XBARA output 12 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT12_ID (AdcaTrig)
+    /* @brief XBARA output 13 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT13_ID (AdcbTrig)
+    /* @brief XBARA output 14 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT14_ID (XBARA_OUT_RESERVED14)
+    /* @brief XBARA output 15 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT15_ID (XBARA_OUT_RESERVED15)
+    /* @brief XBARA output 16 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT16_ID (Cmp0)
+    /* @brief XBARA output 17 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT17_ID (Cmp1)
+    /* @brief XBARA output 18 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT18_ID (Cmp2)
+    /* @brief XBARA output 19 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT19_ID (Cmp3)
+    /* @brief XBARA output 20 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT20_ID (XBARA_OUT_RESERVED20)
+    /* @brief XBARA output 21 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT21_ID (XBARA_OUT_RESERVED21)
+    /* @brief XBARA output 22 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT22_ID (XBARA_OUT_RESERVED22)
+    /* @brief XBARA output 23 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT23_ID (XBARA_OUT_RESERVED23)
+    /* @brief XBARA output 24 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT24_ID (XBARA_OUT_RESERVED24)
+    /* @brief XBARA output 25 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT25_ID (XBARA_OUT_RESERVED25)
+    /* @brief XBARA output 26 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT26_ID (XBARA_OUT_RESERVED26)
+    /* @brief XBARA output 27 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT27_ID (XBARA_OUT_RESERVED27)
+    /* @brief XBARA output 28 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT28_ID (XBARA_OUT_RESERVED28)
+    /* @brief XBARA output 29 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT29_ID (XBARA_OUT_RESERVED29)
+    /* @brief XBARA output 30 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT30_ID (XBARA_OUT_RESERVED30)
+    /* @brief XBARA output 31 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT31_ID (XBARA_OUT_RESERVED31)
+    /* @brief XBARA output 32 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT32_ID (XBARA_OUT_RESERVED32)
+    /* @brief XBARA output 33 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT33_ID (XBARA_OUT_RESERVED33)
+    /* @brief XBARA output 34 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT34_ID (Ftm0Trig2)
+    /* @brief XBARA output 35 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT35_ID (Ftm1Trig2)
+    /* @brief XBARA output 36 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT36_ID (XBARA_OUT_RESERVED36)
+    /* @brief XBARA output 37 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT37_ID (Ftm3Trig2)
+    /* @brief XBARA output 38 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT38_ID (Pdb0InCh12)
+    /* @brief XBARA output 39 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT39_ID (XBARA_OUT_RESERVED39)
+    /* @brief XBARA output 40 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT40_ID (XBARA_OUT_RESERVED40)
+    /* @brief XBARA output 41 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT41_ID (Pdb1InCh12)
+    /* @brief XBARA output 42 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT42_ID (SimXorFtm1Ch1Ftm1Ch0)
+    /* @brief XBARA output 43 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT43_ID (XBARA_OUT_RESERVED43)
+    /* @brief XBARA output 44 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT44_ID (Enc0PhA)
+    /* @brief XBARA output 45 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT45_ID (Enc0PhB)
+    /* @brief XBARA output 46 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT46_ID (Enc0Index)
+    /* @brief XBARA output 47 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT47_ID (Enc0Home)
+    /* @brief XBARA output 48 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT48_ID (Enc0CapTrigger)
+    /* @brief XBARA output 49 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT49_ID (Ftm0Fault3)
+    /* @brief XBARA output 50 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT50_ID (Ftm1Fault1)
+    /* @brief XBARA output 51 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT51_ID (XBARA_OUT_RESERVED51)
+    /* @brief XBARA output 52 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT52_ID (Ftm3Fault3)
+    /* @brief XBARA output 53 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT53_ID (XBARA_OUT_RESERVED53)
+    /* @brief XBARA output 54 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT54_ID (XBARA_OUT_RESERVED54)
+    /* @brief XBARA output 55 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT55_ID (XBARA_OUT_RESERVED55)
+    /* @brief XBARA output 56 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT56_ID (XBARA_OUT_RESERVED56)
+    /* @brief XBARA output 57 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT57_ID (XBARA_OUT_RESERVED57)
+    /* @brief XBARA output 58 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT58_ID (EwmIn)
+    /* @brief XBARA output 59 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT59_ID (XBARA_OUT_RESERVED59)
+    /* @brief XBARA output 60 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT60_ID (XBARA_OUT_RESERVED60)
+    /* @brief XBARA output 61 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT61_ID (XBARA_OUT_RESERVED61)
+    /* @brief XBARA output 62 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT62_ID (XBARA_OUT_RESERVED62)
+    /* @brief XBARA output 63 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT63_ID (XBARA_OUT_RESERVED63)
+    /* @brief XBARA output 64 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT64_ID (XBARA_OUT_RESERVED64)
+    /* @brief XBARA output 65 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT65_ID (XBARA_OUT_RESERVED65)
+    /* @brief XBARA output 66 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT66_ID (XBARA_OUT_RESERVED66)
+    /* @brief XBARA output 67 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT67_ID (XBARA_OUT_RESERVED67)
+    /* @brief XBARA output 68 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT68_ID (XBARA_OUT_RESERVED68)
+    /* @brief XBARA output 69 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT69_ID (XBARA_OUT_RESERVED69)
+    /* @brief XBARA output 70 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT70_ID (XBARA_OUT_RESERVED70)
+    /* @brief XBARA output 71 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT71_ID (XBARA_OUT_RESERVED71)
+    /* @brief XBARA output 72 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT72_ID (XBARA_OUT_RESERVED72)
+    /* @brief XBARA output 73 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT73_ID (XBARA_OUT_RESERVED73)
+    /* @brief XBARA output 74 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT74_ID (XBARA_OUT_RESERVED74)
+    /* @brief XBARA output 75 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT75_ID (XBARA_OUT_RESERVED75)
+    /* @brief XBARA output 76 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT76_ID (XBARA_OUT_RESERVED76)
+    /* @brief XBARA output 77 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT77_ID (XBARA_OUT_RESERVED77)
+    /* @brief XBARA output 78 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT78_ID (XBARA_OUT_RESERVED78)
+    /* @brief XBARA output 79 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT79_ID (XBARA_OUT_RESERVED79)
+    /* @brief XBARA output 80 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT80_ID (XBARA_OUT_RESERVED80)
+    /* @brief XBARA output 81 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT81_ID (XBARA_OUT_RESERVED81)
+    /* @brief XBARA output 82 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT82_ID (XBARA_OUT_RESERVED82)
+    /* @brief XBARA output 83 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT83_ID (XBARA_OUT_RESERVED83)
+    /* @brief XBARA output 84 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT84_ID (XBARA_OUT_RESERVED84)
+    /* @brief XBARA output 85 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT85_ID (XBARA_OUT_RESERVED85)
+    /* @brief XBARA output 86 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT86_ID (XBARA_OUT_RESERVED86)
+    /* @brief XBARA output 87 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT87_ID (XBARA_OUT_RESERVED87)
+    /* @brief XBARA output 88 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT88_ID (XBARA_OUT_RESERVED88)
+    /* @brief XBARA output 89 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT89_ID (XBARA_OUT_RESERVED89)
+    /* @brief XBARA output 90 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT90_ID (XBARA_OUT_RESERVED90)
+    /* @brief XBARA output 91 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT91_ID (XBARA_OUT_RESERVED91)
+    /* @brief XBARA output 92 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT92_ID (XBARA_OUT_RESERVED92)
+    /* @brief XBARA output 93 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT93_ID (XBARA_OUT_RESERVED93)
+    /* @brief XBARA output 94 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT94_ID (XBARA_OUT_RESERVED94)
+    /* @brief XBARA output 95 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT95_ID (XBARA_OUT_RESERVED95)
+    /* @brief XBARA output 96 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT96_ID (XBARA_OUT_RESERVED96)
+    /* @brief XBARA output 97 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT97_ID (XBARA_OUT_RESERVED97)
+    /* @brief XBARA output 98 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT98_ID (XBARA_OUT_RESERVED98)
+    /* @brief XBARA output 99 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT99_ID (XBARA_OUT_RESERVED99)
+    /* @brief XBARA output 100 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT100_ID (XBARA_OUT_RESERVED100)
+    /* @brief XBARA output 101 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT101_ID (XBARA_OUT_RESERVED101)
+    /* @brief XBARA output 102 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT102_ID (XBARA_OUT_RESERVED102)
+    /* @brief XBARA output 103 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT103_ID (XBARA_OUT_RESERVED103)
+    /* @brief XBARA output 104 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT104_ID (XBARA_OUT_RESERVED104)
+    /* @brief XBARA output 105 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT105_ID (XBARA_OUT_RESERVED105)
+    /* @brief XBARA output 106 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT106_ID (XBARA_OUT_RESERVED106)
+    /* @brief XBARA output 107 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT107_ID (XBARA_OUT_RESERVED107)
+    /* @brief XBARA output 108 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT108_ID (XBARA_OUT_RESERVED108)
+    /* @brief XBARA output 109 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT109_ID (XBARA_OUT_RESERVED109)
+    /* @brief XBARA output 110 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT110_ID (XBARA_OUT_RESERVED110)
+    /* @brief XBARA output 111 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT111_ID (XBARA_OUT_RESERVED111)
+    /* @brief XBARA output 112 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT112_ID (XBARA_OUT_RESERVED112)
+    /* @brief XBARA output 113 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT113_ID (XBARA_OUT_RESERVED113)
+    /* @brief XBARA output 114 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT114_ID (XBARA_OUT_RESERVED114)
+    /* @brief XBARA output 115 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT115_ID (XBARA_OUT_RESERVED115)
+    /* @brief XBARA output 116 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT116_ID (XBARA_OUT_RESERVED116)
+    /* @brief XBARA output 117 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT117_ID (XBARA_OUT_RESERVED117)
+    /* @brief XBARA output 118 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT118_ID (XBARA_OUT_RESERVED118)
+    /* @brief XBARA output 119 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT119_ID (XBARA_OUT_RESERVED119)
+    /* @brief XBARA output 120 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT120_ID (XBARA_OUT_RESERVED120)
+    /* @brief XBARA output 121 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT121_ID (XBARA_OUT_RESERVED121)
+    /* @brief XBARA output 122 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT122_ID (XBARA_OUT_RESERVED122)
+    /* @brief XBARA output 123 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT123_ID (XBARA_OUT_RESERVED123)
+    /* @brief XBARA output 124 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT124_ID (XBARA_OUT_RESERVED124)
+    /* @brief XBARA output 125 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT125_ID (XBARA_OUT_RESERVED125)
+    /* @brief XBARA output 126 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT126_ID (XBARA_OUT_RESERVED126)
+    /* @brief XBARA output 127 ID. */
+    #define FSL_FEATURE_XBARA_OUTPUT127_ID (XBARA_OUT_RESERVED127)
+#endif /* defined(CPU_MKV42F128VLF16) || defined(CPU_MKV42F64VLF16) */
 
 /* XBARB module features */
 
@@ -2894,13 +4401,13 @@
 /* @brief XBARB has input 7. */
 #define FSL_FEATURE_XBARB_HAS_INPUT7 (1)
 /* @brief XBARB has input 8. */
-#define FSL_FEATURE_XBARB_HAS_INPUT8 (1)
+#define FSL_FEATURE_XBARB_HAS_INPUT8 (0)
 /* @brief XBARB has input 9. */
-#define FSL_FEATURE_XBARB_HAS_INPUT9 (1)
+#define FSL_FEATURE_XBARB_HAS_INPUT9 (0)
 /* @brief XBARB has input 10. */
-#define FSL_FEATURE_XBARB_HAS_INPUT10 (1)
+#define FSL_FEATURE_XBARB_HAS_INPUT10 (0)
 /* @brief XBARB has input 11. */
-#define FSL_FEATURE_XBARB_HAS_INPUT11 (1)
+#define FSL_FEATURE_XBARB_HAS_INPUT11 (0)
 /* @brief XBARB has input 12. */
 #define FSL_FEATURE_XBARB_HAS_INPUT12 (1)
 /* @brief XBARB has input 13. */
@@ -3406,13 +4913,13 @@
 /* @brief XBARB input 7 ID. */
 #define FSL_FEATURE_XBARB_INPUT7_ID (Ftm3Extrig)
 /* @brief XBARB input 8 ID. */
-#define FSL_FEATURE_XBARB_INPUT8_ID (Pwm0Trg0OrPwm0Trg1)
+#define FSL_FEATURE_XBARB_INPUT8_ID (XBARB_IN_RESERVED8)
 /* @brief XBARB input 9 ID. */
-#define FSL_FEATURE_XBARB_INPUT9_ID (Pwm1Trg0OrPwm1Trg1)
+#define FSL_FEATURE_XBARB_INPUT9_ID (XBARB_IN_RESERVED9)
 /* @brief XBARB input 10 ID. */
-#define FSL_FEATURE_XBARB_INPUT10_ID (Pwm2Trg0OrPwm2Trg1)
+#define FSL_FEATURE_XBARB_INPUT10_ID (XBARB_IN_RESERVED10)
 /* @brief XBARB input 11 ID. */
-#define FSL_FEATURE_XBARB_INPUT11_ID (Pwm3Trg0OrPwm3Trg1)
+#define FSL_FEATURE_XBARB_INPUT11_ID (XBARB_IN_RESERVED11)
 /* @brief XBARB input 12 ID. */
 #define FSL_FEATURE_XBARB_INPUT12_ID (Pdb0Ch0Output)
 /* @brief XBARB input 13 ID. */
@@ -3902,5 +5409,5 @@
 /* @brief XBARB output 127 ID. */
 #define FSL_FEATURE_XBARB_OUTPUT127_ID (XBARB_OUT_RESERVED127)
 
-#endif /* _MKV46F16_FEATURES_H_ */
+#endif /* _MKV42F16_FEATURES_H_ */
 

@@ -1,9 +1,12 @@
 /*
 ** ###################################################################
-**     Processors:          MKV46F128VLH16
-**                          MKV46F128VLL16
-**                          MKV46F256VLH16
-**                          MKV46F256VLL16
+**     Processors:          MKV44F128VLF16
+**                          MKV44F128VLH16
+**                          MKV44F128VLL16
+**                          MKV44F256VLH16
+**                          MKV44F256VLL16
+**                          MKV44F64VLF16
+**                          MKV44F64VLH16
 **
 **     Compilers:           Keil ARM C/C++ Compiler
 **                          Freescale C/C++ for Embedded ARM
@@ -16,7 +19,7 @@
 **     Build:               b180801
 **
 **     Abstract:
-**         CMSIS Peripheral Access Layer for MKV46F16
+**         CMSIS Peripheral Access Layer for MKV44F16
 **
 **     Copyright 1997-2016 Freescale Semiconductor, Inc.
 **     Copyright 2016-2018 NXP
@@ -42,16 +45,16 @@
 */
 
 /*!
- * @file MKV46F16.h
+ * @file MKV44F16.h
  * @version 1.3
  * @date 2015-07-29
- * @brief CMSIS Peripheral Access Layer for MKV46F16
+ * @brief CMSIS Peripheral Access Layer for MKV44F16
  *
- * CMSIS Peripheral Access Layer for MKV46F16
+ * CMSIS Peripheral Access Layer for MKV44F16
  */
 
-#ifndef _MKV46F16_H_
-#define _MKV46F16_H_                             /**< Symbol preventing repeated inclusion */
+#ifndef _MKV44F16_H_
+#define _MKV44F16_H_                             /**< Symbol preventing repeated inclusion */
 
 /** Memory map major version (memory maps with equal major version number are
  * compatible) */
@@ -167,8 +170,8 @@ typedef enum IRQn {
   ADCA_IRQn                    = 39,               /**< ADCA Scan complete */
   CMP0_IRQn                    = 40,               /**< CMP0 */
   CMP1_IRQn                    = 41,               /**< CMP1 */
-  FTM0_IRQn                    = 42,               /**< FTM0 8 channels */
-  FTM1_IRQn                    = 43,               /**< FTM1 2 channels */
+  Reserved58_IRQn              = 42,               /**< Reserved interrupt */
+  Reserved59_IRQn              = 43,               /**< Reserved interrupt */
   Reserved60_IRQn              = 44,               /**< Reserved interrupt */
   Reserved61_IRQn              = 45,               /**< Reserved interrupt */
   Reserved62_IRQn              = 46,               /**< Reserved interrupt */
@@ -196,7 +199,7 @@ typedef enum IRQn {
   ENC0_WDOG_SAB_IRQn           = 68,               /**< ENC0 Watchdog/Simultaneous A and B change */
   ENC0_INDEX_IRQn              = 69,               /**< ENC0 Index/Roll over/Roll Under */
   CMP2_IRQn                    = 70,               /**< CMP2 */
-  FTM3_IRQn                    = 71,               /**< FTM3 8 channels */
+  Reserved87_IRQn              = 71,               /**< Reserved interrupt */
   Reserved88_IRQn              = 72,               /**< Reserved interrupt */
   ADCB_IRQn                    = 73,               /**< ADCB Scan complete */
   Reserved90_IRQn              = 74,               /**< Reserved interrupt */
@@ -247,8 +250,7 @@ typedef enum IRQn {
 #define __FPU_PRESENT                  1         /**< Defines if an FPU is present or not */
 
 #include "core_cm4.h"                  /* Core Peripheral Access Layer */
-//#include "system_MKV46F16.h"           /* Device specific configuration file */
-#include "fsl_mkvxxfxx_cmsis.h"
+#include "system_MKV44F16.h"           /* Device specific configuration file */
 
 /*!
  * @}
@@ -307,22 +309,22 @@ typedef enum _dma_request_source
     kDmaRequestMux0XBARAOut3        = 21|0x100U,   /**< XBARA output 3 */
     kDmaRequestMux0I2C0             = 22|0x100U,   /**< I2C0 transmission complete */
     kDmaRequestMux0Reserved23       = 23|0x100U,   /**< Reserved23 */
-    kDmaRequestMux0FTM0Channel0     = 24|0x100U,   /**< FTM0 channel 0 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel1     = 25|0x100U,   /**< FTM0 channel 1 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel2     = 26|0x100U,   /**< FTM0 channel 2 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel3     = 27|0x100U,   /**< FTM0 channel 3 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel4     = 28|0x100U,   /**< FTM0 channel 4 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel5     = 29|0x100U,   /**< FTM0 channel 5 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel6     = 30|0x100U,   /**< FTM0 channel 6 event  (CMP or CAP) */
-    kDmaRequestMux0FTM0Channel7     = 31|0x100U,   /**< FTM0 channel 7 event  (CMP or CAP) */
-    kDmaRequestMux0FTM1Channel0     = 32|0x100U,   /**< FTM1 channel 0 event  (CMP or CAP) */
-    kDmaRequestMux0FTM1Channel1     = 33|0x100U,   /**< FTM1 channel 1 event  (CMP or CAP) */
+    kDmaRequestMux0Reserved24       = 24|0x100U,   /**< Reserved24 */
+    kDmaRequestMux0Reserved25       = 25|0x100U,   /**< Reserved25 */
+    kDmaRequestMux0Reserved26       = 26|0x100U,   /**< Reserved26 */
+    kDmaRequestMux0Reserved27       = 27|0x100U,   /**< Reserved27 */
+    kDmaRequestMux0Reserved28       = 28|0x100U,   /**< Reserved28 */
+    kDmaRequestMux0Reserved29       = 29|0x100U,   /**< Reserved29 */
+    kDmaRequestMux0Reserved30       = 30|0x100U,   /**< Reserved30 */
+    kDmaRequestMux0Reserved31       = 31|0x100U,   /**< Reserved31 */
+    kDmaRequestMux0Reserved32       = 32|0x100U,   /**< Reserved32 */
+    kDmaRequestMux0Reserved33       = 33|0x100U,   /**< Reserved33 */
     kDmaRequestMux0CMP3             = 34|0x100U,   /**< CMP3 output */
     kDmaRequestMux0Reserved35       = 35|0x100U,   /**< Reserved35 */
-    kDmaRequestMux0FTM3Channel0     = 36|0x100U,   /**< FTM3 channel 0 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel1     = 37|0x100U,   /**< FTM3 channel 1 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel2     = 38|0x100U,   /**< FTM3 channel 2 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel3     = 39|0x100U,   /**< FTM3 channel 3 event  (CMP or CAP) */
+    kDmaRequestMux0Reserved36       = 36|0x100U,   /**< Reserved36 */
+    kDmaRequestMux0Reserved37       = 37|0x100U,   /**< Reserved37 */
+    kDmaRequestMux0Reserved38       = 38|0x100U,   /**< Reserved38 */
+    kDmaRequestMux0Reserved39       = 39|0x100U,   /**< Reserved39 */
     kDmaRequestMux0ADCA             = 40|0x100U,   /**< ADC converter A end of scan */
     kDmaRequestMux0ADCB             = 41|0x100U,   /**< ADC converter B end of scan */
     kDmaRequestMux0CMP0             = 42|0x100U,   /**< CMP0 output */
@@ -337,10 +339,10 @@ typedef enum _dma_request_source
     kDmaRequestMux0PortC            = 51|0x100U,   /**< PORTC rising, falling or both edges */
     kDmaRequestMux0PortD            = 52|0x100U,   /**< PORTD rising, falling or both edges */
     kDmaRequestMux0PortE            = 53|0x100U,   /**< PORTE rising, falling or both edges */
-    kDmaRequestMux0FTM3Channel4     = 54|0x100U,   /**< FTM3 channel 4 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel5     = 55|0x100U,   /**< FTM3 channel 5 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel6     = 56|0x100U,   /**< FTM3 channel 6 event  (CMP or CAP) */
-    kDmaRequestMux0FTM3Channel7     = 57|0x100U,   /**< FTM3 channel 7 event  (CMP or CAP) */
+    kDmaRequestMux0Reserved54       = 54|0x100U,   /**< Reserved54 */
+    kDmaRequestMux0Reserved55       = 55|0x100U,   /**< Reserved55 */
+    kDmaRequestMux0Reserved56       = 56|0x100U,   /**< Reserved56 */
+    kDmaRequestMux0Reserved57       = 57|0x100U,   /**< Reserved57 */
     kDmaRequestMux0AlwaysOn58       = 58|0x100U,   /**< DMAMUX Always Enabled slot. */
     kDmaRequestMux0AlwaysOn59       = 59|0x100U,   /**< DMAMUX Always Enabled slot. */
     kDmaRequestMux0AlwaysOn60       = 60|0x100U,   /**< DMAMUX Always Enabled slot. */
@@ -369,10 +371,10 @@ typedef enum _xbar_input_signal
     kXBARA_InputCmp1Output          = 13|0x100U,   /**< CMP1 Output output assigned to XBARA_IN13 input. */
     kXBARA_InputCmp2Output          = 14|0x100U,   /**< CMP2 Output output assigned to XBARA_IN14 input. */
     kXBARA_InputCmp3Output          = 15|0x100U,   /**< CMP3 Output output assigned to XBARA_IN15 input. */
-    kXBARA_InputFtm0Match           = 16|0x100U,   /**< FTM0 all channels match trigger ORed together output assigned to XBARA_IN16 input. */
-    kXBARA_InputFtm0Extrig          = 17|0x100U,   /**< FTM0 counter init trigger output assigned to XBARA_IN17 input. */
-    kXBARA_InputFtm3Match           = 18|0x100U,   /**< FTM3 all channels match trigger ORed together output assigned to XBARA_IN18 input. */
-    kXBARA_InputFtm3Extrig          = 19|0x100U,   /**< FTM3 counter init trigger output assigned to XBARA_IN19 input. */
+    kXBARA_InputRESERVED16          = 16|0x100U,   /**< XBARA_IN16 input is reserved. */
+    kXBARA_InputRESERVED17          = 17|0x100U,   /**< XBARA_IN17 input is reserved. */
+    kXBARA_InputRESERVED18          = 18|0x100U,   /**< XBARA_IN18 input is reserved. */
+    kXBARA_InputRESERVED19          = 19|0x100U,   /**< XBARA_IN19 input is reserved. */
     kXBARA_InputPwm0Trg0            = 20|0x100U,   /**< PWMA channel 0 trigger 0 output assigned to XBARA_IN20 input. */
     kXBARA_InputPwm0Trg1            = 21|0x100U,   /**< PWMA channel 0 trigger 1 output assigned to XBARA_IN21 input. */
     kXBARA_InputPwm1Trg0            = 22|0x100U,   /**< PWMA channel 1 trigger 0 output assigned to XBARA_IN22 input. */
@@ -389,8 +391,8 @@ typedef enum _xbar_input_signal
     kXBARA_InputAdcAEs              = 33|0x100U,   /**< ADC converter A end of scan output assigned to XBARA_IN33 input. */
     kXBARA_InputRESERVED34          = 34|0x100U,   /**< XBARA_IN34 input is reserved. */
     kXBARA_InputAdcBEs              = 35|0x100U,   /**< ADC converter B end of scan output assigned to XBARA_IN35 input. */
-    kXBARA_InputFtm1Match           = 36|0x100U,   /**< FTM1 all channels match trigger ORed together output assigned to XBARA_IN36 input. */
-    kXBARA_InputFtm1Extrig          = 37|0x100U,   /**< FTM1 counter init trigger output assigned to XBARA_IN37 input. */
+    kXBARA_InputRESERVED36          = 36|0x100U,   /**< XBARA_IN36 input is reserved. */
+    kXBARA_InputRESERVED37          = 37|0x100U,   /**< XBARA_IN37 input is reserved. */
     kXBARA_InputDmaCh0Done          = 38|0x100U,   /**< DMA channel 0 done output assigned to XBARA_IN38 input. */
     kXBARA_InputDmaCh1Done          = 39|0x100U,   /**< DMA channel 1 done output assigned to XBARA_IN39 input. */
     kXBARA_InputDmaCh6Done          = 40|0x100U,   /**< DMA channel 6 done output assigned to XBARA_IN40 input. */
@@ -409,10 +411,10 @@ typedef enum _xbar_input_signal
     kXBARB_InputCmp1Output          = 1|0x200U,    /**< CMP1 Output output assigned to XBARB_IN1 input. */
     kXBARB_InputCmp2Output          = 2|0x200U,    /**< CMP2 Output output assigned to XBARB_IN2 input. */
     kXBARB_InputCmp3Output          = 3|0x200U,    /**< CMP3 Output output assigned to XBARB_IN3 input. */
-    kXBARB_InputFtm0Match           = 4|0x200U,    /**< FTM0 all channels match trigger ORed together output assigned to XBARB_IN4 input. */
-    kXBARB_InputFtm0Extrig          = 5|0x200U,    /**< FTM0 counter init trigger output assigned to XBARB_IN5 input. */
-    kXBARB_InputFtm3Match           = 6|0x200U,    /**< FTM3 all channels match trigger ORed together output assigned to XBARB_IN6 input. */
-    kXBARB_InputFtm3Extrig          = 7|0x200U,    /**< FTM3 counter init trigger output assigned to XBARB_IN7 input. */
+    kXBARB_InputRESERVED4           = 4|0x200U,    /**< XBARB_IN4 input is reserved. */
+    kXBARB_InputRESERVED5           = 5|0x200U,    /**< XBARB_IN5 input is reserved. */
+    kXBARB_InputRESERVED6           = 6|0x200U,    /**< XBARB_IN6 input is reserved. */
+    kXBARB_InputRESERVED7           = 7|0x200U,    /**< XBARB_IN7 input is reserved. */
     kXBARB_InputPwm0Trg0OrPwm0Trg1  = 8|0x200U,    /**< PWMA channel 0 trigger 0 or  trigger 1 output assigned to XBARB_IN8 input. */
     kXBARB_InputPwm1Trg0OrPwm1Trg1  = 9|0x200U,    /**< PWMA channel 1 trigger 0 or  trigger 1 output assigned to XBARB_IN9 input. */
     kXBARB_InputPwm2Trg0OrPwm2Trg1  = 10|0x200U,   /**< PWMA channel 2 trigger 0 or  trigger 1 output assigned to XBARB_IN10 input. */
@@ -421,8 +423,8 @@ typedef enum _xbar_input_signal
     kXBARB_InputAdcAEs              = 13|0x200U,   /**< ADC converter A end of scan output assigned to XBARB_IN13 input. */
     kXBARB_InputXbarIn2             = 14|0x200U,   /**< XBARIN2 input pin output assigned to XBARB_IN14 input. */
     kXBARB_InputXbarIn3             = 15|0x200U,   /**< XBARIN3 input pin output assigned to XBARB_IN15 input. */
-    kXBARB_InputFtm1Match           = 16|0x200U,   /**< FTM1 all channels match trigger ORed together output assigned to XBARB_IN16 input. */
-    kXBARB_InputFtm1Extrig          = 17|0x200U,   /**< FTM1 counter init trigger output assigned to XBARB_IN17 input. */
+    kXBARB_InputRESERVED16          = 16|0x200U,   /**< XBARB_IN16 input is reserved. */
+    kXBARB_InputRESERVED17          = 17|0x200U,   /**< XBARB_IN17 input is reserved. */
     kXBARB_InputDmaCh0Done          = 18|0x200U,   /**< DMA channel 0 done output assigned to XBARB_IN18 input. */
     kXBARB_InputDmaCh1Done          = 19|0x200U,   /**< DMA channel 1 done output assigned to XBARB_IN19 input. */
     kXBARB_InputXbarIn10            = 20|0x200U,   /**< XBARIN10 input pin output assigned to XBARB_IN20 input. */
@@ -471,25 +473,25 @@ typedef enum _xbar_output_signal
     kXBARA_OutputPwmAFault2         = 31|0x100U,   /**< XBARA_OUT31 output assigned to PWMA fault 2 */
     kXBARA_OutputPwmAFault3         = 32|0x100U,   /**< XBARA_OUT32 output assigned to PWMA fault 3 */
     kXBARA_OutputPwmAForce          = 33|0x100U,   /**< XBARA_OUT33 output assigned to PWMA external output force */
-    kXBARA_OutputFtm0Trig2          = 34|0x100U,   /**< XBARA_OUT34 output assigned to FTM0 hardware trigger 2 */
-    kXBARA_OutputFtm1Trig2          = 35|0x100U,   /**< XBARA_OUT35 output assigned to FTM1 hardware trigger 2 */
+    kXBARA_OutputRESERVED34         = 34|0x100U,   /**< XBARA_OUT34 output is reserved. */
+    kXBARA_OutputRESERVED35         = 35|0x100U,   /**< XBARA_OUT35 output is reserved. */
     kXBARA_OutputRESERVED36         = 36|0x100U,   /**< XBARA_OUT36 output is reserved. */
-    kXBARA_OutputFtm3Trig2          = 37|0x100U,   /**< XBARA_OUT37 output assigned to FTM3 hardware trigger 2 */
+    kXBARA_OutputRESERVED37         = 37|0x100U,   /**< XBARA_OUT37 output is reserved. */
     kXBARA_OutputPdb0InCh12         = 38|0x100U,   /**< XBARA_OUT38 output assigned to PDB0 trigger option 12 */
     kXBARA_OutputRESERVED39         = 39|0x100U,   /**< XBARA_OUT39 output is reserved. */
     kXBARA_OutputRESERVED40         = 40|0x100U,   /**< XBARA_OUT40 output is reserved. */
     kXBARA_OutputPdb1InCh12         = 41|0x100U,   /**< XBARA_OUT41 output assigned to PDB1 trigger option 12 */
-    kXBARA_OutputSimXorFtm1Ch1Ftm1Ch0 = 42|0x100U, /**< XBARA_OUT42 output assigned to SIM XOR of FTM1_CH1 and FTM1_CH0 pins and XBARA output 42 */
+    kXBARA_OutputRESERVED42         = 42|0x100U,   /**< XBARA_OUT42 output is reserved. */
     kXBARA_OutputRESERVED43         = 43|0x100U,   /**< XBARA_OUT43 output is reserved. */
     kXBARA_OutputEnc0PhA            = 44|0x100U,   /**< XBARA_OUT44 output assigned to ENC0 quadrature waveform phase A */
     kXBARA_OutputEnc0PhB            = 45|0x100U,   /**< XBARA_OUT45 output assigned to ENC0 quadrature waveform phase B */
     kXBARA_OutputEnc0Index          = 46|0x100U,   /**< XBARA_OUT46 output assigned to ENC0 refresh/reload */
     kXBARA_OutputEnc0Home           = 47|0x100U,   /**< XBARA_OUT47 output assigned to ENC0 home position */
     kXBARA_OutputEnc0CapTrigger     = 48|0x100U,   /**< XBARA_OUT48 output assigned to ENC0 clear/snapshot */
-    kXBARA_OutputFtm0Fault3         = 49|0x100U,   /**< XBARA_OUT49 output assigned to FTM0 fault 3 */
-    kXBARA_OutputFtm1Fault1         = 50|0x100U,   /**< XBARA_OUT50 output assigned to FTM1 fault 1 */
+    kXBARA_OutputRESERVED49         = 49|0x100U,   /**< XBARA_OUT49 output is reserved. */
+    kXBARA_OutputRESERVED50         = 50|0x100U,   /**< XBARA_OUT50 output is reserved. */
     kXBARA_OutputRESERVED51         = 51|0x100U,   /**< XBARA_OUT51 output is reserved. */
-    kXBARA_OutputFtm3Fault3         = 52|0x100U,   /**< XBARA_OUT52 output assigned to FTM3 fault 3 */
+    kXBARA_OutputRESERVED52         = 52|0x100U,   /**< XBARA_OUT52 output is reserved. */
     kXBARA_OutputRESERVED53         = 53|0x100U,   /**< XBARA_OUT53 output is reserved. */
     kXBARA_OutputRESERVED54         = 54|0x100U,   /**< XBARA_OUT54 output is reserved. */
     kXBARA_OutputRESERVED55         = 55|0x100U,   /**< XBARA_OUT55 output is reserved. */
@@ -8099,7 +8101,6 @@ typedef struct {
  *  0b001100..PWMA2CP_Signal
  *  0b001101..PWMA3CP_Signal
  *  0b001110..CAN0Rx_Signal
- *  0b001111..CAN1Rx_Signal
  *  0b010000..SPI0Rx_Signal
  *  0b010001..SPI0Tx_Signal
  *  0b010010..XBARAOut0_Signal
@@ -8107,21 +8108,7 @@ typedef struct {
  *  0b010100..XBARAOut2_Signal
  *  0b010101..XBARAOut3_Signal
  *  0b010110..I2C0_Signal
- *  0b011000..FTM0Channel0_Signal
- *  0b011001..FTM0Channel1_Signal
- *  0b011010..FTM0Channel2_Signal
- *  0b011011..FTM0Channel3_Signal
- *  0b011100..FTM0Channel4_Signal
- *  0b011101..FTM0Channel5_Signal
- *  0b011110..FTM0Channel6_Signal
- *  0b011111..FTM0Channel7_Signal
- *  0b100000..FTM1Channel0_Signal
- *  0b100001..FTM1Channel1_Signal
  *  0b100010..CMP3_Signal
- *  0b100100..FTM3Channel0_Signal
- *  0b100101..FTM3Channel1_Signal
- *  0b100110..FTM3Channel2_Signal
- *  0b100111..FTM3Channel3_Signal
  *  0b101000..ADCA_Signal
  *  0b101001..ADCB_Signal
  *  0b101010..CMP0_Signal
@@ -8135,10 +8122,6 @@ typedef struct {
  *  0b110011..PortC_Signal
  *  0b110100..PortD_Signal
  *  0b110101..PortE_Signal
- *  0b110110..FTM3Channel4_Signal
- *  0b110111..FTM3Channel5_Signal
- *  0b111000..FTM3Channel6_Signal
- *  0b111001..FTM3Channel7_Signal
  *  0b111010..AlwaysOn58_Signal
  *  0b111011..AlwaysOn59_Signal
  *  0b111100..AlwaysOn60_Signal
@@ -9535,1408 +9518,6 @@ typedef struct {
 /*!
  * @}
  */ /* end of group FTFA_Peripheral_Access_Layer */
-
-
-/* ----------------------------------------------------------------------------
-   -- FTM Peripheral Access Layer
-   ---------------------------------------------------------------------------- */
-
-/*!
- * @addtogroup FTM_Peripheral_Access_Layer FTM Peripheral Access Layer
- * @{
- */
-
-/** FTM - Register Layout Typedef */
-typedef struct {
-  __IO uint32_t SC;                                /**< Status And Control, offset: 0x0 */
-  __IO uint32_t CNT;                               /**< Counter, offset: 0x4 */
-  __IO uint32_t MOD;                               /**< Modulo, offset: 0x8 */
-  struct {                                         /* offset: 0xC, array step: 0x8 */
-    __IO uint32_t CnSC;                              /**< Channel (n) Status And Control, array offset: 0xC, array step: 0x8 */
-    __IO uint32_t CnV;                               /**< Channel (n) Value, array offset: 0x10, array step: 0x8 */
-  } CONTROLS[8];
-  __IO uint32_t CNTIN;                             /**< Counter Initial Value, offset: 0x4C */
-  __IO uint32_t STATUS;                            /**< Capture And Compare Status, offset: 0x50 */
-  __IO uint32_t MODE;                              /**< Features Mode Selection, offset: 0x54 */
-  __IO uint32_t SYNC;                              /**< Synchronization, offset: 0x58 */
-  __IO uint32_t OUTINIT;                           /**< Initial State For Channels Output, offset: 0x5C */
-  __IO uint32_t OUTMASK;                           /**< Output Mask, offset: 0x60 */
-  __IO uint32_t COMBINE;                           /**< Function For Linked Channels, offset: 0x64 */
-  __IO uint32_t DEADTIME;                          /**< Deadtime Insertion Control, offset: 0x68 */
-  __IO uint32_t EXTTRIG;                           /**< FTM External Trigger, offset: 0x6C */
-  __IO uint32_t POL;                               /**< Channels Polarity, offset: 0x70 */
-  __IO uint32_t FMS;                               /**< Fault Mode Status, offset: 0x74 */
-  __IO uint32_t FILTER;                            /**< Input Capture Filter Control, offset: 0x78 */
-  __IO uint32_t FLTCTRL;                           /**< Fault Control, offset: 0x7C */
-  __IO uint32_t QDCTRL;                            /**< Quadrature Decoder Control And Status, offset: 0x80 */
-  __IO uint32_t CONF;                              /**< Configuration, offset: 0x84 */
-  __IO uint32_t FLTPOL;                            /**< FTM Fault Input Polarity, offset: 0x88 */
-  __IO uint32_t SYNCONF;                           /**< Synchronization Configuration, offset: 0x8C */
-  __IO uint32_t INVCTRL;                           /**< FTM Inverting Control, offset: 0x90 */
-  __IO uint32_t SWOCTRL;                           /**< FTM Software Output Control, offset: 0x94 */
-  __IO uint32_t PWMLOAD;                           /**< FTM PWM Load, offset: 0x98 */
-} FTM_Type;
-
-/* ----------------------------------------------------------------------------
-   -- FTM Register Masks
-   ---------------------------------------------------------------------------- */
-
-/*!
- * @addtogroup FTM_Register_Masks FTM Register Masks
- * @{
- */
-
-/*! @name SC - Status And Control */
-/*! @{ */
-#define FTM_SC_PS_MASK                           (0x7U)
-#define FTM_SC_PS_SHIFT                          (0U)
-/*! PS - Prescale Factor Selection
- *  0b000..Divide by 1
- *  0b001..Divide by 2
- *  0b010..Divide by 4
- *  0b011..Divide by 8
- *  0b100..Divide by 16
- *  0b101..Divide by 32
- *  0b110..Divide by 64
- *  0b111..Divide by 128
- */
-#define FTM_SC_PS(x)                             (((uint32_t)(((uint32_t)(x)) << FTM_SC_PS_SHIFT)) & FTM_SC_PS_MASK)
-#define FTM_SC_CLKS_MASK                         (0x18U)
-#define FTM_SC_CLKS_SHIFT                        (3U)
-/*! CLKS - Clock Source Selection
- *  0b00..No clock selected. This in effect disables the FTM counter.
- *  0b01..System clock
- *  0b11..External clock
- */
-#define FTM_SC_CLKS(x)                           (((uint32_t)(((uint32_t)(x)) << FTM_SC_CLKS_SHIFT)) & FTM_SC_CLKS_MASK)
-#define FTM_SC_CPWMS_MASK                        (0x20U)
-#define FTM_SC_CPWMS_SHIFT                       (5U)
-/*! CPWMS - Center-Aligned PWM Select
- *  0b0..FTM counter operates in Up Counting mode.
- *  0b1..FTM counter operates in Up-Down Counting mode.
- */
-#define FTM_SC_CPWMS(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_SC_CPWMS_SHIFT)) & FTM_SC_CPWMS_MASK)
-#define FTM_SC_TOIE_MASK                         (0x40U)
-#define FTM_SC_TOIE_SHIFT                        (6U)
-/*! TOIE - Timer Overflow Interrupt Enable
- *  0b0..Disable TOF interrupts. Use software polling.
- *  0b1..Enable TOF interrupts. An interrupt is generated when TOF equals one.
- */
-#define FTM_SC_TOIE(x)                           (((uint32_t)(((uint32_t)(x)) << FTM_SC_TOIE_SHIFT)) & FTM_SC_TOIE_MASK)
-#define FTM_SC_TOF_MASK                          (0x80U)
-#define FTM_SC_TOF_SHIFT                         (7U)
-/*! TOF - Timer Overflow Flag
- *  0b0..FTM counter has not overflowed.
- *  0b1..FTM counter has overflowed.
- */
-#define FTM_SC_TOF(x)                            (((uint32_t)(((uint32_t)(x)) << FTM_SC_TOF_SHIFT)) & FTM_SC_TOF_MASK)
-/*! @} */
-
-/*! @name CNT - Counter */
-/*! @{ */
-#define FTM_CNT_COUNT_MASK                       (0xFFFFU)
-#define FTM_CNT_COUNT_SHIFT                      (0U)
-#define FTM_CNT_COUNT(x)                         (((uint32_t)(((uint32_t)(x)) << FTM_CNT_COUNT_SHIFT)) & FTM_CNT_COUNT_MASK)
-/*! @} */
-
-/*! @name MOD - Modulo */
-/*! @{ */
-#define FTM_MOD_MOD_MASK                         (0xFFFFU)
-#define FTM_MOD_MOD_SHIFT                        (0U)
-#define FTM_MOD_MOD(x)                           (((uint32_t)(((uint32_t)(x)) << FTM_MOD_MOD_SHIFT)) & FTM_MOD_MOD_MASK)
-/*! @} */
-
-/*! @name CnSC - Channel (n) Status And Control */
-/*! @{ */
-#define FTM_CnSC_DMA_MASK                        (0x1U)
-#define FTM_CnSC_DMA_SHIFT                       (0U)
-/*! DMA - DMA Enable
- *  0b0..Disable DMA transfers.
- *  0b1..Enable DMA transfers.
- */
-#define FTM_CnSC_DMA(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_DMA_SHIFT)) & FTM_CnSC_DMA_MASK)
-#define FTM_CnSC_ICRST_MASK                      (0x2U)
-#define FTM_CnSC_ICRST_SHIFT                     (1U)
-/*! ICRST - FTM counter reset by the selected input capture event.
- *  0b0..FTM counter is not reset when the selected channel (n) input event is detected.
- *  0b1..FTM counter is reset when the selected channel (n) input event is detected.
- */
-#define FTM_CnSC_ICRST(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_ICRST_SHIFT)) & FTM_CnSC_ICRST_MASK)
-#define FTM_CnSC_ELSA_MASK                       (0x4U)
-#define FTM_CnSC_ELSA_SHIFT                      (2U)
-#define FTM_CnSC_ELSA(x)                         (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_ELSA_SHIFT)) & FTM_CnSC_ELSA_MASK)
-#define FTM_CnSC_ELSB_MASK                       (0x8U)
-#define FTM_CnSC_ELSB_SHIFT                      (3U)
-#define FTM_CnSC_ELSB(x)                         (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_ELSB_SHIFT)) & FTM_CnSC_ELSB_MASK)
-#define FTM_CnSC_MSA_MASK                        (0x10U)
-#define FTM_CnSC_MSA_SHIFT                       (4U)
-#define FTM_CnSC_MSA(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_MSA_SHIFT)) & FTM_CnSC_MSA_MASK)
-#define FTM_CnSC_MSB_MASK                        (0x20U)
-#define FTM_CnSC_MSB_SHIFT                       (5U)
-#define FTM_CnSC_MSB(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_MSB_SHIFT)) & FTM_CnSC_MSB_MASK)
-#define FTM_CnSC_CHIE_MASK                       (0x40U)
-#define FTM_CnSC_CHIE_SHIFT                      (6U)
-/*! CHIE - Channel Interrupt Enable
- *  0b0..Disable channel interrupts. Use software polling.
- *  0b1..Enable channel interrupts.
- */
-#define FTM_CnSC_CHIE(x)                         (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_CHIE_SHIFT)) & FTM_CnSC_CHIE_MASK)
-#define FTM_CnSC_CHF_MASK                        (0x80U)
-#define FTM_CnSC_CHF_SHIFT                       (7U)
-/*! CHF - Channel Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_CnSC_CHF(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_CnSC_CHF_SHIFT)) & FTM_CnSC_CHF_MASK)
-/*! @} */
-
-/* The count of FTM_CnSC */
-#define FTM_CnSC_COUNT                           (8U)
-
-/*! @name CnV - Channel (n) Value */
-/*! @{ */
-#define FTM_CnV_VAL_MASK                         (0xFFFFU)
-#define FTM_CnV_VAL_SHIFT                        (0U)
-#define FTM_CnV_VAL(x)                           (((uint32_t)(((uint32_t)(x)) << FTM_CnV_VAL_SHIFT)) & FTM_CnV_VAL_MASK)
-/*! @} */
-
-/* The count of FTM_CnV */
-#define FTM_CnV_COUNT                            (8U)
-
-/*! @name CNTIN - Counter Initial Value */
-/*! @{ */
-#define FTM_CNTIN_INIT_MASK                      (0xFFFFU)
-#define FTM_CNTIN_INIT_SHIFT                     (0U)
-#define FTM_CNTIN_INIT(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_CNTIN_INIT_SHIFT)) & FTM_CNTIN_INIT_MASK)
-/*! @} */
-
-/*! @name STATUS - Capture And Compare Status */
-/*! @{ */
-#define FTM_STATUS_CH0F_MASK                     (0x1U)
-#define FTM_STATUS_CH0F_SHIFT                    (0U)
-/*! CH0F - Channel 0 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH0F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH0F_SHIFT)) & FTM_STATUS_CH0F_MASK)
-#define FTM_STATUS_CH1F_MASK                     (0x2U)
-#define FTM_STATUS_CH1F_SHIFT                    (1U)
-/*! CH1F - Channel 1 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH1F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH1F_SHIFT)) & FTM_STATUS_CH1F_MASK)
-#define FTM_STATUS_CH2F_MASK                     (0x4U)
-#define FTM_STATUS_CH2F_SHIFT                    (2U)
-/*! CH2F - Channel 2 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH2F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH2F_SHIFT)) & FTM_STATUS_CH2F_MASK)
-#define FTM_STATUS_CH3F_MASK                     (0x8U)
-#define FTM_STATUS_CH3F_SHIFT                    (3U)
-/*! CH3F - Channel 3 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH3F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH3F_SHIFT)) & FTM_STATUS_CH3F_MASK)
-#define FTM_STATUS_CH4F_MASK                     (0x10U)
-#define FTM_STATUS_CH4F_SHIFT                    (4U)
-/*! CH4F - Channel 4 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH4F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH4F_SHIFT)) & FTM_STATUS_CH4F_MASK)
-#define FTM_STATUS_CH5F_MASK                     (0x20U)
-#define FTM_STATUS_CH5F_SHIFT                    (5U)
-/*! CH5F - Channel 5 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH5F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH5F_SHIFT)) & FTM_STATUS_CH5F_MASK)
-#define FTM_STATUS_CH6F_MASK                     (0x40U)
-#define FTM_STATUS_CH6F_SHIFT                    (6U)
-/*! CH6F - Channel 6 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH6F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH6F_SHIFT)) & FTM_STATUS_CH6F_MASK)
-#define FTM_STATUS_CH7F_MASK                     (0x80U)
-#define FTM_STATUS_CH7F_SHIFT                    (7U)
-/*! CH7F - Channel 7 Flag
- *  0b0..No channel event has occurred.
- *  0b1..A channel event has occurred.
- */
-#define FTM_STATUS_CH7F(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_STATUS_CH7F_SHIFT)) & FTM_STATUS_CH7F_MASK)
-/*! @} */
-
-/*! @name MODE - Features Mode Selection */
-/*! @{ */
-#define FTM_MODE_FTMEN_MASK                      (0x1U)
-#define FTM_MODE_FTMEN_SHIFT                     (0U)
-/*! FTMEN - FTM Enable
- *  0b0..TPM compatibility. Free running counter and synchronization compatible with TPM.
- *  0b1..Free running counter and synchronization are different from TPM behavior.
- */
-#define FTM_MODE_FTMEN(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_MODE_FTMEN_SHIFT)) & FTM_MODE_FTMEN_MASK)
-#define FTM_MODE_INIT_MASK                       (0x2U)
-#define FTM_MODE_INIT_SHIFT                      (1U)
-#define FTM_MODE_INIT(x)                         (((uint32_t)(((uint32_t)(x)) << FTM_MODE_INIT_SHIFT)) & FTM_MODE_INIT_MASK)
-#define FTM_MODE_WPDIS_MASK                      (0x4U)
-#define FTM_MODE_WPDIS_SHIFT                     (2U)
-/*! WPDIS - Write Protection Disable
- *  0b0..Write protection is enabled.
- *  0b1..Write protection is disabled.
- */
-#define FTM_MODE_WPDIS(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_MODE_WPDIS_SHIFT)) & FTM_MODE_WPDIS_MASK)
-#define FTM_MODE_PWMSYNC_MASK                    (0x8U)
-#define FTM_MODE_PWMSYNC_SHIFT                   (3U)
-/*! PWMSYNC - PWM Synchronization Mode
- *  0b0..No restrictions. Software and hardware triggers can be used by MOD, CnV, OUTMASK, and FTM counter synchronization.
- *  0b1..Software trigger can only be used by MOD and CnV synchronization, and hardware triggers can only be used by OUTMASK and FTM counter synchronization.
- */
-#define FTM_MODE_PWMSYNC(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_MODE_PWMSYNC_SHIFT)) & FTM_MODE_PWMSYNC_MASK)
-#define FTM_MODE_CAPTEST_MASK                    (0x10U)
-#define FTM_MODE_CAPTEST_SHIFT                   (4U)
-/*! CAPTEST - Capture Test Mode Enable
- *  0b0..Capture test mode is disabled.
- *  0b1..Capture test mode is enabled.
- */
-#define FTM_MODE_CAPTEST(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_MODE_CAPTEST_SHIFT)) & FTM_MODE_CAPTEST_MASK)
-#define FTM_MODE_FAULTM_MASK                     (0x60U)
-#define FTM_MODE_FAULTM_SHIFT                    (5U)
-/*! FAULTM - Fault Control Mode
- *  0b00..Fault control is disabled for all channels.
- *  0b01..Fault control is enabled for even channels only (channels 0, 2, 4, and 6), and the selected mode is the manual fault clearing.
- *  0b10..Fault control is enabled for all channels, and the selected mode is the manual fault clearing.
- *  0b11..Fault control is enabled for all channels, and the selected mode is the automatic fault clearing.
- */
-#define FTM_MODE_FAULTM(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_MODE_FAULTM_SHIFT)) & FTM_MODE_FAULTM_MASK)
-#define FTM_MODE_FAULTIE_MASK                    (0x80U)
-#define FTM_MODE_FAULTIE_SHIFT                   (7U)
-/*! FAULTIE - Fault Interrupt Enable
- *  0b0..Fault control interrupt is disabled.
- *  0b1..Fault control interrupt is enabled.
- */
-#define FTM_MODE_FAULTIE(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_MODE_FAULTIE_SHIFT)) & FTM_MODE_FAULTIE_MASK)
-/*! @} */
-
-/*! @name SYNC - Synchronization */
-/*! @{ */
-#define FTM_SYNC_CNTMIN_MASK                     (0x1U)
-#define FTM_SYNC_CNTMIN_SHIFT                    (0U)
-/*! CNTMIN - Minimum Loading Point Enable
- *  0b0..The minimum loading point is disabled.
- *  0b1..The minimum loading point is enabled.
- */
-#define FTM_SYNC_CNTMIN(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_CNTMIN_SHIFT)) & FTM_SYNC_CNTMIN_MASK)
-#define FTM_SYNC_CNTMAX_MASK                     (0x2U)
-#define FTM_SYNC_CNTMAX_SHIFT                    (1U)
-/*! CNTMAX - Maximum Loading Point Enable
- *  0b0..The maximum loading point is disabled.
- *  0b1..The maximum loading point is enabled.
- */
-#define FTM_SYNC_CNTMAX(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_CNTMAX_SHIFT)) & FTM_SYNC_CNTMAX_MASK)
-#define FTM_SYNC_REINIT_MASK                     (0x4U)
-#define FTM_SYNC_REINIT_SHIFT                    (2U)
-/*! REINIT - FTM Counter Reinitialization By Synchronization (FTM counter synchronization)
- *  0b0..FTM counter continues to count normally.
- *  0b1..FTM counter is updated with its initial value when the selected trigger is detected.
- */
-#define FTM_SYNC_REINIT(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_REINIT_SHIFT)) & FTM_SYNC_REINIT_MASK)
-#define FTM_SYNC_SYNCHOM_MASK                    (0x8U)
-#define FTM_SYNC_SYNCHOM_SHIFT                   (3U)
-/*! SYNCHOM - Output Mask Synchronization
- *  0b0..OUTMASK register is updated with the value of its buffer in all rising edges of the system clock.
- *  0b1..OUTMASK register is updated with the value of its buffer only by the PWM synchronization.
- */
-#define FTM_SYNC_SYNCHOM(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_SYNCHOM_SHIFT)) & FTM_SYNC_SYNCHOM_MASK)
-#define FTM_SYNC_TRIG0_MASK                      (0x10U)
-#define FTM_SYNC_TRIG0_SHIFT                     (4U)
-/*! TRIG0 - PWM Synchronization Hardware Trigger 0
- *  0b0..Trigger is disabled.
- *  0b1..Trigger is enabled.
- */
-#define FTM_SYNC_TRIG0(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_TRIG0_SHIFT)) & FTM_SYNC_TRIG0_MASK)
-#define FTM_SYNC_TRIG1_MASK                      (0x20U)
-#define FTM_SYNC_TRIG1_SHIFT                     (5U)
-/*! TRIG1 - PWM Synchronization Hardware Trigger 1
- *  0b0..Trigger is disabled.
- *  0b1..Trigger is enabled.
- */
-#define FTM_SYNC_TRIG1(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_TRIG1_SHIFT)) & FTM_SYNC_TRIG1_MASK)
-#define FTM_SYNC_TRIG2_MASK                      (0x40U)
-#define FTM_SYNC_TRIG2_SHIFT                     (6U)
-/*! TRIG2 - PWM Synchronization Hardware Trigger 2
- *  0b0..Trigger is disabled.
- *  0b1..Trigger is enabled.
- */
-#define FTM_SYNC_TRIG2(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_TRIG2_SHIFT)) & FTM_SYNC_TRIG2_MASK)
-#define FTM_SYNC_SWSYNC_MASK                     (0x80U)
-#define FTM_SYNC_SWSYNC_SHIFT                    (7U)
-/*! SWSYNC - PWM Synchronization Software Trigger
- *  0b0..Software trigger is not selected.
- *  0b1..Software trigger is selected.
- */
-#define FTM_SYNC_SWSYNC(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_SYNC_SWSYNC_SHIFT)) & FTM_SYNC_SWSYNC_MASK)
-/*! @} */
-
-/*! @name OUTINIT - Initial State For Channels Output */
-/*! @{ */
-#define FTM_OUTINIT_CH0OI_MASK                   (0x1U)
-#define FTM_OUTINIT_CH0OI_SHIFT                  (0U)
-/*! CH0OI - Channel 0 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH0OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH0OI_SHIFT)) & FTM_OUTINIT_CH0OI_MASK)
-#define FTM_OUTINIT_CH1OI_MASK                   (0x2U)
-#define FTM_OUTINIT_CH1OI_SHIFT                  (1U)
-/*! CH1OI - Channel 1 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH1OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH1OI_SHIFT)) & FTM_OUTINIT_CH1OI_MASK)
-#define FTM_OUTINIT_CH2OI_MASK                   (0x4U)
-#define FTM_OUTINIT_CH2OI_SHIFT                  (2U)
-/*! CH2OI - Channel 2 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH2OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH2OI_SHIFT)) & FTM_OUTINIT_CH2OI_MASK)
-#define FTM_OUTINIT_CH3OI_MASK                   (0x8U)
-#define FTM_OUTINIT_CH3OI_SHIFT                  (3U)
-/*! CH3OI - Channel 3 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH3OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH3OI_SHIFT)) & FTM_OUTINIT_CH3OI_MASK)
-#define FTM_OUTINIT_CH4OI_MASK                   (0x10U)
-#define FTM_OUTINIT_CH4OI_SHIFT                  (4U)
-/*! CH4OI - Channel 4 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH4OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH4OI_SHIFT)) & FTM_OUTINIT_CH4OI_MASK)
-#define FTM_OUTINIT_CH5OI_MASK                   (0x20U)
-#define FTM_OUTINIT_CH5OI_SHIFT                  (5U)
-/*! CH5OI - Channel 5 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH5OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH5OI_SHIFT)) & FTM_OUTINIT_CH5OI_MASK)
-#define FTM_OUTINIT_CH6OI_MASK                   (0x40U)
-#define FTM_OUTINIT_CH6OI_SHIFT                  (6U)
-/*! CH6OI - Channel 6 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH6OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH6OI_SHIFT)) & FTM_OUTINIT_CH6OI_MASK)
-#define FTM_OUTINIT_CH7OI_MASK                   (0x80U)
-#define FTM_OUTINIT_CH7OI_SHIFT                  (7U)
-/*! CH7OI - Channel 7 Output Initialization Value
- *  0b0..The initialization value is 0.
- *  0b1..The initialization value is 1.
- */
-#define FTM_OUTINIT_CH7OI(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTINIT_CH7OI_SHIFT)) & FTM_OUTINIT_CH7OI_MASK)
-/*! @} */
-
-/*! @name OUTMASK - Output Mask */
-/*! @{ */
-#define FTM_OUTMASK_CH0OM_MASK                   (0x1U)
-#define FTM_OUTMASK_CH0OM_SHIFT                  (0U)
-/*! CH0OM - Channel 0 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH0OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH0OM_SHIFT)) & FTM_OUTMASK_CH0OM_MASK)
-#define FTM_OUTMASK_CH1OM_MASK                   (0x2U)
-#define FTM_OUTMASK_CH1OM_SHIFT                  (1U)
-/*! CH1OM - Channel 1 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH1OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH1OM_SHIFT)) & FTM_OUTMASK_CH1OM_MASK)
-#define FTM_OUTMASK_CH2OM_MASK                   (0x4U)
-#define FTM_OUTMASK_CH2OM_SHIFT                  (2U)
-/*! CH2OM - Channel 2 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH2OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH2OM_SHIFT)) & FTM_OUTMASK_CH2OM_MASK)
-#define FTM_OUTMASK_CH3OM_MASK                   (0x8U)
-#define FTM_OUTMASK_CH3OM_SHIFT                  (3U)
-/*! CH3OM - Channel 3 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH3OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH3OM_SHIFT)) & FTM_OUTMASK_CH3OM_MASK)
-#define FTM_OUTMASK_CH4OM_MASK                   (0x10U)
-#define FTM_OUTMASK_CH4OM_SHIFT                  (4U)
-/*! CH4OM - Channel 4 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH4OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH4OM_SHIFT)) & FTM_OUTMASK_CH4OM_MASK)
-#define FTM_OUTMASK_CH5OM_MASK                   (0x20U)
-#define FTM_OUTMASK_CH5OM_SHIFT                  (5U)
-/*! CH5OM - Channel 5 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH5OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH5OM_SHIFT)) & FTM_OUTMASK_CH5OM_MASK)
-#define FTM_OUTMASK_CH6OM_MASK                   (0x40U)
-#define FTM_OUTMASK_CH6OM_SHIFT                  (6U)
-/*! CH6OM - Channel 6 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH6OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH6OM_SHIFT)) & FTM_OUTMASK_CH6OM_MASK)
-#define FTM_OUTMASK_CH7OM_MASK                   (0x80U)
-#define FTM_OUTMASK_CH7OM_SHIFT                  (7U)
-/*! CH7OM - Channel 7 Output Mask
- *  0b0..Channel output is not masked. It continues to operate normally.
- *  0b1..Channel output is masked. It is forced to its inactive state.
- */
-#define FTM_OUTMASK_CH7OM(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_OUTMASK_CH7OM_SHIFT)) & FTM_OUTMASK_CH7OM_MASK)
-/*! @} */
-
-/*! @name COMBINE - Function For Linked Channels */
-/*! @{ */
-#define FTM_COMBINE_COMBINE0_MASK                (0x1U)
-#define FTM_COMBINE_COMBINE0_SHIFT               (0U)
-/*! COMBINE0 - Combine Channels For n = 0
- *  0b0..Channels (n) and (n+1) are independent.
- *  0b1..Channels (n) and (n+1) are combined.
- */
-#define FTM_COMBINE_COMBINE0(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMBINE0_SHIFT)) & FTM_COMBINE_COMBINE0_MASK)
-#define FTM_COMBINE_COMP0_MASK                   (0x2U)
-#define FTM_COMBINE_COMP0_SHIFT                  (1U)
-/*! COMP0 - Complement Of Channel (n) For n = 0
- *  0b0..The channel (n+1) output is the same as the channel (n) output.
- *  0b1..The channel (n+1) output is the complement of the channel (n) output.
- */
-#define FTM_COMBINE_COMP0(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMP0_SHIFT)) & FTM_COMBINE_COMP0_MASK)
-#define FTM_COMBINE_DECAPEN0_MASK                (0x4U)
-#define FTM_COMBINE_DECAPEN0_SHIFT               (2U)
-/*! DECAPEN0 - Dual Edge Capture Mode Enable For n = 0
- *  0b0..The Dual Edge Capture mode in this pair of channels is disabled.
- *  0b1..The Dual Edge Capture mode in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DECAPEN0(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAPEN0_SHIFT)) & FTM_COMBINE_DECAPEN0_MASK)
-#define FTM_COMBINE_DECAP0_MASK                  (0x8U)
-#define FTM_COMBINE_DECAP0_SHIFT                 (3U)
-/*! DECAP0 - Dual Edge Capture Mode Captures For n = 0
- *  0b0..The dual edge captures are inactive.
- *  0b1..The dual edge captures are active.
- */
-#define FTM_COMBINE_DECAP0(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAP0_SHIFT)) & FTM_COMBINE_DECAP0_MASK)
-#define FTM_COMBINE_DTEN0_MASK                   (0x10U)
-#define FTM_COMBINE_DTEN0_SHIFT                  (4U)
-/*! DTEN0 - Deadtime Enable For n = 0
- *  0b0..The deadtime insertion in this pair of channels is disabled.
- *  0b1..The deadtime insertion in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DTEN0(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DTEN0_SHIFT)) & FTM_COMBINE_DTEN0_MASK)
-#define FTM_COMBINE_SYNCEN0_MASK                 (0x20U)
-#define FTM_COMBINE_SYNCEN0_SHIFT                (5U)
-/*! SYNCEN0 - Synchronization Enable For n = 0
- *  0b0..The PWM synchronization in this pair of channels is disabled.
- *  0b1..The PWM synchronization in this pair of channels is enabled.
- */
-#define FTM_COMBINE_SYNCEN0(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_SYNCEN0_SHIFT)) & FTM_COMBINE_SYNCEN0_MASK)
-#define FTM_COMBINE_FAULTEN0_MASK                (0x40U)
-#define FTM_COMBINE_FAULTEN0_SHIFT               (6U)
-/*! FAULTEN0 - Fault Control Enable For n = 0
- *  0b0..The fault control in this pair of channels is disabled.
- *  0b1..The fault control in this pair of channels is enabled.
- */
-#define FTM_COMBINE_FAULTEN0(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_FAULTEN0_SHIFT)) & FTM_COMBINE_FAULTEN0_MASK)
-#define FTM_COMBINE_COMBINE1_MASK                (0x100U)
-#define FTM_COMBINE_COMBINE1_SHIFT               (8U)
-/*! COMBINE1 - Combine Channels For n = 2
- *  0b0..Channels (n) and (n+1) are independent.
- *  0b1..Channels (n) and (n+1) are combined.
- */
-#define FTM_COMBINE_COMBINE1(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMBINE1_SHIFT)) & FTM_COMBINE_COMBINE1_MASK)
-#define FTM_COMBINE_COMP1_MASK                   (0x200U)
-#define FTM_COMBINE_COMP1_SHIFT                  (9U)
-/*! COMP1 - Complement Of Channel (n) For n = 2
- *  0b0..The channel (n+1) output is the same as the channel (n) output.
- *  0b1..The channel (n+1) output is the complement of the channel (n) output.
- */
-#define FTM_COMBINE_COMP1(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMP1_SHIFT)) & FTM_COMBINE_COMP1_MASK)
-#define FTM_COMBINE_DECAPEN1_MASK                (0x400U)
-#define FTM_COMBINE_DECAPEN1_SHIFT               (10U)
-/*! DECAPEN1 - Dual Edge Capture Mode Enable For n = 2
- *  0b0..The Dual Edge Capture mode in this pair of channels is disabled.
- *  0b1..The Dual Edge Capture mode in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DECAPEN1(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAPEN1_SHIFT)) & FTM_COMBINE_DECAPEN1_MASK)
-#define FTM_COMBINE_DECAP1_MASK                  (0x800U)
-#define FTM_COMBINE_DECAP1_SHIFT                 (11U)
-/*! DECAP1 - Dual Edge Capture Mode Captures For n = 2
- *  0b0..The dual edge captures are inactive.
- *  0b1..The dual edge captures are active.
- */
-#define FTM_COMBINE_DECAP1(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAP1_SHIFT)) & FTM_COMBINE_DECAP1_MASK)
-#define FTM_COMBINE_DTEN1_MASK                   (0x1000U)
-#define FTM_COMBINE_DTEN1_SHIFT                  (12U)
-/*! DTEN1 - Deadtime Enable For n = 2
- *  0b0..The deadtime insertion in this pair of channels is disabled.
- *  0b1..The deadtime insertion in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DTEN1(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DTEN1_SHIFT)) & FTM_COMBINE_DTEN1_MASK)
-#define FTM_COMBINE_SYNCEN1_MASK                 (0x2000U)
-#define FTM_COMBINE_SYNCEN1_SHIFT                (13U)
-/*! SYNCEN1 - Synchronization Enable For n = 2
- *  0b0..The PWM synchronization in this pair of channels is disabled.
- *  0b1..The PWM synchronization in this pair of channels is enabled.
- */
-#define FTM_COMBINE_SYNCEN1(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_SYNCEN1_SHIFT)) & FTM_COMBINE_SYNCEN1_MASK)
-#define FTM_COMBINE_FAULTEN1_MASK                (0x4000U)
-#define FTM_COMBINE_FAULTEN1_SHIFT               (14U)
-/*! FAULTEN1 - Fault Control Enable For n = 2
- *  0b0..The fault control in this pair of channels is disabled.
- *  0b1..The fault control in this pair of channels is enabled.
- */
-#define FTM_COMBINE_FAULTEN1(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_FAULTEN1_SHIFT)) & FTM_COMBINE_FAULTEN1_MASK)
-#define FTM_COMBINE_COMBINE2_MASK                (0x10000U)
-#define FTM_COMBINE_COMBINE2_SHIFT               (16U)
-/*! COMBINE2 - Combine Channels For n = 4
- *  0b0..Channels (n) and (n+1) are independent.
- *  0b1..Channels (n) and (n+1) are combined.
- */
-#define FTM_COMBINE_COMBINE2(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMBINE2_SHIFT)) & FTM_COMBINE_COMBINE2_MASK)
-#define FTM_COMBINE_COMP2_MASK                   (0x20000U)
-#define FTM_COMBINE_COMP2_SHIFT                  (17U)
-/*! COMP2 - Complement Of Channel (n) For n = 4
- *  0b0..The channel (n+1) output is the same as the channel (n) output.
- *  0b1..The channel (n+1) output is the complement of the channel (n) output.
- */
-#define FTM_COMBINE_COMP2(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMP2_SHIFT)) & FTM_COMBINE_COMP2_MASK)
-#define FTM_COMBINE_DECAPEN2_MASK                (0x40000U)
-#define FTM_COMBINE_DECAPEN2_SHIFT               (18U)
-/*! DECAPEN2 - Dual Edge Capture Mode Enable For n = 4
- *  0b0..The Dual Edge Capture mode in this pair of channels is disabled.
- *  0b1..The Dual Edge Capture mode in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DECAPEN2(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAPEN2_SHIFT)) & FTM_COMBINE_DECAPEN2_MASK)
-#define FTM_COMBINE_DECAP2_MASK                  (0x80000U)
-#define FTM_COMBINE_DECAP2_SHIFT                 (19U)
-/*! DECAP2 - Dual Edge Capture Mode Captures For n = 4
- *  0b0..The dual edge captures are inactive.
- *  0b1..The dual edge captures are active.
- */
-#define FTM_COMBINE_DECAP2(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAP2_SHIFT)) & FTM_COMBINE_DECAP2_MASK)
-#define FTM_COMBINE_DTEN2_MASK                   (0x100000U)
-#define FTM_COMBINE_DTEN2_SHIFT                  (20U)
-/*! DTEN2 - Deadtime Enable For n = 4
- *  0b0..The deadtime insertion in this pair of channels is disabled.
- *  0b1..The deadtime insertion in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DTEN2(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DTEN2_SHIFT)) & FTM_COMBINE_DTEN2_MASK)
-#define FTM_COMBINE_SYNCEN2_MASK                 (0x200000U)
-#define FTM_COMBINE_SYNCEN2_SHIFT                (21U)
-/*! SYNCEN2 - Synchronization Enable For n = 4
- *  0b0..The PWM synchronization in this pair of channels is disabled.
- *  0b1..The PWM synchronization in this pair of channels is enabled.
- */
-#define FTM_COMBINE_SYNCEN2(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_SYNCEN2_SHIFT)) & FTM_COMBINE_SYNCEN2_MASK)
-#define FTM_COMBINE_FAULTEN2_MASK                (0x400000U)
-#define FTM_COMBINE_FAULTEN2_SHIFT               (22U)
-/*! FAULTEN2 - Fault Control Enable For n = 4
- *  0b0..The fault control in this pair of channels is disabled.
- *  0b1..The fault control in this pair of channels is enabled.
- */
-#define FTM_COMBINE_FAULTEN2(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_FAULTEN2_SHIFT)) & FTM_COMBINE_FAULTEN2_MASK)
-#define FTM_COMBINE_COMBINE3_MASK                (0x1000000U)
-#define FTM_COMBINE_COMBINE3_SHIFT               (24U)
-/*! COMBINE3 - Combine Channels For n = 6
- *  0b0..Channels (n) and (n+1) are independent.
- *  0b1..Channels (n) and (n+1) are combined.
- */
-#define FTM_COMBINE_COMBINE3(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMBINE3_SHIFT)) & FTM_COMBINE_COMBINE3_MASK)
-#define FTM_COMBINE_COMP3_MASK                   (0x2000000U)
-#define FTM_COMBINE_COMP3_SHIFT                  (25U)
-/*! COMP3 - Complement Of Channel (n) for n = 6
- *  0b0..The channel (n+1) output is the same as the channel (n) output.
- *  0b1..The channel (n+1) output is the complement of the channel (n) output.
- */
-#define FTM_COMBINE_COMP3(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_COMP3_SHIFT)) & FTM_COMBINE_COMP3_MASK)
-#define FTM_COMBINE_DECAPEN3_MASK                (0x4000000U)
-#define FTM_COMBINE_DECAPEN3_SHIFT               (26U)
-/*! DECAPEN3 - Dual Edge Capture Mode Enable For n = 6
- *  0b0..The Dual Edge Capture mode in this pair of channels is disabled.
- *  0b1..The Dual Edge Capture mode in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DECAPEN3(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAPEN3_SHIFT)) & FTM_COMBINE_DECAPEN3_MASK)
-#define FTM_COMBINE_DECAP3_MASK                  (0x8000000U)
-#define FTM_COMBINE_DECAP3_SHIFT                 (27U)
-/*! DECAP3 - Dual Edge Capture Mode Captures For n = 6
- *  0b0..The dual edge captures are inactive.
- *  0b1..The dual edge captures are active.
- */
-#define FTM_COMBINE_DECAP3(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DECAP3_SHIFT)) & FTM_COMBINE_DECAP3_MASK)
-#define FTM_COMBINE_DTEN3_MASK                   (0x10000000U)
-#define FTM_COMBINE_DTEN3_SHIFT                  (28U)
-/*! DTEN3 - Deadtime Enable For n = 6
- *  0b0..The deadtime insertion in this pair of channels is disabled.
- *  0b1..The deadtime insertion in this pair of channels is enabled.
- */
-#define FTM_COMBINE_DTEN3(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_DTEN3_SHIFT)) & FTM_COMBINE_DTEN3_MASK)
-#define FTM_COMBINE_SYNCEN3_MASK                 (0x20000000U)
-#define FTM_COMBINE_SYNCEN3_SHIFT                (29U)
-/*! SYNCEN3 - Synchronization Enable For n = 6
- *  0b0..The PWM synchronization in this pair of channels is disabled.
- *  0b1..The PWM synchronization in this pair of channels is enabled.
- */
-#define FTM_COMBINE_SYNCEN3(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_SYNCEN3_SHIFT)) & FTM_COMBINE_SYNCEN3_MASK)
-#define FTM_COMBINE_FAULTEN3_MASK                (0x40000000U)
-#define FTM_COMBINE_FAULTEN3_SHIFT               (30U)
-/*! FAULTEN3 - Fault Control Enable For n = 6
- *  0b0..The fault control in this pair of channels is disabled.
- *  0b1..The fault control in this pair of channels is enabled.
- */
-#define FTM_COMBINE_FAULTEN3(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_COMBINE_FAULTEN3_SHIFT)) & FTM_COMBINE_FAULTEN3_MASK)
-/*! @} */
-
-/*! @name DEADTIME - Deadtime Insertion Control */
-/*! @{ */
-#define FTM_DEADTIME_DTVAL_MASK                  (0x3FU)
-#define FTM_DEADTIME_DTVAL_SHIFT                 (0U)
-#define FTM_DEADTIME_DTVAL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_DEADTIME_DTVAL_SHIFT)) & FTM_DEADTIME_DTVAL_MASK)
-#define FTM_DEADTIME_DTPS_MASK                   (0xC0U)
-#define FTM_DEADTIME_DTPS_SHIFT                  (6U)
-/*! DTPS - Deadtime Prescaler Value
- *  0b0x..Divide the system clock by 1.
- *  0b10..Divide the system clock by 4.
- *  0b11..Divide the system clock by 16.
- */
-#define FTM_DEADTIME_DTPS(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_DEADTIME_DTPS_SHIFT)) & FTM_DEADTIME_DTPS_MASK)
-/*! @} */
-
-/*! @name EXTTRIG - FTM External Trigger */
-/*! @{ */
-#define FTM_EXTTRIG_CH2TRIG_MASK                 (0x1U)
-#define FTM_EXTTRIG_CH2TRIG_SHIFT                (0U)
-/*! CH2TRIG - Channel 2 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH2TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH2TRIG_SHIFT)) & FTM_EXTTRIG_CH2TRIG_MASK)
-#define FTM_EXTTRIG_CH3TRIG_MASK                 (0x2U)
-#define FTM_EXTTRIG_CH3TRIG_SHIFT                (1U)
-/*! CH3TRIG - Channel 3 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH3TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH3TRIG_SHIFT)) & FTM_EXTTRIG_CH3TRIG_MASK)
-#define FTM_EXTTRIG_CH4TRIG_MASK                 (0x4U)
-#define FTM_EXTTRIG_CH4TRIG_SHIFT                (2U)
-/*! CH4TRIG - Channel 4 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH4TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH4TRIG_SHIFT)) & FTM_EXTTRIG_CH4TRIG_MASK)
-#define FTM_EXTTRIG_CH5TRIG_MASK                 (0x8U)
-#define FTM_EXTTRIG_CH5TRIG_SHIFT                (3U)
-/*! CH5TRIG - Channel 5 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH5TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH5TRIG_SHIFT)) & FTM_EXTTRIG_CH5TRIG_MASK)
-#define FTM_EXTTRIG_CH0TRIG_MASK                 (0x10U)
-#define FTM_EXTTRIG_CH0TRIG_SHIFT                (4U)
-/*! CH0TRIG - Channel 0 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH0TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH0TRIG_SHIFT)) & FTM_EXTTRIG_CH0TRIG_MASK)
-#define FTM_EXTTRIG_CH1TRIG_MASK                 (0x20U)
-#define FTM_EXTTRIG_CH1TRIG_SHIFT                (5U)
-/*! CH1TRIG - Channel 1 Trigger Enable
- *  0b0..The generation of the channel trigger is disabled.
- *  0b1..The generation of the channel trigger is enabled.
- */
-#define FTM_EXTTRIG_CH1TRIG(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_CH1TRIG_SHIFT)) & FTM_EXTTRIG_CH1TRIG_MASK)
-#define FTM_EXTTRIG_INITTRIGEN_MASK              (0x40U)
-#define FTM_EXTTRIG_INITTRIGEN_SHIFT             (6U)
-/*! INITTRIGEN - Initialization Trigger Enable
- *  0b0..The generation of initialization trigger is disabled.
- *  0b1..The generation of initialization trigger is enabled.
- */
-#define FTM_EXTTRIG_INITTRIGEN(x)                (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_INITTRIGEN_SHIFT)) & FTM_EXTTRIG_INITTRIGEN_MASK)
-#define FTM_EXTTRIG_TRIGF_MASK                   (0x80U)
-#define FTM_EXTTRIG_TRIGF_SHIFT                  (7U)
-/*! TRIGF - Channel Trigger Flag
- *  0b0..No channel trigger was generated.
- *  0b1..A channel trigger was generated.
- */
-#define FTM_EXTTRIG_TRIGF(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_EXTTRIG_TRIGF_SHIFT)) & FTM_EXTTRIG_TRIGF_MASK)
-/*! @} */
-
-/*! @name POL - Channels Polarity */
-/*! @{ */
-#define FTM_POL_POL0_MASK                        (0x1U)
-#define FTM_POL_POL0_SHIFT                       (0U)
-/*! POL0 - Channel 0 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL0(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL0_SHIFT)) & FTM_POL_POL0_MASK)
-#define FTM_POL_POL1_MASK                        (0x2U)
-#define FTM_POL_POL1_SHIFT                       (1U)
-/*! POL1 - Channel 1 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL1(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL1_SHIFT)) & FTM_POL_POL1_MASK)
-#define FTM_POL_POL2_MASK                        (0x4U)
-#define FTM_POL_POL2_SHIFT                       (2U)
-/*! POL2 - Channel 2 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL2(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL2_SHIFT)) & FTM_POL_POL2_MASK)
-#define FTM_POL_POL3_MASK                        (0x8U)
-#define FTM_POL_POL3_SHIFT                       (3U)
-/*! POL3 - Channel 3 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL3(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL3_SHIFT)) & FTM_POL_POL3_MASK)
-#define FTM_POL_POL4_MASK                        (0x10U)
-#define FTM_POL_POL4_SHIFT                       (4U)
-/*! POL4 - Channel 4 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL4(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL4_SHIFT)) & FTM_POL_POL4_MASK)
-#define FTM_POL_POL5_MASK                        (0x20U)
-#define FTM_POL_POL5_SHIFT                       (5U)
-/*! POL5 - Channel 5 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL5(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL5_SHIFT)) & FTM_POL_POL5_MASK)
-#define FTM_POL_POL6_MASK                        (0x40U)
-#define FTM_POL_POL6_SHIFT                       (6U)
-/*! POL6 - Channel 6 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL6(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL6_SHIFT)) & FTM_POL_POL6_MASK)
-#define FTM_POL_POL7_MASK                        (0x80U)
-#define FTM_POL_POL7_SHIFT                       (7U)
-/*! POL7 - Channel 7 Polarity
- *  0b0..The channel polarity is active high.
- *  0b1..The channel polarity is active low.
- */
-#define FTM_POL_POL7(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_POL_POL7_SHIFT)) & FTM_POL_POL7_MASK)
-/*! @} */
-
-/*! @name FMS - Fault Mode Status */
-/*! @{ */
-#define FTM_FMS_FAULTF0_MASK                     (0x1U)
-#define FTM_FMS_FAULTF0_SHIFT                    (0U)
-/*! FAULTF0 - Fault Detection Flag 0
- *  0b0..No fault condition was detected at the fault input.
- *  0b1..A fault condition was detected at the fault input.
- */
-#define FTM_FMS_FAULTF0(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTF0_SHIFT)) & FTM_FMS_FAULTF0_MASK)
-#define FTM_FMS_FAULTF1_MASK                     (0x2U)
-#define FTM_FMS_FAULTF1_SHIFT                    (1U)
-/*! FAULTF1 - Fault Detection Flag 1
- *  0b0..No fault condition was detected at the fault input.
- *  0b1..A fault condition was detected at the fault input.
- */
-#define FTM_FMS_FAULTF1(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTF1_SHIFT)) & FTM_FMS_FAULTF1_MASK)
-#define FTM_FMS_FAULTF2_MASK                     (0x4U)
-#define FTM_FMS_FAULTF2_SHIFT                    (2U)
-/*! FAULTF2 - Fault Detection Flag 2
- *  0b0..No fault condition was detected at the fault input.
- *  0b1..A fault condition was detected at the fault input.
- */
-#define FTM_FMS_FAULTF2(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTF2_SHIFT)) & FTM_FMS_FAULTF2_MASK)
-#define FTM_FMS_FAULTF3_MASK                     (0x8U)
-#define FTM_FMS_FAULTF3_SHIFT                    (3U)
-/*! FAULTF3 - Fault Detection Flag 3
- *  0b0..No fault condition was detected at the fault input.
- *  0b1..A fault condition was detected at the fault input.
- */
-#define FTM_FMS_FAULTF3(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTF3_SHIFT)) & FTM_FMS_FAULTF3_MASK)
-#define FTM_FMS_FAULTIN_MASK                     (0x20U)
-#define FTM_FMS_FAULTIN_SHIFT                    (5U)
-/*! FAULTIN - Fault Inputs
- *  0b0..The logic OR of the enabled fault inputs is 0.
- *  0b1..The logic OR of the enabled fault inputs is 1.
- */
-#define FTM_FMS_FAULTIN(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTIN_SHIFT)) & FTM_FMS_FAULTIN_MASK)
-#define FTM_FMS_WPEN_MASK                        (0x40U)
-#define FTM_FMS_WPEN_SHIFT                       (6U)
-/*! WPEN - Write Protection Enable
- *  0b0..Write protection is disabled. Write protected bits can be written.
- *  0b1..Write protection is enabled. Write protected bits cannot be written.
- */
-#define FTM_FMS_WPEN(x)                          (((uint32_t)(((uint32_t)(x)) << FTM_FMS_WPEN_SHIFT)) & FTM_FMS_WPEN_MASK)
-#define FTM_FMS_FAULTF_MASK                      (0x80U)
-#define FTM_FMS_FAULTF_SHIFT                     (7U)
-/*! FAULTF - Fault Detection Flag
- *  0b0..No fault condition was detected.
- *  0b1..A fault condition was detected.
- */
-#define FTM_FMS_FAULTF(x)                        (((uint32_t)(((uint32_t)(x)) << FTM_FMS_FAULTF_SHIFT)) & FTM_FMS_FAULTF_MASK)
-/*! @} */
-
-/*! @name FILTER - Input Capture Filter Control */
-/*! @{ */
-#define FTM_FILTER_CH0FVAL_MASK                  (0xFU)
-#define FTM_FILTER_CH0FVAL_SHIFT                 (0U)
-#define FTM_FILTER_CH0FVAL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FILTER_CH0FVAL_SHIFT)) & FTM_FILTER_CH0FVAL_MASK)
-#define FTM_FILTER_CH1FVAL_MASK                  (0xF0U)
-#define FTM_FILTER_CH1FVAL_SHIFT                 (4U)
-#define FTM_FILTER_CH1FVAL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FILTER_CH1FVAL_SHIFT)) & FTM_FILTER_CH1FVAL_MASK)
-#define FTM_FILTER_CH2FVAL_MASK                  (0xF00U)
-#define FTM_FILTER_CH2FVAL_SHIFT                 (8U)
-#define FTM_FILTER_CH2FVAL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FILTER_CH2FVAL_SHIFT)) & FTM_FILTER_CH2FVAL_MASK)
-#define FTM_FILTER_CH3FVAL_MASK                  (0xF000U)
-#define FTM_FILTER_CH3FVAL_SHIFT                 (12U)
-#define FTM_FILTER_CH3FVAL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FILTER_CH3FVAL_SHIFT)) & FTM_FILTER_CH3FVAL_MASK)
-/*! @} */
-
-/*! @name FLTCTRL - Fault Control */
-/*! @{ */
-#define FTM_FLTCTRL_FAULT0EN_MASK                (0x1U)
-#define FTM_FLTCTRL_FAULT0EN_SHIFT               (0U)
-/*! FAULT0EN - Fault Input 0 Enable
- *  0b0..Fault input is disabled.
- *  0b1..Fault input is enabled.
- */
-#define FTM_FLTCTRL_FAULT0EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FAULT0EN_SHIFT)) & FTM_FLTCTRL_FAULT0EN_MASK)
-#define FTM_FLTCTRL_FAULT1EN_MASK                (0x2U)
-#define FTM_FLTCTRL_FAULT1EN_SHIFT               (1U)
-/*! FAULT1EN - Fault Input 1 Enable
- *  0b0..Fault input is disabled.
- *  0b1..Fault input is enabled.
- */
-#define FTM_FLTCTRL_FAULT1EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FAULT1EN_SHIFT)) & FTM_FLTCTRL_FAULT1EN_MASK)
-#define FTM_FLTCTRL_FAULT2EN_MASK                (0x4U)
-#define FTM_FLTCTRL_FAULT2EN_SHIFT               (2U)
-/*! FAULT2EN - Fault Input 2 Enable
- *  0b0..Fault input is disabled.
- *  0b1..Fault input is enabled.
- */
-#define FTM_FLTCTRL_FAULT2EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FAULT2EN_SHIFT)) & FTM_FLTCTRL_FAULT2EN_MASK)
-#define FTM_FLTCTRL_FAULT3EN_MASK                (0x8U)
-#define FTM_FLTCTRL_FAULT3EN_SHIFT               (3U)
-/*! FAULT3EN - Fault Input 3 Enable
- *  0b0..Fault input is disabled.
- *  0b1..Fault input is enabled.
- */
-#define FTM_FLTCTRL_FAULT3EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FAULT3EN_SHIFT)) & FTM_FLTCTRL_FAULT3EN_MASK)
-#define FTM_FLTCTRL_FFLTR0EN_MASK                (0x10U)
-#define FTM_FLTCTRL_FFLTR0EN_SHIFT               (4U)
-/*! FFLTR0EN - Fault Input 0 Filter Enable
- *  0b0..Fault input filter is disabled.
- *  0b1..Fault input filter is enabled.
- */
-#define FTM_FLTCTRL_FFLTR0EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FFLTR0EN_SHIFT)) & FTM_FLTCTRL_FFLTR0EN_MASK)
-#define FTM_FLTCTRL_FFLTR1EN_MASK                (0x20U)
-#define FTM_FLTCTRL_FFLTR1EN_SHIFT               (5U)
-/*! FFLTR1EN - Fault Input 1 Filter Enable
- *  0b0..Fault input filter is disabled.
- *  0b1..Fault input filter is enabled.
- */
-#define FTM_FLTCTRL_FFLTR1EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FFLTR1EN_SHIFT)) & FTM_FLTCTRL_FFLTR1EN_MASK)
-#define FTM_FLTCTRL_FFLTR2EN_MASK                (0x40U)
-#define FTM_FLTCTRL_FFLTR2EN_SHIFT               (6U)
-/*! FFLTR2EN - Fault Input 2 Filter Enable
- *  0b0..Fault input filter is disabled.
- *  0b1..Fault input filter is enabled.
- */
-#define FTM_FLTCTRL_FFLTR2EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FFLTR2EN_SHIFT)) & FTM_FLTCTRL_FFLTR2EN_MASK)
-#define FTM_FLTCTRL_FFLTR3EN_MASK                (0x80U)
-#define FTM_FLTCTRL_FFLTR3EN_SHIFT               (7U)
-/*! FFLTR3EN - Fault Input 3 Filter Enable
- *  0b0..Fault input filter is disabled.
- *  0b1..Fault input filter is enabled.
- */
-#define FTM_FLTCTRL_FFLTR3EN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FFLTR3EN_SHIFT)) & FTM_FLTCTRL_FFLTR3EN_MASK)
-#define FTM_FLTCTRL_FFVAL_MASK                   (0xF00U)
-#define FTM_FLTCTRL_FFVAL_SHIFT                  (8U)
-#define FTM_FLTCTRL_FFVAL(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_FLTCTRL_FFVAL_SHIFT)) & FTM_FLTCTRL_FFVAL_MASK)
-/*! @} */
-
-/*! @name QDCTRL - Quadrature Decoder Control And Status */
-/*! @{ */
-#define FTM_QDCTRL_QUADEN_MASK                   (0x1U)
-#define FTM_QDCTRL_QUADEN_SHIFT                  (0U)
-/*! QUADEN - Quadrature Decoder Mode Enable
- *  0b0..Quadrature Decoder mode is disabled.
- *  0b1..Quadrature Decoder mode is enabled.
- */
-#define FTM_QDCTRL_QUADEN(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_QUADEN_SHIFT)) & FTM_QDCTRL_QUADEN_MASK)
-#define FTM_QDCTRL_TOFDIR_MASK                   (0x2U)
-#define FTM_QDCTRL_TOFDIR_SHIFT                  (1U)
-/*! TOFDIR - Timer Overflow Direction In Quadrature Decoder Mode
- *  0b0..TOF bit was set on the bottom of counting. There was an FTM counter decrement and FTM counter changes from its minimum value (CNTIN register) to its maximum value (MOD register).
- *  0b1..TOF bit was set on the top of counting. There was an FTM counter increment and FTM counter changes from its maximum value (MOD register) to its minimum value (CNTIN register).
- */
-#define FTM_QDCTRL_TOFDIR(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_TOFDIR_SHIFT)) & FTM_QDCTRL_TOFDIR_MASK)
-#define FTM_QDCTRL_QUADIR_MASK                   (0x4U)
-#define FTM_QDCTRL_QUADIR_SHIFT                  (2U)
-/*! QUADIR - FTM Counter Direction In Quadrature Decoder Mode
- *  0b0..Counting direction is decreasing (FTM counter decrement).
- *  0b1..Counting direction is increasing (FTM counter increment).
- */
-#define FTM_QDCTRL_QUADIR(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_QUADIR_SHIFT)) & FTM_QDCTRL_QUADIR_MASK)
-#define FTM_QDCTRL_QUADMODE_MASK                 (0x8U)
-#define FTM_QDCTRL_QUADMODE_SHIFT                (3U)
-/*! QUADMODE - Quadrature Decoder Mode
- *  0b0..Phase A and phase B encoding mode.
- *  0b1..Count and direction encoding mode.
- */
-#define FTM_QDCTRL_QUADMODE(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_QUADMODE_SHIFT)) & FTM_QDCTRL_QUADMODE_MASK)
-#define FTM_QDCTRL_PHBPOL_MASK                   (0x10U)
-#define FTM_QDCTRL_PHBPOL_SHIFT                  (4U)
-/*! PHBPOL - Phase B Input Polarity
- *  0b0..Normal polarity. Phase B input signal is not inverted before identifying the rising and falling edges of this signal.
- *  0b1..Inverted polarity. Phase B input signal is inverted before identifying the rising and falling edges of this signal.
- */
-#define FTM_QDCTRL_PHBPOL(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_PHBPOL_SHIFT)) & FTM_QDCTRL_PHBPOL_MASK)
-#define FTM_QDCTRL_PHAPOL_MASK                   (0x20U)
-#define FTM_QDCTRL_PHAPOL_SHIFT                  (5U)
-/*! PHAPOL - Phase A Input Polarity
- *  0b0..Normal polarity. Phase A input signal is not inverted before identifying the rising and falling edges of this signal.
- *  0b1..Inverted polarity. Phase A input signal is inverted before identifying the rising and falling edges of this signal.
- */
-#define FTM_QDCTRL_PHAPOL(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_PHAPOL_SHIFT)) & FTM_QDCTRL_PHAPOL_MASK)
-#define FTM_QDCTRL_PHBFLTREN_MASK                (0x40U)
-#define FTM_QDCTRL_PHBFLTREN_SHIFT               (6U)
-/*! PHBFLTREN - Phase B Input Filter Enable
- *  0b0..Phase B input filter is disabled.
- *  0b1..Phase B input filter is enabled.
- */
-#define FTM_QDCTRL_PHBFLTREN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_PHBFLTREN_SHIFT)) & FTM_QDCTRL_PHBFLTREN_MASK)
-#define FTM_QDCTRL_PHAFLTREN_MASK                (0x80U)
-#define FTM_QDCTRL_PHAFLTREN_SHIFT               (7U)
-/*! PHAFLTREN - Phase A Input Filter Enable
- *  0b0..Phase A input filter is disabled.
- *  0b1..Phase A input filter is enabled.
- */
-#define FTM_QDCTRL_PHAFLTREN(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_QDCTRL_PHAFLTREN_SHIFT)) & FTM_QDCTRL_PHAFLTREN_MASK)
-/*! @} */
-
-/*! @name CONF - Configuration */
-/*! @{ */
-#define FTM_CONF_NUMTOF_MASK                     (0x1FU)
-#define FTM_CONF_NUMTOF_SHIFT                    (0U)
-#define FTM_CONF_NUMTOF(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_CONF_NUMTOF_SHIFT)) & FTM_CONF_NUMTOF_MASK)
-#define FTM_CONF_BDMMODE_MASK                    (0xC0U)
-#define FTM_CONF_BDMMODE_SHIFT                   (6U)
-#define FTM_CONF_BDMMODE(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_CONF_BDMMODE_SHIFT)) & FTM_CONF_BDMMODE_MASK)
-#define FTM_CONF_GTBEEN_MASK                     (0x200U)
-#define FTM_CONF_GTBEEN_SHIFT                    (9U)
-/*! GTBEEN - Global Time Base Enable
- *  0b0..Use of an external global time base is disabled.
- *  0b1..Use of an external global time base is enabled.
- */
-#define FTM_CONF_GTBEEN(x)                       (((uint32_t)(((uint32_t)(x)) << FTM_CONF_GTBEEN_SHIFT)) & FTM_CONF_GTBEEN_MASK)
-#define FTM_CONF_GTBEOUT_MASK                    (0x400U)
-#define FTM_CONF_GTBEOUT_SHIFT                   (10U)
-/*! GTBEOUT - Global Time Base Output
- *  0b0..A global time base signal generation is disabled.
- *  0b1..A global time base signal generation is enabled.
- */
-#define FTM_CONF_GTBEOUT(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_CONF_GTBEOUT_SHIFT)) & FTM_CONF_GTBEOUT_MASK)
-/*! @} */
-
-/*! @name FLTPOL - FTM Fault Input Polarity */
-/*! @{ */
-#define FTM_FLTPOL_FLT0POL_MASK                  (0x1U)
-#define FTM_FLTPOL_FLT0POL_SHIFT                 (0U)
-/*! FLT0POL - Fault Input 0 Polarity
- *  0b0..The fault input polarity is active high. A 1 at the fault input indicates a fault.
- *  0b1..The fault input polarity is active low. A 0 at the fault input indicates a fault.
- */
-#define FTM_FLTPOL_FLT0POL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FLTPOL_FLT0POL_SHIFT)) & FTM_FLTPOL_FLT0POL_MASK)
-#define FTM_FLTPOL_FLT1POL_MASK                  (0x2U)
-#define FTM_FLTPOL_FLT1POL_SHIFT                 (1U)
-/*! FLT1POL - Fault Input 1 Polarity
- *  0b0..The fault input polarity is active high. A 1 at the fault input indicates a fault.
- *  0b1..The fault input polarity is active low. A 0 at the fault input indicates a fault.
- */
-#define FTM_FLTPOL_FLT1POL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FLTPOL_FLT1POL_SHIFT)) & FTM_FLTPOL_FLT1POL_MASK)
-#define FTM_FLTPOL_FLT2POL_MASK                  (0x4U)
-#define FTM_FLTPOL_FLT2POL_SHIFT                 (2U)
-/*! FLT2POL - Fault Input 2 Polarity
- *  0b0..The fault input polarity is active high. A 1 at the fault input indicates a fault.
- *  0b1..The fault input polarity is active low. A 0 at the fault input indicates a fault.
- */
-#define FTM_FLTPOL_FLT2POL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FLTPOL_FLT2POL_SHIFT)) & FTM_FLTPOL_FLT2POL_MASK)
-#define FTM_FLTPOL_FLT3POL_MASK                  (0x8U)
-#define FTM_FLTPOL_FLT3POL_SHIFT                 (3U)
-/*! FLT3POL - Fault Input 3 Polarity
- *  0b0..The fault input polarity is active high. A 1 at the fault input indicates a fault.
- *  0b1..The fault input polarity is active low. A 0 at the fault input indicates a fault.
- */
-#define FTM_FLTPOL_FLT3POL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_FLTPOL_FLT3POL_SHIFT)) & FTM_FLTPOL_FLT3POL_MASK)
-/*! @} */
-
-/*! @name SYNCONF - Synchronization Configuration */
-/*! @{ */
-#define FTM_SYNCONF_HWTRIGMODE_MASK              (0x1U)
-#define FTM_SYNCONF_HWTRIGMODE_SHIFT             (0U)
-/*! HWTRIGMODE - Hardware Trigger Mode
- *  0b0..FTM clears the TRIGj bit when the hardware trigger j is detected, where j = 0, 1,2.
- *  0b1..FTM does not clear the TRIGj bit when the hardware trigger j is detected, where j = 0, 1,2.
- */
-#define FTM_SYNCONF_HWTRIGMODE(x)                (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWTRIGMODE_SHIFT)) & FTM_SYNCONF_HWTRIGMODE_MASK)
-#define FTM_SYNCONF_CNTINC_MASK                  (0x4U)
-#define FTM_SYNCONF_CNTINC_SHIFT                 (2U)
-/*! CNTINC - CNTIN Register Synchronization
- *  0b0..CNTIN register is updated with its buffer value at all rising edges of system clock.
- *  0b1..CNTIN register is updated with its buffer value by the PWM synchronization.
- */
-#define FTM_SYNCONF_CNTINC(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_CNTINC_SHIFT)) & FTM_SYNCONF_CNTINC_MASK)
-#define FTM_SYNCONF_INVC_MASK                    (0x10U)
-#define FTM_SYNCONF_INVC_SHIFT                   (4U)
-/*! INVC - INVCTRL Register Synchronization
- *  0b0..INVCTRL register is updated with its buffer value at all rising edges of system clock.
- *  0b1..INVCTRL register is updated with its buffer value by the PWM synchronization.
- */
-#define FTM_SYNCONF_INVC(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_INVC_SHIFT)) & FTM_SYNCONF_INVC_MASK)
-#define FTM_SYNCONF_SWOC_MASK                    (0x20U)
-#define FTM_SYNCONF_SWOC_SHIFT                   (5U)
-/*! SWOC - SWOCTRL Register Synchronization
- *  0b0..SWOCTRL register is updated with its buffer value at all rising edges of system clock.
- *  0b1..SWOCTRL register is updated with its buffer value by the PWM synchronization.
- */
-#define FTM_SYNCONF_SWOC(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWOC_SHIFT)) & FTM_SYNCONF_SWOC_MASK)
-#define FTM_SYNCONF_SYNCMODE_MASK                (0x80U)
-#define FTM_SYNCONF_SYNCMODE_SHIFT               (7U)
-/*! SYNCMODE - Synchronization Mode
- *  0b0..Legacy PWM synchronization is selected.
- *  0b1..Enhanced PWM synchronization is selected.
- */
-#define FTM_SYNCONF_SYNCMODE(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SYNCMODE_SHIFT)) & FTM_SYNCONF_SYNCMODE_MASK)
-#define FTM_SYNCONF_SWRSTCNT_MASK                (0x100U)
-#define FTM_SYNCONF_SWRSTCNT_SHIFT               (8U)
-/*! SWRSTCNT
- *  0b0..The software trigger does not activate the FTM counter synchronization.
- *  0b1..The software trigger activates the FTM counter synchronization.
- */
-#define FTM_SYNCONF_SWRSTCNT(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWRSTCNT_SHIFT)) & FTM_SYNCONF_SWRSTCNT_MASK)
-#define FTM_SYNCONF_SWWRBUF_MASK                 (0x200U)
-#define FTM_SYNCONF_SWWRBUF_SHIFT                (9U)
-/*! SWWRBUF
- *  0b0..The software trigger does not activate MOD, CNTIN, and CV registers synchronization.
- *  0b1..The software trigger activates MOD, CNTIN, and CV registers synchronization.
- */
-#define FTM_SYNCONF_SWWRBUF(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWWRBUF_SHIFT)) & FTM_SYNCONF_SWWRBUF_MASK)
-#define FTM_SYNCONF_SWOM_MASK                    (0x400U)
-#define FTM_SYNCONF_SWOM_SHIFT                   (10U)
-/*! SWOM
- *  0b0..The software trigger does not activate the OUTMASK register synchronization.
- *  0b1..The software trigger activates the OUTMASK register synchronization.
- */
-#define FTM_SYNCONF_SWOM(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWOM_SHIFT)) & FTM_SYNCONF_SWOM_MASK)
-#define FTM_SYNCONF_SWINVC_MASK                  (0x800U)
-#define FTM_SYNCONF_SWINVC_SHIFT                 (11U)
-/*! SWINVC
- *  0b0..The software trigger does not activate the INVCTRL register synchronization.
- *  0b1..The software trigger activates the INVCTRL register synchronization.
- */
-#define FTM_SYNCONF_SWINVC(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWINVC_SHIFT)) & FTM_SYNCONF_SWINVC_MASK)
-#define FTM_SYNCONF_SWSOC_MASK                   (0x1000U)
-#define FTM_SYNCONF_SWSOC_SHIFT                  (12U)
-/*! SWSOC
- *  0b0..The software trigger does not activate the SWOCTRL register synchronization.
- *  0b1..The software trigger activates the SWOCTRL register synchronization.
- */
-#define FTM_SYNCONF_SWSOC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_SWSOC_SHIFT)) & FTM_SYNCONF_SWSOC_MASK)
-#define FTM_SYNCONF_HWRSTCNT_MASK                (0x10000U)
-#define FTM_SYNCONF_HWRSTCNT_SHIFT               (16U)
-/*! HWRSTCNT
- *  0b0..A hardware trigger does not activate the FTM counter synchronization.
- *  0b1..A hardware trigger activates the FTM counter synchronization.
- */
-#define FTM_SYNCONF_HWRSTCNT(x)                  (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWRSTCNT_SHIFT)) & FTM_SYNCONF_HWRSTCNT_MASK)
-#define FTM_SYNCONF_HWWRBUF_MASK                 (0x20000U)
-#define FTM_SYNCONF_HWWRBUF_SHIFT                (17U)
-/*! HWWRBUF
- *  0b0..A hardware trigger does not activate MOD, CNTIN, and CV registers synchronization.
- *  0b1..A hardware trigger activates MOD, CNTIN, and CV registers synchronization.
- */
-#define FTM_SYNCONF_HWWRBUF(x)                   (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWWRBUF_SHIFT)) & FTM_SYNCONF_HWWRBUF_MASK)
-#define FTM_SYNCONF_HWOM_MASK                    (0x40000U)
-#define FTM_SYNCONF_HWOM_SHIFT                   (18U)
-/*! HWOM
- *  0b0..A hardware trigger does not activate the OUTMASK register synchronization.
- *  0b1..A hardware trigger activates the OUTMASK register synchronization.
- */
-#define FTM_SYNCONF_HWOM(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWOM_SHIFT)) & FTM_SYNCONF_HWOM_MASK)
-#define FTM_SYNCONF_HWINVC_MASK                  (0x80000U)
-#define FTM_SYNCONF_HWINVC_SHIFT                 (19U)
-/*! HWINVC
- *  0b0..A hardware trigger does not activate the INVCTRL register synchronization.
- *  0b1..A hardware trigger activates the INVCTRL register synchronization.
- */
-#define FTM_SYNCONF_HWINVC(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWINVC_SHIFT)) & FTM_SYNCONF_HWINVC_MASK)
-#define FTM_SYNCONF_HWSOC_MASK                   (0x100000U)
-#define FTM_SYNCONF_HWSOC_SHIFT                  (20U)
-/*! HWSOC
- *  0b0..A hardware trigger does not activate the SWOCTRL register synchronization.
- *  0b1..A hardware trigger activates the SWOCTRL register synchronization.
- */
-#define FTM_SYNCONF_HWSOC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SYNCONF_HWSOC_SHIFT)) & FTM_SYNCONF_HWSOC_MASK)
-/*! @} */
-
-/*! @name INVCTRL - FTM Inverting Control */
-/*! @{ */
-#define FTM_INVCTRL_INV0EN_MASK                  (0x1U)
-#define FTM_INVCTRL_INV0EN_SHIFT                 (0U)
-/*! INV0EN - Pair Channels 0 Inverting Enable
- *  0b0..Inverting is disabled.
- *  0b1..Inverting is enabled.
- */
-#define FTM_INVCTRL_INV0EN(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_INVCTRL_INV0EN_SHIFT)) & FTM_INVCTRL_INV0EN_MASK)
-#define FTM_INVCTRL_INV1EN_MASK                  (0x2U)
-#define FTM_INVCTRL_INV1EN_SHIFT                 (1U)
-/*! INV1EN - Pair Channels 1 Inverting Enable
- *  0b0..Inverting is disabled.
- *  0b1..Inverting is enabled.
- */
-#define FTM_INVCTRL_INV1EN(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_INVCTRL_INV1EN_SHIFT)) & FTM_INVCTRL_INV1EN_MASK)
-#define FTM_INVCTRL_INV2EN_MASK                  (0x4U)
-#define FTM_INVCTRL_INV2EN_SHIFT                 (2U)
-/*! INV2EN - Pair Channels 2 Inverting Enable
- *  0b0..Inverting is disabled.
- *  0b1..Inverting is enabled.
- */
-#define FTM_INVCTRL_INV2EN(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_INVCTRL_INV2EN_SHIFT)) & FTM_INVCTRL_INV2EN_MASK)
-#define FTM_INVCTRL_INV3EN_MASK                  (0x8U)
-#define FTM_INVCTRL_INV3EN_SHIFT                 (3U)
-/*! INV3EN - Pair Channels 3 Inverting Enable
- *  0b0..Inverting is disabled.
- *  0b1..Inverting is enabled.
- */
-#define FTM_INVCTRL_INV3EN(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_INVCTRL_INV3EN_SHIFT)) & FTM_INVCTRL_INV3EN_MASK)
-/*! @} */
-
-/*! @name SWOCTRL - FTM Software Output Control */
-/*! @{ */
-#define FTM_SWOCTRL_CH0OC_MASK                   (0x1U)
-#define FTM_SWOCTRL_CH0OC_SHIFT                  (0U)
-/*! CH0OC - Channel 0 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH0OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH0OC_SHIFT)) & FTM_SWOCTRL_CH0OC_MASK)
-#define FTM_SWOCTRL_CH1OC_MASK                   (0x2U)
-#define FTM_SWOCTRL_CH1OC_SHIFT                  (1U)
-/*! CH1OC - Channel 1 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH1OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH1OC_SHIFT)) & FTM_SWOCTRL_CH1OC_MASK)
-#define FTM_SWOCTRL_CH2OC_MASK                   (0x4U)
-#define FTM_SWOCTRL_CH2OC_SHIFT                  (2U)
-/*! CH2OC - Channel 2 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH2OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH2OC_SHIFT)) & FTM_SWOCTRL_CH2OC_MASK)
-#define FTM_SWOCTRL_CH3OC_MASK                   (0x8U)
-#define FTM_SWOCTRL_CH3OC_SHIFT                  (3U)
-/*! CH3OC - Channel 3 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH3OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH3OC_SHIFT)) & FTM_SWOCTRL_CH3OC_MASK)
-#define FTM_SWOCTRL_CH4OC_MASK                   (0x10U)
-#define FTM_SWOCTRL_CH4OC_SHIFT                  (4U)
-/*! CH4OC - Channel 4 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH4OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH4OC_SHIFT)) & FTM_SWOCTRL_CH4OC_MASK)
-#define FTM_SWOCTRL_CH5OC_MASK                   (0x20U)
-#define FTM_SWOCTRL_CH5OC_SHIFT                  (5U)
-/*! CH5OC - Channel 5 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH5OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH5OC_SHIFT)) & FTM_SWOCTRL_CH5OC_MASK)
-#define FTM_SWOCTRL_CH6OC_MASK                   (0x40U)
-#define FTM_SWOCTRL_CH6OC_SHIFT                  (6U)
-/*! CH6OC - Channel 6 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH6OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH6OC_SHIFT)) & FTM_SWOCTRL_CH6OC_MASK)
-#define FTM_SWOCTRL_CH7OC_MASK                   (0x80U)
-#define FTM_SWOCTRL_CH7OC_SHIFT                  (7U)
-/*! CH7OC - Channel 7 Software Output Control Enable
- *  0b0..The channel output is not affected by software output control.
- *  0b1..The channel output is affected by software output control.
- */
-#define FTM_SWOCTRL_CH7OC(x)                     (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH7OC_SHIFT)) & FTM_SWOCTRL_CH7OC_MASK)
-#define FTM_SWOCTRL_CH0OCV_MASK                  (0x100U)
-#define FTM_SWOCTRL_CH0OCV_SHIFT                 (8U)
-/*! CH0OCV - Channel 0 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH0OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH0OCV_SHIFT)) & FTM_SWOCTRL_CH0OCV_MASK)
-#define FTM_SWOCTRL_CH1OCV_MASK                  (0x200U)
-#define FTM_SWOCTRL_CH1OCV_SHIFT                 (9U)
-/*! CH1OCV - Channel 1 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH1OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH1OCV_SHIFT)) & FTM_SWOCTRL_CH1OCV_MASK)
-#define FTM_SWOCTRL_CH2OCV_MASK                  (0x400U)
-#define FTM_SWOCTRL_CH2OCV_SHIFT                 (10U)
-/*! CH2OCV - Channel 2 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH2OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH2OCV_SHIFT)) & FTM_SWOCTRL_CH2OCV_MASK)
-#define FTM_SWOCTRL_CH3OCV_MASK                  (0x800U)
-#define FTM_SWOCTRL_CH3OCV_SHIFT                 (11U)
-/*! CH3OCV - Channel 3 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH3OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH3OCV_SHIFT)) & FTM_SWOCTRL_CH3OCV_MASK)
-#define FTM_SWOCTRL_CH4OCV_MASK                  (0x1000U)
-#define FTM_SWOCTRL_CH4OCV_SHIFT                 (12U)
-/*! CH4OCV - Channel 4 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH4OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH4OCV_SHIFT)) & FTM_SWOCTRL_CH4OCV_MASK)
-#define FTM_SWOCTRL_CH5OCV_MASK                  (0x2000U)
-#define FTM_SWOCTRL_CH5OCV_SHIFT                 (13U)
-/*! CH5OCV - Channel 5 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH5OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH5OCV_SHIFT)) & FTM_SWOCTRL_CH5OCV_MASK)
-#define FTM_SWOCTRL_CH6OCV_MASK                  (0x4000U)
-#define FTM_SWOCTRL_CH6OCV_SHIFT                 (14U)
-/*! CH6OCV - Channel 6 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH6OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH6OCV_SHIFT)) & FTM_SWOCTRL_CH6OCV_MASK)
-#define FTM_SWOCTRL_CH7OCV_MASK                  (0x8000U)
-#define FTM_SWOCTRL_CH7OCV_SHIFT                 (15U)
-/*! CH7OCV - Channel 7 Software Output Control Value
- *  0b0..The software output control forces 0 to the channel output.
- *  0b1..The software output control forces 1 to the channel output.
- */
-#define FTM_SWOCTRL_CH7OCV(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_SWOCTRL_CH7OCV_SHIFT)) & FTM_SWOCTRL_CH7OCV_MASK)
-/*! @} */
-
-/*! @name PWMLOAD - FTM PWM Load */
-/*! @{ */
-#define FTM_PWMLOAD_CH0SEL_MASK                  (0x1U)
-#define FTM_PWMLOAD_CH0SEL_SHIFT                 (0U)
-/*! CH0SEL - Channel 0 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH0SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH0SEL_SHIFT)) & FTM_PWMLOAD_CH0SEL_MASK)
-#define FTM_PWMLOAD_CH1SEL_MASK                  (0x2U)
-#define FTM_PWMLOAD_CH1SEL_SHIFT                 (1U)
-/*! CH1SEL - Channel 1 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH1SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH1SEL_SHIFT)) & FTM_PWMLOAD_CH1SEL_MASK)
-#define FTM_PWMLOAD_CH2SEL_MASK                  (0x4U)
-#define FTM_PWMLOAD_CH2SEL_SHIFT                 (2U)
-/*! CH2SEL - Channel 2 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH2SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH2SEL_SHIFT)) & FTM_PWMLOAD_CH2SEL_MASK)
-#define FTM_PWMLOAD_CH3SEL_MASK                  (0x8U)
-#define FTM_PWMLOAD_CH3SEL_SHIFT                 (3U)
-/*! CH3SEL - Channel 3 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH3SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH3SEL_SHIFT)) & FTM_PWMLOAD_CH3SEL_MASK)
-#define FTM_PWMLOAD_CH4SEL_MASK                  (0x10U)
-#define FTM_PWMLOAD_CH4SEL_SHIFT                 (4U)
-/*! CH4SEL - Channel 4 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH4SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH4SEL_SHIFT)) & FTM_PWMLOAD_CH4SEL_MASK)
-#define FTM_PWMLOAD_CH5SEL_MASK                  (0x20U)
-#define FTM_PWMLOAD_CH5SEL_SHIFT                 (5U)
-/*! CH5SEL - Channel 5 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH5SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH5SEL_SHIFT)) & FTM_PWMLOAD_CH5SEL_MASK)
-#define FTM_PWMLOAD_CH6SEL_MASK                  (0x40U)
-#define FTM_PWMLOAD_CH6SEL_SHIFT                 (6U)
-/*! CH6SEL - Channel 6 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH6SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH6SEL_SHIFT)) & FTM_PWMLOAD_CH6SEL_MASK)
-#define FTM_PWMLOAD_CH7SEL_MASK                  (0x80U)
-#define FTM_PWMLOAD_CH7SEL_SHIFT                 (7U)
-/*! CH7SEL - Channel 7 Select
- *  0b0..Do not include the channel in the matching process.
- *  0b1..Include the channel in the matching process.
- */
-#define FTM_PWMLOAD_CH7SEL(x)                    (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_CH7SEL_SHIFT)) & FTM_PWMLOAD_CH7SEL_MASK)
-#define FTM_PWMLOAD_LDOK_MASK                    (0x200U)
-#define FTM_PWMLOAD_LDOK_SHIFT                   (9U)
-/*! LDOK - Load Enable
- *  0b0..Loading updated values is disabled.
- *  0b1..Loading updated values is enabled.
- */
-#define FTM_PWMLOAD_LDOK(x)                      (((uint32_t)(((uint32_t)(x)) << FTM_PWMLOAD_LDOK_SHIFT)) & FTM_PWMLOAD_LDOK_MASK)
-/*! @} */
-
-
-/*!
- * @}
- */ /* end of group FTM_Register_Masks */
-
-
-/* FTM - Peripheral instance base addresses */
-/** Peripheral FTM0 base address */
-#define FTM0_BASE                                (0x40038000u)
-/** Peripheral FTM0 base pointer */
-#define FTM0                                     ((FTM_Type *)FTM0_BASE)
-/** Peripheral FTM1 base address */
-#define FTM1_BASE                                (0x40039000u)
-/** Peripheral FTM1 base pointer */
-#define FTM1                                     ((FTM_Type *)FTM1_BASE)
-/** Peripheral FTM3 base address */
-#define FTM3_BASE                                (0x40026000u)
-/** Peripheral FTM3 base pointer */
-#define FTM3                                     ((FTM_Type *)FTM3_BASE)
-/** Array initializer of FTM peripheral base addresses */
-#define FTM_BASE_ADDRS                           { FTM0_BASE, FTM1_BASE, 0u, FTM3_BASE }
-/** Array initializer of FTM peripheral base pointers */
-#define FTM_BASE_PTRS                            { FTM0, FTM1, (FTM_Type *)0u, FTM3 }
-/** Interrupt vectors for the FTM peripheral type */
-#define FTM_IRQS                                 { FTM0_IRQn, FTM1_IRQn, NotAvail_IRQn, FTM3_IRQn }
-
-/*!
- * @}
- */ /* end of group FTM_Peripheral_Access_Layer */
 
 
 /* ----------------------------------------------------------------------------
@@ -18840,10 +17421,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -18856,8 +17433,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -18892,10 +17467,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -18908,8 +17479,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -18948,10 +17517,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -18964,8 +17529,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19000,10 +17563,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19016,8 +17575,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19056,10 +17613,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19072,8 +17625,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19108,10 +17659,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19124,8 +17671,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19164,10 +17709,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19180,8 +17721,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19216,10 +17755,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19232,8 +17767,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19272,10 +17805,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19288,8 +17817,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19324,10 +17851,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19340,8 +17863,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19363,107 +17884,9 @@ typedef struct {
 /*! @{ */
 #define XBARA_SEL5_SEL10_MASK                    (0x3FU)
 #define XBARA_SEL5_SEL10_SHIFT                   (0U)
-/*! SEL10
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL5_SEL10(x)                      (((uint16_t)(((uint16_t)(x)) << XBARA_SEL5_SEL10_SHIFT)) & XBARA_SEL5_SEL10_MASK)
 #define XBARA_SEL5_SEL11_MASK                    (0x3F00U)
 #define XBARA_SEL5_SEL11_SHIFT                   (8U)
-/*! SEL11
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL5_SEL11(x)                      (((uint16_t)(((uint16_t)(x)) << XBARA_SEL5_SEL11_SHIFT)) & XBARA_SEL5_SEL11_MASK)
 /*! @} */
 
@@ -19488,10 +17911,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19504,8 +17923,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19540,10 +17957,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19556,8 +17969,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19599,10 +18010,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19615,8 +18022,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19655,10 +18060,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19671,8 +18072,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19707,10 +18106,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19723,8 +18118,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19763,10 +18156,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19779,8 +18168,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19815,10 +18202,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19831,8 +18214,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19871,10 +18252,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19887,8 +18264,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19923,10 +18298,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19939,8 +18310,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -19979,10 +18348,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -19995,8 +18360,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20031,10 +18394,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20047,8 +18406,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20087,10 +18444,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20103,8 +18456,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20139,10 +18490,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20155,8 +18502,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20195,10 +18540,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20211,8 +18552,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20247,10 +18586,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20263,8 +18598,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20303,10 +18636,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20319,8 +18648,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20355,10 +18682,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20371,8 +18694,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20411,10 +18732,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20427,8 +18744,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20463,10 +18778,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20479,8 +18790,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20519,10 +18828,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20535,8 +18840,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20571,10 +18874,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20587,8 +18886,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20610,107 +18907,9 @@ typedef struct {
 /*! @{ */
 #define XBARA_SEL17_SEL34_MASK                   (0x3FU)
 #define XBARA_SEL17_SEL34_SHIFT                  (0U)
-/*! SEL34
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL17_SEL34(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL17_SEL34_SHIFT)) & XBARA_SEL17_SEL34_MASK)
 #define XBARA_SEL17_SEL35_MASK                   (0x3F00U)
 #define XBARA_SEL17_SEL35_SHIFT                  (8U)
-/*! SEL35
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL17_SEL35(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL17_SEL35_SHIFT)) & XBARA_SEL17_SEL35_MASK)
 /*! @} */
 
@@ -20721,55 +18920,6 @@ typedef struct {
 #define XBARA_SEL18_SEL36(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL18_SEL36_SHIFT)) & XBARA_SEL18_SEL36_MASK)
 #define XBARA_SEL18_SEL37_MASK                   (0x3F00U)
 #define XBARA_SEL18_SEL37_SHIFT                  (8U)
-/*! SEL37
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL18_SEL37(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL18_SEL37_SHIFT)) & XBARA_SEL18_SEL37_MASK)
 /*! @} */
 
@@ -20794,10 +18944,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20810,8 +18956,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20856,10 +19000,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20872,8 +19012,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -20895,55 +19033,6 @@ typedef struct {
 /*! @{ */
 #define XBARA_SEL21_SEL42_MASK                   (0x3FU)
 #define XBARA_SEL21_SEL42_SHIFT                  (0U)
-/*! SEL42
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL21_SEL42(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL21_SEL42_SHIFT)) & XBARA_SEL21_SEL42_MASK)
 #define XBARA_SEL21_SEL43_MASK                   (0x3F00U)
 #define XBARA_SEL21_SEL43_SHIFT                  (8U)
@@ -20971,10 +19060,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -20987,8 +19072,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21023,10 +19106,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -21039,8 +19118,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21079,10 +19156,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -21095,8 +19168,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21131,10 +19202,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -21147,8 +19214,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21187,10 +19252,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -21203,8 +19264,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21222,55 +19281,6 @@ typedef struct {
 #define XBARA_SEL24_SEL48(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL24_SEL48_SHIFT)) & XBARA_SEL24_SEL48_MASK)
 #define XBARA_SEL24_SEL49_MASK                   (0x3F00U)
 #define XBARA_SEL24_SEL49_SHIFT                  (8U)
-/*! SEL49
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL24_SEL49(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL24_SEL49_SHIFT)) & XBARA_SEL24_SEL49_MASK)
 /*! @} */
 
@@ -21278,55 +19288,6 @@ typedef struct {
 /*! @{ */
 #define XBARA_SEL25_SEL50_MASK                   (0x3FU)
 #define XBARA_SEL25_SEL50_SHIFT                  (0U)
-/*! SEL50
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL25_SEL50(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL25_SEL50_SHIFT)) & XBARA_SEL25_SEL50_MASK)
 #define XBARA_SEL25_SEL51_MASK                   (0x3F00U)
 #define XBARA_SEL25_SEL51_SHIFT                  (8U)
@@ -21337,55 +19298,6 @@ typedef struct {
 /*! @{ */
 #define XBARA_SEL26_SEL52_MASK                   (0x3FU)
 #define XBARA_SEL26_SEL52_SHIFT                  (0U)
-/*! SEL52
- *  0b000000..Logic zero
- *  0b000001..Logic one
- *  0b000010..XBARIN2 input pin
- *  0b000011..XBARIN3 input pin
- *  0b000100..XBARIN4 input pin
- *  0b000101..XBARIN5 input pin
- *  0b000110..XBARIN6 input pin
- *  0b000111..XBARIN7 input pin
- *  0b001000..XBARIN8 input pin
- *  0b001001..XBARIN9 input pin
- *  0b001010..XBARIN10 input pin
- *  0b001011..XBARIN11 input pin
- *  0b001100..CMP0 Output
- *  0b001101..CMP1 Output
- *  0b001110..CMP2 Output
- *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
- *  0b010100..PWMA channel 0 trigger 0
- *  0b010101..PWMA channel 0 trigger 1
- *  0b010110..PWMA channel 1 trigger 0
- *  0b010111..PWMA channel 1 trigger 1
- *  0b011000..PWMA channel 2 trigger 0
- *  0b011001..PWMA channel 2 trigger 1
- *  0b011010..PWMA channel 3 trigger 0
- *  0b011011..PWMA channel 3 trigger 1
- *  0b011101..PDB0 channel 0 output trigger
- *  0b011111..PDB1 channel 0 output trigger
- *  0b100001..ADC converter A end of scan
- *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
- *  0b100110..DMA channel 0 done
- *  0b100111..DMA channel 1 done
- *  0b101000..DMA channel 6 done
- *  0b101001..DMA channel 7 done
- *  0b101010..PIT trigger 0
- *  0b101011..PIT trigger 1
- *  0b101101..ENC0 compare trigger and position match
- *  0b101110..AOI output 0
- *  0b101111..AOI output 1
- *  0b110000..AOI output 2
- *  0b110001..AOI output 3
- *  0b110010..PIT trigger 2
- *  0b110011..PIT trigger 3
- */
 #define XBARA_SEL26_SEL52(x)                     (((uint16_t)(((uint16_t)(x)) << XBARA_SEL26_SEL52_SHIFT)) & XBARA_SEL26_SEL52_MASK)
 #define XBARA_SEL26_SEL53_MASK                   (0x3F00U)
 #define XBARA_SEL26_SEL53_SHIFT                  (8U)
@@ -21433,10 +19345,6 @@ typedef struct {
  *  0b001101..CMP1 Output
  *  0b001110..CMP2 Output
  *  0b001111..CMP3 Output
- *  0b010000..FTM0 all channels match trigger ORed together
- *  0b010001..FTM0 counter init trigger
- *  0b010010..FTM3 all channels match trigger ORed together
- *  0b010011..FTM3 counter init trigger
  *  0b010100..PWMA channel 0 trigger 0
  *  0b010101..PWMA channel 0 trigger 1
  *  0b010110..PWMA channel 1 trigger 0
@@ -21449,8 +19357,6 @@ typedef struct {
  *  0b011111..PDB1 channel 0 output trigger
  *  0b100001..ADC converter A end of scan
  *  0b100011..ADC converter B end of scan
- *  0b100100..FTM1 all channels match trigger ORed together
- *  0b100101..FTM1 counter init trigger
  *  0b100110..DMA channel 0 done
  *  0b100111..DMA channel 1 done
  *  0b101000..DMA channel 6 done
@@ -21658,10 +19564,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21670,8 +19572,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21691,10 +19591,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21703,8 +19599,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21728,10 +19622,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21740,8 +19630,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21761,10 +19649,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21773,8 +19657,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21798,10 +19680,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21810,8 +19688,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21831,10 +19707,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21843,8 +19715,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21868,10 +19738,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21880,8 +19746,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21901,10 +19765,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21913,8 +19773,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21938,10 +19796,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21950,8 +19804,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -21971,10 +19823,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -21983,8 +19831,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22008,10 +19854,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22020,8 +19862,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22041,10 +19881,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22053,8 +19889,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22078,10 +19912,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22090,8 +19920,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22111,10 +19939,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22123,8 +19947,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22148,10 +19970,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22160,8 +19978,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22181,10 +19997,6 @@ typedef struct {
  *  0b00001..CMP1 Output
  *  0b00010..CMP2 Output
  *  0b00011..CMP3 Output
- *  0b00100..FTM0 all channels match trigger ORed together
- *  0b00101..FTM0 counter init trigger
- *  0b00110..FTM3 all channels match trigger ORed together
- *  0b00111..FTM3 counter init trigger
  *  0b01000..PWMA channel 0 trigger 0 or trigger 1
  *  0b01001..PWMA channel 1 trigger 0 or trigger 1
  *  0b01010..PWMA channel 2 trigger 0 or trigger 1
@@ -22193,8 +20005,6 @@ typedef struct {
  *  0b01101..ADC converter A end of scan
  *  0b01110..XBARIN2 input pin
  *  0b01111..XBARIN3 input pin
- *  0b10000..FTM1 all channels match trigger ORed together
- *  0b10001..FTM1 counter init trigger
  *  0b10010..DMA channel 0 done
  *  0b10011..DMA channel 1 done
  *  0b10100..XBARIN10 input pin
@@ -22575,5 +20385,5 @@ typedef struct {
  */ /* end of group SDK_Compatibility_Symbols */
 
 
-#endif  /* _MKV46F16_H_ */
+#endif  /* _MKV44F16_H_ */
 

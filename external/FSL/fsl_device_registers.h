@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    fsl_device_registers.h
 // @brief   Freescale drivers generic header include file.
-// @date    9 January 2020
+// @date    27 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,43 +43,58 @@
     defined (CPU_MKV58F512VLL24) || defined (CPU_MKV58F512VLQ24) || defined (CPU_MKV58F512VMD24)
 
 // CMSIS-style register definitions
-#include "fsl_mkv58F24_cmsis.h"
+#include "MKV58F24.h"
 // CPU specific feature definitions
-#include "fsl_mkv58F24_features.h"
+#include "MKV58F24_features.h"
+
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 #elif defined (CPU_MKV56F1M0VLL24) || defined (CPU_MKV56F1M0VLQ24) || defined (CPU_MKV56F1M0VMD24) || \
       defined (CPU_MKV56F512VLL24) || defined (CPU_MKV56F512VLQ24) || defined (CPU_MKV56F512VMD24)
 
 // CMSIS-style register definitions
-#include "fsl_mkv56F24_cmsis.h"
+#include "MKV56F24.h"
 // CPU specific feature definitions
-#include "fsl_mkv56F24_features.h"
+#include "MKV56F24_features.h"
+
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 #elif defined (CPU_MKV46F256VLL16) || defined (CPU_MKV46F256VLH16) || \
       defined (CPU_MKV46F128VLL16) || defined (CPU_MKV46F128VLH16)
 
 // CMSIS-style register definitions
-#include "fsl_mkv46f16_cmsis.h"
+#include "MKV46F16.h"
 // CPU specific feature definitions
-#include "fsl_mkv46f16_features.h"
+#include "MKV46F16_features.h"
+
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 #elif defined (CPU_MKV44F256VLL16) || defined (CPU_MKV44F256VLH16) || \
       defined (CPU_MKV44F128VLL16) || defined (CPU_MKV44F128VLH16) || defined (CPU_MKV44F128VLF16) || \
                                       defined (CPU_MKV44F64VLH16)  || defined (CPU_MKV44F64VLF16)
 
 // CMSIS-style register definitions
-#include "fsl_mkv44f16_cmsis.h"
+#include "MKV44F16.h"
 // CPU specific feature definitions
-#include "fsl_mkv44f16_features.h"
+#include "MKV44F16_features.h"
+
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 #elif defined (CPU_MKV42F256VLL16) || defined (CPU_MKV42F256VLH16) || \
       defined (CPU_MKV42F128VLL16) || defined (CPU_MKV42F128VLH16) || defined (CPU_MKV42F128VLF16) || \
                                       defined (CPU_MKV42F64VLH16)  || defined (CPU_MKV42F64VLF16)
 
 // CMSIS-style register definitions
-#include "fsl_mkv42f16_cmsis.h"
+#include "MKV42F16.h"
 // CPU specific feature definitions
-#include "fsl_mkv42f16_features.h"
+#include "MKV42F16_features.h"
+
+// Added by Emanuel Pinto
+#define FSL_FEATURE_FLEXCAN_HAS_ERRATA_8341 (1)
 
 #else
     #error "No valid CPU defined!"

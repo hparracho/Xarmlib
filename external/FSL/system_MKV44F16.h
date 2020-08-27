@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    fsl_mkvxxfxx_cmsis.h
+// @file    system_MKV44F16.h
 // @brief   CMSIS Core Peripheral Access Layer header file for Kinetis MKV4xF16 and MKV5xF24 MCUs.
-// @date    8 January 2020
+// @date    27 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_EXTERNAL_FSL_MKVXXFXX_CMSIS_H
-#define __XARMLIB_EXTERNAL_FSL_MKVXXFXX_CMSIS_H
+#ifndef __XARMLIB_EXTERNAL_FSL_SYSTEM_MKV44F16_H
+#define __XARMLIB_EXTERNAL_FSL_SYSTEM_MKV44F16_H
 
 #ifdef __cplusplus
 extern "C" {
@@ -56,4 +56,4 @@ void SystemCoreClockUpdate(void);
 } // extern "C"
 #endif
 
-#endif // __XARMLIB_EXTERNAL_FSL_MKVXXFXX_CMSIS_H
+#endif // __XARMLIB_EXTERNAL_FSL_SYSTEM_MKV44F16_H
