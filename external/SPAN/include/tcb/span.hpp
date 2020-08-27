@@ -153,7 +153,8 @@ template <typename E, std::size_t S>
 struct span_storage {
     constexpr span_storage() noexcept = default;
 
-    constexpr span_storage(E* ptr, std::size_t /*unused*/) noexcept : ptr(ptr)
+    constexpr span_storage(E* p_ptr, std::size_t /*unused*/) noexcept
+       : ptr(p_ptr)
     {}
 
     E* ptr = nullptr;
@@ -164,8 +165,8 @@ template <typename E>
 struct span_storage<E, dynamic_extent> {
     constexpr span_storage() noexcept = default;
 
-    constexpr span_storage(E* ptr, std::size_t size) noexcept
-        : ptr(ptr), size(size)
+    constexpr span_storage(E* p_ptr, std::size_t p_size) noexcept
+        : ptr(p_ptr), size(p_size)
     {}
 
     E* ptr = nullptr;
@@ -300,10 +301,9 @@ public:
     using pointer = element_type*;
     using const_pointer = const element_type*;
     using reference = element_type&;
+    using const_reference = const element_type&;
     using iterator = pointer;
-    using const_iterator = const_pointer;
     using reverse_iterator = std::reverse_iterator<iterator>;
-    using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
     static constexpr size_type extent = Extent;
 
@@ -489,10 +489,6 @@ public:
 
     constexpr iterator end() const noexcept { return data() + size(); }
 
-    constexpr const_iterator cbegin() const noexcept { return begin(); }
-
-    constexpr const_iterator cend() const noexcept { return end(); }
-
     TCB_SPAN_ARRAY_CONSTEXPR reverse_iterator rbegin() const noexcept
     {
         return reverse_iterator(end());
@@ -502,20 +498,6 @@ public:
     {
         return reverse_iterator(begin());
     }
-
-    TCB_SPAN_ARRAY_CONSTEXPR const_reverse_iterator crbegin() const noexcept
-    {
-        return const_reverse_iterator(cend());
-    }
-
-    TCB_SPAN_ARRAY_CONSTEXPR const_reverse_iterator crend() const noexcept
-    {
-        return const_reverse_iterator(cbegin());
-    }
-
-    friend constexpr iterator begin(span s) noexcept { return s.begin(); }
-
-    friend constexpr iterator end(span s) noexcept { return s.end(); }
 
 private:
     storage_type storage_{};
