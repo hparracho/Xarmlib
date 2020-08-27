@@ -17,11 +17,11 @@ Experimental C++ library for bare-metal ARM Cortex-M platforms
 
 ## External Dependencies:
 - [bitmask class v1.1.2](https://github.com/oliora/bitmask) - Copyright (c) 2016-2017 [Andrey Upadyshev](https://github.com/oliora) 
-- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using master commit as of 9 April 2020
+- [CMSIS-Core(M)](https://github.com/ARM-software/CMSIS_5) - currently using master commit as of 28 May 2020
 - [FatFs: Generic FAT Filesystem Module Source Files R0.14](http://elm-chan.org/fsw/ff/00index_e.html)
-- [fsl: Freescale drivers from Kinetis SDK Version 2.7.0](https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html)
+- [fsl: Freescale drivers from Kinetis SDK Version 2.8.0](https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html)
 - [lfs: Little fail-safe filesystem v2.2.1](https://github.com/ARMmbed/littlefs) - currently using master commit as of 9 April 2020
-- [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 31 January 2020
+- [span: std::span implementation for C++11 and later](https://github.com/tcbrindle/span) - currently using master commit as of 3 June 2020
 - [usbhost: USB Host Library version 3.0](https://github.com/felis/UHS30) - currently using master commit as of 15 April 2020 *(work in progress...)*
 - [usflib: Micro String Format (μSF) library](https://github.com/hparracho/usflib) - currently using master commit as of 14 January 2019
 
