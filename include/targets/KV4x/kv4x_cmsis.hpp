@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for Kinetis KV4x MCUs.
-// @date    31 October 2018
+// @date    27 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -35,11 +35,11 @@
 #include "targets/KV4x/kv4x_specs.hpp"
 
 #if defined (__KV46__)
-#include "fsl_mkv46f16_cmsis.h"
+#include "MKV46F16.h"
 #elif defined (__KV44__)
-#include "fsl_mkv44f16_cmsis.h"
+#include "MKV44F16.h"
 #elif defined (__KV42__)
-#include "fsl_mkv42f16_cmsis.h"
+#include "MKV42F16.h"
 #endif
 
 #endif // __XARMLIB_TARGETS_KV4X_CMSIS_HPP

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for Kinetis KV5x MCUs.
-// @date    10 January 2020
+// @date    27 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,9 +35,9 @@
 #include "targets/KV5x/kv5x_specs.hpp"
 
 #if defined (__KV58__)
-#include "fsl_mkv58F24_cmsis.h"
+#include "MKV58F24.h"
 #elif defined (__KV56__)
-#include "fsl_mkv56F24_cmsis.h"
+#include "MKV56F24.h"
 #endif
 
 #endif // __XARMLIB_TARGETS_KV5X_CMSIS_HPP
