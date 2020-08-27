@@ -8,10 +8,10 @@ Commit: fa56bcbcf7613359931de8e05c65b21b94daccef
 ### https://github.com/oliora/bitmask
 
 ---
-## CMSIS-Core(M) Version 5
-Date: 9 April 2020
+## CMSIS-Core(M) Version 5.7.0
+Date: 28 May 2020
 Branch: master  
-Commit: a65b7c9a3e6502127fdb80eb288d8cbdf251a6f4
+Commit: 4ed5730787a0f98e8858c9998e406c608ab10b28
 ### https://github.com/ARM-software/CMSIS_5
 
 ---
@@ -20,8 +20,8 @@ Date: 14 October 2019
 ### http://elm-chan.org/fsw/ff/00index_e.html
 
 ---
-## fsl: Freescale drivers from Kinetis SDK Version 2.7.0
-Date: 19 December 2019
+## fsl: Freescale drivers from Kinetis SDK Version 2.8.0
+Date: 21 July 2020
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
 
 ---
@@ -33,9 +33,9 @@ Commit: 4c9146ea539f72749d6cc3ea076372a81b12cb11
 
 ---
 ## span: std::span implementation for C++11 and later
-Date: 31 January 2020
+Date: 3 June 2020
 Branch: master  
-Commit: 08cb4bf0e06c0e36f7e2b64e488ede711a8bb5ad
+Commit: 5d8d366eca918d0ed3d2d196cbeae6abfd874736
 ### https://github.com/tcbrindle/span
 
 ---
