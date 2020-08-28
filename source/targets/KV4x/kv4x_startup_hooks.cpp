@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for Kinetis KV4x MCUs.
-// @date    13 June 2019
+// @date    28 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -88,8 +88,8 @@ void mcu_startup_initialize_hardware()
     switch(XARMLIB_CONFIG_SYSTEM_CLOCK)
     {
         case SystemDriver::Clock::irc_4mhz_vlpr:     clock_config_irc_4mhz_vlpr();     break;
-        case SystemDriver::Clock::xtal_80mhz_run:    clock_config_xtal_80mhz_run();    break;
-        case SystemDriver::Clock::xtal_160mhz_hsrun: clock_config_xtal_160mhz_hsrun(); break;
+        case SystemDriver::Clock::xtal_96mhz_run:    clock_config_xtal_96mhz_run();    break;
+        case SystemDriver::Clock::xtal_168mhz_hsrun: clock_config_xtal_168mhz_hsrun(); break;
         case SystemDriver::Clock::irc_96mhz_run:
         default:                                     clock_config_irc_96mhz_run();     break;
     }

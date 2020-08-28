@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_system.hpp
 // @brief   Kinetis KV4x system level configuration class.
-// @date    13 June 2019
+// @date    28 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -77,26 +77,25 @@ class SystemDriver
                                 // LPO clock: 1 kHz
                                 // WDOGCLK: 4 MHz (MCGIRCLK)
 
-            xtal_80mhz_run,     // NOTE: recommended for CAN use
-                                // @ 80 MHz - Normal Run (RUN) using external crystal
+            xtal_96mhz_run,     // @ 96 MHz - Normal Run (RUN) using external crystal
                                 // Outputs:
                                 // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
-                                // Core clock: 80 MHz
-                                // System clock: 80 MHz
-                                // Fast peripheral clock: 80 MHz
-                                // Bus/Flash clock: 20 MHz
+                                // Core clock: 96 MHz
+                                // System clock: 96 MHz
+                                // Fast peripheral clock: 96 MHz
+                                // Bus/Flash clock: 24 MHz
                                 // LPO clock: 1 kHz
                                 // WDOGCLK: 4 MHz (MCGIRCLK)
 
-            xtal_160mhz_hsrun   // @ 160 MHz - High Speed Run (HSRUN) using external crystal
+            xtal_168mhz_hsrun   // @ 168 MHz - High Speed Run (HSRUN) using external crystal
                                 // Outputs:
                                 // MCGIRCLK: 4 MHz
                                 // MCGFFCLK: Inactive
-                                // Core clock: 160 MHz
-                                // System clock: 160 MHz
-                                // Fast peripheral clock: 80 MHz
-                                // Bus/Flash clock: 20 MHz
+                                // Core clock: 168 MHz
+                                // System clock: 168 MHz
+                                // Fast peripheral clock: 84 MHz
+                                // Bus/Flash clock: 21 MHz
                                 // LPO clock: 1 kHz
                                 // WDOGCLK: 4 MHz (MCGIRCLK)
         };
@@ -117,8 +116,8 @@ class SystemDriver
             {
                 case Clock::irc_4mhz_vlpr:     return CLOCK_CONFIG_IRC_4MHZ_VLPR_CORE_CLOCK;     break;
                 case Clock::irc_96mhz_run:     return CLOCK_CONFIG_IRC_96MHZ_RUN_CORE_CLOCK;     break;
-                case Clock::xtal_80mhz_run:    return CLOCK_CONFIG_XTAL_80MHZ_RUN_CORE_CLOCK;    break;
-                case Clock::xtal_160mhz_hsrun: return CLOCK_CONFIG_XTAL_160MHZ_HSRUN_CORE_CLOCK; break;
+                case Clock::xtal_96mhz_run:    return CLOCK_CONFIG_XTAL_96MHZ_RUN_CORE_CLOCK;    break;
+                case Clock::xtal_168mhz_hsrun: return CLOCK_CONFIG_XTAL_168MHZ_HSRUN_CORE_CLOCK; break;
                 default:                       return 0;                                         break;
             }
         }
@@ -129,8 +128,8 @@ class SystemDriver
             {
                 case Clock::irc_4mhz_vlpr:     return CLOCK_CONFIG_IRC_4MHZ_VLPR_CORE_CLOCK;         break;
                 case Clock::irc_96mhz_run:     return CLOCK_CONFIG_IRC_96MHZ_RUN_CORE_CLOCK;         break;
-                case Clock::xtal_80mhz_run:    return CLOCK_CONFIG_XTAL_80MHZ_RUN_CORE_CLOCK;        break;
-                case Clock::xtal_160mhz_hsrun: return CLOCK_CONFIG_XTAL_160MHZ_HSRUN_CORE_CLOCK / 2; break;
+                case Clock::xtal_96mhz_run:    return CLOCK_CONFIG_XTAL_96MHZ_RUN_CORE_CLOCK;        break;
+                case Clock::xtal_168mhz_hsrun: return CLOCK_CONFIG_XTAL_168MHZ_HSRUN_CORE_CLOCK / 2; break;
                 default:                       return 0;                                             break;
             }
         }
@@ -141,8 +140,8 @@ class SystemDriver
             {
                 case Clock::irc_4mhz_vlpr:     return CLOCK_CONFIG_IRC_4MHZ_VLPR_CORE_CLOCK / 5;     break;
                 case Clock::irc_96mhz_run:     return CLOCK_CONFIG_IRC_96MHZ_RUN_CORE_CLOCK / 4;     break;
-                case Clock::xtal_80mhz_run:    return CLOCK_CONFIG_XTAL_80MHZ_RUN_CORE_CLOCK / 4;    break;
-                case Clock::xtal_160mhz_hsrun: return CLOCK_CONFIG_XTAL_160MHZ_HSRUN_CORE_CLOCK / 8; break;
+                case Clock::xtal_96mhz_run:    return CLOCK_CONFIG_XTAL_96MHZ_RUN_CORE_CLOCK / 4;    break;
+                case Clock::xtal_168mhz_hsrun: return CLOCK_CONFIG_XTAL_168MHZ_HSRUN_CORE_CLOCK / 8; break;
                 default:                       return 0;                                             break;
             }
         }
@@ -158,8 +157,8 @@ class SystemDriver
         /*
         // 32 kHz slow Internal Reference Clock (IRC)
         static constexpr int32_t IRC_SLOW_32KHZ_FREQ = 32768;
-        // Crystal frequency (8 MHz fixed)
-        static constexpr int32_t CRYSTAL_8MHZ_FREQ = BOARD_XTAL0_CLK_HZ;
+        // Crystal frequency (12 MHz fixed)
+        static constexpr int32_t CRYSTAL_12MHZ_FREQ = BOARD_XTAL0_CLK_HZ;
         // External clock pin input frequency (EXTAL) (currently not implemented)
         static constexpr int32_t CLK_INPUT_PIN_FREQ = 0;
         */
