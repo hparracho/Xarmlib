@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    api_output_debouncer.hpp
-// @brief   API output debouncer class.
-// @date    28 August 2020
+// @file    api_output_driver.hpp
+// @brief   API output driver class.
+// @date    31 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -29,8 +29,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_API_OUTPUT_DEBOUNCER_HPP
-#define __XARMLIB_API_OUTPUT_DEBOUNCER_HPP
+#ifndef __XARMLIB_API_OUTPUT_DRIVER_HPP
+#define __XARMLIB_API_OUTPUT_DRIVER_HPP
 
 #include "devices/spi_io_source.hpp"
 #include "api/api_gpio_source.hpp"
@@ -43,7 +43,7 @@ namespace xarmlib
 
 
 
-class OutputDebouncer
+class OutputDriver
 {
     public:
 
@@ -51,11 +51,11 @@ class OutputDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-		OutputDebouncer(      GpioSource&                  gpio_source,
-                    	const PinNameBus&                  pin_name_bus,
-						const hal::Gpio::OutputModeConfig& pin_bus_config) : m_pin_source { gpio_source },
-																		     m_outputs(pin_name_bus.get_size()),
-																			 m_output_bus { pin_name_bus.get_mask() }
+		OutputDriver(      GpioSource&                  gpio_source,
+                     const PinNameBus&                  pin_name_bus,
+					 const hal::Gpio::OutputModeConfig& pin_bus_config) : m_pin_source { gpio_source },
+																		  m_outputs(pin_name_bus.get_size()),
+																		  m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
@@ -66,11 +66,11 @@ class OutputDebouncer
         }
 
 #if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
-        OutputDebouncer(      GpioSource&                               gpio_source,
-						const PinNameBus&                               pin_name_bus,
-						const hal::Gpio::OutputModeTrueOpenDrainConfig& pin_bus_config) : m_pin_source { gpio_source },
-																						  m_outputs(pin_name_bus.get_size()),
-																						  m_output_bus { pin_name_bus.get_mask() }
+        OutputDriver(      GpioSource&                               gpio_source,
+					 const PinNameBus&                               pin_name_bus,
+					 const hal::Gpio::OutputModeTrueOpenDrainConfig& pin_bus_config) : m_pin_source { gpio_source },
+																					   m_outputs(pin_name_bus.get_size()),
+																					   m_output_bus { pin_name_bus.get_mask() }
         {
             for(const auto pin_name : pin_name_bus)
             {
@@ -81,10 +81,10 @@ class OutputDebouncer
         }
 #endif
 
-        OutputDebouncer(      SpiIoSource& spi_io_source,
-						const PinIndexBus& pin_index_bus) : m_pin_source { spi_io_source },
-															m_outputs(pin_index_bus.get_size()),
-															m_output_bus { pin_index_bus.get_mask() }
+        OutputDriver(      SpiIoSource& spi_io_source,
+					 const PinIndexBus& pin_index_bus) : m_pin_source { spi_io_source },
+														 m_outputs(pin_index_bus.get_size()),
+														 m_output_bus { pin_index_bus.get_mask() }
         {
             config_pins<SpiIoSource>(pin_index_bus);
         }
@@ -187,4 +187,4 @@ class OutputDebouncer
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_API_OUTPUT_DEBOUNCER_HPP
+#endif // __XARMLIB_API_OUTPUT_DRIVER_HPP
