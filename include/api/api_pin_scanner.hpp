@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer (Timer16 if available)).
-// @date    10 May 2019
+// @date    31 August 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -223,7 +223,10 @@ class PinScanner
             {
                 if(m_debouncer_handlers[index] != nullptr && m_debouncer_handlers[index](m_is_starting) == true)
                 {
-                    yield |= m_pin_change_handlers[index]();
+                	if(m_pin_change_handlers[index] != nullptr)
+					{
+                		yield |= m_pin_change_handlers[index]();
+					}
 
                     new_input = true;
                 }
