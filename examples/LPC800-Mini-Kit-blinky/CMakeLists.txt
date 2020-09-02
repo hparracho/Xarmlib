@@ -20,15 +20,18 @@ set(project_name LPC800-Mini-Kit-blinky)
 project(${project_name} CXX)
 
 include_directories("../../external/BITMASK/include")
-include_directories("../../external/CMSIS/Core/include")
-include_directories("../../external/GSL/include")
+include_directories("../../external/CMSIS/CMSIS/Core/include")
+include_directories("../../external/SPAN/include")
 include_directories("../../include/cpp")
 include_directories("../../include")
 include_directories("include")
 
-file(GLOB_RECURSE xarmlib_source "../../source/*.cpp")
-                                 
-file(GLOB_RECURSE user_source    "source/*.cpp")
+file(GLOB xarmlib_source "../../source/api/*"
+                         "../../source/core/*"
+                         "../../source/cpp/*"
+                         "../../source/targets/LPC81x/*")
+
+file(GLOB_RECURSE user_source "source/*")
 
 add_library(xarmlib OBJECT ${xarmlib_source})
 

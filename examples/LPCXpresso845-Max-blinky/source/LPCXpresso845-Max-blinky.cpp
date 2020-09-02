@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    LPCXpresso845-Max-blinky.cpp
 // @brief   LPCXpresso845-Max board Blinky example application.
-// @date    7 July 2018
+// @date    2 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -30,6 +30,7 @@
 // ----------------------------------------------------------------------------
 
 #include "xarmlib_config.hpp"
+#include "xarmlib.hpp"
 
 using namespace std::chrono_literals;
 using namespace xarmlib;
@@ -41,7 +42,7 @@ class Blinker : public Timer
 {
     public:
 
-        explicit Blinker(const Pin::Name pin_name) : m_output(pin_name, Gpio::OutputMode::PUSH_PULL_HIGH)
+        explicit Blinker(const Pin::Name pin_name) : m_output(pin_name, Gpio::OutputModeConfig{Gpio::OutputMode::push_pull_high})
         {
             // Create and assign the timer IRQ handler to the Blinker::toggle() member function
             auto handler = Timer::IrqHandler::create<Blinker, &Blinker::toggle>(this);
@@ -90,22 +91,20 @@ int main(void)
 {
     // Configure SW2 WAKE button with glitch filter. Filter set to reject
     // pulses smaller than  3 clocks using Input filter clock divider 0.
-    DigitalIn button(Pin::Name::P0_4,
-                     Gpio::InputMode::PULL_UP,
-                     Gpio::InputFilter::CLOCKS_3_CLKDIV0);
+    DigitalIn button(Pin::Name::p0_4, Gpio::InputModeConfig{Gpio::InputMode::pull_up, Gpio::InputFilter::clocks_3_clkdiv0});
 
     // Button glitch filter divider set to maximum interval.
     // Input filter clock divider 0 set to 255 (main clock rate / 255).
-    DigitalIn::set_input_filter_clock_divider(Gpio::InputFilterClockDivider::CLKDIV0, 255);
+    Gpio::set_input_filter_clock_divider(Gpio::InputFilterClockDivider::clkdiv0, 255);
 
     // Configure LED blinkers
-    Blinker led_red  (Pin::Name::P0_12);
-    Blinker led_green(Pin::Name::P0_0 );
-    Blinker led_blue (Pin::Name::P1_15);
+    Blinker led_red  (Pin::Name::p0_12);
+    Blinker led_green(Pin::Name::p0_0 );
+    Blinker led_blue (Pin::Name::p1_15);
 
     // Start-up blinker timers
-    led_green.start(100000us, Timer::Mode::FREE_RUNNING);   // Blink green LED @ 100ms rate
-    led_blue. start(1000ms,   Timer::Mode::FREE_RUNNING);   // BLink blue LED @ 1s rate
+    led_green.start(100000us, Timer::Mode::free_running);   // Blink green LED @ 100ms rate
+    led_blue. start(1000ms,   Timer::Mode::free_running);   // BLink blue LED @ 1s rate
 
     bool button_pressed = false;
 
@@ -123,7 +122,7 @@ int main(void)
             button_pressed = false;
 
             led_red.turn_on();
-            led_red.start(3s, Timer::Mode::SINGLE_SHOT);
+            led_red.start(3s, Timer::Mode::single_shot);
         }
     }
 
