@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_source.hpp
 // @brief   API pin source base class.
-// @date    18 July 2018
+// @date    3 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -36,6 +36,15 @@
 
 namespace xarmlib
 {
+
+
+
+
+enum class PinPolarity
+{
+    positive,
+    negative
+};
 
 
 
