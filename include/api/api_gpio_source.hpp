@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    api_gpio_source.hpp
 // @brief   API GPIO source class.
-// @date    10 May 2019
+// @date    3 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -43,6 +43,7 @@ namespace xarmlib
 
 
 
+template <PinPolarity Polarity>
 class GpioSource : public PinSource
 {
     public:
@@ -122,15 +123,25 @@ class GpioSource : public PinSource
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+        static constexpr uint32_t get_default_outputs()
+        {
+            return (Polarity == PinPolarity::negative) ? static_cast<uint32_t>(0xFFFFFFFF) : 0;
+        }
+
+        // NOTE: Ones configure as outputs
+        //       Zeros configure as inputs
+        static constexpr uint32_t get_direction(const uint32_t value)
+        {
+            return (Polarity == PinPolarity::negative) ? ~value : value;
+        }
+
         void pin_source_handler()
         {
             for(std::size_t port_index = 0; port_index < TARGET_PORT_COUNT; ++port_index)
             {
                 const hal::Port::Name port_name = static_cast<hal::Port::Name>(port_index);
 
-                // NOTE: Ones configure as outputs
-                //       Zeros configure as inputs
-                hal::Port::write_direction(port_name, m_outputs_mask[port_index], ~m_outputs[port_index]);
+                hal::Port::write_direction(port_name, m_outputs_mask[port_index], get_direction(m_outputs[port_index]));
 
                 hal::Port::write(port_name, m_outputs_mask[port_index], m_outputs[port_index]);
 
@@ -145,10 +156,16 @@ class GpioSource : public PinSource
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        std::array<uint32_t, TARGET_PORT_COUNT> m_outputs { 0xFFFFFFFF };
+        std::array<uint32_t, TARGET_PORT_COUNT> m_outputs { get_default_outputs() };
         std::array<uint32_t, TARGET_PORT_COUNT> m_outputs_mask { 0 };
         std::array<uint32_t, TARGET_PORT_COUNT> m_reads { 0 };
 };
+
+
+
+
+using PositiveGpioSource = GpioSource<PinPolarity::positive>;
+using NegativeGpioSource = GpioSource<PinPolarity::negative>;
 
 
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer class.
-// @date    14 January 2020
+// @date    3 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,6 +43,7 @@ namespace xarmlib
 
 
 
+template <PinPolarity Polarity>
 class InputDebouncer
 {
     public:
@@ -51,7 +52,7 @@ class InputDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        InputDebouncer(      GpioSource&                 gpio_source,
+        InputDebouncer(      GpioSource<Polarity>&       gpio_source,
                        const PinNameBus&                 pin_name_bus,
                        const hal::Gpio::InputModeConfig& pin_bus_config,
                        const int16_t                     scan_time_low_samples,
@@ -68,11 +69,11 @@ class InputDebouncer
                 hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
-            config_pins<GpioSource>(pin_name_bus);
+            config_pins<GpioSource<Polarity>>(pin_name_bus);
         }
 
 #if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
-        InputDebouncer(      GpioSource&                              gpio_source,
+        InputDebouncer(      GpioSource<Polarity>&                    gpio_source,
                        const PinNameBus&                              pin_name_bus,
                        const hal::Gpio::InputModeTrueOpenDrainConfig& pin_bus_config,
                        const int16_t                                  scan_time_low_samples,
@@ -89,22 +90,22 @@ class InputDebouncer
                 hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
-            config_pins<GpioSource>(pin_name_bus);
+            config_pins<GpioSource<Polarity>>(pin_name_bus);
         }
 #endif
 
-        InputDebouncer(      SpiIoSource& spi_io_source,
-                       const PinIndexBus& pin_index_bus,
-                       const int16_t      scan_time_low_samples,
-                       const int16_t      scan_time_high_samples) : m_pin_source { spi_io_source },
-                                                                    m_inputs(pin_index_bus.get_size()),
-                                                                    m_low_samples { scan_time_low_samples },
-                                                                    m_high_samples { scan_time_high_samples },
-                                                                    m_last_read_bus { 0 },
-                                                                    m_filtered_bus { 0 },
-                                                                    m_sampling_bus { 0 }
+        InputDebouncer(      SpiIoSource<Polarity>& spi_io_source,
+                       const PinIndexBus&           pin_index_bus,
+                       const int16_t                scan_time_low_samples,
+                       const int16_t                scan_time_high_samples) : m_pin_source { spi_io_source },
+                                                                              m_inputs(pin_index_bus.get_size()),
+                                                                              m_low_samples { scan_time_low_samples },
+                                                                              m_high_samples { scan_time_high_samples },
+                                                                              m_last_read_bus { 0 },
+                                                                              m_filtered_bus { 0 },
+                                                                              m_sampling_bus { 0 }
         {
-            config_pins<SpiIoSource>(pin_index_bus);
+            config_pins<SpiIoSource<Polarity>>(pin_index_bus);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class

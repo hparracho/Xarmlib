@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    14 January 2020
+// @date    3 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -43,6 +43,7 @@ namespace xarmlib
 
 
 
+template <PinPolarity Polarity>
 class IoDebouncer
 {
     public:
@@ -51,7 +52,7 @@ class IoDebouncer
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        IoDebouncer(      GpioSource&                 gpio_source,
+        IoDebouncer(      GpioSource<Polarity>&       gpio_source,
                     const PinNameBus&                 pin_name_bus,
                     const hal::Gpio::InputModeConfig& pin_bus_config,
                     const int16_t                     scan_time_low_samples,
@@ -66,18 +67,18 @@ class IoDebouncer
                                                                                         m_sampling_bus { 0 },
                                                                                         m_input_error_bus { 0 },
                                                                                         m_output_error_bus { 0 },
-                                                                                        m_output_bus { pin_name_bus.get_mask() }
+                                                                                        m_output_bus { get_default_output_bus(pin_name_bus) }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
-            config_pins<GpioSource>(pin_name_bus);
+            config_pins<GpioSource<Polarity>>(pin_name_bus);
         }
 
 #if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
-        IoDebouncer(      GpioSource&                              gpio_source,
+        IoDebouncer(      GpioSource<Polarity>&                    gpio_source,
                     const PinNameBus&                              pin_name_bus,
                     const hal::Gpio::InputModeTrueOpenDrainConfig& pin_bus_config,
                     const int16_t                                  scan_time_low_samples,
@@ -92,34 +93,34 @@ class IoDebouncer
                                                                                                      m_sampling_bus { 0 },
                                                                                                      m_input_error_bus { 0 },
                                                                                                      m_output_error_bus { 0 },
-                                                                                                     m_output_bus { pin_name_bus.get_mask() }
+                                                                                                     m_output_bus { get_default_output_bus(pin_name_bus) }
         {
             for(const auto pin_name : pin_name_bus)
             {
                 hal::Gpio gpio(pin_name, pin_bus_config);
             }
 
-            config_pins<GpioSource>(pin_name_bus);
+            config_pins<GpioSource<Polarity>>(pin_name_bus);
         }
 #endif
 
-        IoDebouncer(      SpiIoSource& spi_io_source,
-                    const PinIndexBus& pin_index_bus,
-                    const int16_t      scan_time_low_samples,
-                    const int16_t      scan_time_high_samples,
-                    const int16_t      scan_time_output_error_samples) : m_pin_source { spi_io_source },
-                                                                         m_ios(pin_index_bus.get_size()),
-                                                                         m_low_samples { scan_time_low_samples },
-                                                                         m_high_samples { scan_time_high_samples },
-                                                                         m_output_error_samples { scan_time_output_error_samples },
-                                                                         m_last_read_bus { 0 },
-                                                                         m_filtered_bus { 0 },
-                                                                         m_sampling_bus { 0 },
-                                                                         m_input_error_bus { 0 },
-                                                                         m_output_error_bus { 0 },
-                                                                         m_output_bus { pin_index_bus.get_mask() }
+        IoDebouncer(      SpiIoSource<Polarity>& spi_io_source,
+                    const PinIndexBus&           pin_index_bus,
+                    const int16_t                scan_time_low_samples,
+                    const int16_t                scan_time_high_samples,
+                    const int16_t                scan_time_output_error_samples) : m_pin_source { spi_io_source },
+                                                                         	       m_ios(pin_index_bus.get_size()),
+                                                                         	       m_low_samples { scan_time_low_samples },
+                                                                         	       m_high_samples { scan_time_high_samples },
+                                                                         	       m_output_error_samples { scan_time_output_error_samples },
+                                                                                   m_last_read_bus { 0 },
+                                                                                   m_filtered_bus { 0 },
+                                                                                   m_sampling_bus { 0 },
+                                                                                   m_input_error_bus { 0 },
+                                                                                   m_output_error_bus { 0 },
+                                                                                   m_output_bus { get_default_output_bus(pin_index_bus) }
         {
-            config_pins<SpiIoSource>(pin_index_bus);
+            config_pins<SpiIoSource<Polarity>>(pin_index_bus);
         }
 
         // Get the handler that is intended to be used as a debouncer handler of the PinScanner class
@@ -160,7 +161,7 @@ class IoDebouncer
         }
 
         // NOTES: - the value will be written in the next transfer
-        //        - the maskable pins behaves as input
+        //        - the maskable pins behaves as [input (Polarity == PinPolarity::negative) / output (Polarity == PinPolarity::positive)]
         void set_output_bus(const uint32_t mask)
         {
             for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
@@ -185,7 +186,7 @@ class IoDebouncer
         }
 
         // NOTES: - the value will be written in the next transfer
-        //        - the maskable pins behaves as output
+        //        - the maskable pins behaves as [output (Polarity == PinPolarity::negative) / input (Polarity == PinPolarity::positive)]
         void clear_output_bus(const uint32_t mask)
         {
             for(std::size_t io_index = 0; io_index < m_ios.size(); ++io_index)
@@ -223,6 +224,12 @@ class IoDebouncer
         // --------------------------------------------------------------------
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        template <class PinBusType>
+        static constexpr uint32_t get_default_output_bus(const PinBus<PinBusType>& pin_bus)
+		{
+			return (Polarity == PinPolarity::negative) ? pin_bus.get_mask() : 0;
+		}
 
         template <typename PinBusSource, class PinBusType>
         void config_pins(const PinBus<PinBusType>& pin_bus)
@@ -270,7 +277,14 @@ class IoDebouncer
 
                 m_filtered_bus = m_last_read_bus;
 
-                m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
+                if constexpr(Polarity == PinPolarity::negative)
+				{
+                	m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
+				}
+                else
+                {
+                	m_input_error_bus = m_last_read_bus;
+                }
 
                 return true;
             }
@@ -292,33 +306,67 @@ class IoDebouncer
 
                     const bool output_bit = (m_output_bus & io_mask) != 0;
 
-                    if(output_bit != 0)
-                    {
-                        // Input mode
+                    if constexpr(Polarity == PinPolarity::negative)
+					{
+                    	if(output_bit != 0)
+						{
+							// Input mode
 
-                        if(current_read_bit == 0)
-                        {
-                            // Reload counter with low samples
-                            io.counter = m_low_samples;
-                        }
-                        else
-                        {
-                            // Reload counter with high samples
-                            io.counter = m_high_samples;
+							if(current_read_bit == 0)
+							{
+								// Reload counter with low samples
+								io.counter = m_low_samples;
+							}
+							else
+							{
+								// Reload counter with high samples
+								io.counter = m_high_samples;
 
-                            // Clear input error flag
-                            m_input_error_bus &= ~io_mask;
-                        }
+								// Clear input error flag
+								m_input_error_bus &= ~io_mask;
+							}
 
-                        // Set sampling flag
-                        m_sampling_bus |= io_mask;
-                    }
+							// Set sampling flag
+							m_sampling_bus |= io_mask;
+						}
+						else
+						{
+							// Output mode
+
+							// Sampling possible over-current or stop
+							io.counter = (current_read_bit != 0) ? m_output_error_samples : 0;
+						}
+					}
                     else
                     {
-                        // Output mode
+                    	if(output_bit == 0)
+						{
+							// Input mode
 
-                        // Sampling possible over-current or stop
-                        io.counter = (current_read_bit != 0) ? m_output_error_samples : 0;
+							if(current_read_bit != 0)
+							{
+								// Reload counter with high samples
+								io.counter = m_high_samples;
+							}
+							else
+							{
+								// Reload counter with low samples
+								io.counter = m_low_samples;
+
+								// Clear input error flag
+								m_input_error_bus &= ~io_mask;
+							}
+
+							// Set sampling flag
+							m_sampling_bus |= io_mask;
+						}
+						else
+						{
+							// Output mode
+
+							// Sampling possible over-current or stop
+							io.counter = (current_read_bit == 0) ? m_output_error_samples : 0;
+						}
                     }
 
                     // Update last read io
@@ -354,22 +402,44 @@ class IoDebouncer
 
                                 if(output_bit != current_read_bit)
                                 {
-                                    if(current_read_bit == 0)
-                                    {
-                                        // Set input error flag
-                                        m_input_error_bus |= io_mask;
-                                    }
-                                    else
-                                    {
-                                        // Set output error flag
-                                        m_output_error_bus |= io_mask;
+                                	if constexpr(Polarity == PinPolarity::negative)
+									{
+                                		if(current_read_bit == 0)
+										{
+											// Set input error flag
+											m_input_error_bus |= io_mask;
+										}
+										else
+										{
+											// Set output error flag
+											m_output_error_bus |= io_mask;
 
-                                        // Unable to clear output (over-current?) -> set output
-                                        m_pin_source.write_output_bit(io.port_index, io.pin_bit, 1UL << io.pin_bit);
+											// Unable to clear output (over-current?) -> set output
+											m_pin_source.write_output_bit(io.port_index, io.pin_bit, 1UL << io.pin_bit);
 
-                                        m_output_bus   |= io_mask;
-                                        m_filtered_bus |= io_mask;
-                                    }
+											m_output_bus   |= io_mask;
+											m_filtered_bus |= io_mask;
+										}
+									}
+                                	else
+                                	{
+                                		if(current_read_bit != 0)
+										{
+											// Set input error flag
+											m_input_error_bus |= io_mask;
+										}
+										else
+										{
+											// Set output error flag
+											m_output_error_bus |= io_mask;
+
+											// Unable to set output (over-current?) -> clear output
+											m_pin_source.write_output_bit(io.port_index, io.pin_bit, 0);
+
+											m_output_bus   &= ~io_mask;
+											m_filtered_bus &= ~io_mask;
+										}
+                                	}
                                 }
                             }
                         }

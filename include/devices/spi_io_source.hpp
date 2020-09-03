@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
-// @brief   SPI I/O source class (based on module FPIO8SM).
-// @date    10 May 2019
+// @brief   SPI I/O source class.
+// @date    3 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -42,6 +42,7 @@ namespace xarmlib
 
 
 
+template <PinPolarity Polarity>
 class SpiIoSource : public PinSource
 {
     public:
@@ -56,7 +57,7 @@ class SpiIoSource : public PinSource
                     const std::size_t     port_count) : m_spi_master { spi_master },
                                                         m_latch(latch, { hal::Gpio::OutputMode::push_pull_high }),
                                                         m_enable(enable, { hal::Gpio::OutputMode::push_pull_high }),
-                                                        m_outputs(port_count, static_cast<uint8_t>(0xFF)),
+                                                        m_outputs(port_count, get_default_outputs()),
                                                         m_reads(port_count, static_cast<uint8_t>(0))
         {
             assert(spi_master.is_enabled() == true);
@@ -158,6 +159,11 @@ class SpiIoSource : public PinSource
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
+		static constexpr uint8_t get_default_outputs()
+		{
+			return (Polarity == PinPolarity::negative) ? static_cast<uint8_t>(0xFF) : 0;
+		}
+
         void pin_source_handler()
         {
             transfer(m_outputs, m_reads);
@@ -174,6 +180,12 @@ class SpiIoSource : public PinSource
         std::dynarray<uint8_t> m_outputs;
         std::dynarray<uint8_t> m_reads;
 };
+
+
+
+
+using SpiPositiveIoSource = SpiIoSource<PinPolarity::positive>;
+using SpiNegativeIoSource = SpiIoSource<PinPolarity::negative>;
 
 
 
