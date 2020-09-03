@@ -29,6 +29,7 @@
 
 # Ignore everything inside these directories
 /**/build/**
+/**/doxygen/**
 /**/deprecated/**
 /**/backup/**
 /**/temp/**
