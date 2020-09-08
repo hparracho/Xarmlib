@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_output_driver.hpp
 // @brief   API output driver class.
-// @date    3 September 2020
+// @date    8 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -52,11 +52,21 @@ class OutputDriver
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-		OutputDriver(      GpioSource<Polarity>&        gpio_source,
+        // Constructor for a generic PinSource not using GPIO
+        template <typename PinSource>
+        OutputDriver(      PinSource&   pin_source,
+                     const PinIndexBus& pin_index_bus) : m_pin_source { pin_source },
+                                                         m_outputs(pin_index_bus.get_size()),
+                                                         m_output_bus { get_default_output_bus(pin_index_bus) }
+        {
+            config_pins<PinSource>(pin_index_bus);
+        }
+
+        OutputDriver(      GpioSource<Polarity>&        gpio_source,
                      const PinNameBus&                  pin_name_bus,
-					 const hal::Gpio::OutputModeConfig& pin_bus_config) : m_pin_source { gpio_source },
-																		  m_outputs(pin_name_bus.get_size()),
-																		  m_output_bus { get_default_output_bus(pin_name_bus) }
+                     const hal::Gpio::OutputModeConfig& pin_bus_config) : m_pin_source { gpio_source },
+                                                                          m_outputs(pin_name_bus.get_size()),
+                                                                          m_output_bus { get_default_output_bus(pin_name_bus) }
         {
             for(const auto pin_name : pin_name_bus)
             {
@@ -68,10 +78,10 @@ class OutputDriver
 
 #if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
         OutputDriver(      GpioSource<Polarity>&                     gpio_source,
-					 const PinNameBus&                               pin_name_bus,
-					 const hal::Gpio::OutputModeTrueOpenDrainConfig& pin_bus_config) : m_pin_source { gpio_source },
-																					   m_outputs(pin_name_bus.get_size()),
-																					   m_output_bus { get_default_output_bus(pin_name_bus) }
+                     const PinNameBus&                               pin_name_bus,
+                     const hal::Gpio::OutputModeTrueOpenDrainConfig& pin_bus_config) : m_pin_source { gpio_source },
+                                                                                       m_outputs(pin_name_bus.get_size()),
+                                                                                       m_output_bus { get_default_output_bus(pin_name_bus) }
         {
             for(const auto pin_name : pin_name_bus)
             {
@@ -83,9 +93,9 @@ class OutputDriver
 #endif
 
         OutputDriver(      SpiIoSource<Polarity>& spi_io_source,
-					 const PinIndexBus&           pin_index_bus) : m_pin_source { spi_io_source },
-													     	       m_outputs(pin_index_bus.get_size()),
-														    	   m_output_bus { get_default_output_bus(pin_index_bus) }
+                     const PinIndexBus&           pin_index_bus) : m_pin_source { spi_io_source },
+                                                                   m_outputs(pin_index_bus.get_size()),
+                                                                   m_output_bus { get_default_output_bus(pin_index_bus) }
         {
             config_pins<SpiIoSource<Polarity>>(pin_index_bus);
         }
@@ -150,10 +160,10 @@ class OutputDriver
         // --------------------------------------------------------------------
 
         template <class PinBusType>
-		static constexpr uint32_t get_default_output_bus(const PinBus<PinBusType>& pin_bus)
-		{
-			return (Polarity == PinPolarity::negative) ? pin_bus.get_mask() : 0;
-		}
+        static constexpr uint32_t get_default_output_bus(const PinBus<PinBusType>& pin_bus)
+        {
+            return (Polarity == PinPolarity::negative) ? pin_bus.get_mask() : 0;
+        }
 
         template <typename PinBusSource, class PinBusType>
         void config_pins(const PinBus<PinBusType>& pin_bus)
