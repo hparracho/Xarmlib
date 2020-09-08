@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer class.
-// @date    3 September 2020
+// @date    8 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,6 +51,22 @@ class InputDebouncer
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // Constructor for a generic PinSource not using GPIO
+        template <typename PinSource>
+        InputDebouncer(      PinSource&   pin_source,
+                       const PinIndexBus& pin_index_bus,
+                       const int16_t      scan_time_low_samples,
+                       const int16_t      scan_time_high_samples) : m_pin_source { pin_source },
+                                                                    m_inputs(pin_index_bus.get_size()),
+                                                                    m_low_samples { scan_time_low_samples },
+                                                                    m_high_samples { scan_time_high_samples },
+                                                                    m_last_read_bus { 0 },
+                                                                    m_filtered_bus { 0 },
+                                                                    m_sampling_bus { 0 }
+        {
+            config_pins<PinSource>(pin_index_bus);
+        }
 
         InputDebouncer(      GpioSource<Polarity>&       gpio_source,
                        const PinNameBus&                 pin_name_bus,
