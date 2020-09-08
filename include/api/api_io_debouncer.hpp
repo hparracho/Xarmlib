@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    3 September 2020
+// @date    8 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -51,6 +51,27 @@ class IoDebouncer
         // --------------------------------------------------------------------
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
+
+        // Constructor for a generic PinSource not using GPIO
+        template <typename PinSource>
+        IoDebouncer(      PinSource&   pin_source,
+                    const PinIndexBus& pin_index_bus,
+                    const int16_t      scan_time_low_samples,
+                    const int16_t      scan_time_high_samples,
+                    const int16_t      scan_time_output_error_samples) : m_pin_source { pin_source },
+                                                                         m_ios(pin_index_bus.get_size()),
+                                                                         m_low_samples { scan_time_low_samples },
+                                                                         m_high_samples { scan_time_high_samples },
+                                                                         m_output_error_samples { scan_time_output_error_samples },
+                                                                         m_last_read_bus { 0 },
+                                                                         m_filtered_bus { 0 },
+                                                                         m_sampling_bus { 0 },
+                                                                         m_input_error_bus { 0 },
+                                                                         m_output_error_bus { 0 },
+                                                                         m_output_bus { get_default_output_bus(pin_index_bus) }
+        {
+            config_pins<PinSource>(pin_index_bus);
+        }
 
         IoDebouncer(      GpioSource<Polarity>&       gpio_source,
                     const PinNameBus&                 pin_name_bus,
@@ -227,9 +248,9 @@ class IoDebouncer
 
         template <class PinBusType>
         static constexpr uint32_t get_default_output_bus(const PinBus<PinBusType>& pin_bus)
-		{
-			return (Polarity == PinPolarity::negative) ? pin_bus.get_mask() : 0;
-		}
+        {
+            return (Polarity == PinPolarity::negative) ? pin_bus.get_mask() : 0;
+        }
 
         template <typename PinBusSource, class PinBusType>
         void config_pins(const PinBus<PinBusType>& pin_bus)
@@ -278,12 +299,12 @@ class IoDebouncer
                 m_filtered_bus = m_last_read_bus;
 
                 if constexpr(Polarity == PinPolarity::negative)
-				{
-                	m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
-				}
+                {
+                    m_input_error_bus = ~m_last_read_bus & ((1UL << m_ios.size()) - 1);
+                }
                 else
                 {
-                	m_input_error_bus = m_last_read_bus;
+                    m_input_error_bus = m_last_read_bus;
                 }
 
                 return true;
@@ -307,66 +328,66 @@ class IoDebouncer
                     const bool output_bit = (m_output_bus & io_mask) != 0;
 
                     if constexpr(Polarity == PinPolarity::negative)
-					{
-                    	if(output_bit != 0)
-						{
-							// Input mode
+                    {
+                        if(output_bit != 0)
+                        {
+                            // Input mode
 
-							if(current_read_bit == 0)
-							{
-								// Reload counter with low samples
-								io.counter = m_low_samples;
-							}
-							else
-							{
-								// Reload counter with high samples
-								io.counter = m_high_samples;
+                            if(current_read_bit == 0)
+                            {
+                                // Reload counter with low samples
+                                io.counter = m_low_samples;
+                            }
+                            else
+                            {
+                                // Reload counter with high samples
+                                io.counter = m_high_samples;
 
-								// Clear input error flag
-								m_input_error_bus &= ~io_mask;
-							}
+                                // Clear input error flag
+                                m_input_error_bus &= ~io_mask;
+                            }
 
-							// Set sampling flag
-							m_sampling_bus |= io_mask;
-						}
-						else
-						{
-							// Output mode
+                            // Set sampling flag
+                            m_sampling_bus |= io_mask;
+                        }
+                        else
+                        {
+                            // Output mode
 
-							// Sampling possible over-current or stop
-							io.counter = (current_read_bit != 0) ? m_output_error_samples : 0;
-						}
-					}
+                            // Sampling possible over-current or stop
+                            io.counter = (current_read_bit != 0) ? m_output_error_samples : 0;
+                        }
+                    }
                     else
                     {
-                    	if(output_bit == 0)
-						{
-							// Input mode
+                        if(output_bit == 0)
+                        {
+                            // Input mode
 
-							if(current_read_bit != 0)
-							{
-								// Reload counter with high samples
-								io.counter = m_high_samples;
-							}
-							else
-							{
-								// Reload counter with low samples
-								io.counter = m_low_samples;
+                            if(current_read_bit != 0)
+                            {
+                                // Reload counter with high samples
+                                io.counter = m_high_samples;
+                            }
+                            else
+                            {
+                                // Reload counter with low samples
+                                io.counter = m_low_samples;
 
-								// Clear input error flag
-								m_input_error_bus &= ~io_mask;
-							}
+                                // Clear input error flag
+                                m_input_error_bus &= ~io_mask;
+                            }
 
-							// Set sampling flag
-							m_sampling_bus |= io_mask;
-						}
-						else
-						{
-							// Output mode
+                            // Set sampling flag
+                            m_sampling_bus |= io_mask;
+                        }
+                        else
+                        {
+                            // Output mode
 
-							// Sampling possible over-current or stop
-							io.counter = (current_read_bit == 0) ? m_output_error_samples : 0;
-						}
+                            // Sampling possible over-current or stop
+                            io.counter = (current_read_bit == 0) ? m_output_error_samples : 0;
+                        }
                     }
 
                     // Update last read io
@@ -402,44 +423,44 @@ class IoDebouncer
 
                                 if(output_bit != current_read_bit)
                                 {
-                                	if constexpr(Polarity == PinPolarity::negative)
-									{
-                                		if(current_read_bit == 0)
-										{
-											// Set input error flag
-											m_input_error_bus |= io_mask;
-										}
-										else
-										{
-											// Set output error flag
-											m_output_error_bus |= io_mask;
+                                    if constexpr(Polarity == PinPolarity::negative)
+                                    {
+                                        if(current_read_bit == 0)
+                                        {
+                                            // Set input error flag
+                                            m_input_error_bus |= io_mask;
+                                        }
+                                        else
+                                        {
+                                            // Set output error flag
+                                            m_output_error_bus |= io_mask;
 
-											// Unable to clear output (over-current?) -> set output
-											m_pin_source.write_output_bit(io.port_index, io.pin_bit, 1UL << io.pin_bit);
+                                            // Unable to clear output (over-current?) -> set output
+                                            m_pin_source.write_output_bit(io.port_index, io.pin_bit, 1UL << io.pin_bit);
 
-											m_output_bus   |= io_mask;
-											m_filtered_bus |= io_mask;
-										}
-									}
-                                	else
-                                	{
-                                		if(current_read_bit != 0)
-										{
-											// Set input error flag
-											m_input_error_bus |= io_mask;
-										}
-										else
-										{
-											// Set output error flag
-											m_output_error_bus |= io_mask;
+                                            m_output_bus   |= io_mask;
+                                            m_filtered_bus |= io_mask;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if(current_read_bit != 0)
+                                        {
+                                            // Set input error flag
+                                            m_input_error_bus |= io_mask;
+                                        }
+                                        else
+                                        {
+                                            // Set output error flag
+                                            m_output_error_bus |= io_mask;
 
-											// Unable to set output (over-current?) -> clear output
-											m_pin_source.write_output_bit(io.port_index, io.pin_bit, 0);
+                                            // Unable to set output (over-current?) -> clear output
+                                            m_pin_source.write_output_bit(io.port_index, io.pin_bit, 0);
 
-											m_output_bus   &= ~io_mask;
-											m_filtered_bus &= ~io_mask;
-										}
-                                	}
+                                            m_output_bus   &= ~io_mask;
+                                            m_filtered_bus &= ~io_mask;
+                                        }
+                                    }
                                 }
                             }
                         }
