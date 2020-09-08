@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class.
-// @date    3 September 2020
+// @date    8 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -159,10 +159,10 @@ class SpiIoSource : public PinSource
         // PRIVATE MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-		static constexpr uint8_t get_default_outputs()
-		{
-			return (Polarity == PinPolarity::negative) ? static_cast<uint8_t>(0xFF) : 0;
-		}
+        static constexpr uint8_t get_default_outputs()
+        {
+            return (Polarity == PinPolarity::negative) ? static_cast<uint8_t>(0xFF) : 0;
+        }
 
         void pin_source_handler()
         {
