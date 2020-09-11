@@ -3,11 +3,11 @@
 // @brief   Micro String Format (USF) configuration and main header file
 //          to use in the library. This should be the only header file
 //          included when USF functionality is required.
-// @date    8 January 2019
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -53,6 +53,6 @@
 
 #define USF_ABORT_ON_CONTRACT_VIOLATION
 
-#include "usf/usf.hpp"
+#include "../../external/USFLIB/include/usf/usf.hpp"
 
 #endif // __XARMLIB_EXTERNAL_USF_HPP

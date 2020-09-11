@@ -2,11 +2,11 @@
 // @file    bitmask.hpp
 // @brief   bitmask header file to use in the library. This should be the only
 //          header file included when bitmask functionality is required.
-// @date    6 July 2018
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,6 +33,6 @@
 #ifndef __XARMLIB_EXTERNAL_BITMASK_HPP
 #define __XARMLIB_EXTERNAL_BITMASK_HPP
 
-#include "bitmask/bitmask.hpp"
+#include "../../external/BITMASK/include/bitmask/bitmask.hpp"
 
 #endif // __XARMLIB_EXTERNAL_BITMASK_HPP
