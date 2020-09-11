@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib configuration file for LPCXpresso845-Max-blinky example.
-// @date    2 September 2020
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,6 +70,9 @@ constexpr Faim::PinConfigArray<0> XARMLIB_CONFIG_FAIM_GPIO_PINS;                
 // ----------------------------------------------------------------------------
 //XARMLIB LIBRARY DEFINITIONS
 // ----------------------------------------------------------------------------
+
+// -------- FreeRTOS ----------------------------------------------------------
+#define XARMLIB_ENABLE_FREERTOS                                  (0)    // Enable / disable FreeRTOS usage
 
 // -------- FATFS -------------------------------------------------------------
 #define XARMLIB_ENABLE_FATFS                                     (0)    // Enable / disable FatFs functionality

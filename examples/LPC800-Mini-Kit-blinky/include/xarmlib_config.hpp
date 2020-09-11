@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib_config.hpp
 // @brief   Xarmlib configuration file for LPC800-Mini-Kit-blinky example.
-// @date    2 September 2020
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -62,6 +62,9 @@ constexpr System::Clock XARMLIB_CONFIG_SYSTEM_CLOCK { System::Clock::osc_24mhz }
 // ----------------------------------------------------------------------------
 //XARMLIB LIBRARY DEFINITIONS
 // ----------------------------------------------------------------------------
+
+// -------- FreeRTOS ----------------------------------------------------------
+#define XARMLIB_ENABLE_FREERTOS                                  (0)    // Enable / disable FreeRTOS usage
 
 // -------- FATFS -------------------------------------------------------------
 #define XARMLIB_ENABLE_FATFS                                     (0)    // Enable / disable FatFs functionality
