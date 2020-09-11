@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    assert.c
 // @brief   Custom 'assert_func()' implementation.
-// @date    10 September 2020
+// @date    12 November 2018
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -43,11 +43,5 @@ void __xarmlib_assert_func(void)
 {
     abort();
 }
-
-#else
-
-// gcc when compiled with -pedantic reports a diagnostic when the
-// translation unit is empty as it is requested by the C Standard.
-typedef int dummy_typedef_to_make_iso_compilers_happy;
 
 #endif // !NDEBUG
