@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_startup_hooks.cpp
 // @brief   Startup initialization hooks definition for NXP LPC81x MCU.
-// @date    4 March 2019
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -242,9 +242,17 @@ void mcu_startup_initialize_hardware()
     mcu_startup_set_open_drain_pins_as_output_low();
 #endif // !(TARGET_PACKAGE_PIN_COUNT > 8)
 
+    // ------------------------------------------------------------------------
+    // Helder Parracho @ 11 September 2020
+    // --- DEPRECATED---
+    //
     // Call the CSMSIS system clock routine to store the clock
     // frequency in the SystemCoreClock global RAM location.
-    SystemCoreClockUpdate();
+    // SystemCoreClockUpdate();
+    //
+    // ------------------------------------------------------------------------
+    // SystemCoreClock variable is directly loaded from Xarmlib's configuration constant.
+    // ------------------------------------------------------------------------
 }
 
 
