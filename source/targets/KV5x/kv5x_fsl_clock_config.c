@@ -562,4 +562,10 @@ void clock_config_xtal_188mhz_hsrun(void)
     CLOCK_CONFIG_SetWdogClock(SIM_WDOG_CLK_SEL_MCGIRCLK_CLK);
 }
 
+#else
+
+// gcc when compiled with -pedantic reports a diagnostic when the
+// translation unit is empty as it is requested by the C Standard.
+typedef int dummy_typedef_to_make_iso_compilers_happy;
+
 #endif // __KV5X__
