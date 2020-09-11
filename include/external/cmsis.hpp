@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    cmsis.hpp
 // @brief   CMSIS Core generic header include file.
-// @date    26 October 2018
+// @date    10 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,7 +34,9 @@
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
+#include "targets/KV5x/kv5x_cmsis.hpp"
+#elif defined __KV4X__
 #include "targets/KV4x/kv4x_cmsis.hpp"
 #elif defined __LPC84X__
 #include "targets/LPC84x/lpc84x_cmsis.hpp"
