@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_flash_iap.hpp
 // @brief   Kinetis KV5x flash In-Application Programming (IAP) class.
-// @date    16 January 2020
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,7 +33,11 @@
 #define __XARMLIB_TARGETS_KV5X_FLASH_IAP_HPP
 
 #include "external/span.hpp"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 #include "fsl_flash.h"
+#pragma GCC diagnostic pop
 
 namespace xarmlib
 {
