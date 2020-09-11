@@ -1,0 +1,51 @@
+// ----------------------------------------------------------------------------
+// @file    os_support.cpp
+// @brief   Operating System (FreeRTOS / baremetal) support functions.
+// @date    11 September 2020
+// ----------------------------------------------------------------------------
+//
+// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+//
+// See README.md file for additional credits and acknowledgments.
+//
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+// DEALINGS IN THE SOFTWARE.
+//
+// ----------------------------------------------------------------------------
+
+#include "core/target_specs.hpp"
+#include "core/os_support.hpp"
+
+#include "xarmlib_config.hpp"
+
+
+
+
+namespace xarmlib
+{
+
+// Provides context switch from an ISR handler (using FreeRTOS or baremetal)
+void Os::yield_from_isr([[maybe_unused]] const int32_t yield) noexcept
+{
+#if defined XARMLIB_ENABLE_FREERTOS && (XARMLIB_ENABLE_FREERTOS == 1)
+    portYIELD_FROM_ISR(yield);
+#endif
+}
+
+} // namespace xarmlib
