@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC81x MCU.
-// @date    9 July 2018
+// @date    10 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -189,7 +189,7 @@ const IRQ_HandlerPtr __vectors[] =
 // the user of the exception and help identify the cause.
 // ----------------------------------------------------------------------------
 
-__attribute__ ((section(".after_vectors"), noreturn))
+__attribute__ ((weak, section(".after_vectors")))
 void IRQ_DefaultHandler(void)
 {
     __DEBUG_BKPT();
@@ -216,16 +216,14 @@ void mcu_startup();
 // word location. In debug this doesn't happen since you are not supposed to
 // enable LTO in debug mode. The attribute effectively reduces the debug build
 // size a few bytes.
-__attribute__ ((section(".after_vectors"), noreturn))
-#else
-__attribute__ ((noreturn))
+__attribute__ ((section(".after_vectors.reset")))
 #endif
 void Reset_Handler(void)
 {
     mcu_startup();
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((weak, section(".after_vectors")))
 void NMI_Handler(void)
 {
     __DEBUG_BKPT();
@@ -234,7 +232,7 @@ void NMI_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((weak, section(".after_vectors")))
 void HardFault_Handler(void)
 {
     __DEBUG_BKPT();
@@ -243,7 +241,7 @@ void HardFault_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((weak, section(".after_vectors")))
 void SVC_Handler(void)
 {
     __DEBUG_BKPT();
@@ -252,7 +250,7 @@ void SVC_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((weak, section(".after_vectors")))
 void PendSV_Handler(void)
 {
     __DEBUG_BKPT();
@@ -261,7 +259,7 @@ void PendSV_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((weak, section(".after_vectors")))
 void SysTick_Handler(void)
 {
     __DEBUG_BKPT();
