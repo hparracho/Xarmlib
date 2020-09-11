@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_interrupts.cpp
 // @brief   IRQ handlers and vector table for Kinetis KV5x MCUs.
-// @date    10 January 2020
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -57,7 +57,7 @@ const struct
 } Flash_Config = {0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFE};
 */
 // Reset entry point when using MCUXpresso Managed Linker Scripts
-void ResetISR(void) __attribute__ ((alias("Reset_Handler")));
+void ResetISR(void) __attribute__ ((noreturn, alias("Reset_Handler")));
 // External declaration for the pointer to the stack top from the Linker Script
 extern unsigned int _vStackTop;
 #define __STACK_TOP _vStackTop
@@ -391,7 +391,7 @@ const IRQ_HandlerPtr __vectors[] =
 // the user of the exception and help identify the cause.
 // ----------------------------------------------------------------------------
 
-__attribute__ ((section(".after_vectors"), noreturn))
+__attribute__ ((section(".after_vectors"), weak))
 void IRQ_DefaultHandler(void)
 {
     __DEBUG_BKPT();
@@ -412,22 +412,13 @@ void IRQ_DefaultHandler(void)
 __attribute__ ((section(".after_vectors"), noreturn))
 void mcu_startup();
 
-#ifndef NDEBUG
-// If both CRP word placement and LTO are enabled the 'Reset_Handler()'
-// function cannot be placed after vectors because it's size overlaps the CRP
-// word location. In debug this doesn't happen since you are not supposed to
-// enable LTO in debug mode. The attribute effectively reduces the debug build
-// size a few bytes.
 __attribute__ ((section(".after_vectors"), noreturn))
-#else
-__attribute__ ((noreturn))
-#endif
 void Reset_Handler(void)
 {
     mcu_startup();
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void NMI_Handler(void)
 {
     __DEBUG_BKPT();
@@ -436,7 +427,7 @@ void NMI_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void HardFault_Handler(void)
 {
     __DEBUG_BKPT();
@@ -445,7 +436,7 @@ void HardFault_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void MemManage_Handler(void)
 {
     __DEBUG_BKPT();
@@ -454,7 +445,7 @@ void MemManage_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void BusFault_Handler(void)
 {
     __DEBUG_BKPT();
@@ -463,7 +454,7 @@ void BusFault_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void UsageFault_Handler(void)
 {
     __DEBUG_BKPT();
@@ -472,7 +463,7 @@ void UsageFault_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void SVC_Handler(void)
 {
     __DEBUG_BKPT();
@@ -481,7 +472,7 @@ void SVC_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void DebugMon_Handler(void)
 {
     __DEBUG_BKPT();
@@ -490,7 +481,7 @@ void DebugMon_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void PendSV_Handler(void)
 {
     __DEBUG_BKPT();
@@ -499,7 +490,7 @@ void PendSV_Handler(void)
     {}
 }
 
-__attribute__ ((section(".after_vectors"), noreturn, weak))
+__attribute__ ((section(".after_vectors"), weak))
 void SysTick_Handler(void)
 {
     __DEBUG_BKPT();
