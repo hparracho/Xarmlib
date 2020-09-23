@@ -2,11 +2,11 @@
 // @file    kv4x_timer16.cpp
 // @brief   Kinetis KV4x Timer 16-bit (LPTMR) class.
 // @note    Only time counter mode is implemented
-// @date    24 January 2019
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,11 +34,13 @@
 
 #ifdef __KV4X__
 
+#include "core/os_support.hpp"
 #include "targets/KV4x/kv4x_timer16.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv4x;
 
 // ----------------------------------------------------------------------------
@@ -49,11 +51,7 @@ extern "C" void LPTMR_IRQHandler(void)
 {
     const int32_t yield = Timer16Driver::irq_handler();
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 

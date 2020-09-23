@@ -2,11 +2,11 @@
 // @file    lpc84x_i2c.cpp
 // @brief   NXP LPC84x I2C class.
 // @note    Only master mode is implemented.
-// @date    17 April 2019
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -34,11 +34,13 @@
 
 #ifdef __LPC84X__
 
+#include "core/os_support.hpp"
 #include "targets/LPC84x/lpc84x_i2c.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::lpc84x;
 
 // ----------------------------------------------------------------------------
@@ -49,11 +51,7 @@ extern "C" void I2C0_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -63,11 +61,7 @@ extern "C" void I2C1_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -79,11 +73,7 @@ extern "C" void I2C2_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c2);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -93,11 +83,7 @@ extern "C" void I2C3_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c3);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 #endif // (TARGET_I2C_COUNT == 4) /* __LPC845__ */

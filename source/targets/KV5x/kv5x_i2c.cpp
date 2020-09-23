@@ -2,7 +2,7 @@
 // @file    kv5x_i2c.cpp
 // @brief   Kinetis KV5x I2C class.
 // @note    Only master mode is implemented.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,11 +34,13 @@
 
 #ifdef __KV5X__
 
+#include "core/os_support.hpp"
 #include "targets/KV5x/kv5x_i2c.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv5x;
 
 // ----------------------------------------------------------------------------
@@ -49,11 +51,7 @@ extern "C" void I2C0_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -63,11 +61,7 @@ extern "C" void I2C1_IRQHandler(void)
 {
     const int32_t yield = I2cDriver::irq_handler(I2cDriver::Name::i2c1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 

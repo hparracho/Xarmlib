@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_pin_int.cpp
 // @brief   Kinetis KV5x pin interrupt class.
-// @date    14 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -33,11 +33,13 @@
 
 #ifdef __KV5X__
 
+#include "core/os_support.hpp"
 #include "targets/KV5x/kv5x_pin_int.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv5x;
 
 // --------------------------------------------------------------------
@@ -48,11 +50,7 @@ extern "C" void PORTA_IRQHandler(void)
 {
     const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::porta);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -62,11 +60,7 @@ extern "C" void PORTB_IRQHandler(void)
 {
     const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portb);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -76,11 +70,7 @@ extern "C" void PORTC_IRQHandler(void)
 {
     const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portc);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -90,11 +80,7 @@ extern "C" void PORTD_IRQHandler(void)
 {
     const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::portd);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -104,11 +90,7 @@ extern "C" void PORTE_IRQHandler(void)
 {
     const int32_t yield = PinIntDriver::irq_handler(PortDriver::Name::porte);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 

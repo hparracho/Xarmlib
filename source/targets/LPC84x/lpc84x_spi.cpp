@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc84x_spi.cpp
 // @brief   NXP LPC84x SPI class.
-// @date    9 April 2019
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,11 +33,13 @@
 
 #ifdef __LPC84X__
 
+#include "core/os_support.hpp"
 #include "targets/LPC84x/lpc84x_spi.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::lpc84x;
 
 // ----------------------------------------------------------------------------
@@ -48,11 +50,7 @@ extern "C" void SPI0_IRQHandler(void)
 {
     const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -62,11 +60,7 @@ extern "C" void SPI1_IRQHandler(void)
 {
     const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
