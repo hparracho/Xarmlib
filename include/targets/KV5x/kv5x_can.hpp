@@ -39,7 +39,12 @@
 #include "xarmlib_config.hpp"
 #include "external/bitmask.hpp"
 #include "external/span.hpp"
+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wpedantic"
 #include "fsl_flexcan.h"
+#pragma GCC diagnostic pop
+
 #include "targets/KV5x/kv5x_pin.hpp"
 #include "core/delegate.hpp"
 #include "core/peripheral_ref_counter.hpp"
