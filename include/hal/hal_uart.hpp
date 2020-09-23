@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_uart.hpp
 // @brief   UART HAL interface class.
-// @date    21 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -478,7 +478,7 @@ class Uart : public hal::Uart
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

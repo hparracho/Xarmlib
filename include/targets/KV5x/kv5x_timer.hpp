@@ -2,7 +2,7 @@
 // @file    kv5x_timer.hpp
 // @brief   Kinetis KV5x Timer (PIT) class.
 // @note    Timers stop in debug mode.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -332,7 +332,7 @@ class TimerDriver : private PeripheralRefCounter<TimerDriver, TARGET_TIMER_COUNT
         // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             clear_irq_pending();
 

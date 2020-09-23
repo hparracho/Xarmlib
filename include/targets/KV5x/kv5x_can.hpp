@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -1219,7 +1219,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // OR'ed Message Buffer IRQ handler private implementation (call user IRQ handler)
         int32_t ored_message_buffer_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_ored_message_buffer_irq_handler != nullptr)
             {
@@ -1243,7 +1243,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // Bus Off IRQ handler private implementation (call user IRQ handler)
         int32_t bus_off_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_bus_off_irq_handler != nullptr)
             {
@@ -1267,7 +1267,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // Error IRQ handler private implementation (call user IRQ handler)
         int32_t error_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_error_irq_handler != nullptr)
             {
@@ -1291,7 +1291,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // Transmit Warning IRQ handler private implementation (call user IRQ handler)
         int32_t tx_warning_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_tx_warning_irq_handler != nullptr)
             {
@@ -1315,7 +1315,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // Receive Warning IRQ handler private implementation (call user IRQ handler)
         int32_t rx_warning_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_rx_warning_irq_handler != nullptr)
             {
@@ -1340,7 +1340,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         // Wake Up IRQ handler private implementation (call user IRQ handler)
         int32_t wake_up_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_wake_up_irq_handler != nullptr)
             {
@@ -1371,7 +1371,7 @@ class CanDriver : private PeripheralRefCounter<CanDriver, TARGET_CAN_COUNT, TARG
         IrqHandler m_error_irq_handler;                 // User defined Error IRQ handler
         IrqHandler m_tx_warning_irq_handler;            // User defined Transmit Warning IRQ handler
         IrqHandler m_rx_warning_irq_handler;            // User defined Receive Warning IRQ handler
-        //IrqHandler m_wake_up_irq_handler;               // User defined Wake Up IRQ handler
+      //IrqHandler m_wake_up_irq_handler;               // User defined Wake Up IRQ handler
 };
 
 

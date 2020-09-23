@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_enc.hpp
 // @brief   Quadrature Encoder/Decoder (ENC) HAL interface class.
-// @date    16 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -315,7 +315,7 @@ class Enc : public hal::Enc
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

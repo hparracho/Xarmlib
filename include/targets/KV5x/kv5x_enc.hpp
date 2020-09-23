@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_enc.hpp
 // @brief   Kinetis KV5x Quadrature Encoder/Decoder (ENC) class.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -859,7 +859,7 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t home_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(get_reference(0).m_home_irq_handler != nullptr)
             {
@@ -876,7 +876,7 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t index_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(get_reference(0).m_index_irq_handler != nullptr)
             {
@@ -893,7 +893,7 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t watchdog_and_sab_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(get_reference(0).m_watchdog_and_sab_irq_handler != nullptr)
             {
@@ -910,7 +910,7 @@ class EncDriver : private PeripheralRefCounter<EncDriver, TARGET_ENC_COUNT>
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t compare_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(get_reference(0).m_compare_irq_handler != nullptr)
             {

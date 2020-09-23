@@ -2,7 +2,7 @@
 // @file    hal_i2c.hpp
 // @brief   I2C Master HAL interface class.
 // @note    Slave mode is not implemented.
-// @date    23 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -211,7 +211,7 @@ using I2cMaster = hal::I2cMaster;
 } // namespace xarmlib
 */
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin_int.hpp
 // @brief   Pin Interrupt HAL interface class.
-// @date    11 September 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -128,16 +128,16 @@ class PinIntBase : protected PinIntDriver
 
 #include "core/target_specs.hpp"
 
-#if defined __KV4X__
+#if defined __KV5X__
 
-#include "targets/KV4x/kv4x_pin_int.hpp"
+#include "targets/KV5x/kv5x_pin_int.hpp"
 
 namespace xarmlib
 {
 namespace hal
 {
 
-using PinInt = PinIntBase<targets::kv4x::PinIntDriver>;
+using PinInt = PinIntBase<targets::kv5x::PinIntDriver>;
 
 } // namespace hal
 
@@ -185,16 +185,16 @@ class PinInt : public hal::PinInt
 
 } // namespace xarmlib
 
-#elif defined __KV5X__
+#elif defined __KV4X__
 
-#include "targets/KV5x/kv5x_pin_int.hpp"
+#include "targets/KV4x/kv4x_pin_int.hpp"
 
 namespace xarmlib
 {
 namespace hal
 {
 
-using PinInt = PinIntBase<targets::kv5x::PinIntDriver>;
+using PinInt = PinIntBase<targets::kv4x::PinIntDriver>;
 
 } // namespace hal
 

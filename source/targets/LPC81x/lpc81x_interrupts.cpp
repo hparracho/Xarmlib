@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_interrupts.cpp
 // @brief   IRQ handlers and vector table for NXP LPC81x MCU.
-// @date    11 September 2020
+// @date    23 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -41,7 +41,7 @@ extern "C"
 
 #ifdef MCUXPRESSO_MANAGED_LINKER_SCRIPTS
 // Reset entry point when using MCUXpresso Managed Linker Scripts
-void ResetISR(void) __attribute__ ((noreturn, alias("Reset_Handler")));
+void ResetISR(void) __attribute__ ((alias("Reset_Handler"), noreturn));
 // External declaration for the pointer to the stack top from the Linker Script
 extern unsigned int _vStackTop;
 #define __STACK_TOP _vStackTop
