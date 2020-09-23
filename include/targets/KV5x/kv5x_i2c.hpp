@@ -2,7 +2,7 @@
 // @file    kv5x_i2c.hpp
 // @brief   Kinetis KV5x I2C class.
 // @note    Only master mode is implemented.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -492,7 +492,7 @@ class I2cDriver : private PeripheralRefCounter<I2cDriver, TARGET_I2C_COUNT, TARG
         // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_irq_handler != nullptr)
             {

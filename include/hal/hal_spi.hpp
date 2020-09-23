@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    20 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -70,7 +70,7 @@ class SpiMasterBase : protected SpiDriver
                       const hal::Pin::Name sck,
                       const Config&        config) : SpiDriver(mosi, miso, sck, config)
        {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -78,7 +78,7 @@ class SpiMasterBase : protected SpiDriver
 
         ~SpiMasterBase()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
@@ -169,14 +169,14 @@ class SpiMasterBase : protected SpiDriver
 
         void mutex_take()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
         void mutex_give()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -213,7 +213,7 @@ class SpiMasterBase : protected SpiDriver
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_ENABLE_FREERTOS
+        #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif
@@ -250,7 +250,7 @@ class SpiSlaveBase : protected SpiDriver
                      const hal::Pin::Name ssel,
                      const Config&        config) : SpiDriver(mosi, miso, sck, ssel, config)
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             // Create access mutex
             m_rtos_mutex = xSemaphoreCreateMutex();
             #endif
@@ -258,7 +258,7 @@ class SpiSlaveBase : protected SpiDriver
 
         ~SpiSlaveBase()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             // Delete access mutex
             vSemaphoreDelete(m_rtos_mutex);
             #endif
@@ -317,14 +317,14 @@ class SpiSlaveBase : protected SpiDriver
 
         void mutex_take()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
 
         void mutex_give()
         {
-            #ifdef XARMLIB_ENABLE_FREERTOS
+            #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
@@ -335,7 +335,7 @@ class SpiSlaveBase : protected SpiDriver
         // PRIVATE MEMBER VARIABLES
         // --------------------------------------------------------------------
 
-        #ifdef XARMLIB_ENABLE_FREERTOS
+        #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
         // FreeRTOS variables
         SemaphoreHandle_t m_rtos_mutex { nullptr };     // Access mutex
         #endif
@@ -1152,7 +1152,7 @@ class SpiSlave : public hal::SpiSlave
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

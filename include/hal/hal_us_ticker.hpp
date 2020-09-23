@@ -2,7 +2,7 @@
 // @file    hal_us_ticker.hpp
 // @brief   Microsecond ticker HAL interface class.
 // @note    Target KV5x and KV4x takes control of one available Timer (PIT)
-// @date    14 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -152,7 +152,7 @@ using UsTicker = hal::UsTicker;
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

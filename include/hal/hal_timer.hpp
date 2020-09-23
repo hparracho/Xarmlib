@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer 32-bit HAL interface class.
-// @date    14 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -200,7 +200,7 @@ class Timer : public hal::Timer
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_gpio.hpp
 // @brief   NXP LPC81x GPIO class.
-// @date    4 September 2019
+// @date    15 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -48,6 +48,8 @@ namespace lpc81x
 
 class GpioDriver
 {
+        friend class PinIntDriver;
+
     protected:
 
         // --------------------------------------------------------------------
@@ -94,7 +96,7 @@ class GpioDriver
 
         struct OutputModeConfig
         {
-            OutputMode output_mode = OutputMode::push_pull_low;
+            OutputMode output_mode = OutputMode::push_pull_high;
         };
 
         struct InputModeTrueOpenDrainConfig
@@ -106,7 +108,7 @@ class GpioDriver
 
         struct OutputModeTrueOpenDrainConfig
         {
-            OutputModeTrueOpenDrain output_mode = OutputModeTrueOpenDrain::low;
+            OutputModeTrueOpenDrain output_mode = OutputModeTrueOpenDrain::hiz;
         };
 
         // --------------------------------------------------------------------

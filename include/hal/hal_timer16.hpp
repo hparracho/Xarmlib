@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer16.hpp
 // @brief   Timer 16-bit HAL interface class.
-// @date    14 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -124,7 +124,7 @@ using Timer16 = hal::Timer16;
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

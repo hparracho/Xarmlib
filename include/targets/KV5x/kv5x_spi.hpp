@@ -3,7 +3,7 @@
 // @brief   Kinetis KV5x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -824,7 +824,7 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT, TARG
         // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_irq_handler != nullptr)
             {

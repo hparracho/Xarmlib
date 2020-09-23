@@ -3,7 +3,7 @@
 // @brief   Kinetis KV5x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,11 +35,13 @@
 
 #ifdef __KV5X__
 
+#include "core/os_support.hpp"
 #include "targets/KV5x/kv5x_uart.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv5x;
 
 // --------------------------------------------------------------------
@@ -50,22 +52,14 @@ extern "C" void UART0_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART0_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -75,22 +69,14 @@ extern "C" void UART1_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART1_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -100,22 +86,14 @@ extern "C" void UART2_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart2);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART2_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart2);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -125,22 +103,14 @@ extern "C" void UART3_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart3);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART3_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart3);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -150,22 +120,14 @@ extern "C" void UART4_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart4);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART4_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart4);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -175,22 +137,14 @@ extern "C" void UART5_RX_TX_IRQHandler(void)
 {
     const int32_t yield = UartDriver::status_irq_handler(UartDriver::Name::uart5);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void UART5_ERR_IRQHandler(void)
 {
     const int32_t yield = UartDriver::error_irq_handler(UartDriver::Name::uart5);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 

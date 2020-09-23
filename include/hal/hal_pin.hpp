@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin.hpp
 // @brief   Pin HAL interface class.
-// @date    13 January 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -131,7 +131,7 @@ using Pin = hal::Pin;
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv4x_pin_int.hpp
 // @brief   Kinetis KV4x pin interrupt class.
-// @date    26 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -93,7 +93,7 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
         // Pin interrupt mode
         enum class IntMode
         {
-            //disabled               = 0x0U,  // Interrupt/DMA request is disabled
+          //disabled               = 0x0U,  // Interrupt/DMA request is disabled
             dma_rising_edge        = 0x1U,  // DMA request on rising edge
             dma_falling_edge       = 0x2U,  // DMA request on falling edge
             dma_either_edge        = 0x3U,  // DMA request on either edge
@@ -290,7 +290,7 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
         // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_irq_handler != nullptr)
             {

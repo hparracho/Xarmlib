@@ -3,7 +3,7 @@
 // @brief   Kinetis KV5x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -35,11 +35,13 @@
 
 #ifdef __KV5X__
 
+#include "core/os_support.hpp"
 #include "targets/KV5x/kv5x_spi.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv5x;
 
 // ----------------------------------------------------------------------------
@@ -50,11 +52,7 @@ extern "C" void SPI0_IRQHandler(void)
 {
     const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -64,11 +62,7 @@ extern "C" void SPI1_IRQHandler(void)
 {
     const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -78,11 +72,7 @@ extern "C" void SPI2_IRQHandler(void)
 {
     const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi2);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 

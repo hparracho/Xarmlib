@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_specs.hpp
 // @brief   NXP LPC81x specification definitions.
-// @date    14 January 2020
+// @date    14 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -88,6 +88,7 @@
 #   define TARGET_FLASH_SIZE                (TARGET_FLASH_PAGE_COUNT * TARGET_FLASH_PAGE_SIZE)
 #   define TARGET_PORT_HAS_TRUE_OPEN_DRAIN  (1)
 #   define TARGET_PORT_COUNT                (1)
+#   define TARGET_PIN_INTERRUPT_COUNT       (8)
 #   define TARGET_TIMER_COUNT               (4)
 #   define TARGET_TIMER_TYPE_MRT
 #endif

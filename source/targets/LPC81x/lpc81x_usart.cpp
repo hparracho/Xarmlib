@@ -2,7 +2,7 @@
 // @file    lpc81x_usart.cpp
 // @brief   NXP LPC81x USART class.
 // @notes   Synchronous mode not implemented.
-// @date    20 May 2020
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -34,11 +34,13 @@
 
 #ifdef __LPC81X__
 
+#include "core/os_support.hpp"
 #include "targets/LPC81x/lpc81x_usart.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::lpc81x;
 
 // --------------------------------------------------------------------
@@ -49,11 +51,7 @@ extern "C" void USART0_IRQHandler(void)
 {
     const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -63,11 +61,7 @@ extern "C" void USART1_IRQHandler(void)
 {
     const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
@@ -77,13 +71,9 @@ extern "C" void USART1_IRQHandler(void)
 
 extern "C" void USART2_IRQHandler(void)
 {
-    const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart2);
+	const int32_t yield = UsartDriver::irq_handler(UsartDriver::Name::usart2);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+	Os::yield_from_isr(yield);
 }
 
 #endif // (TARGET_USART_COUNT == 3)

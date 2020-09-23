@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_pin_int.hpp
 // @brief   Pin Interrupt HAL interface class.
-// @date    15 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -105,7 +105,13 @@ class PinIntBase : protected PinIntDriver
         bool is_interrupt_pending() const { return PinIntDriver::is_interrupt_pending(); }
         void clear_interrupt_pending()    { PinIntDriver::clear_interrupt_pending(); }
 
-        // -------- IRQ HANDLER -----------------------------------------------
+        // -------- IRQ / IRQ HANDLER -----------------------------------------
+
+        void enable_irq()     { PinIntDriver::enable_irq(); }
+        void disable_irq()    { PinIntDriver::disable_irq(); }
+        bool is_irq_enabled() { return PinIntDriver::is_irq_enabled(); }
+
+        void set_irq_priority(const int32_t irq_priority) { PinIntDriver::set_irq_priority(irq_priority); }
 
         void assign_irq_handler(const IrqHandler& irq_handler) { PinIntDriver::assign_irq_handler(irq_handler); }
         void remove_irq_handler()                              { PinIntDriver::remove_irq_handler(); }
@@ -236,7 +242,24 @@ class PinInt : public hal::PinInt
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __LPC81X__
+
+#include "targets/LPC81x/lpc81x_pin_int.hpp"
+
+namespace xarmlib
+{
+namespace hal
+{
+
+using PinInt = PinIntBase<targets::lpc81x::PinIntDriver>;
+
+} // namespace hal
+
+using PinInt = hal::PinInt;
+
+} // namespace xarmlib
+
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

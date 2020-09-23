@@ -2,11 +2,11 @@
 // @file    kv4x_timer16.hpp
 // @brief   Kinetis KV4x Timer 16-bit (LPTMR) class.
 // @note    Only time counter mode is implemented
-// @date    24 January 2019
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -261,7 +261,7 @@ class Timer16Driver : private PeripheralRefCounter<Timer16Driver, TARGET_TIMER16
         // NOTE: Returns yield flag for FreeRTOS
         static int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             get_reference(0).clear_irq_pending();
 

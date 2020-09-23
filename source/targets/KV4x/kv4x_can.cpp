@@ -5,7 +5,7 @@
 //          6 Message Buffers are defined as Tx MB.
 //          16 Rx FIFO ID filter table elements are available as Type A
 //          (one full ID (standard and extended) per ID Filter element).
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -37,11 +37,13 @@
 
 #ifdef __KV4X__
 
+#include "core/os_support.hpp"
 #include "targets/KV4x/kv4x_can.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::kv4x;
 
 // --------------------------------------------------------------------
@@ -52,66 +54,42 @@ extern "C" void CAN0_ORed_Message_buffer_IRQHandler(void)
 {
     const int32_t yield = CanDriver::ored_message_buffer_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN0_Bus_Off_IRQHandler(void)
 {
     const int32_t yield = CanDriver::bus_off_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN0_Error_IRQHandler(void)
 {
     const int32_t yield = CanDriver::error_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN0_Tx_Warning_IRQHandler(void)
 {
     const int32_t yield = CanDriver::tx_warning_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN0_Rx_Warning_IRQHandler(void)
 {
     const int32_t yield = CanDriver::rx_warning_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 /*extern "C" void CAN0_Wake_Up_IRQHandler(void)
 {
     const int32_t yield = CanDriver::wake_up_irq_handler(CanDriver::Name::can0);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }*/
 
 
@@ -123,66 +101,42 @@ extern "C" void CAN1_ORed_Message_buffer_IRQHandler(void)
 {
     const int32_t yield = CanDriver::ored_message_buffer_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN1_Bus_Off_IRQHandler(void)
 {
     const int32_t yield = CanDriver::bus_off_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN1_Error_IRQHandler(void)
 {
     const int32_t yield = CanDriver::error_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN1_Tx_Warning_IRQHandler(void)
 {
     const int32_t yield = CanDriver::tx_warning_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 extern "C" void CAN1_Rx_Warning_IRQHandler(void)
 {
     const int32_t yield = CanDriver::rx_warning_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 /*extern "C" void CAN1_Wake_Up_IRQHandler(void)
 {
     const int32_t yield = CanDriver::wake_up_irq_handler(CanDriver::Name::can1);
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }*/
 
 #endif // (TARGET_CAN_COUNT == 2)

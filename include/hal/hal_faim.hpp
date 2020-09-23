@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    hal_faim.hpp
 // @brief   Fast Initialization Memory (FAIM) HAL interface class.
-// @date    10 May 2019
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -85,7 +85,7 @@ using Faim = hal::Faim;
 
 } // namespace xarmlib
 
-#elif defined __OHER_TARGET__
+#elif defined __OTHER_TARGET__
 
 // Other target include files
 

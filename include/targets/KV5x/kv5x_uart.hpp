@@ -3,7 +3,7 @@
 // @brief   Kinetis KV5x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    19 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -772,7 +772,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, T
         // Status IRQ handler private implementation (call user IRQ handler)
         int32_t status_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_status_irq_handler != nullptr)
             {
@@ -796,7 +796,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, T
         // Error IRQ handler private implementation (call user IRQ handler)
         int32_t error_irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_error_irq_handler != nullptr)
             {

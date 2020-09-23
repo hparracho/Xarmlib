@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_pin_int.hpp
 // @brief   Kinetis KV5x pin interrupt class.
-// @date    26 May 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -272,7 +272,7 @@ class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_P
         // IRQ handler private implementation (call user IRQ handler)
         int32_t irq_handler()
         {
-            int32_t yield = 0;  // User in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             if(m_irq_handler != nullptr)
             {

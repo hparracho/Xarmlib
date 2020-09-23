@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
-// @file    lpc84x_spi.cpp
-// @brief   NXP LPC84x SPI class.
-// @date    20 September 2020
+// @file    os_support.hpp
+// @brief   Operating System (FreeRTOS / baremetal) support functions.
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -29,41 +29,32 @@
 //
 // ----------------------------------------------------------------------------
 
-#include "core/target_specs.hpp"
+#ifndef __XARMLIB_CORE_OS_SUPPORT_HPP
+#define __XARMLIB_CORE_OS_SUPPORT_HPP
 
-#ifdef __LPC84X__
+#include <cstdint>
 
-#include "core/os_support.hpp"
-#include "targets/LPC84x/lpc84x_spi.hpp"
-
-
-
-
-using namespace xarmlib;
-using namespace xarmlib::targets::lpc84x;
-
-// ----------------------------------------------------------------------------
-// IRQ HANDLERS
-// ----------------------------------------------------------------------------
-
-extern "C" void SPI0_IRQHandler(void)
+namespace xarmlib
 {
-    const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi0);
-
-    Os::yield_from_isr(yield);
-}
 
 
 
 
-extern "C" void SPI1_IRQHandler(void)
+class Os
 {
-    const int32_t yield = SpiDriver::irq_handler(SpiDriver::Name::spi1);
+    public:
 
-    Os::yield_from_isr(yield);
-}
+        // --------------------------------------------------------------------
+        // PUBLIC MEMBER FUNCTIONS
+        // --------------------------------------------------------------------
+
+        // Provides context switch from an ISR handler (using FreeRTOS or baremetal)
+        static void yield_from_isr(const int32_t yield) noexcept;
+};
 
 
 
 
-#endif // __LPC84X__
+} // namespace xarmlib
+
+#endif // __XARMLIB_CORE_OS_SUPPORT_HPP

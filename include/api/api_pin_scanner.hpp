@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_scanner.hpp
 // @brief   API pin scanner class (takes control of one available Timer (Timer16 if available)).
-// @date    31 August 2020
+// @date    20 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -217,7 +217,7 @@ class PinScanner
 
             bool new_input = false;
 
-            int32_t yield = 0;  // Used in FreeRTOS
+            int32_t yield = 0;  // Used by FreeRTOS
 
             for(std::size_t index = 0; index < m_debouncer_handlers.size(); ++index)
             {

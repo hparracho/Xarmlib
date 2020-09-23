@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_timer.cpp
 // @brief   NXP LPC81x Timer (MRT) class.
-// @date    30 November 2018
+// @date    11 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -33,11 +33,15 @@
 
 #ifdef __LPC81X__
 
+//#include "xarmlib_config.hpp"
+#include "core/os_support.hpp"
+#include "targets/LPC81x/lpc81x_system.hpp"
 #include "targets/LPC81x/lpc81x_timer.hpp"
 
 
 
 
+using namespace xarmlib;
 using namespace xarmlib::targets::lpc81x;
 
 // ----------------------------------------------------------------------------
@@ -48,11 +52,7 @@ extern "C" void MRT_IRQHandler(void)
 {
     const int32_t yield = TimerDriver::irq_handler();
 
-#ifdef XARMLIB_ENABLE_FREERTOS
-    portEND_SWITCHING_ISR(yield);
-#else
-    (void)yield;
-#endif
+    Os::yield_from_isr(yield);
 }
 
 
