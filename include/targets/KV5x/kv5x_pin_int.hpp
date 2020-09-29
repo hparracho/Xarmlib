@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    kv5x_pin_int.hpp
 // @brief   Kinetis KV5x pin interrupt class.
-// @date    20 September 2020
+// @date    28 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -63,6 +63,8 @@ namespace kv5x
 
 class PinIntDriver : private PeripheralRefCounter<PinIntDriver, XARMLIB_CONFIG_PIN_INTERRUPT_COUNT>
 {
+    static_assert(XARMLIB_CONFIG_PIN_INTERRUPT_COUNT <= TARGET_GPIO_COUNT, "Pin interrupt count greater than GPIOs available.");
+
         // --------------------------------------------------------------------
         // FRIEND FUNCTIONS DECLARATIONS
         // --------------------------------------------------------------------
