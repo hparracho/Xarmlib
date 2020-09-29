@@ -20,6 +20,11 @@ Date: 14 October 2019
 ### http://elm-chan.org/fsw/ff/00index_e.html
 
 ---
+## FreeRTOS Kernel Release v10.4.1
+Date: 17 September 2020
+### https://github.com/FreeRTOS/FreeRTOS/releases/download/V10.4.1/FreeRTOSv10.4.1.zip
+
+---
 ## fsl: Freescale drivers from Kinetis SDK Version 2.8.0
 Date: 21 July 2020
 ### https://www.nxp.com/downloads/en/software-development-kits/KINETIS-EXPERT-TOOL.html
