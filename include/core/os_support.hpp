@@ -1,11 +1,11 @@
 // ----------------------------------------------------------------------------
 // @file    os_support.hpp
 // @brief   Operating System (FreeRTOS / baremetal) support functions.
-// @date    11 September 2020
+// @date    28 September 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2020 Helder Parracho (hparracho@gmail.com)
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
 //
 // See README.md file for additional credits and acknowledgments.
 //
@@ -32,7 +32,11 @@
 #ifndef __XARMLIB_CORE_OS_SUPPORT_HPP
 #define __XARMLIB_CORE_OS_SUPPORT_HPP
 
-#include <cstdint>
+#include "xarmlib_config.hpp"
+
+#if defined XARMLIB_ENABLE_FREERTOS && (XARMLIB_ENABLE_FREERTOS == 1)
+#include "external/freertos.hpp"
+#endif
 
 namespace xarmlib
 {
@@ -49,7 +53,12 @@ class Os
         // --------------------------------------------------------------------
 
         // Provides context switch from an ISR handler (using FreeRTOS or baremetal)
-        static void yield_from_isr(const int32_t yield) noexcept;
+        static void yield_from_isr([[maybe_unused]] const int32_t yield) noexcept
+        {
+#if defined XARMLIB_ENABLE_FREERTOS && (XARMLIB_ENABLE_FREERTOS == 1)
+            portYIELD_FROM_ISR(yield);
+#endif
+        }
 };
 
 
