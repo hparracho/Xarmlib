@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_io_debouncer.hpp
 // @brief   API I/O debouncer class.
-// @date    8 September 2020
+// @date    1 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -492,6 +492,12 @@ class IoDebouncer
 
         uint32_t          m_output_bus;             // Outputs written
 };
+
+
+
+
+using PositiveIoDebouncer = IoDebouncer<PinPolarity::positive>;
+using NegativeIoDebouncer = IoDebouncer<PinPolarity::negative>;
 
 
 

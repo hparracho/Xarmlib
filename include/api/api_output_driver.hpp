@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_output_driver.hpp
 // @brief   API output driver class.
-// @date    8 September 2020
+// @date    1 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -198,6 +198,12 @@ class OutputDriver
         // Bitmask aligned with PinBus
         uint32_t              m_output_bus;	// Outputs written
 };
+
+
+
+
+using PositiveOutputDriver = OutputDriver<PinPolarity::positive>;
+using NegativeOutputDriver = OutputDriver<PinPolarity::negative>;
 
 
 

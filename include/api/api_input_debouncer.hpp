@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_input_debouncer.hpp
 // @brief   API input debouncer class.
-// @date    8 September 2020
+// @date    1 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -268,6 +268,12 @@ class InputDebouncer
         uint32_t             m_filtered_bus;    // Filtered inputs
         uint32_t             m_sampling_bus;    // Inputs that are being sampled and not yet filtered
 };
+
+
+
+
+using PositiveInputDebouncer = InputDebouncer<PinPolarity::positive>;
+using NegativeInputDebouncer = InputDebouncer<PinPolarity::negative>;
 
 
 
