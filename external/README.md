@@ -32,13 +32,6 @@ Commit: 4c9146ea539f72749d6cc3ea076372a81b12cb11
 ### https://github.com/ARMmbed/littlefs
 
 ---
-## span: std::span implementation for C++11 and later
-Date: 3 June 2020
-Branch: master  
-Commit: 5d8d366eca918d0ed3d2d196cbeae6abfd874736
-### https://github.com/tcbrindle/span
-
----
 ## usbhost: USB Host Library version 3.0
 Date: 15 April 2020
 Branch: master  
