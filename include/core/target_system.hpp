@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    target_specs.hpp
-// @brief   Core level target configuration header file.
+// @file    target_system.hpp
+// @brief   Final System class.
 // @date    6 October 2020
 // ----------------------------------------------------------------------------
 //
@@ -12,21 +12,23 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef XARMLIB_CORE_TARGET_SPECS_HPP
-#define XARMLIB_CORE_TARGET_SPECS_HPP
+#ifndef XARMLIB_CORE_TARGET_SYSTEM_HPP
+#define XARMLIB_CORE_TARGET_SYSTEM_HPP
 
-#include "targets/LPC81x/lpc81x_specs.hpp"
-//#include "targets/LPC84x/lpc84x_specs.hpp"
-//#include "targets/KV4x/kv4x_specs.hpp"
-//#include "targets/KV5x/kv5x_specs.hpp"
+#include "core/target_specs.hpp"
 
 
 
-#ifndef TARGET_DEFINED
-#   error "XARMLIB: Target MCU not defined!"
+
+#if defined(__LPC81X__)
+
+#include "targets/LPC81x/lpc81x_system.hpp"
+
+namespace xarmlib
+{
+using System = targets::lpc81x::System;
+}
+
 #endif
 
-
-
-
-#endif // XARMLIB_CORE_TARGET_SPECS_HPP
+#endif // XARMLIB_CORE_TARGET_SYSTEM_HPP
