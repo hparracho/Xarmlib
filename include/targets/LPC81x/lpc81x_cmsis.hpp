@@ -1,44 +1,21 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_cmsis.hpp
 // @brief   CMSIS Core Peripheral Access Layer header file for NXP LPC81x MCUs.
-// @date    21 August 2019
+// @date    6 October 2020
 // ----------------------------------------------------------------------------
 //
-// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018-2019 Helder Parracho (hparracho@gmail.com)
+// Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+// PDX-License-Identifier: MIT License
 //
 // See README.md file for additional credits and acknowledgments.
 //
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-// DEALINGS IN THE SOFTWARE.
-//
 // ----------------------------------------------------------------------------
 
-// ----------------------------------------------------------------------------
-// This file is based on the code from LPCOpen v3.02 for
-// LPCXpresso v8.2.0 (LPCXpresso812 board (V1)) provided by NXP.
-// https://www.nxp.com/downloads/en/libraries/lpcopen_3_02_lpcxpresso_nxp_lpcxpresso_812.zip
-// ----------------------------------------------------------------------------
+#ifndef XARMLIB_TARGETS_LPC81X_CMSIS_HPP
+#define XARMLIB_TARGETS_LPC81X_CMSIS_HPP
 
-#ifndef __XARMLIB_TARGETS_LPC81X_CMSIS_HPP
-#define __XARMLIB_TARGETS_LPC81X_CMSIS_HPP
-
-#include <stdint.h>
+#include <cstdint>
 
 #ifdef __cplusplus
 extern "C" {
@@ -135,7 +112,7 @@ void SystemCoreClockUpdate(void);
 // Device Specific Peripheral Registers structures
 // ----------------------------------------------------------------------------
 
-// ------------ System Control (SYSCON) ---------------------------------------
+// -------- System Control (SYSCON) -------------------------------------------
 typedef struct
 {
     __IO uint32_t SYSMEMREMAP;              // (offset: 0x000) System memory remap
@@ -218,7 +195,7 @@ typedef struct
 
 
 
-// ------------ I/O Configuration (IOCON) -------------------------------------
+// -------- I/O Configuration (IOCON) -----------------------------------------
 typedef struct
 {
     union
@@ -252,7 +229,7 @@ typedef struct
 
 
 
-// ------------ FLASH Memory Controller (FMC) ---------------------------------
+// -------- FLASH Memory Controller (FMC) -------------------------------------
 typedef struct
 {
          uint32_t RESERVED0[4];             // (offset: 0x00) RESERVED
@@ -267,7 +244,7 @@ typedef struct
 
 
 
-// ------------ Power Management Unit (PMU) -----------------------------------
+// -------- Power Management Unit (PMU) ---------------------------------------
 typedef struct
 {
     __IO uint32_t PCON;                     // (offset: 0x00) Power control register
@@ -288,7 +265,7 @@ typedef struct
 
 
 
-// ------------ Switch Matrix (SWM) -------------------------------------------
+// -------- Switch Matrix (SWM) -----------------------------------------------
 typedef struct
 {
     union
@@ -314,7 +291,7 @@ typedef struct
 
 
 
-// ------------ General Purpose I/O (GPIO) ------------------------------------
+// -------- General Purpose I/O (GPIO) ----------------------------------------
 typedef struct
 {
     union
@@ -375,7 +352,7 @@ typedef struct
 
 
 
-// ------------ Pin Interrupts and Pattern Match (PININT) ---------------------
+// -------- Pin Interrupts and Pattern Match (PININT) -------------------------
 typedef struct
 {
     __IO uint32_t ISEL;                     // (offset: 0x00) Pin Interrupt Mode register
@@ -396,7 +373,7 @@ typedef struct
 
 
 
-// ------------ CRC Engine (CRC) ----------------------------------------------
+// -------- CRC Engine (CRC) --------------------------------------------------
 typedef struct
 {
     __IO uint32_t MODE;                     // (offset: 0x00) CRC mode register
@@ -411,7 +388,7 @@ typedef struct
 
 
 
-// ------------ Analog Comparator (ACMP) --------------------------------------
+// -------- Analog Comparator (ACMP) ------------------------------------------
 typedef struct
 {
     __IO uint32_t CTRL;                     // (offset: 0x00) Comparator control register
@@ -423,7 +400,7 @@ typedef struct
 
 
 
-// ------------ Self Wakeup Timer (WKT) ---------------------------------------
+// -------- Self Wakeup Timer (WKT) -------------------------------------------
 typedef struct
 {
     __IO uint32_t CTRL;                     // (offset: 0x00) Alarm / Wakeup Timer Control register
@@ -434,7 +411,7 @@ typedef struct
 
 
 
-// ------------ Multi-Rate Timer(MRT) -----------------------------------------
+// -------- Multi-Rate Timer(MRT) ---------------------------------------------
 typedef struct
 {
     __IO uint32_t INTVAL;                   // MRT Time interval value register
@@ -455,7 +432,7 @@ typedef struct
 
 
 
-// ------ Universal Synchronous Asynchronous Receiver Transmitter (USART) -----
+// -------- Universal Synchronous Asynchronous Receiver Transmitter (USART) ---
 typedef struct
 {
     __IO uint32_t CFG;                      // (offset: 0x00) USART Configuration register
@@ -473,7 +450,7 @@ typedef struct
 
 
 
-// ------------ Serial Peripheral Interface (SPI) -----------------------------
+// -------- Serial Peripheral Interface (SPI) ---------------------------------
 typedef struct
 {
     __IO uint32_t CFG;                      // (offset: 0x00) SPI Configuration register
@@ -492,7 +469,7 @@ typedef struct
 
 
 
-// ------------ Inter-Integrated Circuit (I2C) --------------------------------
+// -------- Inter-Integrated Circuit (I2C) ------------------------------------
 typedef struct
 {
     __IO uint32_t CFG;                      // (offset: 0x00) Configuration for shared functions
@@ -528,7 +505,7 @@ typedef struct
 
 
 
-// ------------ State Configurable Timer (SCT) --------------------------------
+// -------- State Configurable Timer (SCT) ------------------------------------
 #define SCT_NUM_EVENTS      (6)             // Number of events
 #define SCT_NUM_REGISTERS   (5)             // Number of match/compare registers
 #define SCT_NUM_OUTPUTS     (4)             // Number of outputs
@@ -679,7 +656,7 @@ typedef struct
 
 
 
-// ------------ Windowed Watchdog Timer (WWDT) --------------------------------
+// -------- Windowed Watchdog Timer (WWDT) ------------------------------------
 typedef struct
 {
     __IO uint32_t MOD;                      // (offset: 0x00) Watchdog mode register
@@ -694,7 +671,7 @@ typedef struct
 
 
 
-// ------------ ROM API -------------------------------------------------------
+// -------- ROM API -----------------------------------------------------------
 
 // Error code returned by Boot ROM drivers/library functions enumeration
 // NOTE: Error codes are a 32-bit value with:
@@ -879,8 +856,9 @@ typedef struct
                                 //  0x00: Polling mode, function blocked until transfer completes
                                 //  0x01: Interrupt mode, function immediately returns, callback invoked when transfer completes
                                 //  0x02: DMA mode, in case DMA block is available, DMA req function is called for UART DMA channel setup,
-                                //          then callback function indicate that transfer completes
-    LPC_ROM_UART_CALLBACK_T callback_func_pt;   // callback function pointer
+                                //        then callback function indicate that transfer completes
+
+    LPC_ROM_UART_CALLBACK_T callback_func_pt;   // Callback function pointer
     LPC_ROM_UART_DMA_REQ_T  dma_req_func_pt;    // UART DMA channel setup function pointer, not applicable on LPC8xx
 } LPC_ROM_UART_PARAM_T;
 
@@ -937,9 +915,9 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 
 
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Peripheral memory map
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
 // Base addresses
 #define LPC_FLASH_BASE          (0x00000000UL)
@@ -980,9 +958,9 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 
 
 
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // Peripheral declarations
-//-------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 // ROM API
 #define LPC_ROM_API             (*(LPC_ROM_API_T    * *) LPC_ROM_DRIVER_BASE)
 #define LPC_ROM_PWR_API          ((LPC_ROM_PWR_API_T  *)(LPC_ROM_API->PWR_BASE_PTR))
@@ -990,7 +968,7 @@ typedef void (*LPC_ROM_IAP_ENTRY_T)(uint32_t command[], uint32_t result[]);
 #define LPC_ROM_UART_API         ((LPC_ROM_UART_API_T *)(LPC_ROM_API->UART_BASE_PTR))
 
 // IAP entry function pointer
-static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
+inline static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_BASE);
 
 // APB0 peripherals
 #define LPC_WWDT                ((LPC_WWDT_T   *) LPC_WWDT_BASE)
@@ -1024,4 +1002,4 @@ static const LPC_ROM_IAP_ENTRY_T iap_entry = (LPC_ROM_IAP_ENTRY_T)(LPC_ROM_IAP_B
 } // extern "C"
 #endif
 
-#endif // __XARMLIB_TARGETS_LPC81X_CMSIS_HPP
+#endif // XARMLIB_TARGETS_LPC81X_CMSIS_HPP

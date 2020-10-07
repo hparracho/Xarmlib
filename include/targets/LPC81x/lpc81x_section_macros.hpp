@@ -1,42 +1,19 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_section_macros.hpp
 // @brief   Macros to allow code/data to be placed into different memory banks.
-// @date    4 July 2018
+// @date    6 October 2020
 // ----------------------------------------------------------------------------
 //
-// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
-// Copyright (c) 2018 Helder Parracho (hparracho@gmail.com)
+// Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
+// Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+// PDX-License-Identifier: MIT License
 //
 // See README.md file for additional credits and acknowledgments.
 //
 // ----------------------------------------------------------------------------
-// Copyright(C) NXP Semiconductors, 2014
-// All rights reserved.
-//
-// Software that is described herein is for illustrative purposes only
-// which provides customers with programming information regarding the
-// LPC products.  This software is supplied "AS IS" without any warranties of
-// any kind, and NXP Semiconductors and its licensor disclaim any and
-// all warranties, express or implied, including all implied warranties of
-// merchantability, fitness for a particular purpose and non-infringement of
-// intellectual property rights.  NXP Semiconductors assumes no responsibility
-// or liability for the use of the software, conveys no license or rights under any
-// patent, copyright, mask work right, or any other intellectual property rights in
-// or to any products. NXP Semiconductors reserves the right to make changes
-// in the software without notification. NXP Semiconductors also makes no
-// representation or warranty that such application will be suitable for the
-// specified use without further testing or modification.
-//
-// Permission to use, copy, modify, and distribute this software and its
-// documentation is hereby granted, under NXP Semiconductors' and its
-// licensor's relevant copyrights in the software, without fee, provided that it
-// is used in conjunction with NXP Semiconductors microcontrollers.  This
-// copyright, permission, and disclaimer notice must appear in all copies of
-// this code.
-// ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
-#define __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
+#ifndef XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
+#define XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
 
 
 
@@ -110,4 +87,4 @@
 
 
 
-#endif // __XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
+#endif // XARMLIB_TARGETS_LPC81X_SECTION_MACROS_HPP
