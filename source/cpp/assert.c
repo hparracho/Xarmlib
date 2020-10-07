@@ -32,7 +32,7 @@
 
 
 
-#ifndef NDEBUG
+//#ifndef NDEBUG
 
 // Forward declaration of abort function defined in 'newlib_stubs.cpp' file.
 __attribute__ ((weak, noreturn))
@@ -44,4 +44,4 @@ void __xarmlib_assert_func(void)
     abort();
 }
 
-#endif // !NDEBUG
+//#endif // !NDEBUG
