@@ -217,6 +217,11 @@ public:
         return (ptr - str);
     }
 
+    void putc(char ch)
+    {
+        write(ch);
+    }
+
 protected:
 
     // ------------------------------------------------------------------------
