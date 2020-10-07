@@ -28,7 +28,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 // ----------------------------------------------------------------------------
-
+/*
 #ifndef __XARMLIB_API_INPUT_DEBOUNCER_HPP
 #define __XARMLIB_API_INPUT_DEBOUNCER_HPP
 
@@ -275,3 +275,4 @@ class InputDebouncer
 } // namespace xarmlib
 
 #endif // __XARMLIB_API_INPUT_DEBOUNCER_HPP
+*/

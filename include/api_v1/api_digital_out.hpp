@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    api_digital_out_bus.hpp
-// @brief   API digital output bus class.
+// @file    api_digital_out.hpp
+// @brief   API digital output class.
 // @date    14 January 2020
 // ----------------------------------------------------------------------------
 //
@@ -29,15 +29,10 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_API_DIGITAL_OUT_BUS_HPP
-#define __XARMLIB_API_DIGITAL_OUT_BUS_HPP
+#ifndef __XARMLIB_API_DIGITAL_OUT_HPP
+#define __XARMLIB_API_DIGITAL_OUT_HPP
 
-#include "api/api_pin_bus.hpp"
 #include "hal/hal_gpio.hpp"
-#include "core/non_copyable.hpp"
-
-#include <dynarray>
-#include <memory>
 
 namespace xarmlib
 {
@@ -45,7 +40,7 @@ namespace xarmlib
 
 
 
-class DigitalOutBus : private NonCopyable<DigitalOutBus>
+class DigitalOut : private hal::Gpio
 {
     public:
 
@@ -53,80 +48,48 @@ class DigitalOutBus : private NonCopyable<DigitalOutBus>
         // PUBLIC MEMBER FUNCTIONS
         // --------------------------------------------------------------------
 
-        DigitalOutBus(const PinNameBus& pin_name_bus, const hal::Gpio::OutputModeConfig& config) : m_bus(pin_name_bus.get_size())
-        {
-            std::size_t index = 0;
-            for(auto pin_name : pin_name_bus)
-            {
-                m_bus[index++] = std::make_unique<hal::Gpio>(pin_name, config);
-            }
-        }
+        DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeConfig& config) : hal::Gpio(pin_name, config)
+        {}
 
-#if defined(TARGET_PORT_HAS_TRUE_OPEN_DRAIN) && TARGET_PORT_HAS_TRUE_OPEN_DRAIN
-        DigitalOutBus(const PinNameBus& pin_name_bus, const hal::Gpio::OutputModeTrueOpenDrainConfig& config) : m_bus(pin_name_bus.get_size())
-        {
-            std::size_t index = 0;
-            for(auto pin_name : pin_name_bus)
-            {
-                m_bus[index++] = std::make_unique<hal::Gpio>(pin_name, config);
-            }
-        }
+#if (TARGET_HAS_OPEN_DRAIN_PINS == 1)
+        DigitalOut(const hal::Pin::Name pin_name, const hal::Gpio::OutputModeTrueOpenDrainConfig& config) : hal::Gpio(pin_name, config)
+        {}
 #endif
+
+        // -------- CONFIGURATION ---------------------------------------------
+
+        hal::Pin::Name get_pin_name() const { return hal::Gpio::get_pin_name(); }
 
         // -------- READ ------------------------------------------------------
 
-        uint32_t read() const
-        {
-            uint32_t value = 0;
-
-            for(std::size_t pin = 0; pin < m_bus.size(); ++pin)
-            {
-                value |= m_bus[pin]->read() << pin;
-            }
-
-            return value;
-        }
+        using hal::Gpio::read;
 
         operator uint32_t () const
         {
-            return read();
+            return hal::Gpio::read();
         }
 
         // Read negated value operator
         uint32_t operator ! () const
         {
-            return !read();
+            return !hal::Gpio::read();
         }
 
         // -------- WRITE -----------------------------------------------------
 
-        void write(const uint32_t value)
-        {
-            for(std::size_t pin = 0; pin < m_bus.size(); ++pin)
-            {
-                m_bus[pin]->write(value & (1 << pin));
-            }
-        }
+        using hal::Gpio::write;
 
-        DigitalOutBus& operator = (const uint32_t value)
+        DigitalOut& operator = (const uint32_t value)
         {
-            write(value);
+            hal::Gpio::write(value);
             return (*this);
         }
 
-        DigitalOutBus& operator = (const DigitalOutBus &rhs)
+        DigitalOut& operator = (const DigitalOut &rhs)
         {
-            write(rhs.read());
+            hal::Gpio::write(rhs.read());
             return (*this);
         }
-
-    private:
-
-        // --------------------------------------------------------------------
-        // PRIVATE MEMBER VARIABLES
-        // --------------------------------------------------------------------
-
-        std::dynarray<std::unique_ptr<hal::Gpio>> m_bus;
 };
 
 
@@ -134,4 +97,4 @@ class DigitalOutBus : private NonCopyable<DigitalOutBus>
 
 } // namespace xarmlib
 
-#endif // __XARMLIB_API_DIGITAL_OUT_BUS_HPP
+#endif // __XARMLIB_API_DIGITAL_OUT_HPP

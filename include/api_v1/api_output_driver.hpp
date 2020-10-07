@@ -28,7 +28,7 @@
 // DEALINGS IN THE SOFTWARE.
 //
 // ----------------------------------------------------------------------------
-
+/*
 #ifndef __XARMLIB_API_OUTPUT_DRIVER_HPP
 #define __XARMLIB_API_OUTPUT_DRIVER_HPP
 
@@ -205,3 +205,4 @@ class OutputDriver
 } // namespace xarmlib
 
 #endif // __XARMLIB_API_OUTPUT_DRIVER_HPP
+*/

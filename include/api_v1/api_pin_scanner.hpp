@@ -173,7 +173,7 @@ class PinScanner
             return m_timer.is_running();
         }
 
-#ifdef TARGET_TIMER_TYPE_MRT
+#if (TARGET_HAS_MRT_TIMER == 1)
         // NOTE: Timer type is a multi-rate timer (single timer with multiple channels).
         //       Only one IRQ and one priority available for all channels.
         static void set_mrt_irq_priority(const int32_t irq_priority)
