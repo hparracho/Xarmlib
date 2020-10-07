@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_pin.hpp
-// @brief   Pin HAL interface class.
+// @file    hal_us_ticker.hpp
+// @brief   Microsecond ticker HAL interface class.
 // @date    6 October 2020
 // ----------------------------------------------------------------------------
 //
@@ -12,10 +12,8 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef XARMLIB_HAL_PIN_HPP
-#define XARMLIB_HAL_PIN_HPP
-
-#include "core/target_specs.hpp"
+#ifndef XARMLIB_HAL_US_TICKER_BASE_HPP
+#define XARMLIB_HAL_US_TICKER_BASE_HPP
 
 
 
@@ -23,15 +21,19 @@
 namespace xarmlib::hal
 {
 
-class Pin
+template <typename Driver>
+class UsTickerBase
 {
 public:
 
     // ------------------------------------------------------------------------
-    // PUBLIC DEFINITIONS
+    // PUBLIC MEMBER FUNCTIONS
     // ------------------------------------------------------------------------
 
-    using Name = xarmlib::targets::PinName;
+    static uint32_t read()
+    {
+        return Driver::read();
+    }
 };
 
 } // namespace xarmlib::hal
@@ -39,4 +41,4 @@ public:
 
 
 
-#endif // XARMLIB_HAL_PIN_HPP
+#endif // XARMLIB_HAL_US_TICKER_BASE_HPP

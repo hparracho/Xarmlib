@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
-// @file    hal_flash.hpp
-// @brief   Flash HAL classes specialized for the current target.
+// @file    hal_uart.hpp
+// @brief   UART HAL class specialized for the current target.
 // @date    6 October 2020
 // ----------------------------------------------------------------------------
 //
@@ -12,23 +12,21 @@
 //
 // ----------------------------------------------------------------------------
 
-#ifndef XARMLIB_HAL_FLASH_HPP
-#define XARMLIB_HAL_FLASH_HPP
+#ifndef XARMLIB_HAL_USART_HPP
+#define XARMLIB_HAL_USART_HPP
 
-#include "hal/hal_flash_base.hpp"
+#include "core/target_specs.hpp"
 
 
 
 
 #if defined(__LPC81X__)
 
-#include "targets/LPC81x/lpc81x_flash_boot.hpp"
-#include "targets/LPC81x/lpc81x_flash_iap.hpp"
+#include "targets/LPC81x/lpc81x_usart.hpp"
 
 namespace xarmlib::hal
 {
-using FlashBoot = FlashIapBase<targets::lpc81x::FlashBoot>;
-using FlashIap  = FlashIapBase<targets::lpc81x::FlashIap>;
+using Usart = UsartBase<targets::lpc81x::Usart, targets::lpc81x::UsartTraits>;
 }
 
 #endif
@@ -36,5 +34,5 @@ using FlashIap  = FlashIapBase<targets::lpc81x::FlashIap>;
 
 
 
-#endif // XARMLIB_HAL_FLASH_HPP
+#endif // XARMLIB_HAL_USART_HPP
 
