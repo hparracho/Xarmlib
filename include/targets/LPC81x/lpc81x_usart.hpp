@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class (synchronous mode not implemented).
-// @date    6 October 2020
+// @date    7 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -123,6 +123,9 @@ class Usart : public hal::UsartBase<Usart, UsartTraits>
     friend void ::USART1_IRQHandler(void);
     friend void ::USART2_IRQHandler(void);
 
+    // Give HAL access to private member functions
+    friend hal::UsartBase<Usart, UsartTraits>;
+
 public:
 
     // --------------------------------------------------------------------
@@ -143,7 +146,7 @@ public:
 
     // -------- CONSTRUCTOR / DESTRUCTOR --------------------------------------
 
-    Usart(const Pin::Name txd, const Pin::Name rxd, const Config& config)
+    Usart(const Pin::Name txd, const Pin::Name rxd, const Config& config = Config{})
         : hal::UsartBase<Usart, UsartTraits>(*this)
     {
         // Configure USART clock if this is the first USART peripheral instantiation

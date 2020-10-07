@@ -101,7 +101,7 @@ public:
 
     // -------- READ / WRITE --------------------------------------------------
 
-    // Read data as soon as possible (with infinite timeout)
+    // Read data as soon as possible with infinite timeout
     uint32_t read() const
     {
         while(is_rx_ready() == false);
@@ -109,7 +109,7 @@ public:
         return static_cast<const Driver*>(this)->read_data();
     }
 
-    // Read data as soon as possible (with timeout)
+    // Read data as soon as possible with timeout
     bool read(uint32_t& data, const chrono::microseconds_u32 timeout_us) const
     {
         const auto start = HighResClock::now();
@@ -126,8 +126,8 @@ public:
         return false;
     }
 
-    // Read buffer with timeout, returning the number of actual read bytes
-    std::size_t read_buffer(const std::span<uint8_t> buffer, const chrono::microseconds_u32 timeout_us) const
+    // Read a byte buffer as soon as possible with timeout (returns the number of actual read bytes)
+    std::size_t read(const std::span<uint8_t> buffer, const chrono::microseconds_u32 timeout_us) const
     {
         const auto start = HighResClock::now();
         std::size_t count = 0;
@@ -144,7 +144,7 @@ public:
         return count;
     }
 
-    // Write data as soon as possible (with infinite timeout)
+    // Write data as soon as possible with infinite timeout
     void write(const uint32_t value)
     {
         while(is_tx_ready() == false);
@@ -152,7 +152,7 @@ public:
         static_cast<Driver*>(this)->write_data(value);
     }
 
-    // Write data as soon as possible (with timeout)
+    // Write data as soon as possible with timeout (returns true if successful or false if failed)
     bool write(const uint32_t value, const chrono::microseconds_u32 timeout_us)
     {
         const auto start = HighResClock::now();
@@ -169,8 +169,8 @@ public:
         return false;
     }
 
-    // Write buffer with timeout, returning the number of actual written bytes
-    std::size_t write_buffer(const std::span<const uint8_t> buffer, const chrono::microseconds_u32 timeout_us)
+    // Write a byte buffer as soon as possible with timeout (returns the number of actual written bytes)
+    std::size_t write(const std::span<const uint8_t> buffer, const chrono::microseconds_u32 timeout_us)
     {
         const auto start = HighResClock::now();
         std::size_t count = 0;
@@ -185,6 +185,36 @@ public:
         }
 
         return count;
+    }
+
+    // Write a C string (null terminated) as soon as possible with infinite timeout
+    void write(const char* str)
+    {
+        while(*str != '\0')
+        {
+            if(is_tx_ready())
+            {
+                static_cast<Driver*>(this)->write_data(*str++);
+            }
+        }
+    }
+
+    // Write a C string (null terminated) with timeout (returns the number of actual written characters)
+    std::size_t write(const char* str, const chrono::microseconds_u32 timeout_us)
+    {
+        const auto start = HighResClock::now();
+
+        const char *ptr = str;
+
+        while(*ptr != '\0' && HighResClock::is_timeout(start, timeout_us) == false)
+        {
+            if(is_tx_ready())
+            {
+                static_cast<Driver*>(this)->write_data(*ptr++);
+            }
+        }
+
+        return (ptr - str);
     }
 
 protected:
