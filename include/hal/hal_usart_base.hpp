@@ -1,6 +1,6 @@
 // ----------------------------------------------------------------------------
 // @file    hal_usart_base.hpp
-// @brief   UART HAL interface class.
+// @brief   USART HAL interface class (synchronous mode not implemented).
 // @date    6 October 2020
 // ----------------------------------------------------------------------------
 //

@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------------
-// @file    hal_uart.hpp
-// @brief   UART HAL class specialized for the current target.
-// @date    6 October 2020
+// @file    hal_usart.hpp
+// @brief   USART HAL class specialized for the current target (synchronous
+//          mode not implemented).
+// @date    7 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
