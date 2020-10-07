@@ -4,7 +4,7 @@
 //          available). Specializations for some common types of 8, 16 and
 //          32 bits. Formulas taken from:
 //          https://barrgroup.com/Embedded-Systems/How-To/CRC-Calculation-C-Code
-// @date    29 September 2020
+// @date    7 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -127,7 +127,7 @@ private:
         return reflection;
     }
 
-    static constexpr Type modulo2(std::size_t dividend)
+    static constexpr Type modulo2(const std::size_t dividend)
     {
         //static_assert(dividend >= 0 && dividend <= 255);
 
