@@ -3,36 +3,24 @@
 // @brief   Micro String Format (USF) configuration and main header file
 //          to use in the library. This should be the only header file
 //          included when USF functionality is required.
-// @date    11 September 2020
+// @date    7 October 2020
 // ----------------------------------------------------------------------------
 //
-// Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
+// Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
 // Copyright (c) 2018-2020 Helder Parracho (hparracho@gmail.com)
+// PDX-License-Identifier: MIT License
 //
 // See README.md file for additional credits and acknowledgments.
 //
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
-// DEALINGS IN THE SOFTWARE.
-//
 // ----------------------------------------------------------------------------
 
-#ifndef __XARMLIB_EXTERNAL_USF_HPP
-#define __XARMLIB_EXTERNAL_USF_HPP
+#ifndef XARMLIB_EXTERNAL_USF_HPP
+#define XARMLIB_EXTERNAL_USF_HPP
+
+#include "xarmlib_config.hpp"
+
+
+
 
 // ----------------------------------------------------------------------------
 // usflib configuration options
@@ -51,8 +39,35 @@
 
 // ----------------------------------------------------------------------------
 
-#define USF_ABORT_ON_CONTRACT_VIOLATION
+// ----------------------------------------------------------------------------
+// NOTE: Options should be specified in 'xarmlib_config.hpp' header file.
+// ----------------------------------------------------------------------------
 
 #include "../../external/USFLIB/include/usf/usf.hpp"
 
-#endif // __XARMLIB_EXTERNAL_USF_HPP
+
+
+
+namespace usf
+{
+
+// Helper function to print a formatted string to any object that implements
+// a 'putc()' member function. The 'str' variable serves as a writing buffer.
+// Optimally the buffer should be static initialized and used across all
+// function calls. Returns a string span to the written buffer.
+template <typename Writer, typename... Args>
+StringSpan print_to(Writer& writer, StringSpan str, StringView fmt, Args&&... args)
+{
+    auto ss = format_to(str, fmt, args...);
+
+    for(const auto ch : ss)
+    {
+        writer.putc(ch);
+    }
+
+    return ss;
+}
+
+} // namespace usf
+
+#endif // XARMLIB_EXTERNAL_USF_HPP
