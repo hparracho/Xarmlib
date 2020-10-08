@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    20 September 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -167,9 +167,12 @@ class SpiMasterBase : protected SpiDriver
 
         // -------- ACCESS MUTEX ----------------------------------------------
 
+        // NOTE: Mutex type semaphores must not be used from an ISR
+
         void mutex_take()
         {
             #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
+            assert((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) == 0);
             xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
             #endif
         }
@@ -177,6 +180,7 @@ class SpiMasterBase : protected SpiDriver
         void mutex_give()
         {
             #if defined(XARMLIB_ENABLE_FREERTOS) && (XARMLIB_ENABLE_FREERTOS == 1)
+            assert((SCB->ICSR & SCB_ICSR_VECTACTIVE_Msk) == 0);
             xSemaphoreGive(m_rtos_mutex);
             #endif
         }
