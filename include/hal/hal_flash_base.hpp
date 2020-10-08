@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
-// @file    hal_flash_boot_base.hpp
+// @file    hal_flash_base.hpp
 // @brief   Flash HAL interface classes.
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib

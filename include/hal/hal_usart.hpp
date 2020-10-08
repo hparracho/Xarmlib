@@ -2,7 +2,7 @@
 // @file    hal_usart.hpp
 // @brief   USART HAL class specialized for the current target (synchronous
 //          mode not implemented).
-// @date    7 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -36,4 +36,3 @@ using Usart = UsartBase<targets::lpc81x::Usart, targets::lpc81x::UsartTraits>;
 
 
 #endif // XARMLIB_HAL_USART_HPP
-

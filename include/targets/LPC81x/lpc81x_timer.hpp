@@ -62,7 +62,7 @@ public:
         set_interval(0);
     }
 
-#if !defined(XARMLIB_DISABLE_DESTRUCTORS) || (XARMLIB_DISABLE_DESTRUCTORS == 0)
+#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
     ~Timer()
     {
         set_interval(0);

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer_base.hpp
-// @brief   32-bit Timer HAL interface class.
-// @date    6 October 2020
+// @brief   Timer HAL interface class.
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -86,7 +86,7 @@ protected:
     // PROTECTED MEMBER FUNCTIONS
     // ------------------------------------------------------------------------
 
-    TimerBase(Driver& driver_ref) : TimerPeripheral<Driver>(driver_ref)
+    TimerBase(Driver& driver) : TimerPeripheral<Driver>(driver)
     {}
 };
 

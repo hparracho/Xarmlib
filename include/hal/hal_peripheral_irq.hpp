@@ -2,7 +2,7 @@
 // @file    hal_peripheral_irq.hpp
 // @brief   HAL interface class for peripherals that have an individual IRQ
 //          handler and a single interrupt.
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -108,7 +108,7 @@ protected:
     PeripheralIrq(Driver& driver_ref) : m_ref_counter {driver_ref}
     {}
 
-#if !defined(XARMLIB_DISABLE_DESTRUCTORS) || (XARMLIB_DISABLE_DESTRUCTORS == 0)
+#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
     ~PeripheralIrq()
     {
         disable_interrupt();

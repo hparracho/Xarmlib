@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_usart.hpp
 // @brief   NXP LPC81x USART class (synchronous mode not implemented).
-// @date    7 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -75,41 +75,45 @@ struct UsartTraits
     };
 
     // USART Status register (STAT) bits
+    // NOTE: Used to read all the available status register bits. Some of then are
+    //       read-only. The mask 'clear_all_bitmask' have all the bits of the status
+    //       register that can be cleared by writing 1 (W1). The status register
+    //       contains all the possible interrupt and additional status flags.
     enum class Status
     {
-        rx_ready            = (1UL << 0),   // Receiver ready
-        rx_idle             = (1UL << 1),   // Receiver idle
-        tx_ready            = (1UL << 2),   // Transmitter ready for data
-        tx_idle             = (1UL << 3),   // Transmitter idle
-        cts                 = (1UL << 4),   // Status of CTS signal
-        cts_delta           = (1UL << 5),   // Change in CTS state
-        tx_disabled         = (1UL << 6),   // Transmitter disabled
-        rx_overrun          = (1UL << 8),   // Overrun Error interrupt flag
-        rx_break            = (1UL << 10),  // Received break
-        rx_break_delta      = (1UL << 11),  // Change in receive break detection
-        start               = (1UL << 12),  // Start detected
-        frame_error         = (1UL << 13),  // Framing Error interrupt flag
-        parity_error        = (1UL << 14),  // Parity Error interrupt flag
-        rx_noise            = (1UL << 15),  // Received Noise interrupt flag
-        clear_all_bitmask   = 0xF920UL,     // Clear all bitmask (1111'1001'0010'0000)
-        bitmask             = 0xFD7FUL      // Full bitmask (1111'1101'0111'1111)
+        rx_ready          = (1UL << 0),  // RO - Receiver ready
+        rx_idle           = (1UL << 1),  // RO - Receiver idle
+        tx_ready          = (1UL << 2),  // RO - Transmitter ready for data
+        tx_idle           = (1UL << 3),  // RO - Transmitter idle
+        cts               = (1UL << 4),  // RO - Status of CTS signal
+        cts_delta         = (1UL << 5),  // W1 - Change in CTS state
+        tx_disabled       = (1UL << 6),  // RO - Transmitter disabled
+        rx_overrun        = (1UL << 8),  // W1 - Overrun Error interrupt flag
+        rx_break          = (1UL << 10), // RO - Received break
+        rx_break_delta    = (1UL << 11), // W1 - Change in receive break detection
+        start             = (1UL << 12), // W1 - Start detected
+        frame_error       = (1UL << 13), // W1 - Framing Error interrupt flag
+        parity_error      = (1UL << 14), // W1 - Parity Error interrupt flag
+        rx_noise          = (1UL << 15), // W1 - Received Noise interrupt flag
+        clear_all_bitmask = 0xF920UL,    // W1 - Clear all bitmask (1111'1001'0010'0000)
+        bitmask           = 0xFD7FUL     //      Full bitmask      (1111'1101'0111'1111)
     };
 
-    // USART Interrupt Enable Get, Set or Clear Register (INTSTAT / INTENSET / INTENCLR) bits
+    // USART Interrupt enumeration
+    // NOTE: Used to enable (INTENSET), disable (INTENCLR) and get enabled (INTSTAT) interrupts.
     enum class Interrupt
     {
-        rx_ready            = (1UL << 0),   // Receiver ready
-        tx_ready            = (1UL << 2),   // Transmitter ready for data
-        cts_delta           = (1UL << 5),   // Change in CTS state
-        tx_disabled         = (1UL << 6),   // Transmitter disabled
-        rx_overrun          = (1UL << 8),   // Overrun Error interrupt flag
-        rx_break_delta      = (1UL << 11),  // Change in receive break detection
-        start               = (1UL << 12),  // Start detected
-        frame_error         = (1UL << 13),  // Framing Error interrupt flag
-        parity_errort       = (1UL << 14),  // Parity Error interrupt flag
-        rx_noise            = (1UL << 15),  // Received Noise interrupt flag
-        clear_all_bitmask   = 0xF920UL,     // Clear all bitmask (1111'1001'0010'0000)
-        bitmask             = 0xF965UL      // Full bitmask (1111'1001'0110'0101)
+        rx_ready          = (1UL << 0),  // Receiver ready
+        tx_ready          = (1UL << 2),  // Transmitter ready for data
+        cts_delta         = (1UL << 5),  // Change in CTS state
+        tx_disabled       = (1UL << 6),  // Transmitter disabled
+        rx_overrun        = (1UL << 8),  // Overrun Error interrupt flag
+        rx_break_delta    = (1UL << 11), // Change in receive break detection
+        start             = (1UL << 12), // Start detected
+        frame_error       = (1UL << 13), // Framing Error interrupt flag
+        parity_errort     = (1UL << 14), // Parity Error interrupt flag
+        rx_noise          = (1UL << 15), // Received Noise interrupt flag
+        bitmask           = 0xF965UL     // Full bitmask (1111'1001'0110'0101)
     };
 };
 
@@ -128,9 +132,9 @@ class Usart : public hal::UsartBase<Usart, UsartTraits>
 
 public:
 
-    // --------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     // PUBLIC DEFINITIONS
-    // --------------------------------------------------------------------
+    // ------------------------------------------------------------------------
 
     using DataBits  = typename UsartTraits::DataBits;
     using StopBits  = typename UsartTraits::StopBits;
@@ -158,12 +162,10 @@ public:
             initialize_usart_frg();
         }
 
-        const auto uart_index = m_ref_counter.get_this_index();
+        SysClock::enable(get_clock_name());
+        Power::reset(get_power_name());
 
-        SysClock::enable(static_cast<SysClock::Peripheral>(static_cast<std::size_t>(SysClock::Peripheral::usart0) + uart_index));
-        Power::reset(static_cast<Power::ResetPeripheral>(static_cast<std::size_t>(Power::ResetPeripheral::usart0) + uart_index));
-
-        switch(static_cast<Name>(uart_index))
+        switch(static_cast<Name>(m_ref_counter.get_this_index()))
         {
             case Name::usart0: m_usart = LPC_USART0;
                                Swm::assign(Swm::PinMovable::u0_rxd_i, rxd);
@@ -195,13 +197,13 @@ public:
         clear_status(Status::clear_all_bitmask);
     }
 
-#if !defined(XARMLIB_DISABLE_DESTRUCTORS) || (XARMLIB_DISABLE_DESTRUCTORS == 0)
+#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
     ~Usart()
     {
         // Disable peripheral
         disable();
 
-        SysClock::disable(static_cast<SysClock::Peripheral>(static_cast<std::size_t>(SysClock::Peripheral::usart0) + m_ref_counter.get_this_index()));
+        SysClock::disable(get_clock_name());
 
         // Disable USART clock if this the last USART peripheral deleted
         if(m_ref_counter.get_use_count() == 1)
@@ -339,7 +341,7 @@ public:
 
     void clear_interrupts_pending()
     {
-        m_usart->STAT = static_cast<uint32_t>(Interrupt::clear_all_bitmask);
+        m_usart->STAT = Bitmask<Interrupt>(Interrupt::bitmask);
     }
 
     // -------- IRQ -----------------------------------------------------------

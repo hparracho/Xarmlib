@@ -99,8 +99,8 @@ protected:
     // ------------------------------------------------------------------------
 
     // -------- CONSTRUCTOR ---------------------------------------------------
-    PinIntBase(Driver& driver_ref, Mode mode)
-        : PinIntPeripheral<Driver>(driver_ref),
+    PinIntBase(Driver& driver, Mode mode)
+        : PinIntPeripheral<Driver>(driver),
           m_mode {mode}
     {}
 

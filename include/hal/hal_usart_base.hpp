@@ -47,9 +47,9 @@ public:
     using Status    = typename Traits::Status;
     using Interrupt = typename Traits::Interrupt;
 
-    // --------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     // PUBLIC MEMBER FUNCTIONS
-    // --------------------------------------------------------------------
+    // ------------------------------------------------------------------------
 
     // -------- FORMAT / BAUDRATE ---------------------------------------------
 
@@ -136,8 +136,7 @@ public:
         {
             if(is_rx_ready())
             {
-                buffer[count] = static_cast<const Driver*>(this)->read_data();
-                count++;
+                buffer[count++] = static_cast<const Driver*>(this)->read_data();
             }
         }
 
@@ -145,15 +144,15 @@ public:
     }
 
     // Write data as soon as possible with infinite timeout
-    void write(const uint32_t value)
+    void write(const uint32_t data)
     {
         while(is_tx_ready() == false);
 
-        static_cast<Driver*>(this)->write_data(value);
+        static_cast<Driver*>(this)->write_data(data);
     }
 
     // Write data as soon as possible with timeout (returns true if successful or false if failed)
-    bool write(const uint32_t value, const chrono::microseconds_u32 timeout_us)
+    bool write(const uint32_t data, const chrono::microseconds_u32 timeout_us)
     {
         const auto start = HighResClock::now();
 
@@ -161,7 +160,7 @@ public:
         {
             if(is_tx_ready())
             {
-                static_cast<Driver*>(this)->write_data(value);
+                static_cast<Driver*>(this)->write_data(data);
                 return true;
             }
         }
@@ -179,8 +178,7 @@ public:
         {
             if(is_tx_ready())
             {
-                static_cast<Driver*>(this)->write_data(buffer[count]);
-                count++;
+                static_cast<Driver*>(this)->write_data(buffer[count++]);
             }
         }
 
@@ -228,7 +226,7 @@ protected:
     // PROTECTED MEMBER FUNCTIONS
     // ------------------------------------------------------------------------
 
-    UsartBase(Driver& driver_ref) : UsartPeripheral<Driver, typename Traits::Interrupt>(driver_ref)
+    UsartBase(Driver& driver) : UsartPeripheral<Driver, typename Traits::Interrupt>(driver)
     {}
 };
 

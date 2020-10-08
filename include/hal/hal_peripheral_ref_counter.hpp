@@ -2,7 +2,7 @@
 // @file    peripheral_ref_counter.hpp
 // @brief   Peripheral reference counter class (helper class to keep a record
 //          of the peripherals objects that are created and destructed).
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -49,7 +49,7 @@ public:
         s_peripherals[m_index] = &peripheral;
     }
 
-#if !defined(XARMLIB_DISABLE_DESTRUCTORS) || (XARMLIB_DISABLE_DESTRUCTORS == 0)
+#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
     ~PeripheralRefCounter()
     {
         s_used_mask &= ~(1 << m_index);

@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_flash.hpp
 // @brief   Flash HAL classes specialized for the current target.
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -37,4 +37,3 @@ using FlashIap  = FlashIapBase<targets::lpc81x::FlashIap>;
 
 
 #endif // XARMLIB_HAL_FLASH_HPP
-

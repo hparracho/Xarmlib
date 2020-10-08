@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_timer.hpp
 // @brief   Timer HAL class specialized for the current target.
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -35,4 +35,3 @@ using Timer = TimerBase<targets::lpc81x::Timer>;
 
 
 #endif // XARMLIB_HAL_TIMER_HPP
-
