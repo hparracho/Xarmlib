@@ -169,7 +169,7 @@ public:
 
     // -------- MUTEX ---------------------------------------------------------
 
-    MutexBase& get_mutex()
+    Lockable& get_mutex()
     {
         return *m_mutex;
     }
@@ -181,20 +181,32 @@ protected:
     // ------------------------------------------------------------------------
 
     SpiBase(Driver& driver, const bool enable_mutex)
-        : SpiPeripheral<Driver, typename Traits::Interrupt>(driver)
-    {
-        m_mutex = (enable_mutex) ? std::make_unique<Mutex>()
-                                 : std::make_unique<DummyMutex>();
+        : SpiPeripheral<Driver, typename Traits::Interrupt>(driver),
+          m_mutex {make_mutex(enable_mutex)}
+    {}
 
-        assert(m_mutex != nullptr);
+private:
+
+    // ------------------------------------------------------------------------
+    // PRIVATE MEMBER FUNCTIONS
+    // ------------------------------------------------------------------------
+
+    static std::unique_ptr<Lockable> make_mutex(const bool enable_mutex)
+    {
+        std::unique_ptr<Lockable> mutex = (enable_mutex) ? std::make_unique<Mutex>()
+                                                         : std::make_unique<MutexDummy>();
+
+        assert(mutex != nullptr);
+
+        return mutex;
     }
 
     // ------------------------------------------------------------------------
-    // PROTECTED MEMBER VARIABLES
+    // PRIVATE MEMBER VARIABLES
     // ------------------------------------------------------------------------
 
     // Pointer to the mutex that guards the shared bus access (dummy or not)
-    std::unique_ptr<MutexBase> m_mutex {nullptr};
+    std::unique_ptr<Lockable> m_mutex;
 };
 
 } // namespace xarmlib::hal

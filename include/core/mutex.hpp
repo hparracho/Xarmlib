@@ -27,7 +27,7 @@
 namespace xarmlib
 {
 
-class MutexBase : private NonCopyable<MutexBase>
+class Lockable : private NonCopyable<Lockable>
 {
 public:
 
@@ -35,30 +35,27 @@ public:
     // PUBLIC MEMBER FUNCTIONS
     // ------------------------------------------------------------------------
 
-    MutexBase() {}
+    Lockable() {}
 
-    virtual ~MutexBase() {}
+    virtual ~Lockable() {}
 
     // Wait until a mutex becomes available
     virtual void lock() {}
 
-    // Wait until a mutex becomes available from an IRQ
-    virtual void lock_from_isr([[maybe_unused]] int32_t& yield) {}
-
     // Unlock a previously locked mutex
     virtual void unlock() {}
-
-    // Unlock a previously locked mutex from an ISR
-    virtual void unlock_from_isr([[maybe_unused]] int32_t& yield) {}
 };
 
-using DummyMutex = MutexBase;
+using MutexDummy = Lockable;
 
 
 
 
 #if (XARMLIB_ENABLE_FREERTOS == 1)
-class Mutex : private MutexBase
+
+// NOTE: Mutex class cannot be used inside ISRs
+
+class Mutex : private Lockable
 {
 public:
 
@@ -66,9 +63,9 @@ public:
     // PUBLIC MEMBER FUNCTIONS
     // ------------------------------------------------------------------------
 
-    Mutex()
+    Mutex() : m_rtos_mutex {xSemaphoreCreateMutex()}
     {
-        m_rtos_mutex = xSemaphoreCreateMutex();
+        assert(m_rtos_mutex != nullptr);
     }
 
     ~Mutex() final
@@ -82,22 +79,10 @@ public:
         xSemaphoreTake(m_rtos_mutex, portMAX_DELAY);
     }
 
-    // Wait until a mutex becomes available from an IRQ
-    void lock_from_isr(int32_t& yield) final
-    {
-        xSemaphoreTakeFromISR(m_rtos_mutex, &yield);
-    }
-
     // Unlock a previously locked mutex
     void unlock() final
     {
         xSemaphoreGive(m_rtos_mutex);
-    }
-
-    // Unlock a previously locked mutex from an ISR
-    void unlock_from_isr(int32_t& yield) final
-    {
-        xSemaphoreGiveFromISR(m_rtos_mutex, &yield);
     }
 
 private:
@@ -106,11 +91,12 @@ private:
     // PRIVATE MEMBER VARIABLES
     // ------------------------------------------------------------------------
 
-    SemaphoreHandle_t m_rtos_mutex {nullptr};
+    SemaphoreHandle_t m_rtos_mutex;
 };
+
 #else
 
-using Mutex = DummyMutex;
+using Mutex = Lockable;
 
 #endif
 
