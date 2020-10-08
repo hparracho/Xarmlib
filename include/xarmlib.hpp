@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    xarmlib.hpp
 // @brief   Xarmlib main header file.
-// @date    6 October 2020
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -37,14 +37,13 @@
 
 //#include "hal/hal_can.hpp"
 //#include "hal/hal_enc.hpp"
-//#include "hal/hal_faim.hpp"
 #include "hal/hal_flash.hpp"
 #include "hal/hal_gpio.hpp"
 //#include "hal/hal_i2c.hpp"
 #include "hal/hal_pin.hpp"
 #include "hal/hal_pin_int.hpp"
 #include "hal/hal_port.hpp"
-//#include "hal/hal_spi.hpp"
+#include "hal/hal_spi.hpp"
 #include "hal/hal_system.hpp"
 #include "hal/hal_timer.hpp"
 #include "hal/hal_usart.hpp"
@@ -58,6 +57,7 @@
 #include "core/target_pin_int.hpp"
 #include "core/target_port.hpp"
 #include "core/target_specs.hpp"
+#include "core/target_spi.hpp"
 #include "core/target_system.hpp"
 #include "core/target_timer.hpp"
 #include "core/target_usart.hpp"
