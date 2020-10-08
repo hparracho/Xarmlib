@@ -197,7 +197,7 @@ public:
         clear_status(Status::clear_all_bitmask);
     }
 
-#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
+#if (XARMLIB_DISABLE_EXPENSIVE_PERIPHERAL_DESTRUCTORS != 1)
     ~Usart()
     {
         // Disable peripheral

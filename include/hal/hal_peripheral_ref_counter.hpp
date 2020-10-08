@@ -49,7 +49,7 @@ public:
         s_peripherals[m_index] = &peripheral;
     }
 
-#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
+#if (XARMLIB_DISABLE_EXPENSIVE_PERIPHERAL_DESTRUCTORS != 1)
     ~PeripheralRefCounter()
     {
         s_used_mask &= ~(1 << m_index);

@@ -108,7 +108,7 @@ protected:
     PeripheralIrq(Driver& driver_ref) : m_ref_counter {driver_ref}
     {}
 
-#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
+#if (XARMLIB_DISABLE_EXPENSIVE_PERIPHERAL_DESTRUCTORS != 1)
     ~PeripheralIrq()
     {
         disable_interrupt();

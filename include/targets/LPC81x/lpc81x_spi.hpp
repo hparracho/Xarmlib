@@ -214,7 +214,7 @@ public:
         // set_frequency(...);
     }
 
-#if (XARMLIB_DISABLE_DESTRUCTORS != 1)
+#if (XARMLIB_DISABLE_EXPENSIVE_PERIPHERAL_DESTRUCTORS != 1)
     ~Spi()
     {
         // Disable peripheral
