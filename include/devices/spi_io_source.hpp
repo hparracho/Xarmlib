@@ -1,7 +1,8 @@
 // ----------------------------------------------------------------------------
 // @file    spi_io_source.hpp
 // @brief   SPI I/O source class.
-// @date    8 September 2020
+// @note    This class shouldn't be used with shared SPI bus.
+// @date    8 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -131,14 +132,10 @@ class SpiIoSource : public PinSource
             m_latch = 0;
             m_latch = 1;
 
-            m_spi_master.mutex_take();
-
             for(std::ptrdiff_t port_index = output_buffer.size() - 1; port_index >= 0; --port_index)
             {
                 input_buffer[port_index] = static_cast<uint8_t>(m_spi_master.transfer(output_buffer[port_index]));
             }
-
-            m_spi_master.mutex_give();
 
             m_latch = 0;
             m_latch = 1;
