@@ -89,7 +89,7 @@ public:
     // Read data as soon as possible with infinite timeout
     uint32_t read() const
     {
-        while(is_rx_ready() == false);
+        while(is_rx_ready() == false) {}
 
         return static_cast<const Driver*>(this)->read_data();
     }
@@ -114,7 +114,7 @@ public:
     // Write data as soon as possible with infinite timeout
     void write(const uint32_t data)
     {
-        while(is_tx_ready() == false);
+        while(is_tx_ready() == false) {}
 
         static_cast<Driver*>(this)->write_data(data);
     }

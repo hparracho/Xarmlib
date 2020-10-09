@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_usart_base.hpp
 // @brief   USART HAL interface class (synchronous mode not implemented).
-// @date    6 October 2020
+// @date    9 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -104,7 +104,7 @@ public:
     // Read data as soon as possible with infinite timeout
     uint32_t read() const
     {
-        while(is_rx_ready() == false);
+        while(is_rx_ready() == false) {}
 
         return static_cast<const Driver*>(this)->read_data();
     }
@@ -146,7 +146,7 @@ public:
     // Write data as soon as possible with infinite timeout
     void write(const uint32_t data)
     {
-        while(is_tx_ready() == false);
+        while(is_tx_ready() == false) {}
 
         static_cast<Driver*>(this)->write_data(data);
     }

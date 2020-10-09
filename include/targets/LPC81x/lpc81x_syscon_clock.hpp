@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    lpc81x_syscon_clock.hpp
 // @brief   NXP LPC81x SYSCON clock control class.
-// @date    6 October 2020
+// @date    9 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -189,7 +189,7 @@ public:
         LPC_SYSCON->SYSPLLCLKUEN = 1;
 
         // Wait for update to take effect
-        while((LPC_SYSCON->SYSPLLCLKUEN & 0x01) == 0) __NOP();
+        while((LPC_SYSCON->SYSPLLCLKUEN & 0x01) == 0) { __NOP(); }
     }
 
     // Get clock source
@@ -358,7 +358,7 @@ public:
         LPC_SYSCON->CLKOUTUEN = 1;
 
         // Wait for update to take effect
-        while((LPC_SYSCON->CLKOUTUEN & 0x01) == 0) __NOP();
+        while((LPC_SYSCON->CLKOUTUEN & 0x01) == 0) { __NOP(); }
     }
 
     // Set clock divider

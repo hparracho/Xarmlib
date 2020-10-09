@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    api_pin_bus.hpp
 // @brief   API pin bus class.
-// @date    30 September 2020
+// @date    9 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -64,7 +64,11 @@ class PinBus
 
         for(std::size_t index = 0; index < Size; ++index)
         {
-            if(!PinTraits::valid(pin_list[index])) std::terminate();
+            if(!PinTraits::valid(pin_list[index]))
+            {
+                std::terminate();
+            }
+
             valid_list[index] = pin_list[index];
         }
 
