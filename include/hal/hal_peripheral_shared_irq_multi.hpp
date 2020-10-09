@@ -2,7 +2,7 @@
 // @file    hal_peripheral_shared_irq_multi.hpp
 // @brief   HAL interface class for peripherals that have a shared IRQ handler
 //          and multiple interrupts.
-// @date    8 October 2020
+// @date    9 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -140,15 +140,14 @@ protected:
 
             if(peripheral != nullptr)
             {
-                if(peripheral->get_interrupts_pending() != 0)
+                if(peripheral->m_irq_handler != nullptr)
                 {
-                    if(peripheral->m_irq_handler != nullptr)
+                    if(peripheral->get_interrupts_pending() != 0)
                     {
-                        yield = peripheral->m_irq_handler();
+                        yield |= peripheral->m_irq_handler();
+                        peripheral->clear_interrupts_pending();
                     }
                 }
-
-                peripheral->clear_interrupts_pending();
             }
         }
 

@@ -71,7 +71,6 @@ public:
         if(pin_name != Pin::Name::nc)
         {
             disable_interrupt();
-            clear_interrupt_pending();
 
             // Assign the specified pin to the first free interrupt slot
             LPC_SYSCON->PINTSEL[m_ref_counter.get_this_index()] = static_cast<uint32_t>(m_gpio.get_pin_name());
@@ -88,7 +87,6 @@ public:
         if(pin_name != Pin::Name::nc)
         {
             disable_interrupt();
-            clear_interrupt_pending();
 
             // Assign the specified pin to the first free interrupt slot
             LPC_SYSCON->PINTSEL[m_ref_counter.get_this_index()] = static_cast<uint32_t>(m_gpio.get_pin_name());

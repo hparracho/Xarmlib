@@ -124,7 +124,7 @@ public:
     bool is_interrupt_pending() const { return (m_channel->STAT & stat_intflag) != 0; }
 
     // Clear the interrupt pending flag
-    void clear_interrupts_pending() { m_channel->STAT |= stat_intflag; }
+    void clear_interrupt_pending() { m_channel->STAT |= stat_intflag; }
 
     // -------- IRQ -----------------------------------------------------------
 

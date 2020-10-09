@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi_base.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    8 October 2020
+// @date    9 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.2.0 - https://github.com/hparracho/Xarmlib
@@ -20,6 +20,7 @@
 #include "core/target_specs.hpp"
 #include "hal/hal_peripheral_irq_multi.hpp"
 
+#include <memory>
 #include <span>
 
 
