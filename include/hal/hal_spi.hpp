@@ -1,7 +1,7 @@
 // ----------------------------------------------------------------------------
 // @file    hal_spi.hpp
 // @brief   SPI HAL interface classes (SpiMaster / SpiSlave).
-// @date    8 October 2020
+// @date    16 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -500,8 +500,9 @@ class SpiMaster : public hal::SpiMaster
 
             disable();
 
-            flush_tx_fifo();
-            flush_rx_fifo();
+            // Moved to SpiDriver @ disable()
+            //flush_tx_fifo();
+            //flush_rx_fifo();
 
             uint32_t read_value = 0;
 
@@ -564,8 +565,9 @@ class SpiMaster : public hal::SpiMaster
 
             disable();
 
-            flush_tx_fifo();
-            flush_rx_fifo();
+            // Moved to SpiDriver @ disable()
+            //flush_tx_fifo();
+            //flush_rx_fifo();
 
             uint64_t read_value = 0;
 
@@ -839,8 +841,9 @@ class SpiMaster : public hal::SpiMaster
 
             disable();
 
-            flush_tx_fifo();
-            flush_rx_fifo();
+            // Moved to SpiDriver @ disable()
+            //flush_tx_fifo();
+            //flush_rx_fifo();
 
             uint32_t read_value = 0;
 
@@ -903,8 +906,9 @@ class SpiMaster : public hal::SpiMaster
 
             disable();
 
-            flush_tx_fifo();
-            flush_rx_fifo();
+            // Moved to SpiDriver @ disable()
+            //flush_tx_fifo();
+            //flush_rx_fifo();
 
             uint64_t read_value = 0;
 
