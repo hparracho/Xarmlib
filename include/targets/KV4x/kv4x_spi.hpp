@@ -3,7 +3,7 @@
 // @brief   Kinetis KV4x SPI class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          Both sizes are 4.
-// @date    20 September 2020
+// @date    16 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -462,12 +462,13 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         // -------- ENABLE / DISABLE RUNNING STATE ----------------------------
 
         // Start frame transfers
-        // NOTE: Status::end_of_queue bit must be cleared
         void enable()
         {
-            DSPI_StartTransfer(SPI);
+            // Status::end_of_queue bit must be cleared
+            // (further info: 44.5.1 Start and Stop of module transfers from KV4x Reference Manual)
+            clear_status(Status::end_of_queue);
 
-            assert(is_enabled() == true);
+            DSPI_StartTransfer(SPI);
         }
 
         // Stop frame transfers
@@ -476,6 +477,13 @@ class SpiDriver : private PeripheralRefCounter<SpiDriver, TARGET_SPI_COUNT>
         void disable()
         {
             DSPI_StopTransfer(SPI);
+
+            flush_tx_fifo();
+            flush_rx_fifo();
+
+            clear_status(Status::clear_all_bitmask);
+
+            while(is_enabled() == true);
         }
 
         // Gets the TX and RX run status
