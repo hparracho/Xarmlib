@@ -3,7 +3,7 @@
 // @brief   Kinetis KV5x UART class.
 // @notes   TX and RX FIFOs are always used due to FSL driver implementation.
 //          TX FIFO watermark = 0 and RX FIFO watermark = 1.
-// @date    20 September 2020
+// @date    22 October 2020
 // ----------------------------------------------------------------------------
 //
 // Xarmlib 0.1.0 - https://github.com/hparracho/Xarmlib
@@ -395,6 +395,7 @@ class UartDriver : private PeripheralRefCounter<UartDriver, TARGET_UART_COUNT, T
         // Disable TX and RX
         void disable()
         {
+            while(is_tx_idle() == false);
             UART_EnableTx(m_uart_base, false);
             UART_EnableRx(m_uart_base, false);
         }
